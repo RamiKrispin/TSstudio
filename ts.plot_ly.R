@@ -1,4 +1,4 @@
-ts_ly <- function(x, line.mode = "lines", width = 1, 
+ts.plot_ly <- function(x, line.mode = "lines", width = 1, 
                       dash = NULL, color = "blue", 
                       slider = FALSE, type = "multiple"){
   `%>%` <- magrittr::`%>%`
