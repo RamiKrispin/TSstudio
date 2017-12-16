@@ -26,11 +26,11 @@ ts_ly <- function(x, line.mode = "lines", width = 1,
     type <- "multiple"
   }
   # Check if it is a multiple time series  
-  if(!is.null(dim(x))){
-    if(dim(x)[2] > 1){
+  if(!is.null(base::dim(x))){
+    if(base::dim(x)[2] > 1){
       dim_flag <- TRUE
       if(is.mts(x)){
-        obj.name <- deparse(substitute(x))
+        obj.name <- base::deparse(base::substitute(x))
         df <- data.frame(date = stats::time(x), as.data.frame(x))
       } else if(xts::is.xts(x) | zoo::is.zoo(x)){
         obj.name <- deparse(substitute(x))
@@ -92,7 +92,7 @@ ts_ly <- function(x, line.mode = "lines", width = 1,
     if(zoo::is.zoo(x) | xts::is.xts(x)){
       df <- data.frame(date = zoo::index(x), y = as.numeric(x))
     } else if (stats::is.ts(x)){
-      df <- data.frame(date = time(x), y = as.numeric(x))
+      df <- data.frame(date = stats::time(x), y = as.numeric(x))
     } else {
       stop('Invalid class \n Please make sure the object class is either "ts", "mts", "xts" or "zoo"')
     }
