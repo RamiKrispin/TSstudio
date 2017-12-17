@@ -21,10 +21,15 @@ if(stats::is.ts(ts.obj)){
     }
   }
   freq <- xts::periodicity(ts.obj)[[6]]
-  if(freq == "monthly" ){
+  if(freq == "quarterly" ){
     df <- data.frame(dec_left = lubridate::year(ts.obj),
-                        dec_right =  lubridate::month(ts.obj), 
+                        dec_right =  lubridate::quarter(ts.obj), 
                         value = as.numeric(ts.obj)
+    )
+  } else if(freq == "monthly" ){
+    df <- data.frame(dec_left = lubridate::year(ts.obj),
+                     dec_right =  lubridate::month(ts.obj), 
+                     value = as.numeric(ts.obj)
     )
   } else if(freq == "weekly"){
     df <- data.frame(dec_left = lubridate::year(ts.obj),
@@ -36,7 +41,8 @@ if(stats::is.ts(ts.obj)){
                         dec_right =  lubridate::day(ts.obj), 
                         value = as.numeric(ts.obj)
     ) 
-  } else if(freq != "monthly" & freq != "weekly" & freq != "daily"){
+  } else if(freq != "quarterly" & freq != "monthly" & 
+            freq != "weekly" & freq != "daily"){
     stop('The frequency of the series is invalid, the function support only "daily" or "monthly" frequencies')
   }
   
@@ -53,7 +59,7 @@ for(f in 2:ncol(df_wide)){
                        type = "scatter")}
 p <- p %>%  plotly::layout(
   title = paste("Seasonality Plot", sep = " "),
-  xaxis = list(title = ""),
+  xaxis = list(title = "", autotick = F, dtick = 1),
   yaxis = list(title = obj.name))
 
 return(p)
