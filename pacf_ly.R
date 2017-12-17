@@ -45,14 +45,14 @@ pacf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95){
       }
     }
     counter <- 0
-    for(r in series){
-      for(c in series){
+    for(c in series){
+      for(r in series){
         counter <- counter + 1
         if(r == c){
           series_list[counter] <- plotly::plot_ly() %>% 
             plotly::add_bars(x = df[, counter], 
                              y = df[,(length(series))^2 + counter ], 
-                             width = df$width, name = "ACF") %>%
+                             width = df$width, name = "PACF") %>%
             plotly::add_trace(x = df[, counter], 
                               y = df$ci_u, 
                               type = "scatter", mode = "lines", name = "CI Upper Bound",  
@@ -63,7 +63,7 @@ pacf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95){
                               line = list(width = 1, dash = "dash", color = "green")) %>%
             plotly::layout(
               xaxis = list(title = "Lag", showgrid = FALSE),
-              yaxis = list(title = "ACF", showgrid = FALSE, range = c(min(x[[1]]), max(x[[1]]))),
+              yaxis = list(title = "PACF", showgrid = FALSE, range = c(min(x[[1]]), max(x[[1]]))),
               annotations = list(
                 text = c,
                 xref = "paper",
@@ -80,7 +80,7 @@ pacf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95){
           series_list[counter] <- plotly::plot_ly() %>% 
             plotly::add_bars(x = df[, counter], 
                              y = df[,(length(series))^2 + counter ], 
-                             width = df$width, name = "ACF") %>%
+                             width = df$width, name = "PACF") %>%
             plotly::add_trace(x = df[, counter], 
                               y = df$ci_u, 
                               type = "scatter", mode = "lines", name = "CI Upper Bound",   
@@ -91,7 +91,7 @@ pacf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95){
                               line = list(width = 1, dash = "dash", color = "green")) %>%
             plotly::layout(
               xaxis = list(title = "Lag", showgrid = FALSE),
-              yaxis = list(title = "ACF", showgrid = FALSE, range = c(min(x[[1]]), max(x[[1]]))),
+              yaxis = list(title = "PACF", showgrid = FALSE, range = c(min(x[[1]]), max(x[[1]]))),
               annotations = list(
                 text = paste(r, c, sep = " & "),
                 xref = "paper",
@@ -111,7 +111,7 @@ pacf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95){
                          titleX = FALSE, titleY = TRUE, margin = 0.03,
                          shareX = FALSE, shareY = TRUE) %>% 
       plotly::hide_legend() %>% 
-      plotly::layout(title = "ACF Plot", margin = 0.06)
+      plotly::layout(title = "PACF Plot", margin = 0.06)
   } else if(ncol(df) == 5){
     p <- plotly::plot_ly(data = df) %>% 
       plotly::add_bars(x = ~lag, 
@@ -129,7 +129,7 @@ pacf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95){
       plotly::layout(
         title = paste("Series", obj.name, sep = " "),
         xaxis = list(title = "Lag", showgrid = FALSE),
-        yaxis = list(title = "ACF", showgrid = FALSE)
+        yaxis = list(title = "PACF", showgrid = FALSE)
       ) %>%
       plotly::hide_legend()
   }

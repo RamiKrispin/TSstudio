@@ -3,7 +3,7 @@ ts.plot_ly <- function(x, line.mode = "lines", width = 1,
                       slider = FALSE, type = "multiple"){
   `%>%` <- magrittr::`%>%`
   df <- p <- plot_list <- dim_flag <- plot_list <- obj.name <- NULL 
-  
+  obj.name <- base::deparse(base::substitute(x))
   # Error handling
   if(line.mode != "lines" & 
      line.mode != "lines+markers" & 
@@ -30,10 +30,8 @@ ts.plot_ly <- function(x, line.mode = "lines", width = 1,
     if(base::dim(x)[2] > 1){
       dim_flag <- TRUE
       if(is.mts(x)){
-        obj.name <- base::deparse(base::substitute(x))
         df <- data.frame(date = stats::time(x), as.data.frame(x))
       } else if(xts::is.xts(x) | zoo::is.zoo(x)){
-        obj.name <- deparse(substitute(x))
         df <- data.frame(date = zoo::index(x), as.data.frame(x))
       } else{
         stop('Invalid class \n Please make sure the object class is either "ts", "mts", "xts" or "zoo"') 
@@ -124,10 +122,16 @@ ts.plot_ly <- function(x, line.mode = "lines", width = 1,
     if(!is.null(p) & slider){
       p <- p %>% 
         plotly::layout(
+          title = obj.name,
           xaxis = list(
             rangeslider = list(type = "date"))
         )
-    }
+    } else if(!is.null(p) & !slider){
+          p <- p %>% 
+          plotly::layout(
+          title = obj.name
+          )
+      }
   }
   if(is.null(p)){
     stop("Could not create the plot, please check the input")

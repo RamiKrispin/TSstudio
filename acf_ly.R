@@ -45,8 +45,8 @@ acf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95){
         }
       }
       counter <- 0
-      for(r in series){
-        for(c in series){
+      for(c in series){
+        for(r in series){
           counter <- counter + 1
           if(r == c){
             series_list[counter] <- plotly::plot_ly() %>% 
