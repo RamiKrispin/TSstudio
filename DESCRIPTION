@@ -1,11 +1,11 @@
 Package: TSstudio
 Type: Package
 Title: Tools for Time Series Analysis and Forecasting
-Version: 0.1.0
+Version: 0.0.0.9000
 Author: Rami Krispin
 Maintainer: Rami Krispin <rami.krispin@gmail.com>
 Description: The TSstudio provides set of tools to time series analysis and forecasting 
-License: MIT
+License: MIT 
 Encoding: UTF-8
 LazyData: true
 Imports:
@@ -14,6 +14,10 @@ Imports:
   plotly (>= 4.7.1),
   magrittr (>= 1.5),
   xts (>= 0.10-0),
-  zoo (>= 1.8-0)
+  zoo (>= 1.8-0),
+  forecast (>= 8.0.0)
+Suggests:
+    knitr,
+    rmarkdown
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1

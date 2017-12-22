@@ -1,9 +1,23 @@
-ts.plot_ly <- function(x, line.mode = "lines", width = 1, 
+#'  Plotting Time Series Objects
+#' 
+#' @description visulization funtion for time series object
+#' @param ts.obj a univariate or multivariate time series object of class "ts", "mts", "zoo" or "xts"
+#' @param line.mode a plotly argument, define the plot type, c("lines", "lines+markers", "markers")
+#' @param width the plot widht, default is set to 1 (an integer)
+#' @param dash a plotly argument, define the line style, c(NULL, "dot", "dash")
+#' @param color the color of the plot, support both name and expression
+#' @param slider logic, add slider to modify the time axis (default set to FALSE)
+#' @param type applicable for multiple time series object, plot on a separate plot or all together c("single, "multiple) 
+#' @examples
+#' ts.plot_ly(AirPassengers)
+
+
+ts.plot_ly <- function(ts.obj, line.mode = "lines", width = 1, 
                       dash = NULL, color = "blue", 
                       slider = FALSE, type = "multiple"){
   `%>%` <- magrittr::`%>%`
   df <- p <- plot_list <- dim_flag <- plot_list <- obj.name <- NULL 
-  obj.name <- base::deparse(base::substitute(x))
+  obj.name <- base::deparse(base::substitute(ts.obj))
   # Error handling
   if(line.mode != "lines" & 
      line.mode != "lines+markers" & 
@@ -26,13 +40,13 @@ ts.plot_ly <- function(x, line.mode = "lines", width = 1,
     type <- "multiple"
   }
   # Check if it is a multiple time series  
-  if(!is.null(base::dim(x))){
-    if(base::dim(x)[2] > 1){
+  if(!is.null(base::dim(ts.obj))){
+    if(base::dim(ts.obj)[2] > 1){
       dim_flag <- TRUE
-      if(is.mts(x)){
-        df <- data.frame(date = stats::time(x), as.data.frame(x))
-      } else if(xts::is.xts(x) | zoo::is.zoo(x)){
-        df <- data.frame(date = zoo::index(x), as.data.frame(x))
+      if(stats::is.mts(ts.obj)){
+        df <- data.frame(date = stats::time(ts.obj), as.data.frame(ts.obj))
+      } else if(xts::is.xts(ts.obj) | zoo::is.zoo(ts.obj)){
+        df <- data.frame(date = zoo::index(ts.obj), as.data.frame(ts.obj))
       } else{
         stop('Invalid class \n Please make sure the object class is either "ts", "mts", "xts" or "zoo"') 
       }
@@ -87,10 +101,10 @@ ts.plot_ly <- function(x, line.mode = "lines", width = 1,
       
     }
   } else{
-    if(zoo::is.zoo(x) | xts::is.xts(x)){
-      df <- data.frame(date = zoo::index(x), y = as.numeric(x))
-    } else if (stats::is.ts(x)){
-      df <- data.frame(date = stats::time(x), y = as.numeric(x))
+    if(zoo::is.zoo(ts.obj) | xts::is.xts(ts.obj)){
+      df <- data.frame(date = zoo::index(ts.obj), y = as.numeric(ts.obj))
+    } else if (stats::is.ts(ts.obj)){
+      df <- data.frame(date = stats::time(ts.obj), y = as.numeric(ts.obj))
     } else {
       stop('Invalid class \n Please make sure the object class is either "ts", "mts", "xts" or "zoo"')
     }

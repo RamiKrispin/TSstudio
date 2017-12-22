@@ -1,0 +1,86 @@
+---
+title: "Introduction for the TSstudio Package"
+author: "Rami Krispin"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## **Overview**
+
+The TSstudio (time series studio) package is a toolbox for interactive visualization applications for time series analysis with the Plotly package. The package is under development and first iteration is available on github.
+
+## **Installation**
+
+The package is available for installation with the devtools package (if devetools package is not installed please use `install.packages("devtools")` to install it).
+
+```{r message=FALSE, warning=FALSE}
+# Install the TSstudio
+devtools::install_github("RamiKrispin/TSstudio")
+```
+
+## **Key Features**
+
+### Visualization of fitted and forecasted values vs. actual values
+
+```{r fig.height = 5, fig.width = 8}
+library(TSstudio)
+library(forecast)
+
+# Load the AirPassengers dataset
+data("AirPassengers")
+
+# set the forecast horizon for 12 months
+h <- 12 
+
+# Split the data into training and testing sets (leaving the last 12 months for testing)
+train <- window(AirPassengers, 
+                start = time(AirPassengers)[1], 
+                end = time(AirPassengers)[length(AirPassengers) - h])
+test <- window(AirPassengers, 
+               start = time(AirPassengers)[length(AirPassengers) - h + 1], 
+               end = time(AirPassengers)[length(AirPassengers)])
+
+# Using auto.arima to train and forecast the last 12 months on the series
+fc <- forecast(auto.arima(train, lambda = BoxCox.lambda(train)), h = h)
+
+# Plotting the series vs the fitted and the forecasted
+fortest_ly(actual = AirPassengers, forecast.obj = fc, train = train, test = test)
+
+```
+
+### Seasonality plot
+
+```{r fig.height = 5, fig.width = 8}
+seasonal_ly(AirPassengers)
+```
+
+
+### Plotting time series object
+```{r fig.height = 5, fig.width = 7}
+# Simple plot
+ts.plot_ly(AirPassengers)
+```
+
+```{r fig.height = 5, fig.width = 7}
+# Adding slider and markers, changing the color to green
+ts.plot_ly(AirPassengers, 
+           slider = TRUE, 
+           line.mode = "lines+markers", 
+           color = "green", 
+           width = 2)
+
+```
+
+### Plotting the acf and the pacf estimation
+
+```{r fig.height=5, fig.width=8}
+#plotting the acf and the pacf estimation
+# setting the lags to 60 and the level of significant to 0.01
+acf_ly(AirPassengers, lag.max = 60, ci = 0.99)
+pacf_ly(AirPassengers, lag.max = 60, ci = 0.99)
+```
+
