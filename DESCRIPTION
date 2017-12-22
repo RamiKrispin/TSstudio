@@ -4,7 +4,7 @@ Title: Tools for Time Series Analysis and Forecasting
 Version: 0.0.0.9000
 Author: Rami Krispin
 Maintainer: Rami Krispin <rami.krispin@gmail.com>
-Description: The TSstudio provides set of tools to time series analysis and forecasting 
+Description: The TSstudio provides set of tools to time series analysis and pforecasting 
 License: MIT 
 Encoding: UTF-8
 LazyData: true
@@ -15,7 +15,7 @@ Imports:
   magrittr (>= 1.5),
   xts (>= 0.10-0),
   zoo (>= 1.8-0),
-  forecast (>= 8.0.0)
+  forecast (>= 8.2)
 Suggests:
     knitr,
     rmarkdown
