@@ -23,7 +23,7 @@ ts.plot_ly(ts.obj, line.mode = "lines", width = 1, dash = NULL,
 \item{type}{applicable for multiple time series object, plot on a separate plot or all together c("single, "multiple)}
 }
 \description{
-visulization funtion for time series object
+visualization funtion for time series object
 }
 \examples{
 ts.plot_ly(AirPassengers)
