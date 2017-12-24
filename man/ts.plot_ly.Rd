@@ -12,7 +12,7 @@ ts.plot_ly(ts.obj, line.mode = "lines", width = 1, dash = NULL,
 
 \item{line.mode}{a plotly argument, define the plot type, c("lines", "lines+markers", "markers")}
 
-\item{width}{the plot widht, default is set to 1 (an integer)}
+\item{width}{the plot width, default is set to 1 (an integer)}
 
 \item{dash}{a plotly argument, define the line style, c(NULL, "dot", "dash")}
 
@@ -23,7 +23,7 @@ ts.plot_ly(ts.obj, line.mode = "lines", width = 1, dash = NULL,
 \item{type}{applicable for multiple time series object, plot on a separate plot or all together c("single, "multiple)}
 }
 \description{
-visulization funtion for time series object
+visualization function for time series object
 }
 \examples{
 ts.plot_ly(AirPassengers)
