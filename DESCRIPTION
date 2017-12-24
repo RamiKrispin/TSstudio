@@ -5,7 +5,7 @@ Version: 0.0.0.9000
 Author: Rami Krispin
 Maintainer: Rami Krispin <rami.krispin@gmail.com>
 Description: The TSstudio package provides a set of interactive visualization tools for time series analysis. 
-License: MIT 
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Imports:
