@@ -23,6 +23,7 @@ fortest_ly(actual, forecast.obj, train, test, Ygrid = FALSE, Xgrid = FALSE)
 Visualize the fitted values of the training set and the forecast values of the testing set against the actual values of the series
 }
 \examples{
+library(forecast)
 h <- 12
 train <- window(AirPassengers, 
                start = time(AirPassengers)[1], 
