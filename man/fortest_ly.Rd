@@ -11,9 +11,9 @@ fortest_ly(actual, forecast.obj, train, test, Ygrid = FALSE, Xgrid = FALSE)
 
 \item{forecast.obj}{The forecast output of the training set with horizon align to the length of the testing (support forecasted objects from the “forecast” package)}
 
-\item{train}{the training partation, a subset of the first n observation in the series}
+\item{train}{the training partition, a subset of the first n observation in the series}
 
-\item{test}{the testing (hold-out) partation}
+\item{test}{the testing (hold-out) partition}
 
 \item{Ygrid}{logic,show the Y axis grid if set to TRUE}
 

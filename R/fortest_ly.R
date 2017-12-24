@@ -2,8 +2,8 @@
 #' @export
 #' @param actual the full time series object (support "ts", "zoo" and "xts" formats)
 #' @param forecast.obj The forecast output of the training set with horizon align to the length of the testing (support forecasted objects from the “forecast” package)
-#' @param train the training partation, a subset of the first n observation in the series
-#' @param test the testing (hold-out) partation 
+#' @param train the training partition, a subset of the first n observation in the series
+#' @param test the testing (hold-out) partition 
 #' @param Ygrid logic,show the Y axis grid if set to TRUE
 #' @param Xgrid logic,show the X axis grid if set to TRUE
 #' @description Visualize the fitted values of the training set and the forecast values of the testing set against the actual values of the series
