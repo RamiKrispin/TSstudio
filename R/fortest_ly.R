@@ -1,5 +1,5 @@
 #'  Visualize of the Fitted and the Forecasted vs the Actual Values
-#' 
+#' @export
 #' @param actual the full time series object (supprot "ts", "zoo" and "xts" formats)
 #' @param forecast.obj The forecast output of the training set with horizon align to the length of the testing (support forecasted objects from the “forecast” package)
 #' @param train the training partation, a subset of the first n observation in the series
@@ -8,6 +8,7 @@
 #' @param Xgrid logic,show the X axis grid if set to TRUE
 #' @description Visualize the fitted values of the training set and the forecast values of the testing set against the actual values of the series
 #' @examples
+#' library(forecast)
 #' h <- 12
 #' train <- window(AirPassengers, 
 #'                start = time(AirPassengers)[1], 

@@ -1,5 +1,5 @@
 #'  Seasonality Visualization of Time Series Object
-#' 
+#' @export
 #' @param ts.obj a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either daily, monthly or quarterly frequency)
 #' @description Visualize time series object by it periodicity
 #' @examples

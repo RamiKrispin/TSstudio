@@ -1,5 +1,5 @@
 #'  A Visualization Function of the PACF Estimation
-#' 
+#' @export
 #' @param ts.obj a univariate or multivariate time series object of class "ts", "mts", "zoo" or "xts"
 #' @param lag.max maximum lag at which to calculate the acf. Default is 10*log10(N/m) where N is the number of observations and m the number of series. Will be automatically limited to one less than the number of observations in the series.
 #' @param ci the significant level of the estimation - a numeric value between 0 and 1, default is set for 0.95 
