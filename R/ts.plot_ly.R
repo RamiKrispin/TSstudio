@@ -3,7 +3,7 @@
 #' @description visulization funtion for time series object
 #' @param ts.obj a univariate or multivariate time series object of class "ts", "mts", "zoo" or "xts"
 #' @param line.mode a plotly argument, define the plot type, c("lines", "lines+markers", "markers")
-#' @param width the plot widht, default is set to 1 (an integer)
+#' @param width the plot width, default is set to 1 (an integer)
 #' @param dash a plotly argument, define the line style, c(NULL, "dot", "dash")
 #' @param color the color of the plot, support both name and expression
 #' @param slider logic, add slider to modify the time axis (default set to FALSE)
