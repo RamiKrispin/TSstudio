@@ -1,7 +1,7 @@
 Package: TSstudio
 Type: Package
 Title: Tools for Time Series Analysis and Forecasting
-Version: 0.0.0.9000
+Version: 0.1.0
 Author: Rami Krispin
 Maintainer: Rami Krispin <rami.krispin@gmail.com>
 Description: The TSstudio package provides a set of interactive visualization tools for time series analysis.
