@@ -4,7 +4,7 @@ Title: Tools for Time Series Analysis and Forecasting
 Version: 0.0.0.9000
 Author: Rami Krispin
 Maintainer: Rami Krispin <rami.krispin@gmail.com>
-Description: The TSstudio provides set of tools to time series analysis and pforecasting 
+Description: The TSstudio package provides a set of interactive visualization tools for time series analysis. 
 License: MIT 
 Encoding: UTF-8
 LazyData: true
