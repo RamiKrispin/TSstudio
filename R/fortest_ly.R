@@ -1,6 +1,6 @@
 #'  Visualize of the Fitted and the Forecasted vs the Actual Values
 #' @export
-#' @param actual the full time series object (supprot "ts", "zoo" and "xts" formats)
+#' @param actual the full time series object (support "ts", "zoo" and "xts" formats)
 #' @param forecast.obj The forecast output of the training set with horizon align to the length of the testing (support forecasted objects from the “forecast” package)
 #' @param train the training partation, a subset of the first n observation in the series
 #' @param test the testing (hold-out) partation 
