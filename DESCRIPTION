@@ -18,6 +18,7 @@ Imports:
   forecast (>= 8.2)
 Suggests:
     knitr,
-    rmarkdown
+    rmarkdown,
+    devtools
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
