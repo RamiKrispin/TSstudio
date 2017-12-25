@@ -23,6 +23,7 @@ fortest_ly(actual, forecast.obj, train, test, Ygrid = FALSE, Xgrid = FALSE)
 Visualize the fitted values of the training set and the forecast values of the testing set against the actual values of the series
 }
 \examples{
+\dontrun{
 library(forecast)
 h <- 12
 train <- window(AirPassengers, 
@@ -33,6 +34,6 @@ test <- window(AirPassengers,
               end = time(AirPassengers)[length(AirPassengers)])
 
 fc <- forecast(auto.arima(train, lambda = BoxCox.lambda(train)), h = h)
-
+}
 fortest_ly(actual = AirPassengers, forecast.obj = fc, train = train, test = test)
 }
