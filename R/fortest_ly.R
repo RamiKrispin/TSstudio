@@ -19,7 +19,7 @@
 #'               end = time(AirPassengers)[length(AirPassengers)])
 #'
 #'fc <- forecast(auto.arima(train, lambda = BoxCox.lambda(train)), h = h)
-#'}
+#'
 #'fortest_ly(actual = AirPassengers, forecast.obj = fc, train = train, test = test)
 #'}
 
