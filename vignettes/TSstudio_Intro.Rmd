@@ -11,7 +11,7 @@ vignette: >
 
 ## **Overview**
 
-The TSstudio (time series studio) package is a toolbox for interactive visualization applications for time series analysis with the Plotly package. The package is under development and first iteration is available on github.
+The TSstudio (time series studio) package is a toolbox for interactive visualization applications for time series analysis with the [Plotly](https://plot.ly/r/) package. The package is under development and first iteration is available on [github](https://github.com/RamiKrispin/TSstudio).
 
 ## **Installation**
 
