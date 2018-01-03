@@ -5,7 +5,7 @@ Version: 0.1.0
 Author: Rami Krispin
 Maintainer: Rami Krispin <rami.krispin@gmail.com>
 Description: Provides a set of interactive visualization tools for time series analysis supporting the “ts”, “mts”, “zoo” 
-             and “xts” objects. That includes visualizations functions for forecasting model performance (forecasted vs. actual), 
+             and “xts” objects. That includes visualization functions for forecasting model performance (forecasted vs. actual), 
              time series interactive plots (single and multiple series) and seasonality plots.
 License: GPL-3
 Encoding: UTF-8
