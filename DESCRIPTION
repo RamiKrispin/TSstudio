@@ -15,7 +15,7 @@ Imports:
   lubridate (>= 1.6.0),
   plotly (>= 4.7.1),
   magrittr (>= 1.5),
-  xts (>= 1.7-12),
+  xts (>= 0.10-1),
   zoo (>= 1.8-0),
   forecast (>= 8.2)
 Suggests:
