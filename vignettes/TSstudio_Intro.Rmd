@@ -15,10 +15,14 @@ The TSstudio (time series studio) package is a toolbox for interactive visualiza
 
 ## **Installation**
 
-The package is available for installation with the devtools package (if devetools package is not installed please use `install.packages("devtools")` to install it).
+Install the stable version from [CRAN](https://cran.r-project.org/web/packages/TSstudio/index.html):
+``` r
+install.packages("TSstudio")
+```
 
-```{r message=FALSE, warning=FALSE}
-# Install the TSstudio
+or install the development version from [Github](https://github.com/RamiKrispin/TSstudio):
+``` r
+# install.packages("devtools")
 devtools::install_github("RamiKrispin/TSstudio")
 ```
 
