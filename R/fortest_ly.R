@@ -60,8 +60,8 @@ fortest_ly <- function(actual, forecast.obj, train, test,
             name = "Fitted", type = "scatter", line = list(color = "red")) %>% 
         plotly::add_trace(x = time_actual, y = c(rep(NA, 
             length(actual) - length(test)), forecast.obj$mean), 
-            mode = "lines+markers", name = "Forecast", type = "scatter") %>% 
-        plotly::layout(title = "Actual vs Forecast and Fitted", 
+            mode = "lines+markers", name = "Forecasted", type = "scatter") %>% 
+        plotly::layout(title = "Actual vs Forecasted and Fitted", 
             xaxis = list(title = forecast.obj$method, showgrid = Xgrid), 
             yaxis = list(title = obj.name, showgrid = Ygrid))
     
