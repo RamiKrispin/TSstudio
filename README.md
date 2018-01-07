@@ -28,3 +28,9 @@ Examples
 --------
 
 Interactive examples can be found [here](http://rpubs.com/ramkrisp/TSstudio)
+
+Updates
+-------
+
+Please check the package [news](https://github.com/RamiKrispin/TSstudio/blob/master/NEWS.md) page for the recent updates
+
