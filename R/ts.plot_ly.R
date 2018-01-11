@@ -1,13 +1,13 @@
 #'  Plotting Time Series Objects
 #' @export
-#' @description visualization functions for time series object
-#' @param ts.obj a univariate or multivariate time series object of class "ts", "mts", "zoo" or "xts"
-#' @param line.mode a plotly argument, define the plot type, c("lines", "lines+markers", "markers")
-#' @param width the plot width, default is set to 1 (an integer)
-#' @param dash a plotly argument, define the line style, c(NULL, "dot", "dash")
-#' @param color the color of the plot, support both name and expression
-#' @param slider logic, add slider to modify the time axis (default set to FALSE)
-#' @param type applicable for multiple time series object, plot on a separate plot or all together c("single, "multiple) 
+#' @description Visualization functions for time series object
+#' @param ts.obj A univariate or multivariate time series object of class "ts", "mts", "zoo" or "xts"
+#' @param line.mode A plotly argument, define the plot type, c("lines", "lines+markers", "markers")
+#' @param width The plot width, default is set to 1 (an integer)
+#' @param dash A plotly argument, define the line style, c(NULL, "dot", "dash")
+#' @param color The color of the plot, support both name and expression
+#' @param slider Logic, add slider to modify the time axis (default set to FALSE)
+#' @param type Applicable for multiple time series object, plot on a separate plot or all together c("single, "multiple) 
 #' @examples
 #' ts.plot_ly(AirPassengers)
 
