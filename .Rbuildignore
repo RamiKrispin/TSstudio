@@ -6,3 +6,4 @@
 ^data-raw$
 ^cran-comments\.md$
 ^vignettes/gif
+^LICENSE
