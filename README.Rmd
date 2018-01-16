@@ -16,7 +16,11 @@ The TSstudio package provides a set of interactive visualization tools for time 
 
 ## Overview
 
-All the visualization functions in the package are build with the [Plotly](https://plot.ly/r/) package and supporting "ts", "mts", "zoo" and "xts" objects. 
+The TSstudio package provides a set of interactive visualization tools for time series analysis supporting ts, mts, zoo and xts objects. That includes several visualization functions such as forecasting model performance (forecasted vs. actual), time series interactive plots (single and multiple series) and seasonality plots utilizing the visualization applications of the [Plotly](https://plot.ly/r/) package. First version available on CRAN or Github.
+
+![The TSstudio package](https://github.com/RamiKrispin/TSstudio/blob/master/vignettes/gif/TSstudio.gif)
+
+
 
 ## Installation
 
