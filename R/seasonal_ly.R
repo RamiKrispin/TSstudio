@@ -4,7 +4,7 @@
 #' @param type The type of the seasonal plot - "normal" to split the series by year and "cycle" to split by cycle
 #' @param Ygrid logic,show the Y axis grid if set to TRUE
 #' @param Xgrid logic,show the X axis grid if set to TRUE
-#' @description Visualize time series object by it periodicity
+#' @description Visualize time series object by it periodicity, currently support only monthly and quarterly frequency
 #' @examples
 #' seasonal_ly(AirPassengers)
 

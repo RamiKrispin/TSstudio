@@ -16,7 +16,7 @@ seasonal_ly(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE)
 \item{Xgrid}{logic,show the X axis grid if set to TRUE}
 }
 \description{
-Visualize time series object by it periodicity
+Visualize time series object by it periodicity, currently support only monthly and quarterly frequency
 }
 \examples{
 seasonal_ly(AirPassengers)
