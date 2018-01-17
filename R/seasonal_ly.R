@@ -79,7 +79,8 @@ seasonal_ly <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE) {
   p <- p %>% plotly::layout(title = paste("Seasonality Plot", 
                                           sep = " "), 
                             xaxis = list(title = "", autotick = F, 
-                                         showgrid = Xgrid, dtick = 1), 
+                                         showgrid = Xgrid, 
+                                         dtick = 1), 
                             yaxis = list(title = obj.name, showgrid = Ygrid))
   
   return(p)
