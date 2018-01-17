@@ -4,10 +4,16 @@
 \alias{seasonal_ly}
 \title{Seasonality Visualization of Time Series Object}
 \usage{
-seasonal_ly(ts.obj)
+seasonal_ly(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE)
 }
 \arguments{
 \item{ts.obj}{a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either daily, monthly or quarterly frequency)}
+
+\item{type}{The type of the seasonal plot - "normal" to split the series by year and "cycle" to split by cycle}
+
+\item{Ygrid}{logic,show the Y axis grid if set to TRUE}
+
+\item{Xgrid}{logic,show the X axis grid if set to TRUE}
 }
 \description{
 Visualize time series object by it periodicity
