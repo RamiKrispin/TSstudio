@@ -35,8 +35,8 @@ Below is the road map plan for Q1, where some of the functions are already avail
 * Seasonal plots of time series object, in order to identity seasonal pattern that includes:
     + Plot a series on a range of a full cycle (i.e. by full year) [CRAN]
     + Plot a series over time by units of the cycle (i.e. plot separately each month over a time) [Github]
-    + Polar plot by cycle [ver. 0.1.1]
-    + Box plot by cycle units (i.e. by months, quarters, etc.) [ver. 0.1.1]
+    + Polar plot by cycle [Github]
+    + Box plot by cycle units (i.e. by months, quarters, etc.) [Github]
 
 * Correlation analysis plots:
     + ACF and PACF plots [CRAN]

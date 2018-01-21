@@ -9,7 +9,11 @@ seasonal_ly(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE)
 \arguments{
 \item{ts.obj}{a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)}
 
-\item{type}{The type of the seasonal plot - "normal" to split the series by year and "cycle" to split by cycle}
+\item{type}{The type of the seasonal plot - 
+"normal" to split the series by full cycle units, or
+"cycle" to split by cycle units, or
+"box" for box-plot by cycle units, or
+"polar"  for polar plot}
 
 \item{Ygrid}{logic,show the Y axis grid if set to TRUE}
 
@@ -19,5 +23,8 @@ seasonal_ly(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE)
 Visualize time series object by it periodicity, currently support only monthly and quarterly frequency
 }
 \examples{
-seasonal_ly(AirPassengers)
+# Seasonal box plot
+seasonal_ly(AirPassengers, type = "box") 
+# Seasonal polar plot
+seasonal_ly(AirPassengers, type = "polar") 
 }
