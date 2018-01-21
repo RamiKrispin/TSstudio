@@ -8,21 +8,57 @@
 #' @param color The color of the plot, support both name and expression
 #' @param slider Logic, add slider to modify the time axis (default set to FALSE)
 #' @param type Applicable for multiple time series object, plot on a separate plot or all together c("single, "multiple) 
+#' @param Xtitle The X title, can assing an R color
+#' @param Ytitle The Y title, can assing an R color
+#' @param Ygrid logic,show the Y axis grid if set to TRUE
+#' @param Xgrid logic,show the X axis grid if set to TRUE
 #' @examples
 #' ts.plot_ly(AirPassengers)
 
 
-ts.plot_ly <- function(ts.obj, line.mode = "lines", width = 1, 
-                      dash = NULL, color = "blue", 
-                      slider = FALSE, type = "multiple"){
+ts.plot_ly <- function(ts.obj, line.mode = "lines", width = 2, 
+                      dash = NULL, color = NULL, 
+                      slider = FALSE, type = "multiple",
+                      Xtitle = NULL, Ytitle = NULL,
+                      Xgrid = FALSE, Ygrid = FALSE){
   `%>%` <- magrittr::`%>%`
   df <- p <- plot_list <- dim_flag <- plot_list <- obj.name <- NULL 
   obj.name <- base::deparse(base::substitute(ts.obj))
+  
   # Error handling
+  if(!is.null(color)){
+    if(!is.character(color)){
+      warning("The value of the 'color' parameter is not valid")
+      color = "#00526d"
+    }
+  } else{
+    color = "#00526d"
+  }
+  
+  
+  if(!is.null(Xtitle)){
+    if(!is.character(Xtitle)){
+      warning("The value of the 'Xtitle' is not valid")
+      Xtitle <- ""
+    } 
+  } else {
+    Xtitle <- ""
+  }
+  
+  if(!is.null(Ytitle)){
+    if(!is.character(Ytitle)){
+      warning("The value of the 'Ytitle' is not valid")
+      Ytitle <- ""
+    } 
+  } else {
+    Ytitle <- ""
+  }
+  
+  
   if(line.mode != "lines" & 
      line.mode != "lines+markers" & 
      line.mode != "markers"){
-    warning("The value of 'line.mode' is not valide, using the default option - 'lines'")
+    warning("The value of 'line.mode' is not valid, using the default option - 'lines'")
     line.mode <- "lines"
   }
   
@@ -36,7 +72,7 @@ ts.plot_ly <- function(ts.obj, line.mode = "lines", width = 1,
   
   if(type != "single" & 
      type != "multiple"){
-    warning("The value of 'type' is not valide, using the default option - 'multiple'")
+    warning("The value of 'type' is not valid, using the default option - 'multiple'")
     type <- "multiple"
   }
   # Check if it is a multiple time series  
@@ -67,14 +103,15 @@ ts.plot_ly <- function(ts.obj, line.mode = "lines", width = 1,
                              type = 'scatter')
       }
       p <- p %>% plotly::layout(
-        xaxis = list(title = "Date"),
-        yaxis = list(title = obj.name)
+        xaxis = list(title = "Date", showgrid = Xgrid),
+        yaxis = list(title = obj.name, showgrid = Ygrid)
         
       )
       if(!is.null(p) & slider){
         p <- p %>% 
           plotly::layout(
-            xaxis = list(
+            yaxis = list(showgrid = Ygrid),
+            xaxis = list(showgrid = Xgrid,
               rangeslider = list(type = "date"))
           )
       }
@@ -86,8 +123,8 @@ ts.plot_ly <- function(ts.obj, line.mode = "lines", width = 1,
                                     type = 'scatter'
         )%>% 
           plotly::layout(
-            xaxis = list(title = "Date"),
-            yaxis = list(title = names(df)[i])
+            xaxis = list(title = "Date", showgrid = Xgrid),
+            yaxis = list(title = names(df)[i], showgrid = Ygrid)
           )
       }
       
@@ -137,12 +174,16 @@ ts.plot_ly <- function(ts.obj, line.mode = "lines", width = 1,
       p <- p %>% 
         plotly::layout(
           title = obj.name,
+          yaxis = list(title = Ytitle, showgrid = Ygrid),
           xaxis = list(
+            title = Xtitle, showgrid = Xgrid,
             rangeslider = list(type = "date"))
         )
     } else if(!is.null(p) & !slider){
           p <- p %>% 
           plotly::layout(
+            xaxis = list(title = Xtitle, showgrid = Xgrid),
+            yaxis = list(title = Ytitle, showgrid = Ygrid),
           title = obj.name
           )
       }
