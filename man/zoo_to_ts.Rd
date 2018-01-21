@@ -13,6 +13,11 @@ zoo_to_ts(zoo.obj)
 Converting 'zoo' object to 'ts' object
 }
 \examples{
-ts.plot_ly(AirPassengers)
 
+data("EURO_Brent", package = "TSstudio")
+class(EURO_Brent)
+ts.plot_ly(EURO_Brent)
+EURO_Brent_ts <- zoo_to_ts(EURO_Brent)
+class(EURO_Brent_ts)
+ts.plot_ly(EURO_Brent_ts)
 }
