@@ -14,8 +14,12 @@ The TSstudio package provides a set of interactive visualization tools for time 
 Installation
 ------------
 
-You can install TSstudio from github with:
+Install the stable version from [CRAN](https://cran.r-project.org/web/packages/TSstudio/index.html):
+``` r
+install.packages("TSstudio")
+```
 
+or install the development version from [Github](https://github.com/RamiKrispin/TSstudio):
 ``` r
 # install.packages("devtools")
 devtools::install_github("RamiKrispin/TSstudio")
