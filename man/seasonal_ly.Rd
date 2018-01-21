@@ -7,7 +7,7 @@
 seasonal_ly(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE)
 }
 \arguments{
-\item{ts.obj}{a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either daily, monthly or quarterly frequency)}
+\item{ts.obj}{a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)}
 
 \item{type}{The type of the seasonal plot - "normal" to split the series by year and "cycle" to split by cycle}
 
