@@ -1,6 +1,6 @@
 #'  Seasonality Visualization of Time Series Object
 #' @export
-#' @param ts.obj a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either daily, monthly or quarterly frequency)
+#' @param ts.obj a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)
 #' @param type The type of the seasonal plot - "normal" to split the series by year and "cycle" to split by cycle
 #' @param Ygrid logic,show the Y axis grid if set to TRUE
 #' @param Xgrid logic,show the X axis grid if set to TRUE
