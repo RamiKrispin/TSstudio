@@ -25,12 +25,14 @@ seasonal_ly <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE) {
       warning("The \"ts.obj\" has multiple columns, only the first column will be plot")
       ts.obj <- ts.obj[, 1]
     }
-    df <- data.frame(dec_left = floor(stats::time(ts.obj)), 
+    df <- base::data.frame(dec_left = floor(stats::time(ts.obj)), 
                      dec_right = stats::cycle(ts.obj), value = base::as.numeric(ts.obj))
     if(stats::frequency(ts.obj) == 12){
-      df$dec_right <- month.abb[as.numeric(df$dec_right)]
+      df$dec_right <- base::factor(df$dec_right,
+                             levels = base::unique(df$dec_right),
+                             labels = base::month.abb[as.numeric(base::unique(df$dec_right))])
     } else if(stats::frequency(ts.obj) == 4){
-      df$dec_right <- paste("Qr.", df$dec_right, sep = " ")
+      df$dec_right <- base::paste("Qr.", df$dec_right, sep = " ")
     } else {
       stop("The frequency of the series is invalid, the function support only \"monthly\" or \"quarterly\" frequencies")
     }
@@ -43,13 +45,15 @@ seasonal_ly <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE) {
     }
     freq <- xts::periodicity(ts.obj)[[6]]
     if (freq == "quarterly") {
-      df <- data.frame(dec_left = lubridate::year(ts.obj), 
+      df <- base::data.frame(dec_left = lubridate::year(ts.obj), 
                        dec_right = lubridate::quarter(ts.obj), 
                        value = as.numeric(ts.obj))
     } else if (freq == "monthly") {
-      df <- data.frame(dec_left = lubridate::year(ts.obj), 
+      df <- base::data.frame(dec_left = lubridate::year(ts.obj), 
                        dec_right = lubridate::month(ts.obj), value = as.numeric(ts.obj))
-      df$dec_right <- month.abb[as.numeric(df$dec_right)]
+      df$dec_right <- base::factor(df$dec_right,
+                                   levels = base::unique(df$dec_right),
+                                   labels = base::month.abb[as.numeric(base::unique(df$dec_right))])
     # } else if (freq == "weekly") {
     #   df <- data.frame(dec_left = lubridate::year(ts.obj), 
     #                    dec_right = lubridate::week(ts.obj), value = as.numeric(ts.obj))
@@ -61,7 +65,8 @@ seasonal_ly <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE) {
     }
     
   }
-  
+seasonal_sub <- function(df, type, Xgrid, Ygrid){  
+  p <- NULL
   if(type == "normal"){
     df_wide <- reshape2::dcast(df, dec_right ~ dec_left)
   } else if(type == "cycle"){
@@ -82,6 +87,9 @@ seasonal_ly <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE) {
                                          showgrid = Xgrid, 
                                          dtick = 1), 
                             yaxis = list(title = obj.name, showgrid = Ygrid))
-  
+}
+
+p <- seasonal_sub(df = df, type = type, Xgrid = Xgrid, Ygrid = Ygrid)
+
   return(p)
 }
