@@ -4,8 +4,9 @@
 \alias{ts.plot_ly}
 \title{Plotting Time Series Objects}
 \usage{
-ts.plot_ly(ts.obj, line.mode = "lines", width = 1, dash = NULL,
-  color = "blue", slider = FALSE, type = "multiple")
+ts.plot_ly(ts.obj, line.mode = "lines", width = 2, dash = NULL,
+  color = NULL, slider = FALSE, type = "multiple", Xtitle = NULL,
+  Ytitle = NULL, Xgrid = FALSE, Ygrid = FALSE)
 }
 \arguments{
 \item{ts.obj}{A univariate or multivariate time series object of class "ts", "mts", "zoo" or "xts"}
@@ -21,6 +22,14 @@ ts.plot_ly(ts.obj, line.mode = "lines", width = 1, dash = NULL,
 \item{slider}{Logic, add slider to modify the time axis (default set to FALSE)}
 
 \item{type}{Applicable for multiple time series object, plot on a separate plot or all together c("single, "multiple)}
+
+\item{Xtitle}{The X title, can assing an R color}
+
+\item{Ytitle}{The Y title, can assing an R color}
+
+\item{Xgrid}{logic,show the X axis grid if set to TRUE}
+
+\item{Ygrid}{logic,show the Y axis grid if set to TRUE}
 }
 \description{
 Visualization functions for time series object
