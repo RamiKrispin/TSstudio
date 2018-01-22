@@ -33,17 +33,17 @@ The TSstudio package provides a set of tools for time series descriptive analysi
 Below is the road map plan for Q1, where some of the functions are already available on the [CRAN] version or the development version on [Github] and the rest will be available on [ver. 0.1.1] hopefully by March 18: 
 
 * Seasonal plots of time series object, in order to identity seasonal pattern that includes:
-    + Plot a series on a range of a full cycle (i.e. by full year) [CRAN]
+    + Plot a series on a range of a full cycle (i.e. by full year) [CRAN + Github]
     + Plot a series over time by units of the cycle (i.e. plot separately each month over a time) [Github]
     + Polar plot by cycle [Github]
     + Box plot by cycle units (i.e. by months, quarters, etc.) [Github]
 
 * Correlation analysis plots:
-    + ACF and PACF plots [CRAN]
-    + Lags plot [ver. 0.1.1]
+    + ACF and PACF plots [CRAN + Github]
+    + Lags plot [Github]
 
 * Forecasting tools:
-    + Performance plot of the forecasted and fitted values vs. the actuals [CRAN]
+    + Performance plot of the forecasted and fitted values vs. the actuals [CRAN + Github]
     + Split function for training and testing partitions [Github]
     + Plot of the forecasted object with confidence intervals [ver. 0.1.1]  
 
