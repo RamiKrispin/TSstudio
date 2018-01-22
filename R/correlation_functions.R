@@ -110,7 +110,7 @@ df <- df[base::order(df$dec_left, df$dec_right),]
 # -------------- Creating the plot --------------
 for(g in 1:max.lags){
   if(g == 1){
-    lag <- c(NA, ts.df$value[- nrow(df)]) 
+    lag <- c(NA, df$value[- nrow(df)]) 
   } else {
     lag <- c(NA,lag[-nrow(df)])
   }
