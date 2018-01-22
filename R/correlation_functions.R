@@ -1,7 +1,7 @@
 #'  Time Series Lag Visualization
 #' @export
 #' @param ts.obj A univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)
-#' @param max.lags An integer, number of lags to plot
+#' @param lag.max An integer, number of lags to plot
 #' @param Xshare Plotly parameter, should the x-axis be shared amongst the subplots?
 #' @param Yshare Plotly parameter, should the y-axis be shared amongst the subplots?
 #' @param Xtitle Plotly parameter, should x-axis titles be retained?
@@ -17,22 +17,22 @@
 #' # Seasonal box plot
 #' ts_lags(AirPassengers) 
 
-ts_lags <- function(ts.obj, max.lags = 12, Xtitle = FALSE, Ytitle = TRUE, margin = 0.02, 
+ts_lags <- function(ts.obj, lag.max = 12, Xtitle = FALSE, Ytitle = TRUE, margin = 0.02, 
                     Xshare = TRUE, Yshare = TRUE){
 `%>%` <- magrittr::`%>%`
 df <- df_wide <- p <- obj.name <- lag <- lag_plots <- NULL
 
 obj.name <- base::deparse(base::substitute(ts.obj))
 # --------------Error handling --------------
-if(!is.numeric(max.lags)){
-  warning("The 'max.lags' parameter is not valid, using the defualt setting (max.lags = 12)")
-  max.lags <- 12
-} else if(max.lags == 0){
-  warning("The 'max.lags' parameter is not valid, using the defualt setting (max.lags = 12)")
-  max.lags <- 12
-} else if(round(max.lags) != max.lags){
-  warning("The 'max.lags' parameter is not valid, using the defualt setting (max.lags = 12)")
-  max.lags <- 12
+if(!is.numeric(lag.max)){
+  warning("The 'lag.max' parameter is not valid, using the defualt setting (lag.max = 12)")
+  lag.max <- 12
+} else if(lag.max == 0){
+  warning("The 'lag.max' parameter is not valid, using the defualt setting (lag.max = 12)")
+  lag.max <- 12
+} else if(round(lag.max) != lag.max){
+  warning("The 'lag.max' parameter is not valid, using the defualt setting (lag.max = 12)")
+  lag.max <- 12
 }
 
 if(!is.numeric(margin)){
@@ -108,7 +108,7 @@ if (stats::is.ts(ts.obj)) {
 df <- df[base::order(df$dec_left, df$dec_right),]
 
 # -------------- Creating the plot --------------
-for(g in 1:max.lags){
+for(g in 1:lag.max){
   if(g == 1){
     lag <- c(NA, df$value[- nrow(df)]) 
   } else {
