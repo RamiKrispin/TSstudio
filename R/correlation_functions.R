@@ -11,6 +11,7 @@
 #' the second is used as the right margin, the third is used as the top margin, 
 #' and the fourth is used as the bottom margin. 
 #' If a single value is provided, it will be used as all four margins.
+#' @param n_row An integer, define the number of plots per row
 #' @description Visualization of series with its lags, 
 #' can be used to identify a correlation between the series and it lags
 #' @examples
@@ -18,7 +19,7 @@
 #' ts_lags(AirPassengers) 
 
 ts_lags <- function(ts.obj, lag.max = 12, Xtitle = FALSE, Ytitle = TRUE, margin = 0.02, 
-                    Xshare = TRUE, Yshare = TRUE){
+                    Xshare = TRUE, Yshare = TRUE, n_row = 3){
 `%>%` <- magrittr::`%>%`
 df <- df_wide <- p <- obj.name <- lag <- lag_plots <- NULL
 
@@ -136,7 +137,7 @@ for(g in 1:lag.max){
 p <- plotly::subplot(lag_plots, 
               titleX = FALSE, titleY = TRUE, margin = 0.02, 
               shareX = TRUE, shareY = TRUE,
-              nrows = ceiling(length(lag_plots) / 3))%>% 
+              nrows = ceiling(length(lag_plots) / n_row))%>% 
   plotly::hide_legend()
 
 # -------------- End --------------
