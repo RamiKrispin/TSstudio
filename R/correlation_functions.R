@@ -135,8 +135,8 @@ for(g in 1:lag.max){
 }
 
 p <- plotly::subplot(lag_plots, 
-              titleX = FALSE, titleY = TRUE, margin = 0.02, 
-              shareX = TRUE, shareY = TRUE,
+              titleX = Xtitle, titleY = Ytitle, margin = margin, 
+              shareX = Xshare, shareY = Yshare,
               nrows = ceiling(length(lag_plots) / n_row))%>% 
   plotly::hide_legend()
 
