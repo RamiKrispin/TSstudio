@@ -151,4 +151,85 @@ ts_split <- function(ts.obj, sample.out = NULL){
 
 
 
+#'  Transform Time Series Object to Data Frame Format
+#' @export
+#' @param ts.obj a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)
+#' @param type The reshape type - 
+#' "wide" set the years as the columns and the cycle units (months or quarter) as the rows, or
+#' "long" split the time object to year, cycle unit and value
+#' @description Transform time series object into 
+#' @examples
 
+reshape_ts <- function(ts.obj, type = "wide"){
+  
+  `%>%` <- magrittr::`%>%`
+  df <- df_table <- freq <-  freq_name <-NULL
+  
+  obj.name <- base::deparse(base::substitute(ts.obj))
+  # --------------Error handling --------------
+  if(!type %in% c("long", "wide")){
+    warning("The 'type' parameter is not valid, using the default option - 'wide'")
+    type <- "wide"
+  }
+  
+  if (stats::is.ts(ts.obj)) {
+    if (stats::is.mts(ts.obj)) {
+      warning("The 'ts.obj' has multiple columns, only the first column will be plot")
+      ts.obj <- ts.obj[, 1]
+    }
+    df <- base::data.frame(dec_left = floor(stats::time(ts.obj)), 
+                           dec_right = stats::cycle(ts.obj), 
+                           value = base::as.numeric(ts.obj))
+    if(stats::frequency(ts.obj) == 4){
+      freq_name <- "quarter"
+    } else if(stats::frequency(ts.obj) == 12){
+      freq_name <- "month"
+    }else {
+      stop("The frequency of the series is invalid, ",
+           "the function support only 'monthly' or 'quarterly' frequencies")
+    }
+  } else if (xts::is.xts(ts.obj) | zoo::is.zoo(ts.obj)) {
+    if (!is.null(base::dim(ts.obj))) {
+      if (base::dim(ts.obj)[2] > 1) {
+        warning("The 'ts.obj' has multiple columns, only the first column will be plot")
+        ts.obj <- ts.obj[, 1]
+      }
+    }
+    freq <- xts::periodicity(ts.obj)[[6]]
+    if (freq == "quarterly") {
+      df <- base::data.frame(dec_left = lubridate::year(ts.obj), 
+                             dec_right = lubridate::quarter(ts.obj), 
+                             value = as.numeric(ts.obj))
+      freq_name <- "quarter"
+    } else if (freq == "monthly") {
+      df <- base::data.frame(dec_left = lubridate::year(ts.obj), 
+                             dec_right = lubridate::month(ts.obj), 
+                             value = as.numeric(ts.obj))
+      freq_name <- "month"
+    } else if (freq == "weekly") {
+      df <- data.frame(dec_left = lubridate::year(ts.obj),
+                       dec_right = lubridate::week(ts.obj), value = as.numeric(ts.obj))
+      freq_name <- "week"
+    } else if (freq == "daily") {
+      df <- data.frame(dec_left = lubridate::month(ts.obj),
+                       dec_right = lubridate::day(ts.obj), value = as.numeric(ts.obj))
+      freq_name <- "day"
+    } else if (!freq %in% c("daily", "weekly", "monthly", "quarterly")) {
+      stop("The frequency of the series is invalid,",
+           "the function support only 'daily', 'weekly', 'monthly' or 'quarterly' frequencies")
+    }
+    
+  }
+  # -------------- Setting the table for long or wide format --------------
+  if(type == "long"){
+    df_table <- df[base::order(df$dec_left, df$dec_right),]
+    names(df_table)[1] <- "year"
+    names(df_table)[2] <- freq_name
+  } else if(type == "wide"){
+    df_table <- reshape2::dcast(df, dec_right ~ dec_left)
+    names(df_table)[1] <- freq_name
+  }
+  
+  # -------------- Function end --------------
+  return(df_table)
+}
