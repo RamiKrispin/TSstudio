@@ -157,8 +157,11 @@ ts_split <- function(ts.obj, sample.out = NULL){
 #' @param type The reshape type - 
 #' "wide" set the years as the columns and the cycle units (months or quarter) as the rows, or
 #' "long" split the time object to year, cycle unit and value
-#' @description Transform time series object into 
+#' @description Transform time series object into data frame format
 #' @examples
+#' 
+#' data(USgas)
+#' USgas_df <- reshape_ts(USgas)
 
 reshape_ts <- function(ts.obj, type = "wide"){
   
