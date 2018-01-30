@@ -13,7 +13,7 @@ seasonal_ly(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE)
 "normal" to split the series by full cycle units, or
 "cycle" to split by cycle units, or
 "box" for box-plot by cycle units, or
-"polar"  for polar plot}
+"all" for all the three plots together}
 
 \item{Ygrid}{logic,show the Y axis grid if set to TRUE}
 
@@ -23,8 +23,9 @@ seasonal_ly(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE)
 Visualize time series object by it periodicity, currently support only monthly and quarterly frequency
 }
 \examples{
+data(USgas)
+seasonal_ly(USgas)
+
 # Seasonal box plot
-seasonal_ly(AirPassengers, type = "box") 
-# Seasonal polar plot
-seasonal_ly(AirPassengers, type = "polar") 
+seasonal_ly(USgas, type = "box") 
 }

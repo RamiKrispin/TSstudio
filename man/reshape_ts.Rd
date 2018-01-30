@@ -14,5 +14,10 @@ reshape_ts(ts.obj, type = "wide")
 "long" split the time object to year, cycle unit and value}
 }
 \description{
-Transform time series object into
+Transform time series object into data frame format
+}
+\examples{
+
+data(USgas)
+USgas_df <- reshape_ts(USgas)
 }

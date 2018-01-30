@@ -5,15 +5,17 @@
 #' "normal" to split the series by full cycle units, or
 #' "cycle" to split by cycle units, or
 #' "box" for box-plot by cycle units, or
-#' "polar"  for polar plot
+#' "all" for all the three plots together
 #' @param Ygrid logic,show the Y axis grid if set to TRUE
 #' @param Xgrid logic,show the X axis grid if set to TRUE
 #' @description Visualize time series object by it periodicity, currently support only monthly and quarterly frequency
 #' @examples
+#' data(USgas)
+#' seasonal_ly(USgas)
+#' 
 #' # Seasonal box plot
-#' seasonal_ly(AirPassengers, type = "box") 
-#' # Seasonal polar plot
-#' seasonal_ly(AirPassengers, type = "polar") 
+#' seasonal_ly(USgas, type = "box") 
+
 
 seasonal_ly <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE) {
   
@@ -23,7 +25,7 @@ seasonal_ly <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE) {
   obj.name <- base::deparse(base::substitute(ts.obj))
   # Error handling
   if(type != "normal" & type != "cycle" & 
-     type != "box" & type != "polar"){
+     type != "box" & type != "all" ){
     type <- "normal"
     warning("The 'type' parameter is invalide,", 
             "using the default option - 'normal'")
@@ -94,20 +96,6 @@ seasonal_sub <- function(df, type, Xgrid, Ygrid){
                                  pointpos = -1.8
                                  )
       }
-  } else if(type == "polar"){
-    p <- plotly::plot_ly(r = df$value, t = df$dec_right) %>% 
-      plotly::add_area(color = factor(df$dec_left, ordered = TRUE)) %>%
-      plotly::layout(orientation = -90, 
-                     autosize = T, 
-                     # width = 600, 
-                     # height = 600, 
-                     margin = list(
-                       l = 50,
-                       r = 50,
-                       b = 100,
-                       t = 100,
-                       pad = 4
-                     ))
   } else{
   for (f in 2:ncol(df_wide)) {
     p <- p %>% plotly::add_trace(x = df_wide[, 1], y = df_wide[, f], 
@@ -125,7 +113,110 @@ seasonal_sub <- function(df, type, Xgrid, Ygrid){
   return(p)
 }
 
+if(type != "all"){
 p <- seasonal_sub(df = df, type = type, Xgrid = Xgrid, Ygrid = Ygrid)
+} else {
+  n <- c <- b <- NULL
+  n <- seasonal_sub(df = df, type = "normal", Xgrid = Xgrid, Ygrid = Ygrid)
+  c <- seasonal_sub(df = df, type = "cycle", Xgrid = Xgrid, Ygrid = Ygrid)
+  b <- seasonal_sub(df = df, type = "box", Xgrid = Xgrid, Ygrid = Ygrid)
+  p <- plotly::subplot(n,c,b, nrows = 3) %>% plotly::hide_legend()
+}
+  return(p)
+}
 
+
+#'  Polor Plot for Time Series Object
+#' @export
+#' @param ts.obj a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)
+#' @param type The type of the seasonal plot - 
+#' "normal" to split the series by full cycle units, or
+#' "cycle" to split by cycle units, or
+#' "box" for box-plot by cycle units, or
+#' "polar"  for polar plot
+#' @param width the widht of the plot in pixels, default set to 600
+#' @param height the height of the plot pixels, default set to 600
+#' @description Polor plot for time series object (ts, zoo, xts), currently support only monthly and quarterly frequency
+#' @examples
+#' data(USgas)
+#' ts_polar(USgas)
+
+ts_polar <- function(ts.obj, title = NULL, width = 600, height = 600, 
+                     left = 25, right = 25, top = 25, bottom = 25) {
+  
+  `%>%` <- magrittr::`%>%`
+  df <- df_wide <- p <- obj.name <-  NULL
+  
+  obj.name <- base::deparse(base::substitute(ts.obj))
+  # Error handling
+  if(is.null(title)){
+    title <- paste("Polar Plot -", obj.name)
+  } else if(!is.character(title)){
+    title <- paste("Polar Plot -", obj.name)
+    warning("The 'title' value is not valid, using the default title")
+  }
+  
+  if (stats::is.ts(ts.obj)) {
+    if (stats::is.mts(ts.obj)) {
+      warning("The 'ts.obj' has multiple columns, only the first column will be plot")
+      ts.obj <- ts.obj[, 1]
+    }
+    df <- base::data.frame(dec_left = floor(stats::time(ts.obj)), 
+                           dec_right = stats::cycle(ts.obj), value = base::as.numeric(ts.obj))
+    if(stats::frequency(ts.obj) == 12){
+      df$dec_right <- base::factor(df$dec_right,
+                                   levels = base::unique(df$dec_right),
+                                   labels = base::month.abb[as.numeric(base::unique(df$dec_right))])
+    } else if(stats::frequency(ts.obj) == 4){
+      df$dec_right <- base::paste("Qr.", df$dec_right, sep = " ")
+    } else {
+      stop("The frequency of the series is invalid, ",
+           "the function support only 'monthly' or 'quarterly' frequencies")
+    }
+  } else if (xts::is.xts(ts.obj) | zoo::is.zoo(ts.obj)) {
+    if (!is.null(base::dim(ts.obj))) {
+      if (base::dim(ts.obj)[2] > 1) {
+        warning("The 'ts.obj' has multiple columns, only the first column will be plot")
+        ts.obj <- ts.obj[, 1]
+      }
+    }
+    freq <- xts::periodicity(ts.obj)[[6]]
+    if (freq == "quarterly") {
+      df <- base::data.frame(dec_left = lubridate::year(ts.obj), 
+                             dec_right = lubridate::quarter(ts.obj), 
+                             value = as.numeric(ts.obj))
+    } else if (freq == "monthly") {
+      df <- base::data.frame(dec_left = lubridate::year(ts.obj), 
+                             dec_right = lubridate::month(ts.obj), value = as.numeric(ts.obj))
+      df$dec_right <- base::factor(df$dec_right,
+                                   levels = base::unique(df$dec_right),
+                                   labels = base::month.abb[as.numeric(base::unique(df$dec_right))])
+      # } else if (freq == "weekly") {
+      #   df <- data.frame(dec_left = lubridate::year(ts.obj), 
+      #                    dec_right = lubridate::week(ts.obj), value = as.numeric(ts.obj))
+      # } else if (freq == "daily") {
+      #   df <- data.frame(dec_left = lubridate::month(ts.obj), 
+      #                    dec_right = lubridate::day(ts.obj), value = as.numeric(ts.obj))
+    } else if (freq != "quarterly" & freq != "monthly") {
+      stop("The frequency of the series is invalid,",
+           "the function support only 'monthly' or 'quarterly' frequencies")
+    }
+    
+  }
+  
+  p <- plotly::plot_ly(r = df$value, t = df$dec_right, 
+                       width = width, height = height) %>% 
+    plotly::add_area(color = factor(df$dec_left, ordered = TRUE)) %>%
+    plotly::layout(orientation = -90, 
+                   autosize = T,
+                   title = title,
+                   margin = list(
+                     l = left,
+                     r = right,
+                     b = bottom,
+                     t = top,
+                     pad = 4
+                   ))
+  
   return(p)
 }

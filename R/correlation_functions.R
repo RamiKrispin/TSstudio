@@ -121,11 +121,11 @@ for(g in 1:lag.max){
                             mode = "markers",
                             name = paste("Lag", g, sep = " ")) %>%
     plotly::layout(xaxis = list(title = paste("Lag", g, sep = " "),
-                        range = c( min(na.omit(as.numeric(lag))),  
-                                   max(na.omit(as.numeric(lag))))),
+                        range = c( base::min(stats::na.omit(as.numeric(lag))),  
+                                   base::max(stats::na.omit(as.numeric(lag))))),
            yaxis = list(title = paste("Series", sep = ""),
-                        range = c( min(na.omit(as.numeric(df$value))),  
-                                   max(na.omit(as.numeric(df$value))))),
+                        range = c( base::min(stats::na.omit(as.numeric(df$value))),  
+                                   base::max(stats::na.omit(as.numeric(df$value))))),
            title = paste("Series vs Lags", sep = " "),
            annotations = list(text = paste("Lag", g, sep = " "), 
                               xref = "paper", yref = "paper", yanchor = "bottom", 
@@ -218,8 +218,8 @@ acf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95) {
                                                                    dash = "dash", color = "green")) %>% 
             plotly::layout(xaxis = list(title = "Lag", 
                                         showgrid = FALSE), yaxis = list(title = "ACF", 
-                                                                        showgrid = FALSE, range = c(min(x[[1]]), 
-                                                                                                    max(x[[1]]))), annotations = list(text = c, 
+                                                                        showgrid = FALSE, range = c(base::min(x[[1]]), 
+                                                                                                    base::max(x[[1]]))), annotations = list(text = c, 
                                                                                                                                       xref = "paper", yref = "paper", yanchor = "bottom", 
                                                                                                                                       xanchor = "center", align = "center", 
                                                                                                                                       x = 0.5, y = 0.9, showarrow = FALSE))
@@ -238,8 +238,8 @@ acf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95) {
                                                                    dash = "dash", color = "green")) %>% 
             plotly::layout(xaxis = list(title = "Lag", 
                                         showgrid = FALSE), yaxis = list(title = "ACF", 
-                                                                        showgrid = FALSE, range = c(min(x[[1]]), 
-                                                                                                    max(x[[1]]))), annotations = list(text = paste(r, 
+                                                                        showgrid = FALSE, range = c(base::min(x[[1]]), 
+                                                                                                    base::max(x[[1]]))), annotations = list(text = paste(r, 
                                                                                                                                                    c, sep = " & "), xref = "paper", yref = "paper", 
                                                                                                                                       yanchor = "bottom", xanchor = "center", 
                                                                                                                                       align = "center", x = 0.5, y = 0.9, 
@@ -344,8 +344,8 @@ pacf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95) {
                                                                    dash = "dash", color = "green")) %>% 
             plotly::layout(xaxis = list(title = "Lag", 
                                         showgrid = FALSE), yaxis = list(title = "PACF", 
-                                                                        showgrid = FALSE, range = c(min(x[[1]]), 
-                                                                                                    max(x[[1]]))), annotations = list(text = c, 
+                                                                        showgrid = FALSE, range = c(base::min(x[[1]]), 
+                                                                                                    base::max(x[[1]]))), annotations = list(text = c, 
                                                                                                                                       xref = "paper", yref = "paper", yanchor = "bottom", 
                                                                                                                                       xanchor = "center", align = "center", 
                                                                                                                                       x = 0.5, y = 0.9, showarrow = FALSE))
@@ -364,8 +364,8 @@ pacf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95) {
                                                                    dash = "dash", color = "green")) %>% 
             plotly::layout(xaxis = list(title = "Lag", 
                                         showgrid = FALSE), yaxis = list(title = "PACF", 
-                                                                        showgrid = FALSE, range = c(min(x[[1]]), 
-                                                                                                    max(x[[1]]))), annotations = list(text = paste(r, 
+                                                                        showgrid = FALSE, range = c(base::min(x[[1]]), 
+                                                                                                    base::max(x[[1]]))), annotations = list(text = paste(r, 
                                                                                                                                                    c, sep = " & "), xref = "paper", yref = "paper", 
                                                                                                                                       yanchor = "bottom", xanchor = "center", 
                                                                                                                                       align = "center", x = 0.5, y = 0.9, 
