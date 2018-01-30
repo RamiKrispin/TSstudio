@@ -24,8 +24,8 @@ Visualize time series object by it periodicity, currently support only monthly a
 }
 \examples{
 data(USgas)
-seasonal_ly(USgas)
+ts_seasonal(USgas)
 
 # Seasonal box plot
-seasonal_ly(USgas, type = "box") 
+ts_seasonal(USgas, type = "box") 
 }
