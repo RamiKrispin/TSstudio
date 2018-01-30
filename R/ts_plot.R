@@ -1,5 +1,6 @@
 #'  Plotting Time Series Objects
-#' @export
+#' @export ts_plot ts.plot_ly
+#' @aliases  ts.plot_ly
 #' @description Visualization functions for time series object
 #' @param ts.obj A univariate or multivariate time series object of class "ts", "mts", "zoo" or "xts"
 #' @param line.mode A plotly argument, define the plot type, c("lines", "lines+markers", "markers")
@@ -13,10 +14,13 @@
 #' @param Ygrid logic,show the Y axis grid if set to TRUE
 #' @param Xgrid logic,show the X axis grid if set to TRUE
 #' @examples
-#' ts.plot_ly(AirPassengers)
+#' data(USVSales)
+#' ts_plot(USVSales)
+#' 
+#' # adding slider
+#' ts_plot(USVSales, slider = TRUE)
 
-
-ts.plot_ly <- function(ts.obj, line.mode = "lines", width = 2, 
+ts_plot <- function(ts.obj, line.mode = "lines", width = 2, 
                       dash = NULL, color = NULL, 
                       slider = FALSE, type = "multiple",
                       Xtitle = NULL, Ytitle = NULL,
@@ -193,4 +197,17 @@ ts.plot_ly <- function(ts.obj, line.mode = "lines", width = 2,
   } else{
     return(p)
   }
+}
+
+ts.plot_ly <- function(ts.obj, line.mode = "lines", width = 2, 
+                       dash = NULL, color = NULL, 
+                       slider = FALSE, type = "multiple",
+                       Xtitle = NULL, Ytitle = NULL,
+                       Xgrid = FALSE, Ygrid = FALSE){
+  .Deprecated("ts_plot") 
+  ts_plot(ts.obj, line.mode = "lines", width = 2, 
+          dash = NULL, color = NULL, 
+          slider = FALSE, type = "multiple",
+          Xtitle = NULL, Ytitle = NULL,
+          Xgrid = FALSE, Ygrid = FALSE)
 }
