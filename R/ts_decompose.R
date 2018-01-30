@@ -6,15 +6,15 @@
 #' @description Interactive visualization the trend, seasonal and random components of a time series based on the decompose function from the stats package.
 #' @examples
 #' # Defualt decompose plot
-#' decompose_ly(AirPassengers)
+#' ts_decompose(AirPassengers)
 #' 
 #' # Remove the sepration lines between the plot components
-#' decompose_ly(AirPassengers, showline = FALSE)
+#' ts_decompose(AirPassengers, showline = FALSE)
 #' 
 #' # Plot side by side a decompose of additive and multiplicative series
-#' decompose_ly(AirPassengers, type = "both")
+#' ts_decompose(AirPassengers, type = "both")
 #' 
-decompose_ly <- function(ts.obj, type = "additive", showline = TRUE){
+ts_decompose <- function(ts.obj, type = "additive", showline = TRUE){
 
   # Error handling
   # Test if the object is either ts, zoo or xts
