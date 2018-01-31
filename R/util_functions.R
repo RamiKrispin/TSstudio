@@ -161,9 +161,9 @@ ts_split <- function(ts.obj, sample.out = NULL){
 #' @examples
 #' 
 #' data(USgas)
-#' USgas_df <- reshape_ts(USgas)
+#' USgas_df <- ts_reshape(USgas)
 
-reshape_ts <- function(ts.obj, type = "wide"){
+ts_reshape <- function(ts.obj, type = "wide"){
   
   `%>%` <- magrittr::`%>%`
   df <- df_table <- freq <-  freq_name <-NULL
