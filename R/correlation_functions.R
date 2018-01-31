@@ -287,7 +287,7 @@ pacf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95) {
     stop("The time series object is NULL")
   } else if (!stats::is.ts(ts.obj) & !xts::is.xts(ts.obj) & 
              !zoo::is.zoo(ts.obj)) {
-    stop("Invalid class - Please make sure the object class is either \"ts\", \"mts\", \"xts\" or \"zoo\"")
+    stop("Invalid class - Please make sure the object class is either 'ts', 'mts', 'xts' or 'zoo'")
   }
   
   if (ci > 1 | ci < 0) {
