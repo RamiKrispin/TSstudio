@@ -266,3 +266,40 @@ ts_heatmap <- function(ts.obj) {
 }
 
 
+
+#' 3D Surface Plot for Time Series
+#' @export
+#' @param ts.obj a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)
+#' @description 3D surface plot for time series object by it periodicity (currently support only monthly and quarterly frequency)
+#' @examples
+#' ts_surface(USgas) 
+
+ts_surface <- function(ts.obj) {
+  
+  `%>%` <- magrittr::`%>%`
+  df <-  p <- obj.name <-  NULL
+  
+  obj.name <- base::deparse(base::substitute(ts.obj))
+  df <- TSstudio::ts_reshape(ts.obj, type = "wide")
+  z <- base::as.matrix(df[, -1])
+  z_text <- base::matrix(NA, nrow = nrow(z), ncol = ncol(z))
+  time_unit <- base::trimws(base::names(df)[1])
+  time_unit_up <- base::paste(base::toupper(base::substr(time_unit, 1, 1)), 
+                              base::substr(time_unit,2, base::nchar(time_unit)), sep = "")
+  for(c in 1:base::ncol(z_text)){
+    for(r in 1:base::nrow(z_text)){
+      z_text[r, c] <- base::paste('Value: ', z[r,c],
+                                  '<br> Year : ', base::colnames(z)[c],
+                                  '<br>' ,time_unit_up, ' :', r, sep = " ")
+    }
+  }
+  p <- plotly::plot_ly(z = z, x = colnames(df[,-1]), y = df[,1],
+                       hoverinfo = 'text',
+                       text = z_text
+  ) %>%
+    plotly::add_surface()
+  
+  
+  return(p)
+}
+
