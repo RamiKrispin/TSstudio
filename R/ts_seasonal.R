@@ -1,5 +1,5 @@
 #'  Seasonality Visualization of Time Series Object
-#' @export ts_seasonal seasonal_ly
+#' @export ts_seasonal
 #' @aliases seasonal_ly
 #' @param ts.obj a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)
 #' @param type The type of the seasonal plot - 
