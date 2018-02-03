@@ -259,6 +259,8 @@ ts_heatmap <- function(ts.obj) {
   p <- plotly::plot_ly(z = z, x = colnames(df[,-1]), y = df[,1], type = "heatmap",
                        hoverinfo = 'text',
                        text = z_text
+  ) %>% plotly::layout(
+    title = base::paste("Heatmap -", obj.name, sep = " ")
   )
   
   
@@ -297,7 +299,13 @@ ts_surface <- function(ts.obj) {
                        hoverinfo = 'text',
                        text = z_text
   ) %>%
-    plotly::add_surface()
+    plotly::add_surface() %>% plotly::layout(
+      title = base::paste("Surface Plot -", obj.name, sep = " "),
+      scene = list(xaxis = list(title = "Years"),
+                   yaxis= list(title = time_unit_up),
+                   zaxis= list(title = "Value")
+                   )
+    )
   
   
   return(p)
