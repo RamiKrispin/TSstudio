@@ -143,6 +143,10 @@ p <- seasonal_sub(df = df, type = type, Xgrid = Xgrid, Ygrid = Ygrid)
 #' "polar"  for polar plot
 #' @param width the widht of the plot in pixels, default set to 600
 #' @param height the height of the plot pixels, default set to 600
+#' @param left Set the left margin of the plot in pixels, default set to 25 
+#' @param right Set the right margin of the plot in pixels, default set to 25
+#' @param top Set the top margin of the plot in pixels, default set to 25
+#' @param bottom Set the bottom margin of the plot in pixels, default set to 25
 #' @description Polor plot for time series object (ts, zoo, xts), currently support only monthly and quarterly frequency
 #' @examples
 #' data(USgas)
