@@ -8,17 +8,21 @@ ts_polar(ts.obj, title = NULL, width = 600, height = 600, left = 25,
   right = 25, top = 25, bottom = 25)
 }
 \arguments{
-\item{ts.obj}{a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)}
+\item{ts.obj}{A univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)}
 
-\item{width}{the widht of the plot in pixels, default set to 600}
+\item{title}{Add a title for the plot, default set to NULL}
 
-\item{height}{the height of the plot pixels, default set to 600}
+\item{width}{The widht of the plot in pixels, default set to 600}
 
-\item{type}{The type of the seasonal plot - 
-"normal" to split the series by full cycle units, or
-"cycle" to split by cycle units, or
-"box" for box-plot by cycle units, or
-"polar"  for polar plot}
+\item{height}{The height of the plot pixels, default set to 600}
+
+\item{left}{Set the left margin of the plot in pixels, default set to 25}
+
+\item{right}{Set the right margin of the plot in pixels, default set to 25}
+
+\item{top}{Set the top margin of the plot in pixels, default set to 25}
+
+\item{bottom}{Set the bottom margin of the plot in pixels, default set to 25}
 }
 \description{
 Polor plot for time series object (ts, zoo, xts), currently support only monthly and quarterly frequency
