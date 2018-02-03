@@ -124,10 +124,10 @@ if(type != "all"){
 p <- seasonal_sub(df = df, type = type, Xgrid = Xgrid, Ygrid = Ygrid)
 } else {
   n <- c <- b <- NULL
-  n <- seasonal_sub(df = df, type = "normal", Xgrid = Xgrid, Ygrid = Ygrid)
-  c <- seasonal_sub(df = df, type = "cycle", Xgrid = Xgrid, Ygrid = Ygrid)
-  b <- seasonal_sub(df = df, type = "box", Xgrid = Xgrid, Ygrid = Ygrid)
-  p <- plotly::subplot(n,c,b, nrows = 3) %>% plotly::hide_legend()
+  n <- seasonal_sub(df = df, type = "normal", Xgrid = Xgrid, Ygrid = Ygrid) %>% plotly::layout(yaxis = list(title = "By Year"))
+  c <- seasonal_sub(df = df, type = "cycle", Xgrid = Xgrid, Ygrid = Ygrid) %>% plotly::layout(yaxis = list(title = "By Month"))
+  b <- seasonal_sub(df = df, type = "box", Xgrid = Xgrid, Ygrid = Ygrid) %>% plotly::layout(yaxis = list(title = "By Month"))
+  p <- plotly::subplot(n,c,b, nrows = 3, titleY = T) %>% plotly::hide_legend()
 }
   return(p)
 }
