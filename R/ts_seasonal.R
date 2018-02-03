@@ -260,7 +260,9 @@ ts_heatmap <- function(ts.obj) {
                        hoverinfo = 'text',
                        text = z_text
   ) %>% plotly::layout(
-    title = base::paste("Heatmap -", obj.name, sep = " ")
+    title = base::paste("Heatmap -", obj.name, sep = " "),
+    xaxis = list(title = "Year"),
+    yaxis = list(title = time_unit_up)
   )
   
   
