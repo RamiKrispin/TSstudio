@@ -135,14 +135,10 @@ p <- seasonal_sub(df = df, type = type, Xgrid = Xgrid, Ygrid = Ygrid)
 
 #'  Polor Plot for Time Series Object
 #' @export
-#' @param ts.obj a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)
-#' @param type The type of the seasonal plot - 
-#' "normal" to split the series by full cycle units, or
-#' "cycle" to split by cycle units, or
-#' "box" for box-plot by cycle units, or
-#' "polar"  for polar plot
-#' @param width the widht of the plot in pixels, default set to 600
-#' @param height the height of the plot pixels, default set to 600
+#' @param ts.obj A univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)
+#' @param title Add a title for the plot, default set to NULL
+#' @param width The widht of the plot in pixels, default set to 600
+#' @param height The height of the plot pixels, default set to 600
 #' @param left Set the left margin of the plot in pixels, default set to 25 
 #' @param right Set the right margin of the plot in pixels, default set to 25
 #' @param top Set the top margin of the plot in pixels, default set to 25
