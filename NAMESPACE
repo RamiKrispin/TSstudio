@@ -3,6 +3,7 @@
 export(acf_ly)
 export(fortest_ly)
 export(pacf_ly)
+export(seasonal_ly)
 export(ts.plot_ly)
 export(ts_decompose)
 export(ts_heatmap)
