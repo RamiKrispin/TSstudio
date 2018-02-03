@@ -130,7 +130,7 @@ p <- seasonal_sub(df = df, type = type, Xgrid = Xgrid, Ygrid = Ygrid)
 
 seasonal_ly <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE) {
   .Deprecated("ts_seasonal")
-  ts_seasonal(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE)
+  ts_seasonal(ts.obj, type = type, Ygrid = Ygrid, Xgrid = Xgrid)
 }
 
 
