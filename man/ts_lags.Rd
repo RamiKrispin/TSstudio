@@ -33,6 +33,7 @@ Visualization of series with its lags,
 can be used to identify a correlation between the series and it lags
 }
 \examples{
-# Seasonal box plot
-ts_lags(AirPassengers) 
+data(USgas)
+
+ts_lags(USgas) 
 }

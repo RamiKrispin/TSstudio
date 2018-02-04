@@ -15,8 +15,9 @@
 #' @description Visualization of series with its lags, 
 #' can be used to identify a correlation between the series and it lags
 #' @examples
-#' # Seasonal box plot
-#' ts_lags(AirPassengers) 
+#' data(USgas)
+#' 
+#' ts_lags(USgas) 
 
 ts_lags <- function(ts.obj, lag.max = 12, Xtitle = FALSE, Ytitle = TRUE, margin = 0.02, 
                     Xshare = TRUE, Yshare = TRUE, n_row = 3){
@@ -146,15 +147,18 @@ return(p)
 }
 
 #'  A Visualization Function of the ACF Estimation
-#' @export
+#' @export acf_ly ts_acf
+#' @aliases acf_ly
 #' @param ts.obj a univariate or multivariate time series object of class "ts", "mts", "zoo" or "xts"
 #' @param lag.max maximum lag at which to calculate the acf. Default is 10*log10(N/m) where N is the number of observations and m the number of series. Will be automatically limited to one less than the number of observations in the series.
 #' @param ci the significant level of the estimation - a numeric value between 0 and 1, default is set for 0.95 
 #' @examples
-#' acf_ly(AirPassengers, lag.max = 60)
+#' data(USgas)
+#' 
+#' ts_acf(USgas, lag.max = 60)
 
 
-acf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95) {
+ts_acf <- function(ts.obj, lag.max = NULL, ci = 0.95) {
   `%>%` <- magrittr::`%>%`
   # Error handling
   if (is.null(ts.obj)) {
@@ -270,17 +274,23 @@ acf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95) {
   }
 
 
+acf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95) {
+  .Deprecated("ts_acf")
+  ts_acf(ts.obj, lag.max = lag.max, ci = ci)
+}
 
 #'  A Visualization Function of the PACF Estimation
-#' @export
+#' @export pacf_ly ts_pacf
+#' @aliases pacf_ly
 #' @param ts.obj a univariate or multivariate time series object of class "ts", "mts", "zoo" or "xts"
 #' @param lag.max maximum lag at which to calculate the acf. Default is 10*log10(N/m) where N is the number of observations and m the number of series. Will be automatically limited to one less than the number of observations in the series.
 #' @param ci the significant level of the estimation - a numeric value between 0 and 1, default is set for 0.95 
 #' @examples
-#' pacf_ly(AirPassengers, lag.max = 60)
+#' data(USgas)
+#' 
+#' ts_pacf(USgas, lag.max = 60)
 
-
-pacf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95) {
+ts_pacf <- function(ts.obj, lag.max = NULL, ci = 0.95) {
   `%>%` <- magrittr::`%>%`
   # Error handling
   if (is.null(ts.obj)) {
@@ -394,3 +404,8 @@ pacf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95) {
   
   return(p)
   }
+
+pacf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95) {
+  .Deprecated("ts_pacf")
+  ts_acf(ts.obj, lag.max = lag.max, ci = ci)
+}
