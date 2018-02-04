@@ -3,6 +3,7 @@
 export(acf_ly)
 export(fortest_ly)
 export(pacf_ly)
+export(res_hist)
 export(seasonal_ly)
 export(test_forecast)
 export(ts.plot_ly)

@@ -150,7 +150,10 @@ return(p)
 #' @export acf_ly ts_acf
 #' @aliases acf_ly
 #' @param ts.obj a univariate or multivariate time series object of class "ts", "mts", "zoo" or "xts"
-#' @param lag.max maximum lag at which to calculate the acf. Default is 10*log10(N/m) where N is the number of observations and m the number of series. Will be automatically limited to one less than the number of observations in the series.
+#' @param lag.max maximum lag at which to calculate the acf. Default is 10*log10(N/m) 
+#' where N is the number of observations and m the number of series. 
+#' Will be automatically limited to one less than the number of observations in the series.
+#' @param color The color of the plot, support both name and expression
 #' @param ci the significant level of the estimation - a numeric value between 0 and 1, default is set for 0.95 
 #' @examples
 #' data(USgas)
@@ -158,7 +161,7 @@ return(p)
 #' ts_acf(USgas, lag.max = 60)
 
 
-ts_acf <- function(ts.obj, lag.max = NULL, ci = 0.95) {
+ts_acf <- function(ts.obj, lag.max = NULL, ci = 0.95, color = NULL) {
   `%>%` <- magrittr::`%>%`
   # Error handling
   if (is.null(ts.obj)) {
@@ -171,6 +174,14 @@ ts_acf <- function(ts.obj, lag.max = NULL, ci = 0.95) {
   if (ci > 1 | ci < 0) {
     warning("The 'ci' value is out of bound (0-1), the default option of 0.95 will be used")
     ci <- 0.95
+  }
+  if(!is.null(color)){
+    if(!is.character(color)){
+      warning("The value of the 'color' parameter is not valid")
+      color = "#00526d"
+    }
+  } else{
+    color = "#00526d"
   }
   
   x <- df <- obj.name <- NULL
@@ -257,7 +268,10 @@ ts_acf <- function(ts.obj, lag.max = NULL, ci = 0.95) {
       plotly::layout(title = "ACF Plot", margin = 0.06)
   } else if (ncol(df) == 5) {
     p <- plotly::plot_ly(data = df) %>% plotly::add_bars(x = ~lag, 
-                                                         y = ~acf, width = ~width, name = "ACF") %>% 
+                                                         y = ~acf, 
+                                                         width = ~width, 
+                                                         marker = list(color = color),
+                                                         name = "ACF") %>% 
       plotly::add_trace(x = ~lag, y = ~ci_u, type = "scatter", 
                         mode = "lines", name = "CI Upper Bound", 
                         line = list(width = 1, dash = "dash", color = "green")) %>% 
@@ -274,17 +288,21 @@ ts_acf <- function(ts.obj, lag.max = NULL, ci = 0.95) {
   }
 
 
-acf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95) {
+acf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95, color = NULL) {
   .Deprecated("ts_acf")
-  ts_acf(ts.obj, lag.max = lag.max, ci = ci)
+  ts_acf(ts.obj, lag.max = lag.max, ci = ci, color = color)
 }
 
 #'  A Visualization Function of the PACF Estimation
 #' @export pacf_ly ts_pacf
 #' @aliases pacf_ly
 #' @param ts.obj a univariate or multivariate time series object of class "ts", "mts", "zoo" or "xts"
-#' @param lag.max maximum lag at which to calculate the acf. Default is 10*log10(N/m) where N is the number of observations and m the number of series. Will be automatically limited to one less than the number of observations in the series.
-#' @param ci the significant level of the estimation - a numeric value between 0 and 1, default is set for 0.95 
+#' @param lag.max maximum lag at which to calculate the acf. Default is 10*log10(N/m) 
+#' where N is the number of observations and m the number of series. 
+#' Will be automatically limited to one less than the number of observations in the series.
+#' @param ci the significant level of the estimation - a numeric value between 0 and 1, 
+#' default is set for 0.95 
+#' @param color The color of the plot, support both name and expression
 #' @examples
 #' data(USgas)
 #' 
@@ -389,7 +407,10 @@ ts_pacf <- function(ts.obj, lag.max = NULL, ci = 0.95) {
       plotly::layout(title = "PACF Plot", margin = 0.06)
   } else if (ncol(df) == 5) {
     p <- plotly::plot_ly(data = df) %>% plotly::add_bars(x = ~lag, 
-                                                         y = ~acf, width = ~width, name = "ACF") %>% 
+                                                         y = ~acf, 
+                                                         width = ~width, 
+                                                         marker = list(color = color),
+                                                         name = "ACF") %>% 
       plotly::add_trace(x = ~lag, y = ~ci_u, type = "scatter", 
                         mode = "lines", name = "CI Upper Bound", 
                         line = list(width = 1, dash = "dash", color = "green")) %>% 
@@ -405,7 +426,7 @@ ts_pacf <- function(ts.obj, lag.max = NULL, ci = 0.95) {
   return(p)
   }
 
-pacf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95) {
+pacf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95, color = NULL) {
   .Deprecated("ts_pacf")
-  ts_acf(ts.obj, lag.max = lag.max, ci = ci)
+  ts_acf(ts.obj, lag.max = lag.max, ci = ci, color = color)
 }
