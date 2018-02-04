@@ -308,7 +308,7 @@ acf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95, color = NULL) {
 #' 
 #' ts_pacf(USgas, lag.max = 60)
 
-ts_pacf <- function(ts.obj, lag.max = NULL, ci = 0.95) {
+ts_pacf <- function(ts.obj, lag.max = NULL, ci = 0.95, color = NULL) {
   `%>%` <- magrittr::`%>%`
   # Error handling
   if (is.null(ts.obj)) {
@@ -322,7 +322,14 @@ ts_pacf <- function(ts.obj, lag.max = NULL, ci = 0.95) {
     warning("The 'ci' value is out of bound (0-1), the default option of 0.95 will be used")
     ci <- 0.95
   }
-  
+  if(!is.null(color)){
+    if(!is.character(color)){
+      warning("The value of the 'color' parameter is not valid")
+      color = "#00526d"
+    }
+  } else{
+    color = "#00526d"
+  }
   x <- df <- obj.name <- NULL
   
   obj.name <- base::deparse(base::substitute(ts.obj))
