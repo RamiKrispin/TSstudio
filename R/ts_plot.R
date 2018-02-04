@@ -9,10 +9,10 @@
 #' @param color The color of the plot, support both name and expression
 #' @param slider Logic, add slider to modify the time axis (default set to FALSE)
 #' @param type Applicable for multiple time series object, plot on a separate plot or all together c("single, "multiple) 
-#' @param Xtitle The X title, can assing an R color
-#' @param Ytitle The Y title, can assing an R color
-#' @param Ygrid logic,show the Y axis grid if set to TRUE
-#' @param Xgrid logic,show the X axis grid if set to TRUE
+#' @param Xtitle Set the X axis title, default set to NULL
+#' @param Ytitle Set the Y axis title, default set to NULL
+#' @param Ygrid Logic,show the Y axis grid if set to TRUE
+#' @param Xgrid Logic,show the X axis grid if set to TRUE
 #' @examples
 #' data(USVSales)
 #' ts_plot(USVSales)

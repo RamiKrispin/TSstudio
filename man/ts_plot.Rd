@@ -24,13 +24,13 @@ ts_plot(ts.obj, line.mode = "lines", width = 2, dash = NULL,
 
 \item{type}{Applicable for multiple time series object, plot on a separate plot or all together c("single, "multiple)}
 
-\item{Xtitle}{The X title, can assing an R color}
+\item{Xtitle}{Set the X axis title, default set to NULL}
 
-\item{Ytitle}{The Y title, can assing an R color}
+\item{Ytitle}{Set the Y axis title, default set to NULL}
 
-\item{Xgrid}{logic,show the X axis grid if set to TRUE}
+\item{Xgrid}{Logic,show the X axis grid if set to TRUE}
 
-\item{Ygrid}{logic,show the Y axis grid if set to TRUE}
+\item{Ygrid}{Logic,show the Y axis grid if set to TRUE}
 }
 \description{
 Visualization functions for time series object
