@@ -5,14 +5,18 @@
 \alias{acf_ly}
 \title{A Visualization Function of the ACF Estimation}
 \usage{
-ts_acf(ts.obj, lag.max = NULL, ci = 0.95)
+ts_acf(ts.obj, lag.max = NULL, ci = 0.95, color = NULL)
 }
 \arguments{
 \item{ts.obj}{a univariate or multivariate time series object of class "ts", "mts", "zoo" or "xts"}
 
-\item{lag.max}{maximum lag at which to calculate the acf. Default is 10*log10(N/m) where N is the number of observations and m the number of series. Will be automatically limited to one less than the number of observations in the series.}
+\item{lag.max}{maximum lag at which to calculate the acf. Default is 10*log10(N/m) 
+where N is the number of observations and m the number of series. 
+Will be automatically limited to one less than the number of observations in the series.}
 
 \item{ci}{the significant level of the estimation - a numeric value between 0 and 1, default is set for 0.95}
+
+\item{color}{The color of the plot, support both name and expression}
 }
 \description{
 A Visualization Function of the ACF Estimation
