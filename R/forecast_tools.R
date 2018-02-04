@@ -70,31 +70,31 @@ test_forecast <- function(actual, forecast.obj,
   model_accuracy <- forecast::accuracy(forecast.obj, test)
   if(hover){
     text_fit <- base::paste("Model: ", forecast.obj$method,
-                            "<br> Actual: ", round(actual,2),
-                            "<br> Fitted Value: ", c(round(forecast.obj$fitted, 2), 
+                            "<br> Actual: ", base::round(actual,2),
+                            "<br> Fitted Value: ", c(base::round(forecast.obj$fitted, 2), 
                                                      rep(NA, base::length(actual) - 
                                                            base::length(forecast.obj$x))),
                             "<br> Training Set",
-                            "<br> MAPE: ",  round(model_accuracy[9], 2),
-                            "<br> RMSE: ",  round(model_accuracy[3], 2),
+                            "<br> MAPE: ",  base::round(model_accuracy[9], 2),
+                            "<br> RMSE: ",  base::round(model_accuracy[3], 2),
                             "<br> Testing Set",
-                            "<br> MAPE: ",  round(model_accuracy[10], 2),
-                            "<br> RMSE: ",  round(model_accuracy[4], 2)
+                            "<br> MAPE: ",  base::round(model_accuracy[10], 2),
+                            "<br> RMSE: ",  base::round(model_accuracy[4], 2)
                             
     )
     
     text_forecast <- base::paste("Model: ", forecast.obj$method,
-                                 "<br> Actual: ", round(actual,2),
+                                 "<br> Actual: ", base::round(actual,2),
                                  "<br> Forecasted Value: ", c(rep(NA, 
                                                                   base::length(actual) - 
                                                                     base::length(test)), 
-                                                              round(forecast.obj$mean,2)),
+                                                              base::round(forecast.obj$mean,2)),
                                  "<br> Training Set",
-                                 "<br> MAPE: ",  round(model_accuracy[9], 2),
-                                 "<br> RMSE: ",  round(model_accuracy[3], 2),
+                                 "<br> MAPE: ",  base::round(model_accuracy[9], 2),
+                                 "<br> RMSE: ",  base::round(model_accuracy[3], 2),
                                  "<br> Testing Set",
-                                 "<br> MAPE: ",  round(model_accuracy[10], 2),
-                                 "<br> RMSE: ",  round(model_accuracy[4], 2)
+                                 "<br> MAPE: ",  base::round(model_accuracy[10], 2),
+                                 "<br> RMSE: ",  base::round(model_accuracy[4], 2)
                                  
     )
     text_hover <- "text"
@@ -149,3 +149,63 @@ fortest_ly <- function(actual, forecast.obj,train = NULL, test,
                 Ygrid = Ygrid, Xgrid = Xgrid,
                 hover = hover)
 }
+
+
+#'  Histogram Plot of the Residuals Values
+#' @export 
+#' @param forecast.obj A fitted or forecasted object (of the forecast package) with residuals output 
+
+#' @description Histogram plot of the residuals values 
+#' @examples
+#' \dontrun{
+#' library(forecast)
+#' data(USgas)
+#' 
+#' # Set the horizon of the forecast
+#' h <- 12
+#' 
+#' # split to training/testing partition
+#' split_ts <- ts_split(USgas, sample.out  = h)
+#' train <- split_ts$train
+#' test <- split_ts$test
+#'
+#' # Create forecast object
+#' fc <- forecast(auto.arima(train, lambda = BoxCox.lambda(train)), h = h)
+#'
+#' # Plot the fitted and forecasted vs the actual values
+#' res_hist(forecast.obj = fc)
+#'}
+
+
+res_hist <- function(forecast.obj){
+  p <- dens <- at <- NULL
+  
+  # Error handling
+  if(is.null(forecast.obj)){
+    stop("The 'forecast.obj' is not valid parameter")
+  } else{
+    at <- base::attributes(forecast.obj)
+    if(base::is.null(at)){
+      stop("The 'forecast.obj' is not valid parameter")
+    } else if(!"residuals" %in% at$names){
+      stop("The 'forecast.obj' is not valid parameter")
+    }
+  }
+    
+  dens <- stats::density(forecast.obj$residuals, kernel = "gaussian")
+  p <- plotly::plot_ly(x = forecast.obj$residuals, type  = "histogram", name = "Histogram") %>%
+    plotly::add_trace(x = dens$x, 
+                      y = dens$y, 
+                      type = "scatter", 
+                      mode = "lines", 
+                      fill = "tozeroy", 
+                      yaxis = "y2", 
+                      name = "Density") %>% 
+    plotly::layout(yaxis2 = list(overlaying = "y", side = "right"),
+                   xaxis = list(title = "Residuals")) %>%
+    plotly::hide_legend()
+  
+  return(p)
+}
+
+
