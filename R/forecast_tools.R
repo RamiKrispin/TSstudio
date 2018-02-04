@@ -209,3 +209,68 @@ res_hist <- function(forecast.obj){
 }
 
 
+#'  Visualization of the Residuals of a Time Series Model  
+#' @export 
+#' @param ts.model A time series model object, support any model from the forecast package with a residuals output
+#' @param lag.max The maximum number of lags to display in the residuals' autocorrelation function plot
+#' @description Provides a visualization of the residuals of a time series model. 
+#' That includes a time series plot of the residuals, and the plots of the  
+#' autocorrelation function (acf) and histogram of the residuals
+#' @examples
+#' \dontrun{
+#' library(forecast)
+#' data(USgas)
+#'
+#' # Create a model
+#' fit <- auto.arima(USgas, lambda = BoxCox.lambda(train))
+#' 
+#' # Check the residuals of the model
+#' check_res(fit)
+#'}
+
+check_res <- function(ts.model, lag.max = 36){
+  
+  # Error handling
+  if(is.null(ts.model)){
+    stop("The 'ts.model' is not valid parameter")
+  } else{
+    at <- base::attributes(ts.model)
+    if(base::is.null(at)){
+      stop("The 'ts.model' is not valid parameter")
+    } else if(!"residuals" %in% at$names){
+      stop("The 'ts.model' is not valid parameter - the 'residuals' attribute is missing")
+    } else if(!"method" %in% at$names){
+      stop("The 'ts.model' is not valid parameter - the 'method' attribute is missing")
+    }
+  }
+  if(!base::is.numeric(lag.max)){
+    warning("The value of 'lag.max' is not valid, using the default")
+    lag.max <- 36
+  }
+  if(lag.max %%1 != 0){
+    warning("The value of 'lag.max' is not valid, using the default")
+    lag.max <- 36
+  }
+  
+  res <- ts.model$residuals
+  p1 <- TSstudio::ts_plot(res)
+  p2 <- TSstudio::ts_acf(res, lag.max = lag.max) 
+  p3 <- plotly::plot_ly(x = res, type = "histogram", 
+                        name = "Histogram", 
+                        marker = list(color = "#00526d")
+                        ) %>%
+    plotly::layout(xaxis = list(title = "Residuals"),
+                   yaxis = list(title = "Count")
+                   )
+  
+  p <- plotly::subplot(p1,
+                  plotly::subplot(p2, p3, nrows = 1, margin = 0.04,
+                                  titleX =  TRUE, titleY = TRUE), 
+                  titleX =  TRUE, titleY = TRUE,
+                  nrows = 2
+                  ) %>% plotly::hide_legend() %>%
+    plotly::layout(
+      title =  base::paste("Residuals Plot for", ts.model$method, sep = " ")
+    )
+  return(p)
+}
