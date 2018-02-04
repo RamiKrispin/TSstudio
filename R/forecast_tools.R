@@ -243,6 +243,13 @@ check_res <- function(ts.model, lag.max = 36){
       stop("The 'ts.model' is not valid parameter - the 'method' attribute is missing")
     }
   }
+  
+  if(base::any(base::is.na(ts.model$residuals))){
+    warning("Dropping missing values from the residuals")
+    res <- stats::na.omit(ts.model$residuals)
+  } else {
+    res <- ts.model$residuals
+  }
   if(!base::is.numeric(lag.max)){
     warning("The value of 'lag.max' is not valid, using the default")
     lag.max <- 36
@@ -252,7 +259,7 @@ check_res <- function(ts.model, lag.max = 36){
     lag.max <- 36
   }
   
-  res <- ts.model$residuals
+  
   p1 <- TSstudio::ts_plot(res)
   p2 <- TSstudio::ts_acf(res, lag.max = lag.max) 
   p3 <- plotly::plot_ly(x = res, type = "histogram", 
@@ -267,7 +274,7 @@ check_res <- function(ts.model, lag.max = 36){
                   plotly::subplot(p2, p3, nrows = 1, margin = 0.04,
                                   titleX =  TRUE, titleY = TRUE), 
                   titleX =  TRUE, titleY = TRUE,
-                  nrows = 2
+                  nrows = 2, margin = 0.04
                   ) %>% plotly::hide_legend() %>%
     plotly::layout(
       title =  base::paste("Residuals Plot for", ts.model$method, sep = " ")
