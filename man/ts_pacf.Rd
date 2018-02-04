@@ -5,7 +5,7 @@
 \alias{pacf_ly}
 \title{A Visualization Function of the PACF Estimation}
 \usage{
-ts_pacf(ts.obj, lag.max = NULL, ci = 0.95)
+ts_pacf(ts.obj, lag.max = NULL, ci = 0.95, color = NULL)
 }
 \arguments{
 \item{ts.obj}{a univariate or multivariate time series object of class "ts", "mts", "zoo" or "xts"}
