@@ -179,7 +179,7 @@ fortest_ly <- function(actual, forecast.obj,train = NULL, test,
 
 res_hist <- function(forecast.obj){
   p <- dens <- at <- NULL
-  
+  `%>%` <- magrittr::`%>%`
   # Error handling
   if(is.null(forecast.obj)){
     stop("The 'forecast.obj' is not valid parameter")
@@ -229,7 +229,7 @@ res_hist <- function(forecast.obj){
 #'}
 
 check_res <- function(ts.model, lag.max = 36){
-  
+  `%>%` <- magrittr::`%>%`
   # Error handling
   if(is.null(ts.model)){
     stop("The 'ts.model' is not valid parameter")
