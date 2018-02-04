@@ -205,9 +205,9 @@ ts.plot_ly <- function(ts.obj, line.mode = "lines", width = 2,
                        Xtitle = NULL, Ytitle = NULL,
                        Xgrid = FALSE, Ygrid = FALSE){
   .Deprecated("ts_plot") 
-  ts_plot(ts.obj, line.mode = "lines", width = 2, 
-          dash = NULL, color = NULL, 
-          slider = FALSE, type = "multiple",
-          Xtitle = NULL, Ytitle = NULL,
-          Xgrid = FALSE, Ygrid = FALSE)
+  ts_plot(ts.obj, line.mode = line.mode, width = width, 
+          dash = dash, color = color, 
+          slider = slider, type = type,
+          Xtitle = Xtitle, Ytitle = Ytitle,
+          Xgrid = Xgrid, Ygrid = Ygrid)
 }
