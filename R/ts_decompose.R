@@ -74,26 +74,26 @@ dec <- stats::decompose(ts.obj, type = type)
 min <- min(stats::time(ts.obj))
 max <- max(stats::time(ts.obj))
 
-obs <- TSstudio::ts.plot_ly(dec$x) %>% 
+obs <- TSstudio::ts_plot(dec$x) %>% 
   plotly::layout(yaxis = list(title = "Observed"),
   xaxis = list(range = c(min,max),
                showline = showline,
                showticklabels = FALSE)
                                   )
 
-seasonal <- TSstudio::ts.plot_ly(dec$seasonal) %>% 
+seasonal <- TSstudio::ts_plot(dec$seasonal) %>% 
   plotly::layout(yaxis = list(title = "Seasonal"),
                                               xaxis = list(range = c(min,max),
                                                            showline = showline,
                                                            showticklabels = FALSE)
                  )
-random <- TSstudio::ts.plot_ly(dec$random) %>% 
+random <- TSstudio::ts_plot(dec$random) %>% 
   plotly::layout(yaxis = list(title = "Random"),
                                           xaxis = list(range = c(min,max),
                                                        showline = showline)
   )
 
-trend <- TSstudio::ts.plot_ly(dec$trend) %>% 
+trend <- TSstudio::ts_plot(dec$trend) %>% 
   plotly::layout(yaxis = list(title = "Trend"),
                                         xaxis = list(range = c(min,max),
                                                      showline = showline,
