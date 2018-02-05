@@ -19,6 +19,7 @@ Imports:
 Suggests:
     knitr,
     rmarkdown,
-    devtools
+    devtools,
+    quantmod
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
