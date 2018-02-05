@@ -11,6 +11,7 @@
 #' @param type Applicable for multiple time series object, plot on a separate plot or all together c("single, "multiple) 
 #' @param Xtitle Set the X axis title, default set to NULL
 #' @param Ytitle Set the Y axis title, default set to NULL
+#' @param title Set the plot title, default set to NULL
 #' @param Ygrid Logic,show the Y axis grid if set to TRUE
 #' @param Xgrid Logic,show the X axis grid if set to TRUE
 #' @examples
@@ -23,14 +24,14 @@
 ts_plot <- function(ts.obj, line.mode = "lines", width = 2, 
                       dash = NULL, color = NULL, 
                       slider = FALSE, type = "multiple",
-                      Xtitle = NULL, Ytitle = NULL,
+                      Xtitle = NULL, Ytitle = NULL, title = NULL,
                       Xgrid = FALSE, Ygrid = FALSE){
   `%>%` <- magrittr::`%>%`
   df <- p <- plot_list <- dim_flag <- plot_list <- obj.name <- NULL 
   obj.name <- base::deparse(base::substitute(ts.obj))
   
   # Error handling
-  if(!is.null(color)){
+  if(!base::is.null(color)){
     if(!is.character(color)){
       warning("The value of the 'color' parameter is not valid")
       color = "#00526d"
@@ -40,7 +41,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
   }
   
   
-  if(!is.null(Xtitle)){
+  if(!base::is.null(Xtitle)){
     if(!is.character(Xtitle)){
       warning("The value of the 'Xtitle' is not valid")
       Xtitle <- ""
@@ -49,7 +50,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
     Xtitle <- ""
   }
   
-  if(!is.null(Ytitle)){
+  if(!base::is.null(Ytitle)){
     if(!is.character(Ytitle)){
       warning("The value of the 'Ytitle' is not valid")
       Ytitle <- ""
@@ -58,7 +59,14 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
     Ytitle <- ""
   }
   
-  
+  if(!base::is.null(title)){
+    if(!is.character(title)){
+      warning("The value of the 'title' is not valid")
+      title <- ""
+    } 
+  } else {
+    title <- ""
+  }
   if(line.mode != "lines" & 
      line.mode != "lines+markers" & 
      line.mode != "markers"){
@@ -80,7 +88,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
     type <- "multiple"
   }
   # Check if it is a multiple time series  
-  if(!is.null(base::dim(ts.obj))){
+  if(!base::is.null(base::dim(ts.obj))){
     if(base::dim(ts.obj)[2] > 1){
       dim_flag <- TRUE
       if(stats::is.mts(ts.obj)){
@@ -111,7 +119,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
         yaxis = list(title = obj.name, showgrid = Ygrid)
         
       )
-      if(!is.null(p) & slider){
+      if(!base::is.null(p) & slider){
         p <- p %>% 
           plotly::layout(
             yaxis = list(showgrid = Ygrid),
@@ -136,7 +144,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
                    titleY = TRUE,
                    margin = 0.05) %>%
         plotly::hide_legend()
-      if(!is.null(p) & slider){
+      if(!base::is.null(p) & slider){
         warning('The slider option is not avilable for plot type "multiple"')
       }
       
@@ -174,7 +182,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
                   
     )
     
-    if(!is.null(p) & slider){
+    if(!base::is.null(p) & slider){
       p <- p %>% 
         plotly::layout(
           title = obj.name,
@@ -183,7 +191,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
             title = Xtitle, showgrid = Xgrid,
             rangeslider = list(type = "date"))
         )
-    } else if(!is.null(p) & !slider){
+    } else if(!base::is.null(p) & !slider){
           p <- p %>% 
           plotly::layout(
             xaxis = list(title = Xtitle, showgrid = Xgrid),
@@ -192,7 +200,12 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
           )
       }
   }
-  if(is.null(p)){
+  
+  if(!base::is.null(title)){
+    p <- p %>% plotly::layout(title = title)
+  }
+  
+  if(base::is.null(p)){
     stop("Could not create the plot, please check the input")
   } else{
     return(p)
@@ -202,12 +215,12 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
 ts.plot_ly <- function(ts.obj, line.mode = "lines", width = 2, 
                        dash = NULL, color = NULL, 
                        slider = FALSE, type = "multiple",
-                       Xtitle = NULL, Ytitle = NULL,
+                       Xtitle = NULL, Ytitle = NULL, title = NULL,
                        Xgrid = FALSE, Ygrid = FALSE){
   .Deprecated("ts_plot") 
   ts_plot(ts.obj, line.mode = line.mode, width = width, 
           dash = dash, color = color, 
           slider = slider, type = type,
-          Xtitle = Xtitle, Ytitle = Ytitle,
+          Xtitle = Xtitle, Ytitle = Ytitle, title = title,
           Xgrid = Xgrid, Ygrid = Ygrid)
 }
