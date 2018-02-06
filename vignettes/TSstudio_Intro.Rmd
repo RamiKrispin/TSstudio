@@ -11,7 +11,7 @@ vignette: >
 
 ## **Overview**
 
-The TSstudio package provides a set of tools for descriptive analysis of time series data supporting “ts”, “mts”, “zoo” and “xts” objects. That includes rich and interactive visualization plots, based on the engine of the [Plotly](https://plot.ly/r/) package,  for seasonality, correlations, residuals and forecasting performance plots. 
+The TSstudio package provides a set of tools for descriptive analysis of a time series data supporting “ts”, “mts”, “zoo” and “xts” objects. That includes rich and interactive visualization plots, based on the engine of the [Plotly](https://plot.ly/r/) package,  for seasonality, correlations, residuals and forecasting performance plots. 
 
 
 ## **Installation**
@@ -109,6 +109,7 @@ The ts_seasonal function provides 3 types of seasonal plots:
 
 ```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
 ts_seasonal(USgas, type = "normal")
+
 ```
 
 2. "cycle" - break of a series by the cycle units (i.e. months or quarters), it can be used to identify trend and patterns between the cycle units:
@@ -222,5 +223,62 @@ fc <- forecast(fit, h = h)
 test_forecast(actual = USgas, forecast.obj = fc, test = test)
 
 ```
+
+### Other utility tools
+
+#### ts to data frame format
+
+The ts_reshape function transforms time series data ("ts", "zoo" and "xts" classes) into friendly data frame format using the years as the columns and the cycle units as rows (currently supporting only monthly and quarterly frequencies):
+
+```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+# Loading the Total US Vehicle Sales data 
+data("USVSales")
+
+ts_plot(USVSales, title = "Total US Vehicle Sales",
+        Ytitle = "Millions of Units",
+        Xtitle = "Source: U.S. Bureau of Economic Analysis")
+
+head(ts_plot)
+
+USVSales_df <- ts_reshape(USVSales)
+
+library(DT)
+
+datatable(USVSales_df, filter = 'top', options = list(
+  pageLength = nrow(USVSales_df), autoWidth = TRUE
+))
+```
+
+
+#### Converting "zoo" or "xts" objects to "ts" class
+
+The xts_to_ts or the zoo_to_ts functions convert "zoo" or "xts" objects into "ts" class:
+
+```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+# Loading the University of Michigan Consumer Sentiment 
+data("Michigan_CS")
+
+Michigan_CS_ts <- xts_to_ts(Michigan_CS)
+
+ts_plot(Michigan_CS, title = "University of Michigan Consumer Sentiment - 'xts' format")
+ts_plot(Michigan_CS_ts, title = "University of Michigan Consumer Sentiment - 'ts' format")
+
+class(Michigan_CS)
+class(Michigan_CS_ts)
+
+head(Michigan_CS)
+head(Michigan_CS_ts)
+
+head(index(Michigan_CS))
+head(time(Michigan_CS_ts))
+
+periodicity(Michigan_CS)
+frequency(Michigan_CS_ts)
+
+
+cycle(Michigan_CS_ts)
+```
+
+
 
 
