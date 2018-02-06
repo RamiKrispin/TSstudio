@@ -241,7 +241,7 @@ check_res <- function(ts.model, lag.max = 36){
     } else if(!"residuals" %in% at$names){
       stop("The 'ts.model' is not valid parameter - the 'residuals' attribute is missing")
     } else if(!"method" %in% at$names){
-      try(method <- forecast(ts.model)$method, silent = TRUE)
+      try(method <- forecast::forecast(ts.model)$method, silent = TRUE)
       if(is.null(method)){
       stop("The 'ts.model' is not valid parameter - the 'method' attribute is missing")
       }
