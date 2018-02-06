@@ -7,7 +7,7 @@
 check_res(ts.model, lag.max = 36)
 }
 \arguments{
-\item{ts.model}{A time series model object, support any model from the forecast package with a residuals output}
+\item{ts.model}{A time series model (or forecasted) object, support any model from the forecast package with a residuals output}
 
 \item{lag.max}{The maximum number of lags to display in the residuals' autocorrelation function plot}
 }

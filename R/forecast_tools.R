@@ -211,7 +211,7 @@ res_hist <- function(forecast.obj){
 
 #'  Visualization of the Residuals of a Time Series Model  
 #' @export 
-#' @param ts.model A time series model object, support any model from the forecast package with a residuals output
+#' @param ts.model A time series model (or forecasted) object, support any model from the forecast package with a residuals output
 #' @param lag.max The maximum number of lags to display in the residuals' autocorrelation function plot
 #' @description Provides a visualization of the residuals of a time series model. 
 #' That includes a time series plot of the residuals, and the plots of the  
@@ -230,6 +230,7 @@ res_hist <- function(forecast.obj){
 
 check_res <- function(ts.model, lag.max = 36){
   `%>%` <- magrittr::`%>%`
+  method <- NULL
   # Error handling
   if(is.null(ts.model)){
     stop("The 'ts.model' is not valid parameter")
@@ -240,7 +241,12 @@ check_res <- function(ts.model, lag.max = 36){
     } else if(!"residuals" %in% at$names){
       stop("The 'ts.model' is not valid parameter - the 'residuals' attribute is missing")
     } else if(!"method" %in% at$names){
+      try(method <- forecast(ts.model)$method, silent = TRUE)
+      if(is.null(method)){
       stop("The 'ts.model' is not valid parameter - the 'method' attribute is missing")
+      }
+    } else {
+      method <- ts.model$method
     }
   }
   
@@ -277,7 +283,7 @@ check_res <- function(ts.model, lag.max = 36){
                   nrows = 2, margin = 0.04
                   ) %>% plotly::hide_legend() %>%
     plotly::layout(
-      title =  base::paste("Residuals Plot for", ts.model$method, sep = " ")
+      title =  base::paste("Residuals Plot for", method, sep = " ")
     )
   return(p)
 }
