@@ -1,5 +1,5 @@
 #'  Plotting Time Series Objects
-#' @export ts_plot ts.plot_ly
+#' @export ts.plot_ly ts_plot
 #' @aliases  ts.plot_ly
 #' @description Visualization functions for time series object
 #' @param ts.obj A univariate or multivariate time series object of class "ts", "mts", "zoo" or "xts"
@@ -191,7 +191,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
             title = Xtitle, showgrid = Xgrid,
             rangeslider = list(type = "date"))
         )
-    } else if(!base::ts_plot(p) & !slider){
+    } else if(!base::is.null(p) & !slider){
           p <- p %>% 
           plotly::layout(
             xaxis = list(title = Xtitle, showgrid = Xgrid),
