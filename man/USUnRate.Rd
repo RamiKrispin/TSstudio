@@ -13,6 +13,7 @@ USUnRate
 }
 \description{
 US monthly civilian unemployment rate: 1948 - 2017.
+Units: Percent
 }
 \examples{
 ts.plot_ly(USUnRate)

@@ -13,6 +13,7 @@ USVSales
 }
 \description{
 US monthly total vehicle sales: 1976 - 2017.
+Units: Thousands of units
 }
 \examples{
 ts.plot_ly(USVSales)

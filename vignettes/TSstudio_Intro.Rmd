@@ -235,7 +235,7 @@ The ts_reshape function transforms time series data ("ts", "zoo" and "xts" class
 data("USVSales")
 
 ts_plot(USVSales, title = "Total US Vehicle Sales",
-        Ytitle = "Millions of Units",
+        Ytitle = "Thousands of Units",
         Xtitle = "Source: U.S. Bureau of Economic Analysis")
 
 head(ts_plot)

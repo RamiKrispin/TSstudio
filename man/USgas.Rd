@@ -13,6 +13,7 @@ USgas
 }
 \description{
 US monthly natural gas consumption: 2000 - 2017.
+Units: Billion Cubic Feet
 }
 \examples{
 ts.plot_ly(USgas)

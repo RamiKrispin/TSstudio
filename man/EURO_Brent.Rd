@@ -13,6 +13,7 @@ EURO_Brent
 }
 \description{
 Crude Oil Prices: Brent - Europe: 1987 - 2017.
+Units: Dollars per Barrel
 }
 \examples{
 ts.plot_ly(EURO_Brent)
