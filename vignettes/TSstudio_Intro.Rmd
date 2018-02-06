@@ -11,7 +11,7 @@ vignette: >
 
 ## **Overview**
 
-The TSstudio package provides a set of interactive visualization tools for time series analysis supporting ts, mts, zoo and xts objects. That includes several visualization functions such as forecasting model performance (forecasted vs. actual), time series interactive plots (single and multiple series) and seasonality plots utilizing the visualization applications of the [Plotly](https://plot.ly/r/) package. First version available on CRAN or Github.
+The TSstudio package provides a set of tools for descriptive analysis of time series data supporting “ts”, “mts”, “zoo” and “xts” objects. That includes rich and interactive visualization plots, based on the engine of the [Plotly](https://plot.ly/r/) package,  for seasonality, correlations, residuals and forecasting performance plots. 
 
 
 ## **Installation**
@@ -29,63 +29,198 @@ devtools::install_github("RamiKrispin/TSstudio")
 
 ## **Key Features**
 
-### Visualization of fitted and forecasted values vs. actual values
+### Visualization of time series object with the ts_plot function
 
-```{r fig.height = 5, fig.width = 8}
+```{r fig.height=5, fig.width=8 , message=FALSE, warning=FALSE}
 library(TSstudio)
-library(forecast)
+library(xts)
+library(zoo)
+library(quantmod)
+# Loading the stock price of key technology companies:
+tckrs <- c("GOOGL", "FB", "AAPL", "MSFT")
+getSymbols(tckrs, 
+           from = "2013-01-01",
+           src = "yahoo")
 
-# Load the AirPassengers dataset
-data("AirPassengers")
+# Visual Google closing price since 2013
+Google <- GOOGL$GOOGL.Close
+class(Google)
 
+# Basic plot
+ts_plot(Google)
+
+
+# Adding titles and slider
+ts_plot(Google, 
+        title = "Google Stock Prices Since 2013",
+        Xtitle = "Sourch: Yahoo Finance", 
+        Ytitle = "Closing Price in USD",
+        slider = TRUE
+        )
+
+
+```
+
+#### Available formats
+
+In addition for the “ts” object, the function support “mts”, “zoo” and “xts” objects, including multiple time series object: 
+
+```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+closing <- cbind(GOOGL$GOOGL.Close, FB$FB.Close, AAPL$AAPL.Close, MSFT$MSFT.Close)
+names(closing) <- c("Google", "Facebook", "Apple", "Microsoft")
+
+class(closing)
+dim(closing)
+
+# You can plot all the series in one plot using the type option:
+ts_plot(closing, 
+        title = "Top Technology Companies Stocks Prices Since 2013",
+        type = "single")
+
+# or use the default option - "multiple" and plot series on a separate plots:
+ts_plot(closing,
+        title = "Top Technology Companies Stocks Prices Since 2013")
+
+```
+
+### Seasonality analysis
+
+The TSstudio provides a variety of tools for seasonality analysis, currently supporting only monthly or quarterly data. The monthly consumption of natural gas in the US (USgas dataset) is a good example of a seasonal pattern within time series data:
+
+```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+# Load the US monthly natural gas consumption
+data("USgas")
+
+class(USgas)
+
+ts_plot(USgas,
+        title = "US Natural Gas Consumption",
+        Xtitle = "Year",
+        Ytitle = "Billion Cubic Feet"
+        )
+
+```
+
+#### The ts_seasonal function
+
+The ts_seasonal function provides 3 types of seasonal plots:
+
+1. "normal" - break of a series by year, this allows identifying a seasonal pattern within the year 
+
+```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+ts_seasonal(USgas, type = "normal")
+```
+
+2. "cycle" - break of a series by the cycle units (i.e. months or quarters), it can be used to identify trend and patterns between the cycle units:
+
+```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+ts_seasonal(USgas, type = "cycle")
+```
+
+3. "box" - for representing the cycle units with a box plot:
+
+```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+ts_seasonal(USgas, type = "box")
+```
+
+
+Alternately, setting the type = “all”, print the three options above together in a one plot:
+
+```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+ts_seasonal(USgas, type = "all")
+```
+
+#### The ts_heatmap and ts_surface functions
+
+Another useful visualization tool for seasonality analysis is the ts_heatmap function for time series objects, where the y axis represents the cycle units and x axis represents the years:
+
+```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+ts_heatmap(USgas)
+```
+
+Similarly, the heatmap could represent by surface 3d plot:  
+
+```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+ts_surface(USgas)
+```
+
+#### Polar plot
+
+The ts_polar function provides a polar plot representive for time series data where the year represent by color and the magnitute represents by the size of the cyle unit layer 
+```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+ts_polar(USgas)
+```
+
+
+#### Decomposing time series
+
+The ts_decompose function create transform the decompose function output(of the stats package) to interactive format. In addition to the "additive" and the "multiplicative" options of the original decompose function, there is the "both" option which represents both options side by side:
+
+```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+ts_decompose(USgas, type = "both")
+```
+
+### Correlation Analysis
+
+Similarly to the decompose function, the TSstudio transform the acf and pacf functions into a colorful version with the ts_acf and ts_pacf:
+
+```{r, fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+ts_acf(USgas, lag.max = 36)
+ts_pacf(USgas, lag.max = 36)
+
+```
+
+Another intuitive method to identify correlation between the series and its lags is with lag plot:
+
+```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+ts_lags(USgas)
+```
+
+
+### Application for forecasting
+
+#### Splitting time series object for training and testing partitions
+
+The TSstudio package provides a set of supporting tools for training and testing forecasting models. The ts_split function split the series into training and testing partitions based on a given horizon:
+
+```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
 # set the forecast horizon for 12 months
-h <- 12 
+h <- 12
 
 # Split the data into training and testing sets (leaving the last 12 months for testing)
-train <- window(AirPassengers, 
-                start = time(AirPassengers)[1], 
-                end = time(AirPassengers)[length(AirPassengers) - h])
-test <- window(AirPassengers, 
-               start = time(AirPassengers)[length(AirPassengers) - h + 1], 
-               end = time(AirPassengers)[length(AirPassengers)])
+split_USgas <- ts_split(USgas, sample.out = h)
 
-# Using auto.arima to train and forecast the last 12 months on the series
-fc <- forecast(auto.arima(train, lambda = BoxCox.lambda(train)), h = h)
+train <- split_USgas$train
+test <- split_USgas$test
 
-# Plotting the series vs the fitted and the forecasted
-fortest_ly(actual = AirPassengers, forecast.obj = fc, train = train, test = test)
+
+head(train, 5)
+head(test, 5)
 
 ```
 
-### Seasonality plot
+#### Residuals analysis
 
-```{r fig.height = 5, fig.width = 8}
-seasonal_ly(AirPassengers)
-```
+The check_res function provides a visualization of the residuals, and their correspond correlation and histogram:
 
+```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+library(forecast)
+# Building model on the training set
+fit <- auto.arima(train, lambda = BoxCox.lambda(train))
 
-### Plotting time series object
-```{r fig.height = 5, fig.width = 7}
-# Simple plot
-ts.plot_ly(AirPassengers)
-```
-
-```{r fig.height = 5, fig.width = 7}
-# Adding slider and markers, changing the color to green
-ts.plot_ly(AirPassengers, 
-           slider = TRUE, 
-           line.mode = "lines+markers", 
-           color = "green", 
-           width = 2)
+# Checking the residuals
+check_res(fit)
 
 ```
 
-### Plotting the acf and the pacf estimation
+#### Forecast evaluation with the test_forecast
 
-```{r fig.height=5, fig.width=8}
-#plotting the acf and the pacf estimation
-# setting the lags to 60 and the level of significant to 0.01
-acf_ly(AirPassengers, lag.max = 60, ci = 0.99)
-pacf_ly(AirPassengers, lag.max = 60, ci = 0.99)
+The test_forecast visualize a forecasted object of the forecast package, providing visualization of the fitted and forecasted vs the actual values. In addition the hover tooltip provide details about the performance in both the training and testing sets: 
+```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+fc <- forecast(fit, h = h)
+
+test_forecast(actual = USgas, forecast.obj = fc, test = test)
+
 ```
+
 
