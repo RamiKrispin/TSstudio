@@ -8,6 +8,8 @@ Description: Provides a set of interactive visualization tools for time series a
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
+Depends:
+  R (>= 3.0.2)
 Imports:
   reshape2 (>= 1.4.2),
   lubridate (>= 1.6.0),
