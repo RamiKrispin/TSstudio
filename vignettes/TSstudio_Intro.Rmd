@@ -178,7 +178,7 @@ ts_lags(USgas)
 ```
 
 
-### Application for forecasting
+### Applications for forecasting
 
 #### Splitting time series object for training and testing partitions
 
