@@ -217,7 +217,8 @@ ts.plot_ly <- function(ts.obj, line.mode = "lines", width = 2,
                        slider = FALSE, type = "multiple",
                        Xtitle = NULL, Ytitle = NULL, title = NULL,
                        Xgrid = FALSE, Ygrid = FALSE){
-  .Deprecated("ts_plot") 
+  # .Deprecated("ts_plot") 
+  print("The ts.plot_ly function will be deprecated on the next release, please use ts_plot instead")
   ts_plot(ts.obj, line.mode = line.mode, width = width, 
           dash = dash, color = color, 
           slider = slider, type = type,

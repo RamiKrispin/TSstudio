@@ -129,7 +129,8 @@ p <- seasonal_sub(df = df, type = type, Xgrid = Xgrid, Ygrid = Ygrid)
 }
 
 seasonal_ly <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE) {
-  .Deprecated("ts_seasonal")
+  # .Deprecated("ts_seasonal")
+  print("The seasonal_ly function will be deprecated on the next release, please use ts_seasonal instead")
   ts_seasonal(ts.obj, type = type, Ygrid = Ygrid, Xgrid = Xgrid)
 }
 

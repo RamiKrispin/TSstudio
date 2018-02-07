@@ -289,7 +289,8 @@ ts_acf <- function(ts.obj, lag.max = NULL, ci = 0.95, color = NULL) {
 
 
 acf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95, color = NULL) {
-  .Deprecated("ts_acf")
+ # .Deprecated("ts_acf")
+  print("The acf_ly function will be deprecated on the next release, please use ts_acf instead")
   ts_acf(ts.obj, lag.max = lag.max, ci = ci, color = color)
 }
 
@@ -434,6 +435,7 @@ ts_pacf <- function(ts.obj, lag.max = NULL, ci = 0.95, color = NULL) {
   }
 
 pacf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95, color = NULL) {
-  .Deprecated("ts_pacf")
+  # .Deprecated("ts_pacf")
+  print("The pacf_ly function will be deprecated on the next release, please use ts_pacf instead")
   ts_acf(ts.obj, lag.max = lag.max, ci = ci, color = color)
 }
