@@ -29,7 +29,7 @@ devtools::install_github("RamiKrispin/TSstudio")
 
 ## **Key Features**
 
-### Visualization of time series object with the ts_plot function
+### Visualization of time series objects with the ts_plot function
 
 ```{r fig.height=5, fig.width=8 , message=FALSE, warning=FALSE}
 library(TSstudio)
@@ -63,7 +63,7 @@ ts_plot(Google,
 
 #### Available formats
 
-In addition for the “ts” object, the function support “mts”, “zoo” and “xts” objects, including multiple time series object: 
+In addition for the “ts” object, the function supports “mts”, “zoo” and “xts” objects, including multiple time series objects: 
 
 ```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
 closing <- cbind(GOOGL$GOOGL.Close, FB$FB.Close, AAPL$AAPL.Close, MSFT$MSFT.Close)
@@ -77,7 +77,7 @@ ts_plot(closing,
         title = "Top Technology Companies Stocks Prices Since 2013",
         type = "single")
 
-# or use the default option - "multiple" and plot series on a separate plots:
+# or use the default option - "multiple" and plot series on separate plots:
 ts_plot(closing,
         title = "Top Technology Companies Stocks Prices Since 2013")
 
@@ -112,7 +112,7 @@ ts_seasonal(USgas, type = "normal")
 
 ```
 
-2. "cycle" - break of a series by the cycle units (i.e. months or quarters), it can be used to identify trend and patterns between the cycle units:
+2. "cycle" - break of a series by the cycle units (i.e. months or quarters), it can be used to identify trends and patterns between the cycle units:
 
 ```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
 ts_seasonal(USgas, type = "cycle")
@@ -125,7 +125,7 @@ ts_seasonal(USgas, type = "box")
 ```
 
 
-Alternately, setting the type = “all”, print the three options above together in a one plot:
+Alternatively, setting the type = “all”, print the three options above together in one plot:
 
 ```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
 ts_seasonal(USgas, type = "all")
@@ -139,7 +139,7 @@ Another useful visualization tool for seasonality analysis is the ts_heatmap fun
 ts_heatmap(USgas)
 ```
 
-Similarly, the heatmap could represent by surface 3d plot:  
+Similarly, the heatmap could be represented by a surface 3d plot:  
 
 ```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
 ts_surface(USgas)
@@ -147,7 +147,7 @@ ts_surface(USgas)
 
 #### Polar plot
 
-The ts_polar function provides a polar plot representive for time series data where the year represent by color and the magnitute represents by the size of the cyle unit layer 
+The ts_polar function provides a polar plot demonstrative of time series data where the year is represented by color and the magnitude is represented by the size of the cycle unit layer:
 ```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
 ts_polar(USgas)
 ```
@@ -155,7 +155,7 @@ ts_polar(USgas)
 
 #### Decomposing time series
 
-The ts_decompose function create transform the decompose function output(of the stats package) to interactive format. In addition to the "additive" and the "multiplicative" options of the original decompose function, there is the "both" option which represents both options side by side:
+The ts_decompose function transforms the decompose function output(of the stats package) to an interactive format. In addition to the "additive" and the "multiplicative" options of the original decompose function, there is the "both" option which represents both options side by side:
 
 ```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
 ts_decompose(USgas, type = "both")
@@ -163,7 +163,7 @@ ts_decompose(USgas, type = "both")
 
 ### Correlation Analysis
 
-Similarly to the decompose function, the TSstudio transform the acf and pacf functions into a colorful version with the ts_acf and ts_pacf:
+Similarly to the decompose function, the TSstudio transforms the acf and pacf functions into a colorful version with the ts_acf and ts_pacf:
 
 ```{r, fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
 ts_acf(USgas, lag.max = 36)
@@ -182,7 +182,7 @@ ts_lags(USgas)
 
 #### Splitting time series object for training and testing partitions
 
-The TSstudio package provides a set of supporting tools for training and testing forecasting models. The ts_split function split the series into training and testing partitions based on a given horizon:
+The TSstudio package provides a set of supporting tools for training and testing forecasting models. The ts_split function splits the series into training and testing partitions based on a given horizon:
 
 ```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
 # set the forecast horizon for 12 months
@@ -202,11 +202,11 @@ head(test, 5)
 
 #### Residuals analysis
 
-The check_res function provides a visualization of the residuals, and their correspond correlation and histogram:
+The check_res function visualize the traditional plot of the residuals over time, and the corresponding auto correlation function and the histogram (of the residuals):
 
 ```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
 library(forecast)
-# Building model on the training set
+# Building a model on the training set
 fit <- auto.arima(train, lambda = BoxCox.lambda(train))
 
 # Checking the residuals
@@ -216,7 +216,8 @@ check_res(fit)
 
 #### Forecast evaluation with the test_forecast
 
-The test_forecast visualize a forecasted object of the forecast package, providing visualization of the fitted and forecasted vs the actual values. In addition the hover tooltip provide details about the performance in both the training and testing sets: 
+The test_forecast function visualizes the fitted values vs the training partition values and the forecasted values vs the testing partitions values. In addition, the tooltip of the plot provides information about the model performance (MAPE and RMSE of the training and testing partitions):
+
 ```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
 fc <- forecast(fit, h = h)
 
@@ -228,7 +229,7 @@ test_forecast(actual = USgas, forecast.obj = fc, test = test)
 
 #### ts to data frame format
 
-The ts_reshape function transforms time series data ("ts", "zoo" and "xts" classes) into friendly data frame format using the years as the columns and the cycle units as rows (currently supporting only monthly and quarterly frequencies):
+The ts_reshape function transforms time series data ("ts", "zoo" and "xts" classes) into a friendly data frame format using the years as the columns and the cycle units as rows (currently supporting only monthly and quarterly frequencies):
 
 ```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
 # Loading the Total US Vehicle Sales data 
