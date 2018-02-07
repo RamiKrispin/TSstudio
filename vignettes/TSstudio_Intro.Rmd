@@ -17,15 +17,17 @@ The TSstudio package provides a set of tools for descriptive analysis of a time 
 ## **Installation**
 
 Install the stable version from [CRAN](https://CRAN.R-project.org/package=TSstudio):
-``` r
+```{r message=FALSE, warning=FALSE, eval=FALSE, echo=TRUE}
 install.packages("TSstudio")
 ```
 
+
 or install the development version from [Github](https://github.com/RamiKrispin/TSstudio):
-``` r
+```{r message=FALSE, warning=FALSE, eval=FALSE, echo=TRUE}
 # install.packages("devtools")
 devtools::install_github("RamiKrispin/TSstudio")
 ```
+
 
 ## **Key Features**
 
