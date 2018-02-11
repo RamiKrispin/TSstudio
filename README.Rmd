@@ -16,7 +16,7 @@ The TSstudio package provides a set of interactive visualization tools for time 
 
 ## Overview
 
-The TSstudio package provides a set of interactive visualization tools, based on the [Plotly](https://plot.ly/r/)  engine, for time series analysis and forecasting supporting ts, mts, zoo and xts objects. That includes visualization tools for seasonal and correlation analysis, and forecasting models.  
+The TSstudio package provides a set of interactive visualization tools, based on the [Plotly](https://plot.ly/r/)  engine, for time series analysis and forecasting supporting ts, mts, zoo and xts objects. That includes visualization tools for seasonal and correlation analysis, and forecasting models. 
 
 ## Examples
 
