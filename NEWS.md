@@ -1,3 +1,11 @@
+## Version 0.1.1 is now available on CRAN
+What's new:
+* New options for the seasonality plot
+* Heatmap and surface plots
+* Polar plot
+* Converting function from xts and zoo to ts class
+* Spliting function for ts object for training and testing partitions
+
 ## Updates for the development version (0.1.0.9000) on Github
 * Time series lags plot - ts_lags() function
 * Function ts_split() to split 'ts' object into training and testing partitions 
