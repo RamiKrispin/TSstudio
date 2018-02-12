@@ -16,7 +16,7 @@ US monthly civilian unemployment rate: 1948 - 2017.
 Units: Percent
 }
 \examples{
-ts.plot_ly(USUnRate)
-seasonal_ly(USUnRate)
+ts_plot(USUnRate)
+ts_seasonal(USUnRate)
 }
 \keyword{datasets}

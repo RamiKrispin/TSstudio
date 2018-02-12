@@ -22,8 +22,8 @@
 #' @source U.S. Bureau of Labor Statistics, Civilian Unemployment Rate [UNRATENSA], retrieved from FRED, Federal Reserve Bank of St. Louis; https://fred.stlouisfed.org/series/UNRATENSA, January 6, 2018.
 #' @keywords datasets
 #' @examples
-#' ts.plot_ly(USUnRate)
-#' seasonal_ly(USUnRate)
+#' ts_plot(USUnRate)
+#' ts_seasonal(USUnRate)
 
 "USUnRate"
 
@@ -38,8 +38,8 @@
 #' @source U.S. Bureau of Transportation Statistics, Natural Gas Consumption [NATURALGAS], retrieved from FRED, Federal Reserve Bank of St. Louis; https://fred.stlouisfed.org/series/NATURALGAS, January 7, 2018.
 #' @keywords datasets
 #' @examples
-#' ts.plot_ly(USgas)
-#' seasonal_ly(USgas)
+#' ts_plot(USgas)
+#' ts_seasonal(USgas, type = "all")
 
 "USgas"
 
@@ -52,8 +52,8 @@
 #' @source University of Michigan, University of Michigan: Consumer Sentiment
 #' @keywords datasets
 #' @examples
-#' ts.plot_ly(Michigan_CS)
-#' seasonal_ly(Michigan_CS)
+#' ts_plot(Michigan_CS)
+#' ts_heatmap(Michigan_CS)
 
 "Michigan_CS"
 
@@ -67,7 +67,7 @@
 #' @source U.S. Energy Information Administration, Crude Oil Prices: Brent - Europe [MCOILBRENTEU], retrieved from FRED, Federal Reserve Bank of St. Louis; https://fred.stlouisfed.org/series/MCOILBRENTEU, January 8, 2018.
 #' @keywords datasets
 #' @examples
-#' ts.plot_ly(EURO_Brent)
-#' seasonal_ly(EURO_Brent)
+#' ts_plot(EURO_Brent)
+#' ts_decompose(EURO_Brent, type = "both")
 
 "EURO_Brent"

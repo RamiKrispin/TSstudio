@@ -16,7 +16,7 @@ Crude Oil Prices: Brent - Europe: 1987 - 2017.
 Units: Dollars per Barrel
 }
 \examples{
-ts.plot_ly(EURO_Brent)
-seasonal_ly(EURO_Brent)
+ts_plot(EURO_Brent)
+ts_decompose(EURO_Brent, type = "both")
 }
 \keyword{datasets}

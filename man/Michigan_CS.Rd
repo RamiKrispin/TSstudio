@@ -16,7 +16,7 @@ University of Michigan Consumer Survey, Index of Consumer Sentiment: 1980 - 2017
 Units: Index 1966:Q1=100
 }
 \examples{
-ts.plot_ly(Michigan_CS)
-seasonal_ly(Michigan_CS)
+ts_plot(Michigan_CS)
+ts_heatmap(Michigan_CS)
 }
 \keyword{datasets}
