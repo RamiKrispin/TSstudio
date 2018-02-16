@@ -1,6 +1,5 @@
 #'  Visualize of the Fitted and the Forecasted vs the Actual Values
-#' @export fortest_ly test_forecast
-#' @aliases fortest_ly
+#' @export test_forecast
 #' @param actual The full time series object (support "ts", "zoo" and "xts" formats)
 #' @param forecast.obj The forecast output of the training set with horizon 
 #' align to the length of the testing (support forecasted objects from the “forecast” package)
@@ -140,21 +139,10 @@ test_forecast <- function(actual, forecast.obj,
   return(p)
 }
 
-fortest_ly <- function(actual, forecast.obj,train = NULL, test, 
-                       Ygrid = FALSE, Xgrid = FALSE,
-                       hover = TRUE) {
-  .Deprecated("test_forecast")
-  test_forecast(actual= actual, forecast.obj = forecast.obj,
-                train = train, test = test, 
-                Ygrid = Ygrid, Xgrid = Xgrid,
-                hover = hover)
-}
-
 
 #'  Histogram Plot of the Residuals Values
 #' @export 
 #' @param forecast.obj A fitted or forecasted object (of the forecast package) with residuals output 
-
 #' @description Histogram plot of the residuals values 
 #' @examples
 #' \dontrun{
