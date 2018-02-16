@@ -1,6 +1,5 @@
 #'  Plotting Time Series Objects
 #' @export ts.plot_ly ts_plot
-#' @aliases  ts.plot_ly
 #' @description Visualization functions for time series object
 #' @param ts.obj A univariate or multivariate time series object of class "ts", "mts", "zoo" or "xts"
 #' @param line.mode A plotly argument, define the plot type, c("lines", "lines+markers", "markers")
@@ -210,18 +209,4 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
   } else{
     return(p)
   }
-}
-
-ts.plot_ly <- function(ts.obj, line.mode = "lines", width = 2, 
-                       dash = NULL, color = NULL, 
-                       slider = FALSE, type = "multiple",
-                       Xtitle = NULL, Ytitle = NULL, title = NULL,
-                       Xgrid = FALSE, Ygrid = FALSE){
-  # .Deprecated("ts_plot") 
-  print("The ts.plot_ly function will be deprecated on the next release, please use ts_plot instead")
-  ts_plot(ts.obj, line.mode = line.mode, width = width, 
-          dash = dash, color = color, 
-          slider = slider, type = type,
-          Xtitle = Xtitle, Ytitle = Ytitle, title = title,
-          Xgrid = Xgrid, Ygrid = Ygrid)
 }
