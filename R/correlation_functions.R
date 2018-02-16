@@ -147,8 +147,7 @@ return(p)
 }
 
 #'  A Visualization Function of the ACF Estimation
-#' @export acf_ly ts_acf
-#' @aliases acf_ly
+#' @export ts_acf
 #' @param ts.obj a univariate or multivariate time series object of class "ts", "mts", "zoo" or "xts"
 #' @param lag.max maximum lag at which to calculate the acf. Default is 10*log10(N/m) 
 #' where N is the number of observations and m the number of series. 
@@ -288,15 +287,9 @@ ts_acf <- function(ts.obj, lag.max = NULL, ci = 0.95, color = NULL) {
   }
 
 
-acf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95, color = NULL) {
- # .Deprecated("ts_acf")
-  print("The acf_ly function will be deprecated on the next release, please use ts_acf instead")
-  ts_acf(ts.obj, lag.max = lag.max, ci = ci, color = color)
-}
 
 #'  A Visualization Function of the PACF Estimation
-#' @export pacf_ly ts_pacf
-#' @aliases pacf_ly
+#' @export ts_pacf
 #' @param ts.obj a univariate or multivariate time series object of class "ts", "mts", "zoo" or "xts"
 #' @param lag.max maximum lag at which to calculate the acf. Default is 10*log10(N/m) 
 #' where N is the number of observations and m the number of series. 
@@ -433,9 +426,3 @@ ts_pacf <- function(ts.obj, lag.max = NULL, ci = 0.95, color = NULL) {
   
   return(p)
   }
-
-pacf_ly <- function(ts.obj, lag.max = NULL, ci = 0.95, color = NULL) {
-  # .Deprecated("ts_pacf")
-  print("The pacf_ly function will be deprecated on the next release, please use ts_pacf instead")
-  ts_acf(ts.obj, lag.max = lag.max, ci = ci, color = color)
-}
