@@ -1,5 +1,5 @@
 #'  Plotting Time Series Objects
-#' @export ts.plot_ly ts_plot
+#' @export ts_plot
 #' @description Visualization functions for time series object
 #' @param ts.obj A univariate or multivariate time series object of class "ts", "mts", "zoo" or "xts"
 #' @param line.mode A plotly argument, define the plot type, c("lines", "lines+markers", "markers")

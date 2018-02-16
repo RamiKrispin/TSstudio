@@ -1,6 +1,5 @@
 #'  Seasonality Visualization of Time Series Object
-#' @export seasonal_ly ts_seasonal
-#' @aliases seasonal_ly
+#' @export ts_seasonal
 #' @param ts.obj a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)
 #' @param type The type of the seasonal plot - 
 #' "normal" to split the series by full cycle units, or
@@ -127,14 +126,6 @@ p <- seasonal_sub(df = df, type = type, Xgrid = Xgrid, Ygrid = Ygrid)
 }
   return(p)
 }
-
-seasonal_ly <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE) {
-  # .Deprecated("ts_seasonal")
-  print("The seasonal_ly function will be deprecated on the next release, please use ts_seasonal instead")
-  ts_seasonal(ts.obj, type = type, Ygrid = Ygrid, Xgrid = Xgrid)
-}
-
-
 
 #'  Polor Plot for Time Series Object
 #' @export
