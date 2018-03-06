@@ -110,10 +110,6 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
           } else {
             df <- base::data.frame(date = ts.obj[, date_col], ts.obj[, numeric_col])
           }
-          
-          if(base::length(date_col) > 1){
-            warning("The data frame has more than one 'date' object, using the first date object")
-          }
         }
         
       } else{
