@@ -92,9 +92,9 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
     if(base::dim(ts.obj)[2] > 1){
       dim_flag <- TRUE
       if(stats::is.mts(ts.obj)){
-        df <- data.frame(date = stats::time(ts.obj), as.data.frame(ts.obj))
+        df <- base::data.frame(date = stats::time(ts.obj), as.data.frame(ts.obj))
       } else if(xts::is.xts(ts.obj) | zoo::is.zoo(ts.obj)){
-        df <- data.frame(date = zoo::index(ts.obj), as.data.frame(ts.obj))
+        df <- base::data.frame(date = zoo::index(ts.obj), as.data.frame(ts.obj))
       } else if(base::is.data.frame(ts.obj)){
         col_class <- base::lapply(ts.obj, class)
         if("Date" %in%  col_class){
