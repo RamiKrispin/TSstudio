@@ -99,6 +99,11 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
         col_class <- base::lapply(ts.obj, class)
         if("Date" %in%  col_class){
           date_col <- base::which(col_class == "Date")
+          if(length(date_col) >1){
+            warning("There are multipe 'date' objects in the data frame,",
+                    "using the first 'date' object in the data frame as the plot index")
+            date_col <- date_col[1]
+          }
           numeric_col <- base::which(col_class == "numeric" | col_class == "integer")
           if(base::length(numeric_col) == 0){
             stop("None of the data frame columns is numeric, please check if the data format is defined properly")
