@@ -27,6 +27,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
                       Xgrid = FALSE, Ygrid = FALSE){
   `%>%` <- magrittr::`%>%`
   df <- p <- plot_list <- dim_flag <- plot_list <- obj.name <- NULL 
+  col_class <- date_col <-  numeric_col <- NULL
   obj.name <- base::deparse(base::substitute(ts.obj))
   
   # Error handling
@@ -94,6 +95,22 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
         df <- data.frame(date = stats::time(ts.obj), as.data.frame(ts.obj))
       } else if(xts::is.xts(ts.obj) | zoo::is.zoo(ts.obj)){
         df <- data.frame(date = zoo::index(ts.obj), as.data.frame(ts.obj))
+      } else if(base::is.data.frame(ts.obj)){
+        col_class <- lapply(ts.obj, class)
+        if("Date" %in%  col_class){
+          date_col <- which(col_class == "Date")
+          numeric_col <- which(col_class == "numeric" | col_class == "integer")
+          if(length(numeric_col) == 0){
+            stop("None of the data frame columns is numeric, please check if the data format is defined properly")
+          } else {
+            df <- data.frame(date = ts.obj[, date_col], ts.obj[, numeric_col])
+          }
+          
+          if(length(date_col) > 1){
+            warning("The data frame has more than one 'date' object, using the first date object")
+          }
+        }
+        
       } else{
         stop('Invalid class \n Please make sure the object class is either "ts", "mts", "xts" or "zoo"') 
       }
