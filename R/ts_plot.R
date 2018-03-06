@@ -96,17 +96,17 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
       } else if(xts::is.xts(ts.obj) | zoo::is.zoo(ts.obj)){
         df <- data.frame(date = zoo::index(ts.obj), as.data.frame(ts.obj))
       } else if(base::is.data.frame(ts.obj)){
-        col_class <- lapply(ts.obj, class)
+        col_class <- base::lapply(ts.obj, class)
         if("Date" %in%  col_class){
-          date_col <- which(col_class == "Date")
-          numeric_col <- which(col_class == "numeric" | col_class == "integer")
-          if(length(numeric_col) == 0){
+          date_col <- base::which(col_class == "Date")
+          numeric_col <- base::which(col_class == "numeric" | col_class == "integer")
+          if(base::length(numeric_col) == 0){
             stop("None of the data frame columns is numeric, please check if the data format is defined properly")
           } else {
-            df <- data.frame(date = ts.obj[, date_col], ts.obj[, numeric_col])
+            df <- base::data.frame(date = ts.obj[, date_col], ts.obj[, numeric_col])
           }
           
-          if(length(date_col) > 1){
+          if(base::length(date_col) > 1){
             warning("The data frame has more than one 'date' object, using the first date object")
           }
         }
