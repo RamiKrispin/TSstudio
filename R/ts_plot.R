@@ -112,7 +112,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
         }
         
       } else{
-        stop('Invalid class \n Please make sure the object class is either "ts", "mts", "xts" or "zoo"') 
+        stop('Invalid class \n Please make sure the object class is either "ts", "mts", "xts", "zoo" or data frame with date object') 
       }
     } else {
       dim_flag <- FALSE
