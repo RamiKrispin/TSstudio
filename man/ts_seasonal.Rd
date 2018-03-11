@@ -8,7 +8,9 @@ ts_seasonal(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE)
 }
 \arguments{
 \item{ts.obj}{a univariate time series object of a class "ts", "zoo", or "xts" 
-#' (support only series with either monthly or quarterly frequency). Also, this function support data frame objects with at least one "Date" and "numeric" objects (if there are more, by defualt will use the first of each)}
+(support only series with either monthly or quarterly frequency). 
+Also, this function supports data frame objects as long as there is at least one "Date" and "numeric" objects 
+(if there are more, by defualt will use the first of each)}
 
 \item{type}{The type of the seasonal plot - 
 "normal" to split the series by full cycle units, or
