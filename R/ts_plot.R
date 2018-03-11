@@ -59,14 +59,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
     Ytitle <- ""
   }
   
-  if(!base::is.null(title)){
-    if(!is.character(title)){
-      warning("The value of the 'title' is not valid")
-      title <- ""
-    } 
-  } else {
-    title <- ""
-  }
+
   if(line.mode != "lines" & 
      line.mode != "lines+markers" & 
      line.mode != "markers"){
@@ -101,12 +94,13 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
           date_col <- base::which(col_class == "Date")
           if(length(date_col) >1){
             warning("There are multipe 'date' objects in the data frame,",
-                    "using the first 'date' object in the data frame as the plot index")
+                    "using the first 'date' object as the plot index")
             date_col <- date_col[1]
           }
           numeric_col <- base::which(col_class == "numeric" | col_class == "integer")
           if(base::length(numeric_col) == 0){
-            stop("None of the data frame columns is numeric, please check if the data format is defined properly")
+            stop("None of the data frame columns is numeric,", 
+                 "please check if the data format is defined properly")
           } else {
             df <- base::data.frame(date = ts.obj[, date_col], ts.obj[, numeric_col])
           }
@@ -202,23 +196,21 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
     if(!base::is.null(p) & slider){
       p <- p %>% 
         plotly::layout(
-          title = obj.name,
-          yaxis = list(title = Ytitle, showgrid = Ygrid),
-          xaxis = list(
-            title = Xtitle, showgrid = Xgrid,
-            rangeslider = list(type = "date"))
+          xaxis = list(rangeslider = list(type = "date"))
         )
-    } else if(!base::is.null(p) & !slider){
-          p <- p %>% 
-          plotly::layout(
-            xaxis = list(title = Xtitle, showgrid = Xgrid),
-            yaxis = list(title = Ytitle, showgrid = Ygrid),
-          title = obj.name
-          )
-      }
+      
+    } 
+    
+    p <- p %>% 
+      plotly::layout(
+        xaxis = list(title = Xtitle, showgrid = Xgrid),
+        yaxis = list(title = Ytitle, showgrid = Ygrid)
+      )
   }
-  
-  if(!base::is.null(title)){
+
+  if(base::is.null(title)){
+    p <- p %>% plotly::layout(title = obj.name)
+  } else {
     p <- p %>% plotly::layout(title = title)
   }
   
