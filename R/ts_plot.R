@@ -80,41 +80,67 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
     warning("The value of 'type' is not valid, using the default option - 'multiple'")
     type <- "multiple"
   }
-  # Check if it is a multiple time series  
-  if(!base::is.null(base::dim(ts.obj))){
-    if(base::dim(ts.obj)[2] > 1){
-      dim_flag <- TRUE
-      if(stats::is.mts(ts.obj)){
-        df <- base::data.frame(date = stats::time(ts.obj), as.data.frame(ts.obj))
-      } else if(xts::is.xts(ts.obj) | zoo::is.zoo(ts.obj)){
-        df <- base::data.frame(date = zoo::index(ts.obj), as.data.frame(ts.obj))
-      } else if(base::is.data.frame(ts.obj)){
-        col_class <- base::lapply(ts.obj, class)
-        if("Date" %in%  col_class){
-          date_col <- base::which(col_class == "Date")
-          if(length(date_col) >1){
-            warning("There are multipe 'date' objects in the data frame,",
-                    "using the first 'date' object as the plot index")
-            date_col <- date_col[1]
-          }
-          numeric_col <- base::which(col_class == "numeric" | col_class == "integer")
-          if(base::length(numeric_col) == 0){
-            stop("None of the data frame columns is numeric,", 
-                 "please check if the data format is defined properly")
-          } else {
-            df <- base::data.frame(date = ts.obj[, date_col], ts.obj[, numeric_col])
-          }
-        }
-        
-      } else{
-        stop('Invalid class \n Please make sure the object class is either "ts", "mts", "xts", "zoo" or data frame with date object') 
-      }
+ 
+  
+  
+  if(stats::is.ts(ts.obj)){# Case 1 the object is a time series 
+    # Check if the object has multiple time series
+    if(stats::is.mts(ts.obj)){
+      dim_flag <- TRUE # If multiple time series object, flag it
     } else {
       dim_flag <- FALSE
-    } 
-  }  else {
-    dim_flag <- FALSE
+    }
+    # Create the data frame
+    df <- data.frame(date = stats::time(ts.obj), y = as.numeric(ts.obj))
+    
+  } else if(zoo::is.zoo(ts.obj) | xts::is.xts(ts.obj)) { # Case 2 the object is either a zoo or xts object
+    # Check if the object has multiple time series
+    if(base::dim(ts.obj)[2] > 1){
+      dim_flag <- TRUE
+    } else {
+      dim_flag <- FALSE
+    }
+    # Create the data frame
+    df <- base::data.frame(date = zoo::index(ts.obj), as.data.frame(ts.obj))
+    
+  } else if(base::is.data.frame(ts.obj)){ # Case 3 the object is a data frame 
+    # Identify the columns classes
+    col_class <- base::lapply(ts.obj, class)
+    # Check if Date object exist
+    if("Date" %in%  col_class){
+      date_col <- base::which(col_class == "Date")
+    } else {
+      stop("No 'Date' object available in the data frame,", 
+           "please check if the data format is defined properly")
+    }
+    
+    # If there is more than one Date object in the data frame will select the first one
+    if(length(date_col) >1){
+      warning("There are multipe 'date' objects in the data frame,",
+              "using the first 'date' object as the plot index")
+      date_col <- date_col[1]
+    }
+    # Identify the numeric/integer objects in the data frame  
+    numeric_col <- base::which(col_class == "numeric" | col_class == "integer")
+    # Stop if there is no any numeric values in the data frame, otherwise build the data frame 
+    if(base::length(numeric_col) == 0){
+      stop("None of the data frame columns is numeric,", 
+           "please check if the data format is defined properly")
+    }
+    
+    # Check if the object has multiple time series
+    if(length(numeric_col) == 1){
+      dim_flag <- FALSE
+      df <- base::data.frame(date = ts.obj[, date_col], y =  ts.obj[, numeric_col])
+    } else {
+      dim_flag <- TRUE
+      df <- base::data.frame(date = ts.obj[, date_col], ts.obj[, numeric_col])
+    }
+  } else{
+    stop('Invalid class \n Please make sure the object class is either',  
+         '"ts", "mts", "xts", "zoo" or data frame with date object') 
   } 
+  
   
   if(dim_flag){
     if(type == "single"){
@@ -126,8 +152,8 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
                              type = 'scatter')
       }
       p <- p %>% plotly::layout(
-        xaxis = list(title = "Date", showgrid = Xgrid),
-        yaxis = list(title = obj.name, showgrid = Ygrid)
+        xaxis = list(title = Xtitle, showgrid = Xgrid),
+        yaxis = list(title = Ytitle, showgrid = Ygrid)
         
       )
       if(!base::is.null(p) & slider){
@@ -146,13 +172,13 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
                                     type = 'scatter'
         )%>% 
           plotly::layout(
-            xaxis = list(title = "Date", showgrid = Xgrid),
+            xaxis = list(title = Xtitle, showgrid = Xgrid),
             yaxis = list(title = names(df)[i], showgrid = Ygrid)
           )
       }
       
       p <- plotly::subplot(plot_list, nrows = ncol(df) - 1,
-                   titleY = TRUE,
+                   titleY = TRUE, titleX = TRUE, shareX = TRUE,
                    margin = 0.05) %>%
         plotly::hide_legend()
       if(!base::is.null(p) & slider){
@@ -160,14 +186,8 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
       }
       
     }
-  } else{
-    if(zoo::is.zoo(ts.obj) | xts::is.xts(ts.obj)){
-      df <- data.frame(date = zoo::index(ts.obj), y = as.numeric(ts.obj))
-    } else if (stats::is.ts(ts.obj)){
-      df <- data.frame(date = stats::time(ts.obj), y = as.numeric(ts.obj))
-    } else {
-      stop('Invalid class \n Please make sure the object class is either "ts", "mts", "xts" or "zoo"')
-    }
+  } else {
+    
     p <-  switch (line.mode,
                   "markers" = {
                     plotly::plot_ly(data = df, x = ~ date, y = ~y, 
