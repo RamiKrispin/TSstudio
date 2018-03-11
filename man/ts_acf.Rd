@@ -2,7 +2,6 @@
 % Please edit documentation in R/correlation_functions.R
 \name{ts_acf}
 \alias{ts_acf}
-\alias{acf_ly}
 \title{A Visualization Function of the ACF Estimation}
 \usage{
 ts_acf(ts.obj, lag.max = NULL, ci = 0.95, color = NULL)

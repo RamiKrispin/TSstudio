@@ -2,13 +2,13 @@
 % Please edit documentation in R/ts_seasonal.R
 \name{ts_seasonal}
 \alias{ts_seasonal}
-\alias{seasonal_ly}
 \title{Seasonality Visualization of Time Series Object}
 \usage{
 ts_seasonal(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE)
 }
 \arguments{
-\item{ts.obj}{a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)}
+\item{ts.obj}{a univariate time series object of a class "ts", "zoo", or "xts" 
+#' (support only series with either monthly or quarterly frequency). Also, this function support data frame objects with at least one "Date" and "numeric" objects (if there are more, by defualt will use the first of each)}
 
 \item{type}{The type of the seasonal plot - 
 "normal" to split the series by full cycle units, or

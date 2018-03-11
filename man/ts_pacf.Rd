@@ -2,7 +2,6 @@
 % Please edit documentation in R/correlation_functions.R
 \name{ts_pacf}
 \alias{ts_pacf}
-\alias{pacf_ly}
 \title{A Visualization Function of the PACF Estimation}
 \usage{
 ts_pacf(ts.obj, lag.max = NULL, ci = 0.95, color = NULL)

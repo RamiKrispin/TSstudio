@@ -2,7 +2,6 @@
 % Please edit documentation in R/ts_plot.R
 \name{ts_plot}
 \alias{ts_plot}
-\alias{ts.plot_ly}
 \title{Plotting Time Series Objects}
 \usage{
 ts_plot(ts.obj, line.mode = "lines", width = 2, dash = NULL,
