@@ -122,13 +122,6 @@ ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE) {
                            value = df1$value) 
          
         }
-        
-        
-      }
-      
-      if(base::length(date_col) > 1){
-        warning("The data frame has more than one 'date' object, using the first date object")
-        date_col <- date_col[1]
       }
     }
     
