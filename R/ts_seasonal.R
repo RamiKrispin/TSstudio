@@ -22,8 +22,8 @@
 ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE) {
   
   `%>%` <- magrittr::`%>%`
-  df <- df_wide <- p <- obj.name <- NULL
-  
+  df <- df1 <- df_wide <- p <- obj.name <- NULL
+  diff_mean <- col_class <- date_col <-  numeric_col <- NULL
   obj.name <- base::deparse(base::substitute(ts.obj))
   # Error handling
   if(type != "normal" & type != "cycle" & 
@@ -33,6 +33,7 @@ ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE) {
             "using the default option - 'normal'")
   }
   
+  # Case the input is a time series object
   if (stats::is.ts(ts.obj)) {
     if (stats::is.mts(ts.obj)) {
       warning("The 'ts.obj' has multiple columns, only the first column will be plot")
@@ -79,7 +80,59 @@ ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE) {
            "the function support only 'monthly' or 'quarterly' frequencies")
     }
     
-  }
+  } else if(base::is.data.frame(ts.obj)){
+    col_class <- base::lapply(ts.obj, class)
+    if("Date" %in%  col_class){
+      date_col <- base::which(col_class == "Date")
+      if(length(date_col) >1){
+        warning("There are multipe 'date' objects in the data frame,",
+                "using the first 'date' object in the data frame as the plot index")
+        date_col <- date_col[1]
+      }
+      numeric_col <- base::which(col_class == "numeric" | col_class == "integer")
+      if(base::length(numeric_col) == 0){
+        stop("None of the data frame columns is numeric,",
+             "please check if the data format is defined properly")
+      } else {
+        if(length(numeric_col) > 1){
+          warning("There are more than one columns with numeric values,",
+                  "only the first numeric column will be plot")
+          numeric_col <- numeric_col[1]
+        }
+        
+        
+        df1 <- base::data.frame(date = ts.obj[, date_col], value = ts.obj[, numeric_col])
+        df1$date_lag <- c(df1$date[-1], NA)
+        df1$dif <- df1$date - df1$date_lag 
+         
+        diff_mean <- mean(df1$dif, na.rm = TRUE)
+        
+        if(diff_mean >= 28 & diff_mean <= 31 ){
+          
+          df <- data.frame(dec_left = lubridate::year(df1$date), 
+                           dec_right = lubridate::month(df1$date), 
+                           value = df1$value) 
+          df$dec_right <- base::factor(df$dec_right,
+                                       levels = base::unique(df$dec_right),
+                                       labels = base::month.abb[as.numeric(base::unique(df$dec_right))])
+        }else  if(diff_mean >= 89 & diff_mean <= 92 ){
+          
+          df <- data.frame(dec_left = lubridate::year(df1$date), 
+                           dec_right = paste("Qr.", lubridate::quarter(df1$date), sep = " ") , 
+                           value = df1$value) 
+         
+        }
+        
+        
+      }
+      
+      if(base::length(date_col) > 1){
+        warning("The data frame has more than one 'date' object, using the first date object")
+        date_col <- date_col[1]
+      }
+    }
+    
+  } 
 seasonal_sub <- function(df, type, Xgrid, Ygrid){  
   p <- NULL
   if(type == "normal"){
