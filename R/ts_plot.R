@@ -102,7 +102,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
     } else {
       dim_flag <- FALSE
       # Create the data frame
-      df <- base::data.frame(date = zoo::index(ts.obj), y = as.data.frame(ts.obj))
+      df <- base::data.frame(date = zoo::index(ts.obj), y = as.numeric(ts.obj))
     }
     
     
