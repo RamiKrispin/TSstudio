@@ -33,7 +33,7 @@ devtools::install_github("RamiKrispin/TSstudio")
 
 ### Visualization of time series objects with the ts_plot function
 
-```{r fig.height=5, fig.width=8 , message=FALSE, warning=FALSE}
+```{r fig.height=5, fig.width=8, message=FALSE, warning=FALSE, include=TRUE}
 library(TSstudio)
 library(xts)
 library(zoo)
@@ -42,12 +42,13 @@ library(quantmod)
 tckrs <- c("GOOGL", "FB", "AAPL", "MSFT")
 getSymbols(tckrs, 
            from = "2013-01-01",
-           src = "yahoo")
+           src = "yahoo"
+           )
 
 # Visual Google closing price since 2013
 Google <- GOOGL$GOOGL.Close
 class(Google)
-
+head(Google)
 # Basic plot
 ts_plot(Google)
 
