@@ -17,7 +17,9 @@ Imports:
   magrittr (>= 1.5),
   xts (>= 0.10-1),
   zoo (>= 1.8-0),
-  forecast (>= 8.2)
+  forecast (>= 8.2),
+  RColorBrewer(>= 1.1-2),
+  colormap(>= 0.1.4)
 Suggests:
     knitr,
     rmarkdown,
