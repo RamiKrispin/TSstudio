@@ -151,13 +151,13 @@ ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE, t
       df_wide <- reshape2::dcast(df, dec_left ~ dec_right)
     }
     if(freq == "monthly"){
-      color_ramp <- c(brewer.pal(6,"Dark2"), brewer.pal(6,"Set2"))
+      color_ramp <- c(RColorBrewer::brewer.pal(6,"Dark2"), RColorBrewer::brewer.pal(6,"Set2"))
       # color_ramp <- colormap::colormap(colormap=colormaps$temperature, nshades= ncol(df_wide))  
       # color_ramp <- colorspace::diverge_hsv(n = 12)
     # color_ramp <- colormap::colormap_pal()(ncol(df_wide))
       # color_ramp <- colorspace::heat_hcl(12, c = c(100,30), l = c(30,90), power = c(1/5, 1.5))
     } else if(freq == "quarterly"){
-      color_ramp <- brewer.pal(4,"Dark2")
+      color_ramp <- RColorBrewer::brewer.pal(4,"Dark2")
     }
     if(type == "normal"){
       color_ramp <- colormap::colormap_pal()(ncol(df_wide))
