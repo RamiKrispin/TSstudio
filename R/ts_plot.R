@@ -95,11 +95,15 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
     
   } else if(zoo::is.zoo(ts.obj) | xts::is.xts(ts.obj)) { # Case 2 the object is either a zoo or xts object
     # Check if the object has multiple time series
-    if(base::dim(ts.obj)[2] > 1){
+    if(base::is.null(base::dim(ts.obj))){
+      dim_flag <- FALSE
+      # Create the data frame
+      df <- base::data.frame(date = zoo::index(ts.obj), y = as.numeric(ts.obj))
+    } else if(base::dim(ts.obj)[2] > 1){
       dim_flag <- TRUE
       # Create the data frame
       df <- base::data.frame(date = zoo::index(ts.obj), as.data.frame(ts.obj))
-    } else {
+    } else if(base::dim(ts.obj)[2] ==1 ){
       dim_flag <- FALSE
       # Create the data frame
       df <- base::data.frame(date = zoo::index(ts.obj), y = as.numeric(ts.obj))
