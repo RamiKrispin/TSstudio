@@ -22,12 +22,20 @@
 
 
 
-ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE) {
+ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE, title = NULL) {
   
   `%>%` <- magrittr::`%>%`
   df <- df1 <- df_wide <- p <- obj.name <- NULL
   diff_mean <- col_class <- date_col <-  numeric_col <- NULL
   obj.name <- base::deparse(base::substitute(ts.obj))
+  # Set the plot title
+  if(base::is.null(title)){
+  title <- paste("Seasonality Plot -", obj.name, sep = " ")
+  } else if(!base::is.character(title)){
+    warning("The 'title' object is not character object, using the default option")
+    title <- paste("Seasonality Plot -", obj.name, sep = " ")
+    }
+  
   # Error handling
   if(type != "normal" & type != "cycle" & 
      type != "box" & type != "all" ){
@@ -43,12 +51,14 @@ ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE) {
       ts.obj <- ts.obj[, 1]
     }
     df <- base::data.frame(dec_left = floor(stats::time(ts.obj)), 
-                     dec_right = stats::cycle(ts.obj), value = base::as.numeric(ts.obj))
+                           dec_right = stats::cycle(ts.obj), value = base::as.numeric(ts.obj))
     if(stats::frequency(ts.obj) == 12){
+      freq <- "monthly"
       df$dec_right <- base::factor(df$dec_right,
-                             levels = base::unique(df$dec_right),
-                             labels = base::month.abb[as.numeric(base::unique(df$dec_right))])
+                                   levels = base::unique(df$dec_right),
+                                   labels = base::month.abb[as.numeric(base::unique(df$dec_right))])
     } else if(stats::frequency(ts.obj) == 4){
+      freq <- "quarterly"
       df$dec_right <- base::paste("Qr.", df$dec_right, sep = " ")
     } else {
       stop("The frequency of the series is invalid, ",
@@ -64,20 +74,20 @@ ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE) {
     freq <- xts::periodicity(ts.obj)[[6]]
     if (freq == "quarterly") {
       df <- base::data.frame(dec_left = lubridate::year(ts.obj), 
-                       dec_right = lubridate::quarter(ts.obj), 
-                       value = as.numeric(ts.obj))
+                             dec_right = lubridate::quarter(ts.obj), 
+                             value = as.numeric(ts.obj))
     } else if (freq == "monthly") {
       df <- base::data.frame(dec_left = lubridate::year(ts.obj), 
-                       dec_right = lubridate::month(ts.obj), value = as.numeric(ts.obj))
+                             dec_right = lubridate::month(ts.obj), value = as.numeric(ts.obj))
       df$dec_right <- base::factor(df$dec_right,
                                    levels = base::unique(df$dec_right),
                                    labels = base::month.abb[as.numeric(base::unique(df$dec_right))])
-    # } else if (freq == "weekly") {
-    #   df <- data.frame(dec_left = lubridate::year(ts.obj), 
-    #                    dec_right = lubridate::week(ts.obj), value = as.numeric(ts.obj))
-    # } else if (freq == "daily") {
-    #   df <- data.frame(dec_left = lubridate::month(ts.obj), 
-    #                    dec_right = lubridate::day(ts.obj), value = as.numeric(ts.obj))
+      # } else if (freq == "weekly") {
+      #   df <- data.frame(dec_left = lubridate::year(ts.obj), 
+      #                    dec_right = lubridate::week(ts.obj), value = as.numeric(ts.obj))
+      # } else if (freq == "daily") {
+      #   df <- data.frame(dec_left = lubridate::month(ts.obj), 
+      #                    dec_right = lubridate::day(ts.obj), value = as.numeric(ts.obj))
     } else if (freq != "quarterly" & freq != "monthly") {
       stop("The frequency of the series is invalid,",
            "the function support only 'monthly' or 'quarterly' frequencies")
@@ -107,11 +117,11 @@ ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE) {
         df1 <- base::data.frame(date = ts.obj[, date_col], value = ts.obj[, numeric_col])
         df1$date_lag <- c(df1$date[-1], NA)
         df1$dif <- df1$date - df1$date_lag 
-         
+        
         diff_mean <- mean(df1$dif, na.rm = TRUE)
         
         if(diff_mean >= 28 & diff_mean <= 31 ){
-          
+          freq <- "monthly"
           df <- data.frame(dec_left = lubridate::year(df1$date), 
                            dec_right = lubridate::month(df1$date), 
                            value = df1$value) 
@@ -119,60 +129,94 @@ ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE) {
                                        levels = base::unique(df$dec_right),
                                        labels = base::month.abb[as.numeric(base::unique(df$dec_right))])
         }else  if(diff_mean >= 89 & diff_mean <= 92 ){
-          
+          freq <- "quarterly"
           df <- data.frame(dec_left = lubridate::year(df1$date), 
                            dec_right = paste("Qr.", lubridate::quarter(df1$date), sep = " ") , 
                            value = df1$value) 
-         
+          
+        } else{
+          stop("Couldn't identify the frequency of the data frame, ", 
+               "please check if the  frequency of the date object is monthly or quarterly")
         }
       }
     }
     
   } 
-seasonal_sub <- function(df, type, Xgrid, Ygrid){  
-  p <- NULL
-  if(type == "normal"){
-    df_wide <- reshape2::dcast(df, dec_right ~ dec_left)
-  } else if(type == "cycle" | type == "box"){
-    df_wide <- reshape2::dcast(df, dec_left ~ dec_right)
+  seasonal_sub <- function(df, type, Xgrid, Ygrid, freq, title){  
+    p <- NULL
+    
+    if(type == "normal"){
+      df_wide <- reshape2::dcast(df, dec_right ~ dec_left)
+    } else if(type == "cycle" | type == "box"){
+      df_wide <- reshape2::dcast(df, dec_left ~ dec_right)
+    }
+    if(freq == "monthly"){
+      color_ramp <- c(brewer.pal(6,"Dark2"), brewer.pal(6,"Set2"))
+      # color_ramp <- colormap::colormap(colormap=colormaps$temperature, nshades= ncol(df_wide))  
+      # color_ramp <- colorspace::diverge_hsv(n = 12)
+    # color_ramp <- colormap::colormap_pal()(ncol(df_wide))
+      # color_ramp <- colorspace::heat_hcl(12, c = c(100,30), l = c(30,90), power = c(1/5, 1.5))
+    } else if(freq == "quarterly"){
+      color_ramp <- brewer.pal(4,"Dark2")
+    }
+    if(type == "normal"){
+      color_ramp <- colormap::colormap_pal()(ncol(df_wide))
+      # color_ramp <- colormap::colormap(colormap=colormaps$temperature, nshades= ncol(df_wide))  
+        # color_ramp <- colormap::colormap_pal()(ncol(df_wide))
+      
+    }
+    
+    p <- plotly::plot_ly()
+    if(type == "box"){
+      for (f in 2:ncol(df_wide)) {
+        
+        p <- p %>% plotly::add_trace(y = df_wide[, f], 
+                                     type = "box", 
+                                     name = colnames(df_wide)[f],
+                                     boxpoints = "all", jitter = 0.3,
+                                     pointpos = -1.8,
+                                     marker = list(color = color_ramp[(f -1)]),
+                                     line = list(color = color_ramp[(f -1)])
+        )
+      }
+    } else if(type == "cycle"){
+      for (f in 2:ncol(df_wide)) {
+        p <- p %>% plotly::add_trace(x = df_wide[, 1], y = df_wide[, f], 
+                                     name = names(df_wide)[f], 
+                                     mode = "lines", 
+                                     type = "scatter",
+                                     line = list(color = color_ramp[(f -1)]))
+      }
+    } else if(type == "normal"){
+      for (f in 2:ncol(df_wide)) {
+        p <- p %>% plotly::add_trace(x = df_wide[, 1], y = df_wide[, f], 
+                                     name = names(df_wide)[f], 
+                                     mode = "lines", 
+                                     type = "scatter",
+                                     line = list(color = color_ramp[(f -1)]))
+                                     
+      }
+    }
+    p <- p %>% plotly::layout(title = title, 
+                              xaxis = list(title = "", autotick = F, 
+                                           showgrid = Xgrid, 
+                                           dtick = 1), 
+                              yaxis = list(title = obj.name, showgrid = Ygrid))
+    return(p)
   }
   
-  p <- plotly::plot_ly()
-  if(type == "box"){
-    for (f in 2:ncol(df_wide)) {
-    p <- p %>% plotly::add_trace(y = df_wide[, f], 
-                                 type = "box", 
-                                 name = colnames(df_wide)[f],
-                                 boxpoints = "all", jitter = 0.3,
-                                 pointpos = -1.8
-                                 )
-      }
-  } else{
-  for (f in 2:ncol(df_wide)) {
-    p <- p %>% plotly::add_trace(x = df_wide[, 1], y = df_wide[, f], 
-                                 name = names(df_wide)[f], 
-                                 mode = "lines", 
-                                 type = "scatter")
+  if(type != "all"){
+    p <- seasonal_sub(df = df, type = type, Xgrid = Xgrid, Ygrid = Ygrid, freq = freq, title = title)
+  } else {
+    n <- c <- b <- NULL
+    n <- seasonal_sub(df = df, type = "normal", Xgrid = Xgrid, Ygrid = Ygrid, freq = freq, title = title) %>% 
+      plotly::layout(yaxis = list(title = "By Year"))
+    c <- seasonal_sub(df = df, type = "cycle", Xgrid = Xgrid, Ygrid = Ygrid, freq = freq, title = title) %>% 
+      plotly::layout(yaxis = list(title = "By Month"))
+    b <- seasonal_sub(df = df, type = "box", Xgrid = Xgrid, Ygrid = Ygrid, freq = freq, title = title) %>% 
+      plotly::layout(yaxis = list(title = "By Month"))
+    p <- plotly::subplot(n,c,b, nrows = 3, titleY = T) %>% plotly::hide_legend()
   }
-  }
-  p <- p %>% plotly::layout(title = paste("Seasonality Plot -", obj.name, 
-                                          sep = " "), 
-                            xaxis = list(title = "", autotick = F, 
-                                         showgrid = Xgrid, 
-                                         dtick = 1), 
-                            yaxis = list(title = obj.name, showgrid = Ygrid))
-  return(p)
-}
-
-if(type != "all"){
-p <- seasonal_sub(df = df, type = type, Xgrid = Xgrid, Ygrid = Ygrid)
-} else {
-  n <- c <- b <- NULL
-  n <- seasonal_sub(df = df, type = "normal", Xgrid = Xgrid, Ygrid = Ygrid) %>% plotly::layout(yaxis = list(title = "By Year"))
-  c <- seasonal_sub(df = df, type = "cycle", Xgrid = Xgrid, Ygrid = Ygrid) %>% plotly::layout(yaxis = list(title = "By Month"))
-  b <- seasonal_sub(df = df, type = "box", Xgrid = Xgrid, Ygrid = Ygrid) %>% plotly::layout(yaxis = list(title = "By Month"))
-  p <- plotly::subplot(n,c,b, nrows = 3, titleY = T) %>% plotly::hide_legend()
-}
   return(p)
 }
 
@@ -349,7 +393,7 @@ ts_surface <- function(ts.obj) {
       scene = list(xaxis = list(title = "Years"),
                    yaxis= list(title = time_unit_up),
                    zaxis= list(title = "Value")
-                   )
+      )
     )
   
   
