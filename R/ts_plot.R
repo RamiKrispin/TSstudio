@@ -97,11 +97,14 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
     # Check if the object has multiple time series
     if(base::dim(ts.obj)[2] > 1){
       dim_flag <- TRUE
+      # Create the data frame
+      df <- base::data.frame(date = zoo::index(ts.obj), as.data.frame(ts.obj))
     } else {
       dim_flag <- FALSE
+      # Create the data frame
+      df <- base::data.frame(date = zoo::index(ts.obj), y = as.data.frame(ts.obj))
     }
-    # Create the data frame
-    df <- base::data.frame(date = zoo::index(ts.obj), as.data.frame(ts.obj))
+    
     
   } else if(base::is.data.frame(ts.obj)){ # Case 3 the object is a data frame 
     # Identify the columns classes
