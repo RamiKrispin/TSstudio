@@ -4,10 +4,11 @@
 \alias{ts_seasonal}
 \title{Seasonality Visualization of Time Series Object}
 \usage{
-ts_seasonal(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE)
+ts_seasonal(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE,
+  title = NULL)
 }
 \arguments{
-\item{ts.obj}{a univariate time series object of a class "ts", "zoo", or "xts" 
+\item{ts.obj}{A univariate time series object of a class "ts", "zoo", or "xts" 
 (support only series with either monthly or quarterly frequency). 
 Also, this function supports data frame objects as long as there is at least one "Date" and "numeric" objects 
 (if there are more, by defualt will use the first of each)}
@@ -18,9 +19,11 @@ Also, this function supports data frame objects as long as there is at least one
 "box" for box-plot by cycle units, or
 "all" for all the three plots together}
 
-\item{Ygrid}{logic,show the Y axis grid if set to TRUE}
+\item{Ygrid}{Logic,show the Y axis grid if set to TRUE}
 
-\item{Xgrid}{logic,show the X axis grid if set to TRUE}
+\item{Xgrid}{Logic,show the X axis grid if set to TRUE}
+
+\item{title}{Plot title - Character object}
 }
 \description{
 Visualize time series object by it periodicity, currently support only monthly and quarterly frequency
