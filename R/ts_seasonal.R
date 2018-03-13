@@ -1,6 +1,6 @@
 #'  Seasonality Visualization of Time Series Object
 #' @export ts_seasonal
-#' @param ts.obj a univariate time series object of a class "ts", "zoo", or "xts" 
+#' @param ts.obj A univariate time series object of a class "ts", "zoo", or "xts" 
 #' (support only series with either monthly or quarterly frequency). 
 #' Also, this function supports data frame objects as long as there is at least one "Date" and "numeric" objects 
 #' (if there are more, by defualt will use the first of each)
@@ -9,8 +9,9 @@
 #' "cycle" to split by cycle units, or
 #' "box" for box-plot by cycle units, or
 #' "all" for all the three plots together
-#' @param Ygrid logic,show the Y axis grid if set to TRUE
-#' @param Xgrid logic,show the X axis grid if set to TRUE
+#' @param Ygrid Logic,show the Y axis grid if set to TRUE
+#' @param Xgrid Logic,show the X axis grid if set to TRUE
+#' @param title Plot title - Character object
 #' @description Visualize time series object by it periodicity, currently support only monthly and quarterly frequency
 #' @examples
 #' data(USgas)
