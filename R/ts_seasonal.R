@@ -103,7 +103,11 @@ ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE, t
                 "using the first 'date' object in the data frame as the plot index")
         date_col <- date_col[1]
       }
-      numeric_col <- base::which(col_class == "numeric" | col_class == "integer")
+    } else {
+      stop("None of the data frame columns is 'Date' object,",
+           "please check if the data format is defined properly")
+    }
+    numeric_col <- base::which(col_class == "numeric" | col_class == "integer")
       if(base::length(numeric_col) == 0){
         stop("None of the data frame columns is numeric,",
              "please check if the data format is defined properly")
@@ -113,11 +117,12 @@ ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE, t
                   "only the first numeric column will be plot")
           numeric_col <- numeric_col[1]
         }
+      }
         
         
         df1 <- base::data.frame(date = ts.obj[, date_col], value = ts.obj[, numeric_col])
         df1$date_lag <- c(NA, as.Date(df1$date[-nrow(df1)]))
-        df1$dif <- df1$date - as.Date(df1$date_lag)
+        df1$dif <- df1$date - as.Date(df1$date_lag,  origin= "1970-01-01")
         
         diff_mean <- mean(df1$dif, na.rm = TRUE)
         
@@ -140,9 +145,8 @@ ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE, t
                "please check if the  frequency of the date object is monthly or quarterly")
         }
       }
-    }
+
     
-  } 
   seasonal_sub <- function(df, type, Xgrid, Ygrid, freq, title){  
     p <- NULL
     
