@@ -19,7 +19,8 @@ Imports:
   zoo (>= 1.8-0),
   forecast (>= 8.2),
   RColorBrewer(>= 1.1-2),
-  colormap(>= 0.1.4)
+  colormap(>= 0.1.4),
+  bsts(>= 0.7.1)
 Suggests:
     knitr,
     rmarkdown,
