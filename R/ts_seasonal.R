@@ -116,8 +116,8 @@ ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE, t
         
         
         df1 <- base::data.frame(date = ts.obj[, date_col], value = ts.obj[, numeric_col])
-        df1$date_lag <- c(df1$date[-1], NA)
-        df1$dif <- df1$date - df1$date_lag 
+        df1$date_lag <- c(NA, as.Date(df1$date[-nrow(df1)]))
+        df1$dif <- df1$date - as.Date(df1$date_lag)
         
         diff_mean <- mean(df1$dif, na.rm = TRUE)
         
