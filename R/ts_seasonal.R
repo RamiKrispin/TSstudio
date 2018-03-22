@@ -12,6 +12,7 @@
 #' @param Ygrid Logic,show the Y axis grid if set to TRUE
 #' @param Xgrid Logic,show the X axis grid if set to TRUE
 #' @param title Plot title - Character object
+#' @param last Subset the data to the last number of observations
 #' @description Visualize time series object by it periodicity, currently support only monthly and quarterly frequency
 #' @examples
 #' data(USgas)
@@ -23,7 +24,7 @@
 
 
 
-ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE, title = NULL) {
+ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE, title = NULL, last = NULL) {
   
   `%>%` <- magrittr::`%>%`
   df <- df1 <- df_wide <- p <- obj.name <- NULL
@@ -35,9 +36,20 @@ ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE, t
   } else if(!base::is.character(title)){
     warning("The 'title' object is not character object, using the default option")
     title <- paste("Seasonality Plot -", obj.name, sep = " ")
-    }
+  }
+  
   
   # Error handling
+  if(!base::is.null(last)){
+  if(!base::is.numeric(last) | last <= 0){
+    stop("The 'last' parameter is not valid")
+  } else {
+        if(last != round(last)){
+          stop("The 'last' parameter is not integer")
+        }
+      }
+  }
+  
   if(type != "normal" & type != "cycle" & 
      type != "box" & type != "all" ){
     type <- "normal"
@@ -146,7 +158,11 @@ ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE, t
         }
       }
 
-    
+  if(!base::is.null(last)){
+  df <- df[(base::nrow(df) - last):base::nrow(df),]  
+  }
+  
+  
   seasonal_sub <- function(df, type, Xgrid, Ygrid, freq, title){  
     p <- NULL
     
