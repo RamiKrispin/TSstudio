@@ -22,7 +22,7 @@
 #' ts_seasonal(USgas, type = "box") 
 
 
-
+# The ts_seasonal function ####
 
 ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE, title = NULL, last = NULL) {
   
@@ -40,6 +40,7 @@ ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE, t
   
   
   # Error handling
+  # Checking the last parameter
   if(!base::is.null(last)){
   if(!base::is.numeric(last) | last <= 0){
     stop("The 'last' parameter is not valid")
@@ -333,18 +334,39 @@ ts_polar <- function(ts.obj, title = NULL, width = 600, height = 600,
 #'  Heatmap Plot for Time Series
 #' @export
 #' @param ts.obj a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)
+#' @param last Subset the data to the last number of observations
 #' @description Heatmap plot for time series object by it periodicity (currently support only monthly and quarterly frequency)
 #' @examples
 #' data(USgas)
 #' ts_heatmap(USgas) 
 
-ts_heatmap <- function(ts.obj) {
+# The ts_seasonal function ####
+
+ts_heatmap <- function(ts.obj, last = NULL) {
   
   `%>%` <- magrittr::`%>%`
   df <-  p <- obj.name <-  NULL
   
+  # Checking the last parameter
+  if(!base::is.null(last)){
+    if(!base::is.numeric(last) | last <= 0){
+      stop("The 'last' parameter is not valid")
+    } else {
+      if(last != round(last)){
+        stop("The 'last' parameter is not integer")
+      }
+    }
+  }
+  
   obj.name <- base::deparse(base::substitute(ts.obj))
   df <- TSstudio::ts_reshape(ts.obj, type = "wide")
+  
+  
+  if(!base::is.null(last)){
+    
+    df <- df[, c(1, (base::ncol(df) - base::ceiling(last / frequency(ts.obj))):ncol(df))]  
+  }
+  
   z <- base::as.matrix(df[, -1])
   z_text <- base::matrix(NA, nrow = nrow(z), ncol = ncol(z))
   time_unit <- base::trimws(base::names(df)[1])
