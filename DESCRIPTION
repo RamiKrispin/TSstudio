@@ -22,7 +22,6 @@ Imports:
   colormap(>= 0.1.4),
   bsts(>= 0.7.1),
   forecastHybrid(>= 2.0.10)
-  
 Suggests:
     knitr,
     rmarkdown,
