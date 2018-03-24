@@ -4,10 +4,12 @@
 \alias{ts_heatmap}
 \title{Heatmap Plot for Time Series}
 \usage{
-ts_heatmap(ts.obj)
+ts_heatmap(ts.obj, last = NULL)
 }
 \arguments{
 \item{ts.obj}{a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)}
+
+\item{last}{Subset the data to the last number of observations}
 }
 \description{
 Heatmap plot for time series object by it periodicity (currently support only monthly and quarterly frequency)

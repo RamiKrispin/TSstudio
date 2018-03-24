@@ -5,7 +5,7 @@
 \title{Seasonality Visualization of Time Series Object}
 \usage{
 ts_seasonal(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE,
-  title = NULL)
+  title = NULL, last = NULL)
 }
 \arguments{
 \item{ts.obj}{A univariate time series object of a class "ts", "zoo", or "xts" 
@@ -24,6 +24,8 @@ Also, this function supports data frame objects as long as there is at least one
 \item{Xgrid}{Logic,show the X axis grid if set to TRUE}
 
 \item{title}{Plot title - Character object}
+
+\item{last}{Subset the data to the last number of observations}
 }
 \description{
 Visualize time series object by it periodicity, currently support only monthly and quarterly frequency
