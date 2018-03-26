@@ -19,6 +19,7 @@
 #' data(USgas)
 #' ts_evaluate(USgas, periods = 12, h = 12)
 
+# the ts_evaluate function ####
 
 ts_evaluate <- function(ts.obj, models = "abehntw", periods = 6, error = "MAPE", h = 3){
 
@@ -26,12 +27,14 @@ ts_evaluate <- function(ts.obj, models = "abehntw", periods = 6, error = "MAPE",
   
 a <- model_list <- model_char <- color_ramp <- NULL
 
+# Define the model type
 for(s in 1:nchar(models)){
   if(!substr(models, s, s) %in% c("a", "w", "e", "n", "t", "b", "h")){
     stop("The 'models' argument is not valide")
   }
 }
 
+# Error handling
 if(!base::is.numeric(periods) | periods != base::round(periods) | periods <= 0){
   stop("The value of the 'periods' parameters is no valid")
 } else {
@@ -69,8 +72,9 @@ if(!error %in% c("MAPE", "RMSE")){
 
 
 
-
+# Define the plot colors
 color_ramp <- RColorBrewer::brewer.pal(base::nchar(models),"Dark2")
+
 model_char <-  base::unlist(base::strsplit(models, split = ""))
 
 
@@ -111,6 +115,7 @@ score_df <- data.frame(matrix(NA, ncol = length(model_list) + 1 , nrow = periods
 names(score_df) <- c("Period", model_list)
 score_df$Period <- s:e - s + 1
 
+# Loop over the series
 for(i in s:e){
 
 ts.subset <- train <- test <- NULL
