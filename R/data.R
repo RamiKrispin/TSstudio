@@ -63,7 +63,7 @@
 #' Crude Oil Prices: Brent - Europe: 1987 - 2017.
 #' Units: Dollars per Barrel
 #' 
-#' @format Time series data - 'zoo'
+#' @format Time series data - 'zoo' object
 #' @source U.S. Energy Information Administration, Crude Oil Prices: Brent - Europe [MCOILBRENTEU], retrieved from FRED, Federal Reserve Bank of St. Louis; https://fred.stlouisfed.org/series/MCOILBRENTEU, January 8, 2018.
 #' @keywords datasets
 #' @examples
@@ -71,3 +71,16 @@
 #' ts_decompose(EURO_Brent, type = "both")
 
 "EURO_Brent"
+
+#' Coffee Prices: Robusta and Arabica 
+#' 
+#' CCoffee Prices: Robusta and Arabica: 1960 - 2018.
+#' Units: Dollars per Kg
+#' 
+#' @format Time series data - 'mts' object
+#' @source WIKI Commodity Prices - Quandle
+#' @keywords datasets
+#' @examples
+#' ts_plot(Coffee_Prices)
+
+"Coffee_Prices"
