@@ -4,7 +4,7 @@
 \name{EURO_Brent}
 \alias{EURO_Brent}
 \title{Crude Oil Prices: Brent - Europe}
-\format{Time series data - 'zoo'}
+\format{Time series data - 'zoo' object}
 \source{
 U.S. Energy Information Administration, Crude Oil Prices: Brent - Europe [MCOILBRENTEU], retrieved from FRED, Federal Reserve Bank of St. Louis; https://fred.stlouisfed.org/series/MCOILBRENTEU, January 8, 2018.
 }
