@@ -1,0 +1,9 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^README\.Rmd$
+^README-.*\.png$
+^NEWS\.md$
+^data-raw$
+^cran-comments\.md$
+^vignettes/gif
+^LICENSE

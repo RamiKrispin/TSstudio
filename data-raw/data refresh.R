@@ -19,3 +19,14 @@ devtools::use_data(Michigan_CS, overwrite = TRUE)
 # Crude Oil Prices: Brent - Europe
 EURO_Brent <- Quandl::Quandl("FRED/MCOILBRENTEU", collapse="monthly", type = "zoo")
 devtools::use_data(EURO_Brent, overwrite = TRUE)
+
+# Coffee Prices: Robusta and Arabica $ per kg
+`%>%` <- magrittr::`%>%`
+Robusta <- Quandl::Quandl("COM/WLD_COFFEE_ROBUS", collapse="monthly", type = "raw")
+Arabica <- Quandl::Quandl("COM/WLD_COFFEE_ARABIC", collapse="monthly", type = "raw")
+names(Robusta) <- c("date", "Robusta")
+names(Arabica) <- c("date", "Arabica")
+coffee <- Robusta %>% dplyr::left_join(Arabica) %>% dplyr::arrange(date)
+
+Coffee_Prices <- stats::ts(data = coffee[, c("Robusta", "Arabica")], start = c(lubridate::year(min(coffee$date)), lubridate::month(min(coffee$date))), frequency = 12)
+devtools::use_data(Coffee_Prices, overwrite = TRUE)

@@ -1,0 +1,8 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+inst/doc
+.TSstudio.Rproj
+.README.Rmd
+vignettes/TSstudio_intro_2.Rmd
