@@ -74,7 +74,7 @@
 
 #' Coffee Prices: Robusta and Arabica 
 #' 
-#' CCoffee Prices: Robusta and Arabica: 1960 - 2018.
+#' Coffee Prices: Robusta and Arabica: 1960 - 2018.
 #' Units: Dollars per Kg
 #' 
 #' @format Time series data - 'mts' object
@@ -84,3 +84,17 @@
 #' ts_plot(Coffee_Prices)
 
 "Coffee_Prices"
+
+#' US Key Indicators - data frame format
+#' 
+#' Monthly total vehicle sales and unemployment rate: 1976 - 2018.
+#' Units: Dollars per Kg
+#' 
+#' @format Time series data - 'data.frame' object
+#' @source U.S. Bureau of Economic Analysis, Total Vehicle Sales [TOTALNSA], retrieved from FRED, Federal Reserve Bank of St. Louis; https://fred.stlouisfed.org/series/TOTALNSA, January 7, 2018.
+#' U.S. Bureau of Labor Statistics, Civilian Unemployment Rate [UNRATENSA], retrieved from FRED, Federal Reserve Bank of St. Louis; https://fred.stlouisfed.org/series/UNRATENSA, January 6, 2018.
+#' @keywords datasets
+#' @examples
+#' ts_plot(US_indicators)
+
+"US_indicators"
