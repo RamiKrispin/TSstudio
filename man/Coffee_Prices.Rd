@@ -12,7 +12,7 @@ WIKI Commodity Prices - Quandle
 Coffee_Prices
 }
 \description{
-CCoffee Prices: Robusta and Arabica: 1960 - 2018.
+Coffee Prices: Robusta and Arabica: 1960 - 2018.
 Units: Dollars per Kg
 }
 \examples{
