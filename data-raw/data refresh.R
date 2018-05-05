@@ -29,8 +29,15 @@ names(Arabica) <- c("date", "Arabica")
 coffee <- Robusta %>% dplyr::left_join(Arabica) %>% dplyr::arrange(date)
 
 Coffee_Prices <- stats::ts(data = coffee[, c("Robusta", "Arabica")], start = c(lubridate::year(min(coffee$date)), lubridate::month(min(coffee$date))), frequency = 12)
-<<<<<<< HEAD
 devtools::use_data(Coffee_Prices, overwrite = TRUE)
-=======
-devtools::use_data(Coffee_Prices, overwrite = TRUE)
->>>>>>> 95173a5219ff35ec67c166528ec81786ef379800
+
+
+#Total US Vehicle Sales vs US Monthly Unemployment Rate data frame format
+USVSales_df <- Quandl::Quandl("FRED/TOTALNSA", collapse="monthly", type = "raw") 
+USUnRate_df <- Quandl::Quandl("FRED/UNRATENSA", collapse="monthly", type = "raw")
+names(USVSales_df) <- c("date", "Vehicle Sales")
+names(USUnRate_df) <- c("date", "Unemployment Rate")
+US_indicators <- USVSales_df %>% 
+                 dplyr::left_join(USUnRate_df) %>% 
+                 dplyr::arrange(date)
+devtools::use_data(US_indicators, overwrite = TRUE)
