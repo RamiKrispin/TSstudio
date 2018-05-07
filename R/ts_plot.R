@@ -87,11 +87,14 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
     # Check if the object has multiple time series
     if(stats::is.mts(ts.obj)){
       dim_flag <- TRUE # If multiple time series object, flag it
+      # Create the data frame
+      df <- data.frame(date = stats::time(ts.obj), as.numeric(ts.obj))
     } else {
       dim_flag <- FALSE
+      # Create the data frame
+      df <- data.frame(date = stats::time(ts.obj), y = as.numeric(ts.obj))
     }
-    # Create the data frame
-    df <- data.frame(date = stats::time(ts.obj), y = as.numeric(ts.obj))
+    
     
   } else if(zoo::is.zoo(ts.obj) | xts::is.xts(ts.obj)) { # Case 2 the object is either a zoo or xts object
     # Check if the object has multiple time series
