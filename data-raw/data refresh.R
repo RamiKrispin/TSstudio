@@ -35,9 +35,9 @@ devtools::use_data(Coffee_Prices, overwrite = TRUE)
 #Total US Vehicle Sales vs US Monthly Unemployment Rate data frame format
 USVSales_df <- Quandl::Quandl("FRED/TOTALNSA", collapse="monthly", type = "raw") 
 USUnRate_df <- Quandl::Quandl("FRED/UNRATENSA", collapse="monthly", type = "raw")
-names(USVSales_df) <- c("date", "Vehicle Sales")
-names(USUnRate_df) <- c("date", "Unemployment Rate")
+names(USVSales_df) <- c("Date", "Vehicle Sales")
+names(USUnRate_df) <- c("Date", "Unemployment Rate")
 US_indicators <- USVSales_df %>% 
                  dplyr::left_join(USUnRate_df) %>% 
-                 dplyr::arrange(date)
+                 dplyr::arrange(Date)
 devtools::use_data(US_indicators, overwrite = TRUE)
