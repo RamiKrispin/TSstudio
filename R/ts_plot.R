@@ -88,7 +88,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
     if(stats::is.mts(ts.obj)){
       dim_flag <- TRUE # If multiple time series object, flag it
       # Create the data frame
-      df <- data.frame(date = stats::time(ts.obj), as.numeric(ts.obj))
+      df <- data.frame(date = stats::time(ts.obj), ts.obj)
     } else {
       dim_flag <- FALSE
       # Create the data frame
