@@ -125,20 +125,25 @@ score_df <- data.frame(matrix(NA, ncol = length(model_list) + 1 , nrow = periods
 
 names(score_df) <- c("Period", model_list)
 score_df$Period <- s:e - s + 1
-
+modelOutput <- list()
 # Loop over the series
 for(i in s:e){
-
-ts.subset <- train <- test <- NULL
-ts.subset <- stats::window(ts.obj, start = time(ts.obj)[1], end = time(ts.obj)[i])
+period_name <- NULL
+period_name <- paste("period", (i - s + 1), sep = "_")
+  
+assign(period_name, list())
+ts.subset <- split_ts <- train <- test <- NULL
+ts.subset <- stats::window(ts.obj, start = stats::time(ts.obj)[1], end = stats::time(ts.obj)[i])
 split_ts <- TSstudio::ts_split(ts.subset, sample.out = h)
 train <- split_ts$train
 test <- split_ts$test
 
 if("a" %in% model_char){
-md1 <- forecast::auto.arima(train, stepwise = FALSE)
+md1 <- base::do.call(forecast::auto.arima, c(list(train), a.arg))
+# md1 <- forecast::auto.arima(train, stepwise = FALSE)
 fc1 <- forecast::forecast(md1, h = h)
 score_df$AUTO.ARIMA[i - s + 1] <-  base::round(forecast::accuracy(fc1,test)[a], 2)
+assign
 }
 
 if("w" %in% model_char){
