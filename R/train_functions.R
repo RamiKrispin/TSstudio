@@ -21,7 +21,18 @@
 
 # the ts_evaluate function ####
 
-ts_evaluate <- function(ts.obj, models = "abehntw", periods = 6, error = "MAPE", h = 3){
+ts_evaluate <- function(ts.obj, 
+                        models = "abehntw", 
+                        periods = 6, 
+                        error = "MAPE", 
+                        h = 3,
+                        a.arg = NULL,
+                        b.arg = NULL,
+                        e.arg = NULL,
+                        h.arg = NULL,
+                        n.arg = NULL,
+                        t.arg = NULL,
+                        w.arg = NULL){
 
 `%>%` <- magrittr::`%>%`
   
