@@ -222,7 +222,8 @@ for(r1 in 2:ncol(score_df)){
                                  line = list(color = color_ramp[(r1 -1)]))
 }
   
-p1 <- p1 %>% plotly::layout(xaxis = list(range = c(min(score_df$Period), max(score_df$Period))))
+p1 <- p1 %>% plotly::layout(xaxis = list(tickvals = score_df[, 1], ticktext = score_df[, 1],
+                                         range = c(min(score_df$Period), max(score_df$Period))))
 
 p2 <- plotly::plot_ly(data = score_df)
 
@@ -241,7 +242,7 @@ for(r2 in 2:base::ncol(score_df)){
 
 p1 <- p1 %>% plotly::layout(title = "Error by Period",
                             yaxis = list(title = error),
-                            xaxis = list(title = "Period"))
+                            xaxis = list(title = "Period", tickvals = score_df[, 1], ticktext = score_df[, 1]))
 p2 <- p2 %>% plotly::layout(title = "Error Distribution by Model",
                             yaxis = list(title = error))
 p3 <- plotly::subplot(p1, p2, nrows = 2, titleY = TRUE, titleX = TRUE, margin = 0.06)
@@ -252,6 +253,18 @@ print(p3)
 
 }
 }
+
+modelOutput$model_score <- score_df
+modelOutput$score_plot <- p3
+modelOutput$leaderboard <- x$model_score %>% reshape2::melt(id.vars = c("Period")) %>%
+  dplyr::group_by(variable) %>%
+  dplyr::summarise(avgMAPE = mean(value),
+                   sdMAPE = sd(value)) %>% 
+  dplyr::arrange(avgMAPE)
+
+
+
+
 return(modelOutput)
 }
 
