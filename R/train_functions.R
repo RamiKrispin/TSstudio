@@ -290,11 +290,11 @@ names(leaderboard)[1] <- "Model_Name"
 leaderboard$Model_Output <- NA
 leaderboard$Forecast <- NA
 
-
-for(l in 1:nrow(leaderboard)){
- eval(parse(text = paste("leaderboard$Model_Output[", l,  "] <- md_",leaderboard$Model_Name[l] ,sep = ""))) 
- eval(parse(text = paste("leaderboard$Forecast[", l,  "] <- fc_",leaderboard$Model_Name[l] ,sep = "")))  
-}
+# 
+# for(l in 1:nrow(leaderboard)){
+#  eval(parse(text = paste("leaderboard$Model_Output[", l,  "] <- md_",leaderboard$Model_Name[l] ,sep = ""))) 
+#  eval(parse(text = paste("leaderboard$Forecast[", l,  "] <- fc_",leaderboard$Model_Name[l] ,sep = "")))  
+# }
 
 modelOutput$leaderboard <- leaderboard
 return(modelOutput)
