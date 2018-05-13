@@ -129,9 +129,10 @@ modelOutput <- list()
 # Loop over the series
 for(i in s:e){
 period_name <- NULL
+
 period_name <- paste("period", (i - s + 1), sep = "_")
-  
-assign(period_name, list())
+eval(parse(text = paste("modelOutput$", period_name, "<- list()", sep = ""))) 
+
 ts.subset <- split_ts <- train <- test <- NULL
 ts.subset <- stats::window(ts.obj, start = stats::time(ts.obj)[1], end = stats::time(ts.obj)[i])
 split_ts <- TSstudio::ts_split(ts.subset, sample.out = h)
@@ -139,39 +140,48 @@ train <- split_ts$train
 test <- split_ts$test
 
 if("a" %in% model_char){
-md1 <- base::do.call(forecast::auto.arima, c(list(train), a.arg))
-# md1 <- forecast::auto.arima(train, stepwise = FALSE)
-fc1 <- forecast::forecast(md1, h = h)
-score_df$AUTO.ARIMA[i - s + 1] <-  base::round(forecast::accuracy(fc1,test)[a], 2)
-assign
+md <- fc <- NULL
+md <- base::do.call(forecast::auto.arima, c(list(train), a.arg))
+fc <- forecast::forecast(md, h = h)
+score_df$AUTO.ARIMA[i - s + 1] <-  base::round(forecast::accuracy(fc,test)[a], 2)
+eval(parse(text = paste("modelOutput$", period_name, "$auto.arima <- list(model = md, forecast = fc)", sep = ""))) 
 }
 
 if("w" %in% model_char){
-md2 <- stats::HoltWinters(train, alpha = 0.01, beta = 0.01, gamma = 0.01)
-fc2 <- forecast::forecast(md2, h = h)
-score_df$HoltWinters[i - s + 1] <- base::round(forecast::accuracy(fc2, test)[a], 2)
+md <- fc <- NULL
+md <- stats::HoltWinters(train, alpha = 0.01, beta = 0.01, gamma = 0.01)
+fc <- forecast::forecast(md, h = h)
+score_df$HoltWinters[i - s + 1] <- base::round(forecast::accuracy(fc, test)[a], 2)
+eval(parse(text = paste("modelOutput$", period_name, "$HoltWinters <- list(model = md, forecast = fc)", sep = ""))) 
 }
 
 if("e" %in% model_char){
-md3 <- forecast::ets(train)
-fc3 <- forecast::forecast(train, h = h)
-score_df$ETS[i - s + 1] <-  base::round(forecast::accuracy(fc3, test)[a], 2)
+md <- fc <- NULL
+md <- forecast::ets(train)
+fc <- forecast::forecast(train, h = h)
+score_df$ETS[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[a], 2)
+eval(parse(text = paste("modelOutput$", period_name, "$ets <- list(model = md, forecast = fc)", sep = "")))
 }
 
 
 if("n" %in% model_char){
-md4 <- forecast::nnetar(train)
-fc4 <- forecast::forecast(md4, h = h)
-score_df$NNETAR[i - s + 1] <-  base::round(forecast::accuracy(fc4, test)[a],2)
+md <- fc <- NULL
+md <- forecast::nnetar(train)
+fc <- forecast::forecast(md, h = h)
+score_df$NNETAR[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[a],2)
+eval(parse(text = paste("modelOutput$", period_name, "$nnetar <- list(model = md, forecast = fc)", sep = "")))
 }
 
 if("t" %in% model_char){
-md5 <- forecast::tbats(train)
-fc5 <- forecast::forecast(md5, h = h)
-score_df$TBATS[i - s + 1] <-  base::round(forecast::accuracy(fc5, test)[a], 2)
+md <- fc <- NULL
+md <- forecast::tbats(train)
+fc <- forecast::forecast(md, h = h)
+score_df$TBATS[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[a], 2)
+eval(parse(text = paste("modelOutput$", period_name, "$tbats <- list(model = md, forecast = fc)", sep = "")))
 }
 
 if("b" %in% model_char){
+md <- fc <- NULL
 train.bs <- base::data.frame(as.numeric(train))
 test.bs <- base::data.frame(as.numeric(test))
 base::names(train.bs) <- c("obj")
@@ -194,9 +204,10 @@ score_df$BSTS[i - s + 1] <- base::round(mean(100 * base::abs((pred - test) / pre
 }
 
 if("h" %in% model_char){
-  md6 <- forecastHybrid::hybridModel(train)
-  fc6 <- forecast::forecast(md6, h = h)
-  score_df$Hybrid[i - s + 1] <-  base::round(forecast::accuracy(fc6, test)[a], 2)
+  md <- forecastHybrid::hybridModel(train)
+  fc <- forecast::forecast(md, h = h)
+  eval(parse(text = paste("modelOutput$", period_name, "$hybrid <- list(model = md, forecast = fc)", sep = "")))
+  score_df$Hybrid[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[a], 2)
 }
 
 if((i -s + 1) > 1){
@@ -241,6 +252,6 @@ print(p3)
 
 }
 }
-return(p3)
+return(modelOutput)
 }
 
