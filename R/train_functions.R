@@ -36,7 +36,7 @@ ts_evaluate <- function(ts.obj,
 
 `%>%` <- magrittr::`%>%`
   
-a <- model_list <- model_char <- color_ramp <- NULL
+a <- model_list <- model_char <- color_ramp <- forecast_list <- NULL
 
 # Define the model type
 for(s in 1:nchar(models)){
@@ -87,34 +87,56 @@ if(!error %in% c("MAPE", "RMSE")){
 color_ramp <- RColorBrewer::brewer.pal(base::nchar(models),"Dark2")
 
 model_char <-  base::unlist(base::strsplit(models, split = ""))
-
-
+forecast_model <- NULL
+forecast_list <- NULL
 if("a" %in% model_char){
   model_list <- c(model_list, "AUTO.ARIMA")
+  md_AUTO.ARIMA <- fc_AUTO.ARIMA <- NULL
+  md_AUTO.ARIMA <- base::do.call(forecast::auto.arima, c(list(ts.obj), a.arg))
+  fc_AUTO.ARIMA <- forecast::forecast(md_AUTO.ARIMA, h = h)
+
 }
 
 if("w" %in% model_char){
   model_list <- c(model_list, "HoltWinters")
+  md_HoltWinters <- fc_HoltWinters <- NULL
+  md_HoltWinters <- base::do.call(stats::HoltWinters, c(list(ts.obj), w.arg))
+  fc_HoltWinters <- forecast::forecast(md_HoltWinters, h = h)
 }
 
 if("e" %in% model_char){
   model_list <- c(model_list, "ETS")
+  md_ETS <- fc_ETS <- NULL
+  md_ETS <- base::do.call(forecast::ets, c(list(ts.obj), e.arg))
+  fc_ETS <- forecast::forecast(md_ETS, h = h)
 }
 
 if("n" %in% model_char){
   model_list <- c(model_list, "NNETAR")
+  md_NNETAR <- fc_NNETAR <- NULL
+  md_NNETAR <- base::do.call(forecast::nnetar, c(list(ts.obj), n.arg))
+  fc_NNETAR <- forecast::forecast(md_NNETAR, h = h)
 }
 
 if("t" %in% model_char){
   model_list <- c(model_list, "TBATS")
+  md_TBATS <- fc_TBATS <- NULL
+  md_TBATS <- base::do.call(forecast::tbats, c(list(ts.obj), t.arg))
+  fc_TBATS <- forecast::forecast(md_TBATS, h = h)
 }
 
 if("b" %in% model_char){
   model_list <- c(model_list, "BSTS")
+  md_BSTS <- fc_BSTS <- NULL
+  md_BSTS <- base::do.call(forecast::auto.arima, c(list(ts.obj)))
+  fc_BSTS <- forecast::forecast(md_BSTS, h = h)
 }
 
 if("h" %in% model_char){
   model_list <- c(model_list, "Hybrid")
+  md_Hybrid <- fc <- NULL
+  md_Hybrid <- base::do.call(forecastHybrid::hybridModel, c(list(ts.obj), h.arg))
+  fc_Hybrid <- forecast::forecast(md_Hybrid, h = h)
 }
 
 
@@ -254,17 +276,27 @@ print(p3)
 }
 }
 
+
 modelOutput$model_score <- score_df
 modelOutput$score_plot <- p3
-modelOutput$leaderboard <- x$model_score %>% reshape2::melt(id.vars = c("Period")) %>%
+
+leaderboard <- modelOutput$model_score %>% reshape2::melt(id.vars = c("Period")) %>%
   dplyr::group_by(variable) %>%
   dplyr::summarise(avgMAPE = mean(value),
-                   sdMAPE = sd(value)) %>% 
+                   sdMAPE = sd(value)) %>%
   dplyr::arrange(avgMAPE)
+names(leaderboard)[1] <- "Model_Name"
+
+leaderboard$Model_Output <- NA
+leaderboard$Forecast <- NA
 
 
+for(l in 1:nrow(leaderboard)){
+ eval(parse(text = paste("leaderboard$Model_Output[", l,  "] <- md_",leaderboard$Model_Name[l] ,sep = ""))) 
+ eval(parse(text = paste("leaderboard$Forecast[", l,  "] <- fc_",leaderboard$Model_Name[l] ,sep = "")))  
+}
 
-
+modelOutput$leaderboard <- leaderboard
 return(modelOutput)
 }
 
