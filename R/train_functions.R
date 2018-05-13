@@ -81,19 +81,23 @@ if(!error %in% c("MAPE", "RMSE")){
   a <- 4
 }
 
-
+# Setting the output object
+modelOutput <- list()
 
 # Define the plot colors
 color_ramp <- RColorBrewer::brewer.pal(base::nchar(models),"Dark2")
 
 model_char <-  base::unlist(base::strsplit(models, split = ""))
-forecast_model <- NULL
-forecast_list <- NULL
+
+
+
 if("a" %in% model_char){
   model_list <- c(model_list, "AUTO.ARIMA")
   md_AUTO.ARIMA <- fc_AUTO.ARIMA <- NULL
   md_AUTO.ARIMA <- base::do.call(forecast::auto.arima, c(list(ts.obj), a.arg))
   fc_AUTO.ARIMA <- forecast::forecast(md_AUTO.ARIMA, h = h)
+  modelOutput$Models_Final <- list(auto.arima = md_AUTO.ARIMA)
+  modelOutput$Forecast_Final <- list(auto.arima = fc_AUTO.ARIMA)
 
 }
 
@@ -102,6 +106,8 @@ if("w" %in% model_char){
   md_HoltWinters <- fc_HoltWinters <- NULL
   md_HoltWinters <- base::do.call(stats::HoltWinters, c(list(ts.obj), w.arg))
   fc_HoltWinters <- forecast::forecast(md_HoltWinters, h = h)
+  modelOutput$Models_Final <- list(HoltWinters = md_HoltWinters)
+  modelOutput$Forecast_Final <- list(HoltWinters = fc_HoltWinters)
 }
 
 if("e" %in% model_char){
@@ -109,6 +115,8 @@ if("e" %in% model_char){
   md_ETS <- fc_ETS <- NULL
   md_ETS <- base::do.call(forecast::ets, c(list(ts.obj), e.arg))
   fc_ETS <- forecast::forecast(md_ETS, h = h)
+  modelOutput$Models_Final <- list(ETS = md_ETS)
+  modelOutput$Forecast_Final <- list(ETS = fc_ETS)
 }
 
 if("n" %in% model_char){
@@ -116,6 +124,8 @@ if("n" %in% model_char){
   md_NNETAR <- fc_NNETAR <- NULL
   md_NNETAR <- base::do.call(forecast::nnetar, c(list(ts.obj), n.arg))
   fc_NNETAR <- forecast::forecast(md_NNETAR, h = h)
+  modelOutput$Models_Final <- list(NNETAR = md_NNETAR)
+  modelOutput$Forecast_Final <- list(NNETAR = fc_NNETAR)
 }
 
 if("t" %in% model_char){
@@ -123,13 +133,24 @@ if("t" %in% model_char){
   md_TBATS <- fc_TBATS <- NULL
   md_TBATS <- base::do.call(forecast::tbats, c(list(ts.obj), t.arg))
   fc_TBATS <- forecast::forecast(md_TBATS, h = h)
+  modelOutput$Models_Final <- list(TBATS = md_TBATS)
+  modelOutput$Forecast_Final <- list(TBATS = fc_TBATS)
 }
 
 if("b" %in% model_char){
   model_list <- c(model_list, "BSTS")
-  md_BSTS <- fc_BSTS <- NULL
-  md_BSTS <- base::do.call(forecast::auto.arima, c(list(ts.obj)))
-  fc_BSTS <- forecast::forecast(md_BSTS, h = h)
+  md_BSTS <- fc_BSTS <- train.bs <- ss <- fit.bsts <- burn <-  NULL
+  train.bs <- base::data.frame(as.numeric(ts.obj))
+  base::names(train.bs) <- c("obj")
+  ss <- bsts::AddLocalLinearTrend(list(), train.bs$obj)
+  ss <- bsts::AddSeasonal(ss, train.bs$obj, nseasons = stats::frequency(ts.obj))
+  md_BSTS <- bsts::bsts(train.bs$obj, state.specification = ss, 
+                          niter = 700, ping=0, seed=1234)
+  burn <- bsts::SuggestBurn(0.1, md_BSTS)
+  fc_BSTS <- stats::predict(md_BSTS, horizon = h, 
+                            burn = burn, quantiles = c(.025, .975))
+  modelOutput$Models_Final <- list(BSTS = md_BSTS)
+  modelOutput$Forecast_Final <- list(BSTS = fc_BSTS)
 }
 
 if("h" %in% model_char){
@@ -137,17 +158,19 @@ if("h" %in% model_char){
   md_Hybrid <- fc <- NULL
   md_Hybrid <- base::do.call(forecastHybrid::hybridModel, c(list(ts.obj), h.arg))
   fc_Hybrid <- forecast::forecast(md_Hybrid, h = h)
+  modelOutput$Models_Final <- list(Hybrid = md_Hybrid)
+  modelOutput$Forecast_Final <- list(Hybrid = fc_Hybrid)
 }
 
 
 s <- length(ts.obj) - periods + 1
 e <- length(ts.obj)
 score_df <- NULL
-score_df <- data.frame(matrix(NA, ncol = length(model_list) + 1 , nrow = periods))
+score_df <- base::data.frame(matrix(NA, ncol = length(model_list) + 1 , nrow = periods))
 
 names(score_df) <- c("Period", model_list)
 score_df$Period <- s:e - s + 1
-modelOutput <- list()
+
 # Loop over the series
 for(i in s:e){
 period_name <- NULL
