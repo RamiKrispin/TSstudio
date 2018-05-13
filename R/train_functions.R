@@ -26,6 +26,7 @@ ts_evaluate <- function(ts.obj,
                         periods = 6, 
                         error = "MAPE", 
                         h = 3,
+                        seed=1234,
                         a.arg = NULL,
                         b.arg = NULL,
                         e.arg = NULL,
@@ -74,12 +75,7 @@ if(!base::is.numeric(h) | h != base::round(h) | h <= 0){
 if(!error %in% c("MAPE", "RMSE")){
   warning("The 'error' parameter is invalid, using the default setting - 'MAPE'")
   error <- "MAPE"
-  a <- 10
-} else if(error == "MAPE"){
-  a <- 10
-} else if(error == "RMSE"){
-  a <- 4
-}
+} 
 
 # Setting the output object
 modelOutput <- list()
@@ -145,7 +141,7 @@ if("b" %in% model_char){
   ss <- bsts::AddLocalLinearTrend(list(), train.bs$obj)
   ss <- bsts::AddSeasonal(ss, train.bs$obj, nseasons = stats::frequency(ts.obj))
   md_BSTS <- bsts::bsts(train.bs$obj, state.specification = ss, 
-                          niter = 700, ping=0, seed=1234)
+                          niter = 700, ping=0, seed= seed)
   burn <- bsts::SuggestBurn(0.1, md_BSTS)
   fc_BSTS <- stats::predict(md_BSTS, horizon = h, 
                             burn = burn, quantiles = c(.025, .975))
@@ -165,11 +161,16 @@ if("h" %in% model_char){
 
 s <- length(ts.obj) - periods + 1
 e <- length(ts.obj)
-score_df <- NULL
-score_df <- base::data.frame(matrix(NA, ncol = length(model_list) + 1 , nrow = periods))
+MAPE_df <- NULL
+MAPE_df <- base::data.frame(matrix(NA, ncol = length(model_list) + 1 , nrow = periods))
+names(MAPE_df) <- c("Period", model_list)
+MAPE_df$Period <- s:e - s + 1
 
-names(score_df) <- c("Period", model_list)
-score_df$Period <- s:e - s + 1
+RMSE_df <- NULL
+RMSE_df <- base::data.frame(matrix(NA, ncol = length(model_list) + 1 , nrow = periods))
+names(RMSE_df) <- c("Period", model_list)
+RMSE_df$Period <- s:e - s + 1
+
 
 # Loop over the series
 for(i in s:e){
@@ -188,7 +189,8 @@ if("a" %in% model_char){
 md <- fc <- NULL
 md <- base::do.call(forecast::auto.arima, c(list(train), a.arg))
 fc <- forecast::forecast(md, h = h)
-score_df$AUTO.ARIMA[i - s + 1] <-  base::round(forecast::accuracy(fc,test)[a], 2)
+MAPE_df$AUTO.ARIMA[i - s + 1] <-  base::round(forecast::accuracy(fc,test)[10], 2)
+RMSE_df$AUTO.ARIMA[i - s + 1] <-  base::round(forecast::accuracy(fc,test)[4], 2)
 eval(parse(text = paste("modelOutput$", period_name, "$auto.arima <- list(model = md, forecast = fc)", sep = ""))) 
 }
 
@@ -196,7 +198,8 @@ if("w" %in% model_char){
 md <- fc <- NULL
 md <- stats::HoltWinters(train, alpha = 0.01, beta = 0.01, gamma = 0.01)
 fc <- forecast::forecast(md, h = h)
-score_df$HoltWinters[i - s + 1] <- base::round(forecast::accuracy(fc, test)[a], 2)
+MAPE_df$HoltWinters[i - s + 1] <- base::round(forecast::accuracy(fc, test)[10], 2)
+RMSE_df$HoltWinters[i - s + 1] <- base::round(forecast::accuracy(fc, test)[4], 2)
 eval(parse(text = paste("modelOutput$", period_name, "$HoltWinters <- list(model = md, forecast = fc)", sep = ""))) 
 }
 
@@ -204,7 +207,8 @@ if("e" %in% model_char){
 md <- fc <- NULL
 md <- forecast::ets(train)
 fc <- forecast::forecast(train, h = h)
-score_df$ETS[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[a], 2)
+MAPE_df$ETS[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[10], 2)
+RMSE_df$ETS[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4], 2)
 eval(parse(text = paste("modelOutput$", period_name, "$ets <- list(model = md, forecast = fc)", sep = "")))
 }
 
@@ -213,7 +217,8 @@ if("n" %in% model_char){
 md <- fc <- NULL
 md <- forecast::nnetar(train)
 fc <- forecast::forecast(md, h = h)
-score_df$NNETAR[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[a],2)
+MAPE_df$NNETAR[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[10],2)
+RMSE_df$NNETAR[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4],2)
 eval(parse(text = paste("modelOutput$", period_name, "$nnetar <- list(model = md, forecast = fc)", sep = "")))
 }
 
@@ -221,12 +226,13 @@ if("t" %in% model_char){
 md <- fc <- NULL
 md <- forecast::tbats(train)
 fc <- forecast::forecast(md, h = h)
-score_df$TBATS[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[a], 2)
+MAPE_df$TBATS[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[10], 2)
+RMSE_df$TBATS[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4], 2)
 eval(parse(text = paste("modelOutput$", period_name, "$tbats <- list(model = md, forecast = fc)", sep = "")))
 }
 
 if("b" %in% model_char){
-md <- fc <- NULL
+md <- fc <- train.bs <- test.bs <-  NULL
 train.bs <- base::data.frame(as.numeric(train))
 test.bs <- base::data.frame(as.numeric(test))
 base::names(train.bs) <- c("obj")
@@ -236,49 +242,47 @@ ss <- bsts::AddSeasonal(ss, train.bs$obj, nseasons = frequency(train))
 fit.bsts <- bsts::bsts(train, state.specification = ss, 
                  data = train.bs , niter = 700, ping=0, seed=1234)
 burn <- bsts::SuggestBurn(0.1, fit.bsts)
-fc.bsts <- stats::predict(fit.bsts, newdata = test.bs, horizon = h, 
+fc.bsts <- stats::predict(fit.bsts, horizon = h, 
                    burn = burn, quantiles = c(.025, .975))
 
 
 pred <- base::as.numeric(fc.bsts$mean)
-if(error == "MAPE"){
-score_df$BSTS[i - s + 1] <- base::round(mean(100 * base::abs((pred - test) / pred)), 2)
-} else if(error == "RMSE"){
-  score_df$BSTS[i - s + 1] <- base::round((mean((pred - test)^ 2)) ^ 0.5, 2)
-}
+MAPE_df$BSTS[i - s + 1] <- base::round(mean(100 * base::abs((pred - test) / pred)), 2)
+RMSE_df$BSTS[i - s + 1] <- base::round((mean((pred - test)^ 2)) ^ 0.5, 2)
 }
 
 if("h" %in% model_char){
   md <- forecastHybrid::hybridModel(train)
   fc <- forecast::forecast(md, h = h)
   eval(parse(text = paste("modelOutput$", period_name, "$hybrid <- list(model = md, forecast = fc)", sep = "")))
-  score_df$Hybrid[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[a], 2)
+  MAPE_df$Hybrid[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[10], 2)
+  RMSE_df$Hybrid[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4], 2)
 }
 
 if((i -s + 1) > 1){
 p1 <- p2 <- p3 <- NULL
 
-p1 <- plotly::plot_ly(data = score_df) 
+p1 <- plotly::plot_ly(data = MAPE_df) 
 
-for(r1 in 2:ncol(score_df)){
-  p1 <- p1 %>% plotly::add_lines(x = score_df[, 1], 
-                                 y = score_df[, r1], 
-                                 name = names(score_df)[r1], 
+for(r1 in 2:ncol(MAPE_df)){
+  p1 <- p1 %>% plotly::add_lines(x = MAPE_df[, 1], 
+                                 y = MAPE_df[, r1], 
+                                 name = names(MAPE_df)[r1], 
                                  line = list(color = color_ramp[(r1 -1)]))
 }
   
-p1 <- p1 %>% plotly::layout(xaxis = list(tickvals = score_df[, 1], ticktext = score_df[, 1],
-                                         range = c(min(score_df$Period), max(score_df$Period))))
+p1 <- p1 %>% plotly::layout(xaxis = list(tickvals = MAPE_df[, 1], ticktext = MAPE_df[, 1],
+                                         range = c(min(MAPE_df$Period), max(MAPE_df$Period))))
 
-p2 <- plotly::plot_ly(data = score_df)
+p2 <- plotly::plot_ly(data = MAPE_df)
 
-for(r2 in 2:base::ncol(score_df)){
- p2 <- p2 %>% plotly::add_trace(y = score_df[, r2], 
+for(r2 in 2:base::ncol(MAPE_df)){
+ p2 <- p2 %>% plotly::add_trace(y = MAPE_df[, r2], 
                     type = "box", 
                     boxpoints = "all", 
                     jitter = 0.3,
                     pointpos = -1.8, 
-                    name =  names(score_df)[r2], 
+                    name =  names(MAPE_df)[r2], 
                     marker = list(color = color_ramp[(r2 -1)]),
                     line = list(color = color_ramp[(r2 -1)]),
                     showlegend=F
@@ -287,7 +291,7 @@ for(r2 in 2:base::ncol(score_df)){
 
 p1 <- p1 %>% plotly::layout(title = "Error by Period",
                             yaxis = list(title = error),
-                            xaxis = list(title = "Period", tickvals = score_df[, 1], ticktext = score_df[, 1]))
+                            xaxis = list(title = "Period", tickvals = MAPE_df[, 1], ticktext = MAPE_df[, 1]))
 p2 <- p2 %>% plotly::layout(title = "Error Distribution by Model",
                             yaxis = list(title = error))
 p3 <- plotly::subplot(p1, p2, nrows = 2, titleY = TRUE, titleX = TRUE, margin = 0.06)
@@ -300,26 +304,28 @@ print(p3)
 }
 
 
-modelOutput$model_score <- score_df
+modelOutput$MAPE_score <- MAPE_df
+modelOutput$RMSE_score <- RMSE_df
 modelOutput$score_plot <- p3
 
-leaderboard <- modelOutput$model_score %>% reshape2::melt(id.vars = c("Period")) %>%
+leaderboard <- (modelOutput$MAPE_score %>% reshape2::melt(id.vars = c("Period")) %>%
   dplyr::group_by(variable) %>%
   dplyr::summarise(avgMAPE = mean(value),
-                   sdMAPE = sd(value)) %>%
-  dplyr::arrange(avgMAPE)
+                   sdMAPE = sd(value))) %>%
+  dplyr::left_join(
+    modelOutput$RMSE_score %>% reshape2::melt(id.vars = c("Period")) %>%
+      dplyr::group_by(variable) %>%
+      dplyr::summarise(avgRMSE = mean(value),
+                       sdRMSE = sd(value)) 
+  )
 names(leaderboard)[1] <- "Model_Name"
-
-leaderboard$Model_Output <- NA
-leaderboard$Forecast <- NA
-
-# 
-# for(l in 1:nrow(leaderboard)){
-#  eval(parse(text = paste("leaderboard$Model_Output[", l,  "] <- md_",leaderboard$Model_Name[l] ,sep = ""))) 
-#  eval(parse(text = paste("leaderboard$Forecast[", l,  "] <- fc_",leaderboard$Model_Name[l] ,sep = "")))  
-# }
-
+if(error == "MAPE"){
+  leaderboard <- leaderboard %>% dplyr::arrange(avgMAPE)
+} else {
+  leaderboard <- leaderboard %>% dplyr::arrange(avgRMSE)
+}
 modelOutput$leaderboard <- leaderboard
+modelOutput$leadModel <- 
 return(modelOutput)
 }
 
