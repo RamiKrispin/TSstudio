@@ -5,7 +5,10 @@
 \title{Evaluation Function for Forecasting Models}
 \usage{
 ts_evaluate(ts.obj, models = "abehntw", periods = 6, error = "MAPE",
-  h = 3)
+  h = 3, plot = TRUE, a.arg = NULL, b.arg = list(linear_trend = TRUE,
+  seasonal = TRUE, niter = 1000, ping = 100, family = "gaussian", seed = 1234),
+  e.arg = NULL, h.arg = NULL, n.arg = NULL, t.arg = NULL,
+  w.arg = NULL, parallel = FALSE)
 }
 \arguments{
 \item{ts.obj}{A univariate time series object of a class "ts"}
@@ -24,6 +27,24 @@ ts_evaluate(ts.obj, models = "abehntw", periods = 6, error = "MAPE",
 \item{error}{The type of error to evaluate by - "MAPE"  (default) or "RMSE"}
 
 \item{h}{Integer, the horizon of the forecast}
+
+\item{plot}{Logical, if TRUE desplay a plot with the backtesting progress}
+
+\item{a.arg}{List, an optional arguments to pass to the auto.arima function}
+
+\item{b.arg}{List, an optional arguments to pass to the bsts function}
+
+\item{e.arg}{List, an optional arguments to pass to the ets function}
+
+\item{h.arg}{List, an optional arguments to pass to the hybridModel function}
+
+\item{n.arg}{List, an optional arguments to pass to the nnetar function}
+
+\item{t.arg}{List, an optional arguments to pass to the tbats function}
+
+\item{w.arg}{List, an optional arguments to pass to the Holtwinters function}
+
+\item{parallel}{Logical, if TRUE use parallel option when applicable (auto.arima, hybridModel)}
 }
 \description{
 Performance evaluation function for forecasting models, by training and testing the performance
@@ -31,6 +52,8 @@ of each model over a sequence of periods to identify the performance of a model 
 (both accuracy and stability)
 }
 \examples{
+\dontrun{
 data(USgas)
 ts_evaluate(USgas, periods = 12, h = 12)
+}
 }
