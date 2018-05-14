@@ -1,5 +1,5 @@
 #'  Evaluation Function for Forecasting Models
-#' @export ts_evaluate
+#' @export ts_backtesting
 #' @param ts.obj A univariate time series object of a class "ts"
 #' @param models String, define the type of models to use in the training function:
 #'  'a' - auto.arima (forecast package)
@@ -12,12 +12,23 @@
 #' @param periods The number of periods to evaluate the models (with a minimum of 2)
 #' @param error The type of error to evaluate by - "MAPE"  (default) or "RMSE"
 #' @param h Integer, the horizon of the forecast
+#' @param plot Logical, if TRUE desplay a plot with the backtesting progress
+#' @param a.arg List, an optional arguments to pass to the auto.arima function
+#' @param b.arg List, an optional arguments to pass to the bsts function
+#' @param e.arg List, an optional arguments to pass to the ets function
+#' @param h.arg List, an optional arguments to pass to the hybridModel function
+#' @param n.arg List, an optional arguments to pass to the nnetar function
+#' @param t.arg List, an optional arguments to pass to the tbats function
+#' @param w.arg List, an optional arguments to pass to the Holtwinters function
+#' @param parallel Logical, if TRUE use parallel option when applicable (auto.arima, hybridModel)
 #' @description Performance evaluation function for forecasting models, by training and testing the performance
 #' of each model over a sequence of periods to identify the performance of a model over time  
 #' (both accuracy and stability)
 #' @examples
+#' \dontrun{
 #' data(USgas)
 #' ts_evaluate(USgas, periods = 12, h = 12)
+#' }
 
 # the ts_evaluate function ####
 
@@ -26,13 +37,14 @@ ts_evaluate <- function(ts.obj,
                         periods = 6, 
                         error = "MAPE", 
                         h = 3,
-                        seed=1234,
+                        plot = TRUE,
                         a.arg = NULL,
                         b.arg = list(linear_trend = TRUE,
                                      seasonal = TRUE,
                                      niter = 1000,
                                      ping = 100,
-                                     family = "gaussian"),
+                                     family = "gaussian",
+                                     seed=1234),
                         e.arg = NULL,
                         h.arg = NULL,
                         n.arg = NULL,
@@ -78,9 +90,14 @@ if(!base::is.numeric(h) | h != base::round(h) | h <= 0){
   }
   
 if(!error %in% c("MAPE", "RMSE")){
-  warning("The 'error' parameter is invalid, using the default setting - 'MAPE'")
+  warning("The value of the 'error' parameter is invalid, using the default setting - 'MAPE'")
   error <- "MAPE"
 } 
+
+if(!base::is.logical(plot)){
+  warning("The value of the 'plot' parameter is invalid, using default option TRUE")
+  plot <- TRUE
+}
 
 # Setting the output object
 modelOutput <- list()
@@ -352,9 +369,9 @@ p5 <- p5 %>% plotly::layout(title = "Error Distribution by Model",
                             yaxis = list(title = "RMSE"))
 p6 <- plotly::subplot(p4, p5, nrows = 2, titleY = TRUE, titleX = TRUE, margin = 0.06)
 
-if(error == "MAPE"){
+if(error == "MAPE" & plot){
 print(p3)
-} else if(error == "RMSE"){
+} else if(error == "RMSE" & plot){
   print(p6)
 }
 }
