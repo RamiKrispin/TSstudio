@@ -133,6 +133,7 @@ if("n" %in% model_char){
 if("t" %in% model_char){
   model_list <- c(model_list, "TBATS")
   md_TBATS <- fc_TBATS <- NULL
+  t.arg$use.parallel <- parallel
   md_TBATS <- base::do.call(forecast::tbats, c(list(ts.obj), t.arg))
   fc_TBATS <- forecast::forecast(md_TBATS, h = h)
   modelOutput$Models_Final <- list(TBATS = md_TBATS)
@@ -157,7 +158,6 @@ if("b" %in% model_char){
                         ping= b.arg$ping, 
                         seed= seed,
                         family = b.arg$family)
-  # burn <- bsts::SuggestBurn(0.1, md_BSTS)
   fc_BSTS <- stats::predict(md_BSTS, horizon = h, quantiles = c(.025, .975))
   modelOutput$Models_Final <- list(BSTS = md_BSTS)
   modelOutput$Forecast_Final <- list(BSTS = fc_BSTS)
@@ -357,8 +357,6 @@ print(p3)
 } else if(error == "RMSE"){
   print(p6)
 }
-
-
 }
 }
 
