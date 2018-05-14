@@ -37,7 +37,8 @@ ts_evaluate <- function(ts.obj,
                         h.arg = NULL,
                         n.arg = NULL,
                         t.arg = NULL,
-                        w.arg = NULL){
+                        w.arg = NULL,
+                        parallel = FALSE){
 
 `%>%` <- magrittr::`%>%`
   
@@ -94,6 +95,7 @@ model_char <-  base::unlist(base::strsplit(models, split = ""))
 if("a" %in% model_char){
   model_list <- c(model_list, "AUTO.ARIMA")
   md_AUTO.ARIMA <- fc_AUTO.ARIMA <- NULL
+  a.arg$parallel <- parallel
   md_AUTO.ARIMA <- base::do.call(forecast::auto.arima, c(list(ts.obj), a.arg))
   fc_AUTO.ARIMA <- forecast::forecast(md_AUTO.ARIMA, h = h)
   modelOutput$Models_Final <- list(auto.arima = md_AUTO.ARIMA)
@@ -164,6 +166,7 @@ if("b" %in% model_char){
 if("h" %in% model_char){
   model_list <- c(model_list, "Hybrid")
   md_Hybrid <- fc_Hybrid <- NULL
+  h.arg$parallel <- parallel
   md_Hybrid <- base::do.call(forecastHybrid::hybridModel, c(list(ts.obj), h.arg))
   fc_Hybrid <- forecast::forecast(md_Hybrid, h = h)
   modelOutput$Models_Final <- list(Hybrid = md_Hybrid)
@@ -309,10 +312,10 @@ for(r2 in 2:base::ncol(MAPE_df)){
 }
 
 p1 <- p1 %>% plotly::layout(title = "Error by Period",
-                            yaxis = list(title = error),
+                            yaxis = list(title = "MAPE"),
                             xaxis = list(title = "Period", tickvals = MAPE_df[, 1], ticktext = MAPE_df[, 1]))
 p2 <- p2 %>% plotly::layout(title = "Error Distribution by Model",
-                            yaxis = list(title = error))
+                            yaxis = list(title = "MAPE"))
 p3 <- plotly::subplot(p1, p2, nrows = 2, titleY = TRUE, titleX = TRUE, margin = 0.06)
 
 p4 <- plotly::plot_ly(data = RMSE_df) 
@@ -343,10 +346,10 @@ for(r2 in 2:base::ncol(RMSE_df)){
 }
 
 p4 <- p4 %>% plotly::layout(title = "Error by Period",
-                            yaxis = list(title = error),
+                            yaxis = list(title = "RMSE"),
                             xaxis = list(title = "Period", tickvals = RMSE_df[, 1], ticktext = RMSE_df[, 1]))
 p5 <- p5 %>% plotly::layout(title = "Error Distribution by Model",
-                            yaxis = list(title = error))
+                            yaxis = list(title = "RMSE"))
 p6 <- plotly::subplot(p4, p5, nrows = 2, titleY = TRUE, titleX = TRUE, margin = 0.06)
 
 if(error == "MAPE"){
@@ -365,7 +368,8 @@ modelOutput$RMSE_score <- RMSE_df
 modelOutput$MAPE_plot <- p3
 modelOutput$RMSE_plot <- p6
 
-leaderboard <- (modelOutput$MAPE_score %>% reshape2::melt(id.vars = c("Period")) %>%
+leaderboard <- base::suppressMessages(
+  (modelOutput$MAPE_score %>% reshape2::melt(id.vars = c("Period")) %>%
   dplyr::group_by(variable) %>%
   dplyr::summarise(avgMAPE = mean(value),
                    sdMAPE = sd(value))) %>%
@@ -375,6 +379,8 @@ leaderboard <- (modelOutput$MAPE_score %>% reshape2::melt(id.vars = c("Period"))
       dplyr::summarise(avgRMSE = mean(value),
                        sdRMSE = sd(value)) 
   )
+  )
+
 names(leaderboard)[1] <- "Model_Name"
 if(error == "MAPE"){
   leaderboard <- leaderboard %>% dplyr::arrange(avgMAPE)
@@ -382,7 +388,7 @@ if(error == "MAPE"){
   leaderboard <- leaderboard %>% dplyr::arrange(avgRMSE)
 }
 modelOutput$leaderboard <- leaderboard
-
+print(leaderboard)
 return(modelOutput)
 }
 
