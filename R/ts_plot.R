@@ -250,3 +250,27 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
     return(p)
   }
 }
+
+#'  Plotting Forecast Object
+#' @export plot_forecast
+#' @description Visualization functions for forecast package forecasting objects
+#' @param forecast_obj A forecast object from the forecast package
+#' @examples
+#' data(USgas)
+#' library(forecast)
+#' fit <- forecast(ets(USgas), h = 60)
+#' plot_forecast(fit)
+
+plot_forecast <- function(forecast_obj){
+  
+  p <- plotly::plot_ly() %>%
+    plotly::add_lines(x = time(forecast_obj$x), y = forecast_obj$x,
+                      color = I("black"), name = "observed") %>%
+    plotly::add_ribbons(x = time(forecast_obj$mean), ymin = forecast_obj$lower[, 2], ymax = forecast_obj$upper[, 2],
+                        color = I("gray95"), name = paste(colnames(forecast_obj$upper)[1], "confidence", sep = " ")) %>%
+    plotly::add_ribbons(x = time(forecast_obj$mean), ymin = forecast_obj$lower[, 1], ymax = forecast_obj$upper[, 1],
+                        color = I("gray80"), name = paste( colnames(forecast_obj$upper)[2], "confidence", sep = " ")) %>%
+    plotly::add_lines(x = time(forecast_obj$mean), y = forecast_obj$mean, color = I("blue"), name = "prediction")
+  
+  return(p)
+}
