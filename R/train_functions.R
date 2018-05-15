@@ -11,7 +11,8 @@
 #'  'w' - Holt Winters (stats package)
 #' @param periods The number of periods to evaluate the models (with a minimum of 2)
 #' @param error The type of error to evaluate by - "MAPE"  (default) or "RMSE"
-#' @param h Integer, the horizon of the forecast
+#' @param h_training An integer, the horizon each model should be tested 
+#' @param h Integer, the horizon of the selected forecasting model
 #' @param plot Logical, if TRUE desplay a plot with the backtesting progress
 #' @param a.arg List, an optional arguments to pass to the auto.arima function
 #' @param b.arg List, an optional arguments to pass to the bsts function
@@ -36,6 +37,7 @@ ts_backtesting <- function(ts.obj,
                         models = "abehntw", 
                         periods = 6, 
                         error = "MAPE", 
+                        h_training = 3,
                         h = 3,
                         plot = TRUE,
                         a.arg = NULL,
@@ -67,15 +69,15 @@ for(s in 1:nchar(models)){
 if(!base::is.numeric(periods) | periods != base::round(periods) | periods <= 0){
   stop("The value of the 'periods' parameters is no valid")
 } else {
-  if((base::length(ts.obj) - periods - h) < 2 * stats::frequency(ts.obj)){
+  if((base::length(ts.obj) - periods - h_training) < 2 * stats::frequency(ts.obj)){
     stop("The length of the series is long enough to create a forecast")
   }
 }
 
-if(!base::is.numeric(h) | h != base::round(h) | h <= 0){
-  stop("The value of the 'h' parameters is no valid")
+if(!base::is.numeric(h_training) | h_training != base::round(h_training) | h_training <= 0){
+  stop("The value of the 'h_training' parameters is no valid")
 } else {
-  if((base::length(ts.obj) - periods - h) < 2 * stats::frequency(ts.obj)){
+  if((base::length(ts.obj) - periods - h_training) < 2 * stats::frequency(ts.obj)){
     stop("The length of the series is long enough to create a forecast")
   }
 }
@@ -173,7 +175,7 @@ if("b" %in% model_char){
                         state.specification = ss, 
                         niter = b.arg$niter, 
                         ping= b.arg$ping, 
-                        seed= seed,
+                        seed= b.arg$seed,
                         family = b.arg$family)
   fc_BSTS <- stats::predict(md_BSTS, horizon = h, quantiles = c(.025, .975))
   modelOutput$Models_Final <- list(BSTS = md_BSTS)
@@ -213,14 +215,14 @@ eval(parse(text = paste("modelOutput$", period_name, "<- list()", sep = "")))
 
 ts.subset <- split_ts <- train <- test <- NULL
 ts.subset <- stats::window(ts.obj, start = stats::time(ts.obj)[1], end = stats::time(ts.obj)[i])
-split_ts <- TSstudio::ts_split(ts.subset, sample.out = h)
+split_ts <- TSstudio::ts_split(ts.subset, sample.out = h_training)
 train <- split_ts$train
 test <- split_ts$test
 
 if("a" %in% model_char){
 md <- fc <- NULL
 md <- base::do.call(forecast::auto.arima, c(list(train), a.arg))
-fc <- forecast::forecast(md, h = h)
+fc <- forecast::forecast(md, h = h_training)
 MAPE_df$AUTO.ARIMA[i - s + 1] <-  base::round(forecast::accuracy(fc,test)[10], 2)
 RMSE_df$AUTO.ARIMA[i - s + 1] <-  base::round(forecast::accuracy(fc,test)[4], 2)
 eval(parse(text = paste("modelOutput$", period_name, "$auto.arima <- list(model = md, forecast = fc)", sep = ""))) 
@@ -229,7 +231,7 @@ eval(parse(text = paste("modelOutput$", period_name, "$auto.arima <- list(model 
 if("w" %in% model_char){
 md <- fc <- NULL
 md <- base::do.call(stats::HoltWinters, c(list(train), w.arg))
-fc <- forecast::forecast(md, h = h)
+fc <- forecast::forecast(md, h = h_training)
 MAPE_df$HoltWinters[i - s + 1] <- base::round(forecast::accuracy(fc, test)[10], 2)
 RMSE_df$HoltWinters[i - s + 1] <- base::round(forecast::accuracy(fc, test)[4], 2)
 eval(parse(text = paste("modelOutput$", period_name, "$HoltWinters <- list(model = md, forecast = fc)", sep = ""))) 
@@ -238,7 +240,7 @@ eval(parse(text = paste("modelOutput$", period_name, "$HoltWinters <- list(model
 if("e" %in% model_char){
 md <- fc <- NULL
 md <- base::do.call(forecast::ets, c(list(train), e.arg))
-fc <- forecast::forecast(train, h = h)
+fc <- forecast::forecast(train, h = h_training)
 MAPE_df$ETS[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[10], 2)
 RMSE_df$ETS[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4], 2)
 eval(parse(text = paste("modelOutput$", period_name, "$ets <- list(model = md, forecast = fc)", sep = "")))
@@ -248,7 +250,7 @@ eval(parse(text = paste("modelOutput$", period_name, "$ets <- list(model = md, f
 if("n" %in% model_char){
 md <- fc <- NULL
 md <- base::do.call(forecast::nnetar, c(list(train), n.arg))
-fc <- forecast::forecast(md, h = h)
+fc <- forecast::forecast(md, h = h_training)
 MAPE_df$NNETAR[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[10],2)
 RMSE_df$NNETAR[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4],2)
 eval(parse(text = paste("modelOutput$", period_name, "$nnetar <- list(model = md, forecast = fc)", sep = "")))
@@ -257,7 +259,7 @@ eval(parse(text = paste("modelOutput$", period_name, "$nnetar <- list(model = md
 if("t" %in% model_char){
 md <- fc <- NULL
 md <- base::do.call(forecast::tbats, c(list(train), t.arg))
-fc <- forecast::forecast(md, h = h)
+fc <- forecast::forecast(md, h = h_training)
 MAPE_df$TBATS[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[10], 2)
 RMSE_df$TBATS[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4], 2)
 eval(parse(text = paste("modelOutput$", period_name, "$tbats <- list(model = md, forecast = fc)", sep = "")))
@@ -278,10 +280,10 @@ md <- bsts::bsts(train,
                       state.specification = ss, 
                       niter = b.arg$niter, 
                       ping= b.arg$ping, 
-                      seed= seed,
+                      seed= b.arg$seed,
                       family = b.arg$family)
 
-fc <- stats::predict(md, horizon = h, quantiles = c(.025, .975))
+fc <- stats::predict(md, horizon = h_training, quantiles = c(.025, .975))
 
 
 pred <- fc$mean
@@ -292,7 +294,7 @@ RMSE_df$BSTS[i - s + 1] <- base::round((mean((pred - test)^ 2)) ^ 0.5, 2)
 if("h" %in% model_char){
   md <- fc <- NULL
   md <- base::do.call(forecastHybrid::hybridModel, c(list(train), h.arg))
-  fc <- forecast::forecast(md, h = h)
+  fc <- forecast::forecast(md, h = h_training)
   eval(parse(text = paste("modelOutput$", period_name, "$hybrid <- list(model = md, forecast = fc)", sep = "")))
   MAPE_df$Hybrid[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[10], 2)
   RMSE_df$Hybrid[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4], 2)

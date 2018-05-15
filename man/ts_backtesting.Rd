@@ -5,10 +5,10 @@
 \title{Evaluation Function for Forecasting Models}
 \usage{
 ts_backtesting(ts.obj, models = "abehntw", periods = 6, error = "MAPE",
-  h = 3, plot = TRUE, a.arg = NULL, b.arg = list(linear_trend = TRUE,
-  seasonal = TRUE, niter = 1000, ping = 100, family = "gaussian", seed = 1234),
-  e.arg = NULL, h.arg = NULL, n.arg = NULL, t.arg = NULL,
-  w.arg = NULL, parallel = FALSE)
+  h_training = 3, h = 3, plot = TRUE, a.arg = NULL,
+  b.arg = list(linear_trend = TRUE, seasonal = TRUE, niter = 1000, ping = 100,
+  family = "gaussian", seed = 1234), e.arg = NULL, h.arg = NULL,
+  n.arg = NULL, t.arg = NULL, w.arg = NULL, parallel = FALSE)
 }
 \arguments{
 \item{ts.obj}{A univariate time series object of a class "ts"}
@@ -26,7 +26,9 @@ ts_backtesting(ts.obj, models = "abehntw", periods = 6, error = "MAPE",
 
 \item{error}{The type of error to evaluate by - "MAPE"  (default) or "RMSE"}
 
-\item{h}{Integer, the horizon of the forecast}
+\item{h_training}{An integer, the horizon each model should be tested}
+
+\item{h}{Integer, the horizon of the selected forecasting model}
 
 \item{plot}{Logical, if TRUE desplay a plot with the backtesting progress}
 
