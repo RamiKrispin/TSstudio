@@ -17,6 +17,6 @@ Units: Thousands of units
 }
 \examples{
 ts_plot(USVSales)
-seasonal_ly(USVSales)
+ts_seasonal(USVSales)
 }
 \keyword{datasets}

@@ -9,7 +9,7 @@
 #' @keywords datasets
 #' @examples
 #' ts_plot(USVSales)
-#' seasonal_ly(USVSales)
+#' ts_seasonal(USVSales)
 
 "USVSales"
 
