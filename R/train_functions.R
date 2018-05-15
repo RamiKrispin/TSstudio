@@ -386,13 +386,13 @@ modelOutput$RMSE_plot <- p6
 leaderboard <- base::suppressMessages(
   (modelOutput$MAPE_score %>% reshape2::melt(id.vars = c("Period")) %>%
   dplyr::group_by(variable) %>%
-  dplyr::summarise(avgMAPE = mean(value),
-                   sdMAPE = sd(value))) %>%
+  dplyr::summarise(avgMAPE = base::mean(value),
+                   sdMAPE = stats::sd(value))) %>%
   dplyr::left_join(
     modelOutput$RMSE_score %>% reshape2::melt(id.vars = c("Period")) %>%
       dplyr::group_by(variable) %>%
-      dplyr::summarise(avgRMSE = mean(value),
-                       sdRMSE = sd(value)) 
+      dplyr::summarise(avgRMSE = base::mean(value),
+                       sdRMSE = stats::sd(value)) 
   )
   )
 
