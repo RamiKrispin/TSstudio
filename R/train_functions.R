@@ -32,7 +32,7 @@
 
 # the ts_evaluate function ####
 
-ts_evaluate <- function(ts.obj, 
+ts_backtesting <- function(ts.obj, 
                         models = "abehntw", 
                         periods = 6, 
                         error = "MAPE", 
