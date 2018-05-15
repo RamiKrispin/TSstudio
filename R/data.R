@@ -8,7 +8,7 @@
 #' @source U.S. Bureau of Economic Analysis, Total Vehicle Sales [TOTALNSA], retrieved from FRED, Federal Reserve Bank of St. Louis; https://fred.stlouisfed.org/series/TOTALNSA, January 7, 2018.
 #' @keywords datasets
 #' @examples
-#' ts.plot_ly(USVSales)
+#' ts_plot(USVSales)
 #' seasonal_ly(USVSales)
 
 "USVSales"
