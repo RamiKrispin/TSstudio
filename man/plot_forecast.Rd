@@ -4,10 +4,19 @@
 \alias{plot_forecast}
 \title{Plotting Forecast Object}
 \usage{
-plot_forecast(forecast_obj)
+plot_forecast(forecast_obj, title = NULL, Xtitle = NULL, Ytitle = NULL,
+  color = NULL)
 }
 \arguments{
 \item{forecast_obj}{A forecast object from the forecast package}
+
+\item{title}{A character, a plot title, optional}
+
+\item{Xtitle}{Set the X axis title, default set to NULL}
+
+\item{Ytitle}{Set the Y axis title, default set to NULL}
+
+\item{color}{A character, the plot, support both name and expression}
 }
 \description{
 Visualization functions for forecast package forecasting objects
