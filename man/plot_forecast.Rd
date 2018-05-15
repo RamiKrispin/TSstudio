@@ -5,7 +5,7 @@
 \title{Plotting Forecast Object}
 \usage{
 plot_forecast(forecast_obj, title = NULL, Xtitle = NULL, Ytitle = NULL,
-  color = NULL)
+  color = NULL, width = 2)
 }
 \arguments{
 \item{forecast_obj}{A forecast object from the forecast package}
@@ -17,6 +17,8 @@ plot_forecast(forecast_obj, title = NULL, Xtitle = NULL, Ytitle = NULL,
 \item{Ytitle}{Set the Y axis title, default set to NULL}
 
 \item{color}{A character, the plot, support both name and expression}
+
+\item{width}{An Integer, define the plot width, default is set to 2}
 }
 \description{
 Visualization functions for forecast package forecasting objects

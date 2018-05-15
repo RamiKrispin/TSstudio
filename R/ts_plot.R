@@ -3,7 +3,7 @@
 #' @description Visualization functions for time series object
 #' @param ts.obj A univariate or multivariate time series object of class "ts", "mts", "zoo" or "xts"
 #' @param line.mode A plotly argument, define the plot type, c("lines", "lines+markers", "markers")
-#' @param width An Integer, define the plot width, default is set to 2 (an integer)
+#' @param width An Integer, define the plot width, default is set to 2
 #' @param dash A plotly argument, define the line style, c(NULL, "dot", "dash")
 #' @param color The color of the plot, support both name and expression
 #' @param slider Logic, add slider to modify the time axis (default set to FALSE)
@@ -260,6 +260,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
 #' @param Xtitle Set the X axis title, default set to NULL
 #' @param Ytitle Set the Y axis title, default set to NULL
 #' @param color A character, the plot, support both name and expression
+#' @param width An Integer, define the plot width, default is set to 2 
 #' @examples
 #' data(USgas)
 #' library(forecast)
@@ -270,7 +271,11 @@ plot_forecast <- function(forecast_obj,
                           title = NULL,
                           Xtitle = NULL,
                           Ytitle = NULL,
-                          color = NULL){
+                          color = NULL,
+                          width = 2){
+
+`%>%` <- magrittr::`%>%`  
+  
 # Error handling 
   
   if(!base::is.null(color)){

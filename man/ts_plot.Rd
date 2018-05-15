@@ -13,7 +13,7 @@ ts_plot(ts.obj, line.mode = "lines", width = 2, dash = NULL,
 
 \item{line.mode}{A plotly argument, define the plot type, c("lines", "lines+markers", "markers")}
 
-\item{width}{An Integer, define the plot width, default is set to 2 (an integer)}
+\item{width}{An Integer, define the plot width, default is set to 2}
 
 \item{dash}{A plotly argument, define the line style, c(NULL, "dot", "dash")}
 
