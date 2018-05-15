@@ -3,7 +3,7 @@
 #' @description Visualization functions for time series object
 #' @param ts.obj A univariate or multivariate time series object of class "ts", "mts", "zoo" or "xts"
 #' @param line.mode A plotly argument, define the plot type, c("lines", "lines+markers", "markers")
-#' @param width The plot width, default is set to 1 (an integer)
+#' @param width An Integer, define the plot width, default is set to 2 (an integer)
 #' @param dash A plotly argument, define the line style, c(NULL, "dot", "dash")
 #' @param color The color of the plot, support both name and expression
 #' @param slider Logic, add slider to modify the time axis (default set to FALSE)
@@ -68,11 +68,11 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
   }
   
   if(!is.numeric(width)){
-    warning("The value of 'width' is not valude, using the default value - 1")
-    width <- 1
+    warning("The value of 'width' is not valude, using the default value - 2")
+    width <- 2
   } else if(width%%1 != 0){
-    warning("The value of 'width' is not valude, using the default value - 1")
-    width <- 1
+    warning("The value of 'width' is not valude, using the default value - 2")
+    width <- 2
   }
   
   if(type != "single" & 
@@ -251,26 +251,104 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
   }
 }
 
+
 #'  Plotting Forecast Object
 #' @export plot_forecast
 #' @description Visualization functions for forecast package forecasting objects
 #' @param forecast_obj A forecast object from the forecast package
+#' @param title A character, a plot title, optional
+#' @param Xtitle Set the X axis title, default set to NULL
+#' @param Ytitle Set the Y axis title, default set to NULL
+#' @param color A character, the plot, support both name and expression
 #' @examples
 #' data(USgas)
 #' library(forecast)
 #' fit <- forecast(ets(USgas), h = 60)
 #' plot_forecast(fit)
 
-plot_forecast <- function(forecast_obj){
+plot_forecast <- function(forecast_obj,
+                          title = NULL,
+                          Xtitle = NULL,
+                          Ytitle = NULL,
+                          color = NULL){
+# Error handling 
+  
+  if(!base::is.null(color)){
+    if(!is.character(color)){
+      warning("The value of the 'color' parameter is not valid")
+      color = "#00526d"
+    }
+  } else{
+    color = "#00526d"
+  }
+  
+  if(!is.numeric(width)){
+    warning("The value of 'width' is not valude, using the default value - 2")
+    width <- 2
+  } else if(width%%1 != 0){
+    warning("The value of 'width' is not valude, using the default value - 2")
+    width <- 2
+  } 
+
+  if(!base::is.null(title)){
+    if(!is.character(title)){
+      warning("The value of the 'Xtitle' is not valid")
+      title <- ""
+    } 
+  } else {
+    title <- ""
+  }
+  
+  if(!base::is.null(Xtitle)){
+    if(!is.character(Xtitle)){
+      warning("The value of the 'Xtitle' is not valid")
+      Xtitle <- ""
+    } 
+  } else {
+    Xtitle <- ""
+  }
+  
+  if(!base::is.null(Ytitle)){
+    if(!is.character(Ytitle)){
+      warning("The value of the 'Ytitle' is not valid")
+      Ytitle <- ""
+    } 
+  } else {
+    Ytitle <- ""
+  }  
+# Setting the plot
   
   p <- plotly::plot_ly() %>%
     plotly::add_lines(x = time(forecast_obj$x), y = forecast_obj$x,
-                      color = I("black"), name = "observed") %>%
-    plotly::add_ribbons(x = time(forecast_obj$mean), ymin = forecast_obj$lower[, 2], ymax = forecast_obj$upper[, 2],
-                        color = I("gray95"), name = paste(colnames(forecast_obj$upper)[1], "confidence", sep = " ")) %>%
-    plotly::add_ribbons(x = time(forecast_obj$mean), ymin = forecast_obj$lower[, 1], ymax = forecast_obj$upper[, 1],
-                        color = I("gray80"), name = paste( colnames(forecast_obj$upper)[2], "confidence", sep = " ")) %>%
-    plotly::add_lines(x = time(forecast_obj$mean), y = forecast_obj$mean, color = I("blue"), name = "prediction")
+                       name = "Observed",
+                       mode = "lines", 
+                       type = 'scatter',
+                       line = list(width = width, color = color)
+  ) 
+  
+# Checking if the object has confidence interval
+  if("upper" %in% names(forecast_obj) &
+     "lower" %in% names(forecast_obj)){
+    for(i in 1:dim(forecast_obj$upper)[2]){
+      p <- p %>% plotly::add_ribbons(x = time(forecast_obj$mean), 
+                                     ymin = forecast_obj$lower[, i], 
+                                     ymax = forecast_obj$upper[, i],
+                                     color = I(paste("gray", as.numeric(sub("%", "", (colnames(forecast_obj$upper)[i]))) - 5*i, sep = "")),
+                                     name = paste(colnames(forecast_obj$upper)[i], "confidence", sep = " ")
+                                     )
+    }
+  } else {
+    warning("The forecasted object does not have a confidence interval")
+  }
+  
+  p <- p %>%
+    plotly::add_lines(x = time(forecast_obj$mean), y = forecast_obj$mean, 
+                      name = "Forecasted",
+                      line = list(width = width, color = color, dash = "dash")
+    ) %>%
+    plotly::layout(title = title,
+                     xaxis = list(title = Xtitle),
+                     yaxis = list(title = Ytitle))
   
   return(p)
 }
