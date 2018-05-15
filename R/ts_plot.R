@@ -32,7 +32,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
   
   # Error handling
   if(!base::is.null(color)){
-    if(!is.character(color)){
+    if(!base::is.character(color)){
       warning("The value of the 'color' parameter is not valid")
       color = "#00526d"
     }
@@ -42,7 +42,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
   
   
   if(!base::is.null(Xtitle)){
-    if(!is.character(Xtitle)){
+    if(!base::is.character(Xtitle)){
       warning("The value of the 'Xtitle' is not valid")
       Xtitle <- ""
     } 
@@ -51,7 +51,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
   }
   
   if(!base::is.null(Ytitle)){
-    if(!is.character(Ytitle)){
+    if(!base::is.character(Ytitle)){
       warning("The value of the 'Ytitle' is not valid")
       Ytitle <- ""
     } 
@@ -67,7 +67,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
     line.mode <- "lines"
   }
   
-  if(!is.numeric(width)){
+  if(!base::is.numeric(width)){
     warning("The value of 'width' is not valude, using the default value - 2")
     width <- 2
   } else if(width%%1 != 0){
@@ -274,7 +274,7 @@ plot_forecast <- function(forecast_obj,
 # Error handling 
   
   if(!base::is.null(color)){
-    if(!is.character(color)){
+    if(!base::is.character(color)){
       warning("The value of the 'color' parameter is not valid")
       color = "#00526d"
     }
@@ -282,7 +282,7 @@ plot_forecast <- function(forecast_obj,
     color = "#00526d"
   }
   
-  if(!is.numeric(width)){
+  if(!base::is.numeric(width)){
     warning("The value of 'width' is not valude, using the default value - 2")
     width <- 2
   } else if(width%%1 != 0){
@@ -291,7 +291,7 @@ plot_forecast <- function(forecast_obj,
   } 
 
   if(!base::is.null(title)){
-    if(!is.character(title)){
+    if(!base::is.character(title)){
       warning("The value of the 'Xtitle' is not valid")
       title <- ""
     } 
@@ -300,7 +300,7 @@ plot_forecast <- function(forecast_obj,
   }
   
   if(!base::is.null(Xtitle)){
-    if(!is.character(Xtitle)){
+    if(!base::is.character(Xtitle)){
       warning("The value of the 'Xtitle' is not valid")
       Xtitle <- ""
     } 
@@ -309,7 +309,7 @@ plot_forecast <- function(forecast_obj,
   }
   
   if(!base::is.null(Ytitle)){
-    if(!is.character(Ytitle)){
+    if(!base::is.character(Ytitle)){
       warning("The value of the 'Ytitle' is not valid")
       Ytitle <- ""
     } 
@@ -319,7 +319,7 @@ plot_forecast <- function(forecast_obj,
 # Setting the plot
   
   p <- plotly::plot_ly() %>%
-    plotly::add_lines(x = time(forecast_obj$x), y = forecast_obj$x,
+    plotly::add_lines(x = stats::time(forecast_obj$x), y = forecast_obj$x,
                        name = "Observed",
                        mode = "lines", 
                        type = 'scatter',
@@ -327,14 +327,14 @@ plot_forecast <- function(forecast_obj,
   ) 
   
 # Checking if the object has confidence interval
-  if("upper" %in% names(forecast_obj) &
-     "lower" %in% names(forecast_obj)){
-    for(i in 1:dim(forecast_obj$upper)[2]){
-      p <- p %>% plotly::add_ribbons(x = time(forecast_obj$mean), 
+  if("upper" %in% base::names(forecast_obj) &
+     "lower" %in% base::names(forecast_obj)){
+    for(i in 1:base::dim(forecast_obj$upper)[2]){
+      p <- p %>% plotly::add_ribbons(x = stats::time(forecast_obj$mean), 
                                      ymin = forecast_obj$lower[, i], 
                                      ymax = forecast_obj$upper[, i],
-                                     color = I(paste("gray", as.numeric(sub("%", "", (colnames(forecast_obj$upper)[i]))) - 5*i, sep = "")),
-                                     name = paste(colnames(forecast_obj$upper)[i], "confidence", sep = " ")
+                                     color = I(base::paste("gray", base::as.numeric(sub("%", "", (base::colnames(forecast_obj$upper)[i]))) - 5*i, sep = "")),
+                                     name = base::paste(base::colnames(forecast_obj$upper)[i], "confidence", sep = " ")
                                      )
     }
   } else {
@@ -342,7 +342,7 @@ plot_forecast <- function(forecast_obj,
   }
   
   p <- p %>%
-    plotly::add_lines(x = time(forecast_obj$mean), y = forecast_obj$mean, 
+    plotly::add_lines(x = stats::time(forecast_obj$mean), y = forecast_obj$mean, 
                       name = "Forecasted",
                       line = list(width = width, color = color, dash = "dash")
     ) %>%
