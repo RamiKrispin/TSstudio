@@ -403,13 +403,33 @@ leaderboard <- base::suppressMessages(
 names(leaderboard)[1] <- "Model_Name"
 if(error == "MAPE"){
   leaderboard <- leaderboard %>% dplyr::arrange(avgMAPE)
+  # if(periods > 1){
+  #     
+  #   final_forecast_plot <- plot_forecast(modelOutput$leadForecast)
+  #   final_plot <- plotly::subplot(plotly::subplot(p2, p3, nrows = 1, titleY = TRUE, titleX = TRUE, margin = 0.06),
+  #                                 final_forecast_plot , nrows = 2)
+  #   print(final_plot)
+  #   
+  # }
 } else if(error == "RMSE"){
   leaderboard <- leaderboard %>% dplyr::arrange(avgRMSE)
+  # if(periods > 1){
+  #   final_forecast_plot <- plot_forecast(modelOutput$leadForecast)
+  #   final_plot <- plotly::subplot(plotly::subplot(p4, p5, nrows = 1, titleY = TRUE, titleX = TRUE, margin = 0.06),
+  #                                 final_forecast_plot , nrows = 2)
+  #   print(final_plot)
+  #   
+  # }
 }
 modelOutput$leaderboard <- leaderboard
 eval(parse(text = paste("modelOutput$leadForecast <- modelOutput$Forecast_Final$", leaderboard$Model_Name[1], sep = ""))) 
 
 
+
+final_plot <- plotly::subplot(plotly::subplot(p4, p5, nrows = 1, titleY = TRUE, titleX = TRUE, margin = 0.06),
+                              plot_forecast(modelOutput$leadForecast))
+
+print(final_plot)
 print(leaderboard)
 return(modelOutput)
 }

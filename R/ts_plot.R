@@ -338,8 +338,8 @@ plot_forecast <- function(forecast_obj,
       p <- p %>% plotly::add_ribbons(x = stats::time(forecast_obj$mean), 
                                      ymin = forecast_obj$lower[, i], 
                                      ymax = forecast_obj$upper[, i],
-                                     color = I(base::paste("gray", base::as.numeric(sub("%", "", (base::colnames(forecast_obj$upper)[i]))) - 5*i, sep = "")),
-                                     name = base::paste(base::colnames(forecast_obj$upper)[i], "confidence", sep = " ")
+                                     color = I(base::paste("gray", base::as.numeric(sub("%", "", (forecast_obj$level[i]))) - 5*i, sep = "")),
+                                     name = base::paste(forecast_obj$level[i], "% confidence", sep = "")
                                      )
     }
   } else {
