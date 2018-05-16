@@ -6,9 +6,9 @@
 #' 
 #' data("Michigan_CS", package = "TSstudio")
 #' class(Michigan_CS)
-#' ts.plot_ly(Michigan_CS)
+#' ts_plot(Michigan_CS)
 #' Michigan_CS_ts <- xts_to_ts(Michigan_CS)
-#' ts.plot_ly(Michigan_CS_ts)
+#' ts_plot(Michigan_CS_ts)
 
 
 xts_to_ts <- function(xts.obj){
@@ -47,10 +47,10 @@ xts_to_ts <- function(xts.obj){
 #' 
 #' data("EURO_Brent", package = "TSstudio")
 #' class(EURO_Brent)
-#' ts.plot_ly(EURO_Brent)
+#' ts_plot(EURO_Brent)
 #' EURO_Brent_ts <- zoo_to_ts(EURO_Brent)
 #' class(EURO_Brent_ts)
-#' ts.plot_ly(EURO_Brent_ts)
+#' ts_plot(EURO_Brent_ts)
 
 zoo_to_ts <- function(zoo.obj){
   if(!zoo::is.zoo(zoo.obj)){
