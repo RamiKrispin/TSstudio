@@ -16,7 +16,7 @@ Converting 'xts' object to 'ts' object
 
 data("Michigan_CS", package = "TSstudio")
 class(Michigan_CS)
-ts.plot_ly(Michigan_CS)
+ts_plot(Michigan_CS)
 Michigan_CS_ts <- xts_to_ts(Michigan_CS)
-ts.plot_ly(Michigan_CS_ts)
+ts_plot(Michigan_CS_ts)
 }
