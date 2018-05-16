@@ -4,10 +4,10 @@
 #' @param models String, define the type of models to use in the training function:
 #'  'a' - auto.arima (forecast package)
 #'  'b' - Bayesian Structural Time Series (bsts package)
-#'  'e' - ETS (forecast package) 
-#'  'h' - Hybrid (forecastHybrid package) 
+#'  'e' - ets (forecast package) 
+#'  'h' - hybrid timse series model (forecastHybrid package) 
 #'  'n' - Neural Network Time Series (forecast package)
-#'  't' - TBATS (forecast package)
+#'  't' - tbats (forecast package)
 #'  'w' - Holt Winters (stats package)
 #' @param periods The number of periods to evaluate the models (with a minimum of 2)
 #' @param error The type of error to evaluate by - "MAPE"  (default) or "RMSE"
@@ -112,13 +112,13 @@ model_char <-  base::unlist(base::strsplit(models, split = ""))
 
 
 if("a" %in% model_char){
-  model_list <- c(model_list, "AUTO.ARIMA")
-  md_AUTO.ARIMA <- fc_AUTO.ARIMA <- NULL
+  model_list <- c(model_list, "auto.arima")
+  md_auto.arima <- fc_auto.arima <- NULL
   a.arg$parallel <- parallel
-  md_AUTO.ARIMA <- base::do.call(forecast::auto.arima, c(list(ts.obj), a.arg))
-  fc_AUTO.ARIMA <- forecast::forecast(md_AUTO.ARIMA, h = h)
-  modelOutput$Models_Final <- list(auto.arima = md_AUTO.ARIMA)
-  modelOutput$Forecast_Final <- list(auto.arima = fc_AUTO.ARIMA)
+  md_auto.arima <- base::do.call(forecast::auto.arima, c(list(ts.obj), a.arg))
+  fc_auto.arima <- forecast::forecast(md_auto.arima, h = h)
+  modelOutput$Models_Final <- list(auto.arima = md_auto.arima)
+  modelOutput$Forecast_Final <- list(auto.arima = fc_auto.arima)
 
 }
 
@@ -132,36 +132,36 @@ if("w" %in% model_char){
 }
 
 if("e" %in% model_char){
-  model_list <- c(model_list, "ETS")
-  md_ETS <- fc_ETS <- NULL
-  md_ETS <- base::do.call(forecast::ets, c(list(ts.obj), e.arg))
-  fc_ETS <- forecast::forecast(md_ETS, h = h)
-  modelOutput$Models_Final <- list(ETS = md_ETS)
-  modelOutput$Forecast_Final <- list(ETS = fc_ETS)
+  model_list <- c(model_list, "ets")
+  md_ets <- fc_ets <- NULL
+  md_ets <- base::do.call(forecast::ets, c(list(ts.obj), e.arg))
+  fc_ets <- forecast::forecast(md_ets, h = h)
+  modelOutput$Models_Final <- list(ets = md_ets)
+  modelOutput$Forecast_Final <- list(ets = fc_ets)
 }
 
 if("n" %in% model_char){
-  model_list <- c(model_list, "NNETAR")
-  md_NNETAR <- fc_NNETAR <- NULL
-  md_NNETAR <- base::do.call(forecast::nnetar, c(list(ts.obj), n.arg))
-  fc_NNETAR <- forecast::forecast(md_NNETAR, h = h)
-  modelOutput$Models_Final <- list(NNETAR = md_NNETAR)
-  modelOutput$Forecast_Final <- list(NNETAR = fc_NNETAR)
+  model_list <- c(model_list, "nnetar")
+  md_nnetar <- fc_nnetar <- NULL
+  md_nnetar <- base::do.call(forecast::nnetar, c(list(ts.obj), n.arg))
+  fc_nnetar <- forecast::forecast(md_nnetar, h = h)
+  modelOutput$Models_Final <- list(nnetar = md_nnetar)
+  modelOutput$Forecast_Final <- list(nnetar = fc_nnetar)
 }
 
 if("t" %in% model_char){
-  model_list <- c(model_list, "TBATS")
-  md_TBATS <- fc_TBATS <- NULL
+  model_list <- c(model_list, "tbats")
+  md_tbats <- fc_tbats <- NULL
   t.arg$use.parallel <- parallel
-  md_TBATS <- base::do.call(forecast::tbats, c(list(ts.obj), t.arg))
-  fc_TBATS <- forecast::forecast(md_TBATS, h = h)
-  modelOutput$Models_Final <- list(TBATS = md_TBATS)
-  modelOutput$Forecast_Final <- list(TBATS = fc_TBATS)
+  md_tbats <- base::do.call(forecast::tbats, c(list(ts.obj), t.arg))
+  fc_tbats <- forecast::forecast(md_tbats, h = h)
+  modelOutput$Models_Final <- list(tbats = md_tbats)
+  modelOutput$Forecast_Final <- list(tbats = fc_tbats)
 }
 
 if("b" %in% model_char){
-  model_list <- c(model_list, "BSTS")
-  md_BSTS <- fc_BSTS <- ss <- fit.bsts <- burn <-  NULL
+  model_list <- c(model_list, "bsts")
+  md_bsts <- fc_bsts <- ss <- fit.bsts <- burn <-  NULL
   ss <- list()
   if(b.arg$linear_trend){
     ss <- bsts::AddLocalLinearTrend(ss, ts.obj) 
@@ -171,25 +171,25 @@ if("b" %in% model_char){
                             nseasons = stats::frequency(ts.obj))
   }
  
-  md_BSTS <- bsts::bsts(ts.obj, 
+  md_bsts <- bsts::bsts(ts.obj, 
                         state.specification = ss, 
                         niter = b.arg$niter, 
                         ping= b.arg$ping, 
                         seed= b.arg$seed,
                         family = b.arg$family)
-  fc_BSTS <- stats::predict(md_BSTS, horizon = h, quantiles = c(.025, .975))
-  modelOutput$Models_Final <- list(BSTS = md_BSTS)
-  modelOutput$Forecast_Final <- list(BSTS = fc_BSTS)
+  fc_bsts <- stats::predict(md_bsts, horizon = h, quantiles = c(.025, .975))
+  modelOutput$Models_Final <- list(bsts = md_bsts)
+  modelOutput$Forecast_Final <- list(bsts = fc_bsts)
 }
 
 if("h" %in% model_char){
-  model_list <- c(model_list, "Hybrid")
-  md_Hybrid <- fc_Hybrid <- NULL
+  model_list <- c(model_list, "hybrid")
+  md_hybrid <- fc_hybrid <- NULL
   h.arg$parallel <- parallel
-  md_Hybrid <- base::do.call(forecastHybrid::hybridModel, c(list(ts.obj), h.arg))
-  fc_Hybrid <- forecast::forecast(md_Hybrid, h = h)
-  modelOutput$Models_Final <- list(Hybrid = md_Hybrid)
-  modelOutput$Forecast_Final <- list(Hybrid = fc_Hybrid)
+  md_hybrid <- base::do.call(forecasthybrid::hybridModel, c(list(ts.obj), h.arg))
+  fc_hybrid <- forecast::forecast(md_hybrid, h = h)
+  modelOutput$Models_Final <- list(hybrid = md_hybrid)
+  modelOutput$Forecast_Final <- list(hybrid = fc_hybrid)
 }
 
 
@@ -223,8 +223,8 @@ if("a" %in% model_char){
 md <- fc <- NULL
 md <- base::do.call(forecast::auto.arima, c(list(train), a.arg))
 fc <- forecast::forecast(md, h = h_training)
-MAPE_df$AUTO.ARIMA[i - s + 1] <-  base::round(forecast::accuracy(fc,test)[10], 2)
-RMSE_df$AUTO.ARIMA[i - s + 1] <-  base::round(forecast::accuracy(fc,test)[4], 2)
+MAPE_df$auto.arima[i - s + 1] <-  base::round(forecast::accuracy(fc,test)[10], 2)
+RMSE_df$auto.arima[i - s + 1] <-  base::round(forecast::accuracy(fc,test)[4], 2)
 eval(parse(text = paste("modelOutput$", period_name, "$auto.arima <- list(model = md, forecast = fc)", sep = ""))) 
 }
 
@@ -241,8 +241,8 @@ if("e" %in% model_char){
 md <- fc <- NULL
 md <- base::do.call(forecast::ets, c(list(train), e.arg))
 fc <- forecast::forecast(train, h = h_training)
-MAPE_df$ETS[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[10], 2)
-RMSE_df$ETS[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4], 2)
+MAPE_df$ets[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[10], 2)
+RMSE_df$ets[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4], 2)
 eval(parse(text = paste("modelOutput$", period_name, "$ets <- list(model = md, forecast = fc)", sep = "")))
 }
 
@@ -251,8 +251,8 @@ if("n" %in% model_char){
 md <- fc <- NULL
 md <- base::do.call(forecast::nnetar, c(list(train), n.arg))
 fc <- forecast::forecast(md, h = h_training)
-MAPE_df$NNETAR[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[10],2)
-RMSE_df$NNETAR[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4],2)
+MAPE_df$nnetar[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[10],2)
+RMSE_df$nnetar[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4],2)
 eval(parse(text = paste("modelOutput$", period_name, "$nnetar <- list(model = md, forecast = fc)", sep = "")))
 }
 
@@ -260,8 +260,8 @@ if("t" %in% model_char){
 md <- fc <- NULL
 md <- base::do.call(forecast::tbats, c(list(train), t.arg))
 fc <- forecast::forecast(md, h = h_training)
-MAPE_df$TBATS[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[10], 2)
-RMSE_df$TBATS[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4], 2)
+MAPE_df$tbats[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[10], 2)
+RMSE_df$tbats[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4], 2)
 eval(parse(text = paste("modelOutput$", period_name, "$tbats <- list(model = md, forecast = fc)", sep = "")))
 }
 
@@ -287,8 +287,8 @@ fc <- stats::predict(md, horizon = h_training, quantiles = c(.025, .975))
 
 
 pred <- fc$mean
-MAPE_df$BSTS[i - s + 1] <- base::round(mean(100 * base::abs((pred - test) / pred)), 2)
-RMSE_df$BSTS[i - s + 1] <- base::round((mean((pred - test)^ 2)) ^ 0.5, 2)
+MAPE_df$bsts[i - s + 1] <- base::round(mean(100 * base::abs((pred - test) / pred)), 2)
+RMSE_df$bsts[i - s + 1] <- base::round((mean((pred - test)^ 2)) ^ 0.5, 2)
 }
 
 if("h" %in% model_char){
@@ -296,8 +296,8 @@ if("h" %in% model_char){
   md <- base::do.call(forecastHybrid::hybridModel, c(list(train), h.arg))
   fc <- forecast::forecast(md, h = h_training)
   eval(parse(text = paste("modelOutput$", period_name, "$hybrid <- list(model = md, forecast = fc)", sep = "")))
-  MAPE_df$Hybrid[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[10], 2)
-  RMSE_df$Hybrid[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4], 2)
+  MAPE_df$hybrid[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[10], 2)
+  RMSE_df$hybrid[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4], 2)
 }
 
 if((i -s + 1) > 1){
@@ -401,7 +401,7 @@ leaderboard <- base::suppressMessages(
 names(leaderboard)[1] <- "Model_Name"
 if(error == "MAPE"){
   leaderboard <- leaderboard %>% dplyr::arrange(avgMAPE)
-} else {
+} else if(error == "RMSE"){
   leaderboard <- leaderboard %>% dplyr::arrange(avgRMSE)
 }
 modelOutput$leaderboard <- leaderboard
