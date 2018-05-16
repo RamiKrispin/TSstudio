@@ -108,8 +108,8 @@ modelOutput <- list()
 color_ramp <- RColorBrewer::brewer.pal(base::nchar(models),"Dark2")
 
 model_char <-  base::unlist(base::strsplit(models, split = ""))
-
-
+modelOutput$Models_Final <- list()
+modelOutput$Forecast_Final <- list()
 
 if("a" %in% model_char){
   model_list <- c(model_list, "auto.arima")
@@ -117,8 +117,8 @@ if("a" %in% model_char){
   a.arg$parallel <- parallel
   md_auto.arima <- base::do.call(forecast::auto.arima, c(list(ts.obj), a.arg))
   fc_auto.arima <- forecast::forecast(md_auto.arima, h = h)
-  modelOutput$Models_Final <- list(auto.arima = md_auto.arima)
-  modelOutput$Forecast_Final <- list(auto.arima = fc_auto.arima)
+  modelOutput$Models_Final$auto.arima <- md_auto.arima
+  modelOutput$Forecast_Final$auto.arima <- fc_auto.arima
 
 }
 
@@ -127,8 +127,8 @@ if("w" %in% model_char){
   md_HoltWinters <- fc_HoltWinters <- NULL
   md_HoltWinters <- base::do.call(stats::HoltWinters, c(list(ts.obj), w.arg))
   fc_HoltWinters <- forecast::forecast(md_HoltWinters, h = h)
-  modelOutput$Models_Final <- list(HoltWinters = md_HoltWinters)
-  modelOutput$Forecast_Final <- list(HoltWinters = fc_HoltWinters)
+  modelOutput$Models_Final$HoltWinters <- md_HoltWinters
+  modelOutput$Forecast_Final$HoltWinters <- fc_HoltWinters
 }
 
 if("e" %in% model_char){
@@ -136,8 +136,8 @@ if("e" %in% model_char){
   md_ets <- fc_ets <- NULL
   md_ets <- base::do.call(forecast::ets, c(list(ts.obj), e.arg))
   fc_ets <- forecast::forecast(md_ets, h = h)
-  modelOutput$Models_Final <- list(ets = md_ets)
-  modelOutput$Forecast_Final <- list(ets = fc_ets)
+  modelOutput$Models_Final$ets <- md_ets
+  modelOutput$Forecast_Final$ets <- fc_ets
 }
 
 if("n" %in% model_char){
@@ -145,8 +145,8 @@ if("n" %in% model_char){
   md_nnetar <- fc_nnetar <- NULL
   md_nnetar <- base::do.call(forecast::nnetar, c(list(ts.obj), n.arg))
   fc_nnetar <- forecast::forecast(md_nnetar, h = h)
-  modelOutput$Models_Final <- list(nnetar = md_nnetar)
-  modelOutput$Forecast_Final <- list(nnetar = fc_nnetar)
+  modelOutput$Models_Final$nnetar <- md_nnetar
+  modelOutput$Forecast_Final$nnetar <- fc_nnetar
 }
 
 if("t" %in% model_char){
@@ -155,8 +155,8 @@ if("t" %in% model_char){
   t.arg$use.parallel <- parallel
   md_tbats <- base::do.call(forecast::tbats, c(list(ts.obj), t.arg))
   fc_tbats <- forecast::forecast(md_tbats, h = h)
-  modelOutput$Models_Final <- list(tbats = md_tbats)
-  modelOutput$Forecast_Final <- list(tbats = fc_tbats)
+  modelOutput$Models_Final$tbats <- md_tbats
+  modelOutput$Forecast_Final$tbats <- fc_tbats
 }
 
 if("b" %in% model_char){
@@ -178,18 +178,18 @@ if("b" %in% model_char){
                         seed= b.arg$seed,
                         family = b.arg$family)
   fc_bsts <- stats::predict(md_bsts, horizon = h, quantiles = c(.025, .975))
-  modelOutput$Models_Final <- list(bsts = md_bsts)
-  modelOutput$Forecast_Final <- list(bsts = fc_bsts)
+  modelOutput$Models_Final$bsts <- md_bsts
+  modelOutput$Forecast_Final$bsts <- fc_bsts
 }
 
 if("h" %in% model_char){
   model_list <- c(model_list, "hybrid")
   md_hybrid <- fc_hybrid <- NULL
   h.arg$parallel <- parallel
-  md_hybrid <- base::do.call(forecasthybrid::hybridModel, c(list(ts.obj), h.arg))
+  md_hybrid <- base::do.call(forecastHybrid::hybridModel, c(list(ts.obj), h.arg))
   fc_hybrid <- forecast::forecast(md_hybrid, h = h)
-  modelOutput$Models_Final <- list(hybrid = md_hybrid)
-  modelOutput$Forecast_Final <- list(hybrid = fc_hybrid)
+  modelOutput$Models_Final$hybrid <- md_hybrid
+  modelOutput$Forecast_Final$hybrid <- fc_hybrid
 }
 
 
@@ -371,9 +371,9 @@ p5 <- p5 %>% plotly::layout(title = "Error Distribution by Model",
                             yaxis = list(title = "RMSE"))
 p6 <- plotly::subplot(p4, p5, nrows = 2, titleY = TRUE, titleX = TRUE, margin = 0.06)
 
-if(error == "MAPE" & plot){
+if(error == "MAPE" & plot & periods > 1){
 print(p3)
-} else if(error == "RMSE" & plot){
+} else if(error == "RMSE" & plot $ periods > 1){
   print(p6)
 }
 }
@@ -382,8 +382,10 @@ print(p3)
 
 modelOutput$MAPE_score <- MAPE_df
 modelOutput$RMSE_score <- RMSE_df
+if(periods > 1){
 modelOutput$MAPE_plot <- p3
 modelOutput$RMSE_plot <- p6
+}
 
 leaderboard <- base::suppressMessages(
   (modelOutput$MAPE_score %>% reshape2::melt(id.vars = c("Period")) %>%
