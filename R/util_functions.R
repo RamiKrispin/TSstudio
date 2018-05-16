@@ -112,12 +112,7 @@ zoo_to_ts <- function(zoo.obj){
 
 ts_split <- function(ts.obj, sample.out = NULL){
   
-  if (stats::is.ts(ts.obj)) {
-    if (stats::is.mts(ts.obj)) {
-      warning("The 'ts.obj' has multiple columns, only the first column will be plot")
-      ts.obj <- ts.obj[, 1]
-    }
-  } else {
+  if (!stats::is.ts(ts.obj)) {
     stop("The 'ts.obj' is not a valid 'ts' object")
   }
   
@@ -140,10 +135,10 @@ ts_split <- function(ts.obj, sample.out = NULL){
   split <- base::list(
     train <- stats::window(ts.obj, 
                            start = stats::time(ts.obj)[1], 
-                           end = stats::time(ts.obj)[base::length(ts.obj) - h]),
+                           end = stats::time(ts.obj)[base::length(stats::time(ts.obj)) - h]),
     test <- stats::window(ts.obj, 
-                          start = stats::time(ts.obj)[base::length(ts.obj) - h + 1], 
-                          end = stats::time(ts.obj)[base::length(ts.obj)])
+                          start = stats::time(ts.obj)[base::length(stats::time(ts.obj)) - h + 1], 
+                          end = stats::time(ts.obj)[base::length(stats::time(ts.obj))])
   )
   base::names(split) <- c("train", "test")
   return(split)
