@@ -90,20 +90,20 @@ zoo_to_ts <- function(zoo.obj){
 #' @description Split a time series object into training and testing partitions
 #' @examples
 #' 
-#' # Split the AirPassengers into training and testing partitions
+#' # Split the USgas dataset into training and testing partitions
 #' 
 #' # Set the last 12 months as a testing partition 
 #' 
 #' # and the rest as a training partition
 #' 
-#' data(AirPassengers)
+#' data(USgas, package = "TSstudio)
 #' 
-#' split_Air <- ts_split(ts.obj = AirPassengers, sample.out = 12)
+#' split_USgas <- ts_split(ts.obj = USgase, sample.out = 12)
 #'
-#' training <- split_Air$train
-#' testing <- split_Air$test
+#' training <- split_USgas$train
+#' testing <- split_USgas$test
 #' 
-#' length(AirPassengers)
+#' length(USgas)
 #' 
 #' length(training)
 #' 
