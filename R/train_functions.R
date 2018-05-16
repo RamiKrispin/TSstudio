@@ -407,6 +407,9 @@ if(error == "MAPE"){
   leaderboard <- leaderboard %>% dplyr::arrange(avgRMSE)
 }
 modelOutput$leaderboard <- leaderboard
+eval(parse(text = paste("modelOutput$leadForecast <- modelOutput$Forecast_Final$", leaderboard$Model_Name[1], sep = ""))) 
+
+
 print(leaderboard)
 return(modelOutput)
 }
