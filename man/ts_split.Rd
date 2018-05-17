@@ -15,24 +15,3 @@ ts_split(ts.obj, sample.out = NULL)
 \description{
 Split a time series object into training and testing partitions
 }
-\examples{
-
-# Split the AirPassengers into training and testing partitions
-
-# Set the last 12 months as a testing partition 
-
-# and the rest as a training partition
-
-data(AirPassengers)
-
-split_Air <- ts_split(ts.obj = AirPassengers, sample.out = 12)
-
-training <- split_Air$train
-testing <- split_Air$test
-
-length(AirPassengers)
-
-length(training)
-
-length(testing)
-}
