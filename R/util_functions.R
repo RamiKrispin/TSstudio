@@ -31,8 +31,8 @@ xts_to_ts <- function(xts.obj){
   }
   ts.obj <- NULL
   ts.obj <- stats::as.ts(xts.obj, 
-               start = utils::head(zoo::index(xts.obj), 1), 
-               end = utils::tail(zoo::index(xts.obj), 1))
+                         start = utils::head(zoo::index(xts.obj), 1), 
+                         end = utils::tail(zoo::index(xts.obj), 1))
   return(ts.obj)
 }
 
