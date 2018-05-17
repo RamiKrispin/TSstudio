@@ -106,7 +106,6 @@ zoo_to_ts <- function(zoo.obj){
 #' length(USgas)
 #' 
 #' length(training)
-#' 
 #' length(testing)
 
 
