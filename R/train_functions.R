@@ -11,7 +11,7 @@
 #'  'w' - Holt Winters (stats package)
 #' @param periods The number of periods to evaluate the models (with a minimum of 2)
 #' @param error The type of error to evaluate by - "MAPE"  (default) or "RMSE"
-#' @param h_training An integer, the horizon each model should be tested 
+#' @param window_size An integer, the size of the backtesting window
 #' @param h Integer, the horizon of the selected forecasting model
 #' @param plot Logical, if TRUE desplay a plot with the backtesting progress
 #' @param a.arg List, an optional arguments to pass to the auto.arima function
@@ -37,7 +37,7 @@ ts_backtesting <- function(ts.obj,
                         models = "abehntw", 
                         periods = 6, 
                         error = "MAPE", 
-                        h_training = 3,
+                        window_size = 3,
                         h = 3,
                         plot = TRUE,
                         a.arg = NULL,
@@ -69,15 +69,15 @@ for(s in 1:nchar(models)){
 if(!base::is.numeric(periods) | periods != base::round(periods) | periods <= 0){
   stop("The value of the 'periods' parameters is no valid")
 } else {
-  if((base::length(ts.obj) - periods - h_training) < 2 * stats::frequency(ts.obj)){
+  if((base::length(ts.obj) - periods - window_size) < 2 * stats::frequency(ts.obj)){
     stop("The length of the series is long enough to create a forecast")
   }
 }
 
-if(!base::is.numeric(h_training) | h_training != base::round(h_training) | h_training <= 0){
-  stop("The value of the 'h_training' parameters is no valid")
+if(!base::is.numeric(window_size) | window_size != base::round(window_size) | window_size <= 0){
+  stop("The value of the 'window_size' parameters is no valid")
 } else {
-  if((base::length(ts.obj) - periods - h_training) < 2 * stats::frequency(ts.obj)){
+  if((base::length(ts.obj) - periods - window_size) < 2 * stats::frequency(ts.obj)){
     stop("The length of the series is long enough to create a forecast")
   }
 }
@@ -215,14 +215,14 @@ eval(parse(text = paste("modelOutput$", period_name, "<- list()", sep = "")))
 
 ts.subset <- split_ts <- train <- test <- NULL
 ts.subset <- stats::window(ts.obj, start = stats::time(ts.obj)[1], end = stats::time(ts.obj)[i])
-split_ts <- TSstudio::ts_split(ts.subset, sample.out = h_training)
+split_ts <- TSstudio::ts_split(ts.subset, sample.out = window_size)
 train <- split_ts$train
 test <- split_ts$test
 
 if("a" %in% model_char){
 md <- fc <- NULL
 md <- base::do.call(forecast::auto.arima, c(list(train), a.arg))
-fc <- forecast::forecast(md, h = h_training)
+fc <- forecast::forecast(md, h = window_size)
 MAPE_df$auto.arima[i - s + 1] <-  base::round(forecast::accuracy(fc,test)[10], 2)
 RMSE_df$auto.arima[i - s + 1] <-  base::round(forecast::accuracy(fc,test)[4], 2)
 eval(parse(text = paste("modelOutput$", period_name, "$auto.arima <- list(model = md, forecast = fc)", sep = ""))) 
@@ -231,7 +231,7 @@ eval(parse(text = paste("modelOutput$", period_name, "$auto.arima <- list(model 
 if("w" %in% model_char){
 md <- fc <- NULL
 md <- base::do.call(stats::HoltWinters, c(list(train), w.arg))
-fc <- forecast::forecast(md, h = h_training)
+fc <- forecast::forecast(md, h = window_size)
 MAPE_df$HoltWinters[i - s + 1] <- base::round(forecast::accuracy(fc, test)[10], 2)
 RMSE_df$HoltWinters[i - s + 1] <- base::round(forecast::accuracy(fc, test)[4], 2)
 eval(parse(text = paste("modelOutput$", period_name, "$HoltWinters <- list(model = md, forecast = fc)", sep = ""))) 
@@ -240,7 +240,7 @@ eval(parse(text = paste("modelOutput$", period_name, "$HoltWinters <- list(model
 if("e" %in% model_char){
 md <- fc <- NULL
 md <- base::do.call(forecast::ets, c(list(train), e.arg))
-fc <- forecast::forecast(train, h = h_training)
+fc <- forecast::forecast(train, h = window_size)
 MAPE_df$ets[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[10], 2)
 RMSE_df$ets[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4], 2)
 eval(parse(text = paste("modelOutput$", period_name, "$ets <- list(model = md, forecast = fc)", sep = "")))
@@ -250,7 +250,7 @@ eval(parse(text = paste("modelOutput$", period_name, "$ets <- list(model = md, f
 if("n" %in% model_char){
 md <- fc <- NULL
 md <- base::do.call(forecast::nnetar, c(list(train), n.arg))
-fc <- forecast::forecast(md, h = h_training)
+fc <- forecast::forecast(md, h = window_size)
 MAPE_df$nnetar[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[10],2)
 RMSE_df$nnetar[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4],2)
 eval(parse(text = paste("modelOutput$", period_name, "$nnetar <- list(model = md, forecast = fc)", sep = "")))
@@ -259,7 +259,7 @@ eval(parse(text = paste("modelOutput$", period_name, "$nnetar <- list(model = md
 if("t" %in% model_char){
 md <- fc <- NULL
 md <- base::do.call(forecast::tbats, c(list(train), t.arg))
-fc <- forecast::forecast(md, h = h_training)
+fc <- forecast::forecast(md, h = window_size)
 MAPE_df$tbats[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[10], 2)
 RMSE_df$tbats[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4], 2)
 eval(parse(text = paste("modelOutput$", period_name, "$tbats <- list(model = md, forecast = fc)", sep = "")))
@@ -283,7 +283,7 @@ md <- bsts::bsts(train,
                       seed= b.arg$seed,
                       family = b.arg$family)
 
-fc <- stats::predict(md, horizon = h_training, quantiles = c(.025, .975))
+fc <- stats::predict(md, horizon = window_size, quantiles = c(.025, .975))
 
 
 pred <- fc$mean
@@ -294,7 +294,7 @@ RMSE_df$bsts[i - s + 1] <- base::round((mean((pred - test)^ 2)) ^ 0.5, 2)
 if("h" %in% model_char){
   md <- fc <- NULL
   md <- base::do.call(forecastHybrid::hybridModel, c(list(train), h.arg))
-  fc <- forecast::forecast(md, h = h_training)
+  fc <- forecast::forecast(md, h = window_size)
   eval(parse(text = paste("modelOutput$", period_name, "$hybrid <- list(model = md, forecast = fc)", sep = "")))
   MAPE_df$hybrid[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[10], 2)
   RMSE_df$hybrid[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4], 2)
@@ -401,34 +401,27 @@ leaderboard <- base::suppressMessages(
   )
 
 names(leaderboard)[1] <- "Model_Name"
-if(error == "MAPE"){
-  leaderboard <- leaderboard %>% dplyr::arrange(avgMAPE)
-  # if(periods > 1){
-  #     
-  #   final_forecast_plot <- plot_forecast(modelOutput$leadForecast)
-  #   final_plot <- plotly::subplot(plotly::subplot(p2, p3, nrows = 1, titleY = TRUE, titleX = TRUE, margin = 0.06),
-  #                                 final_forecast_plot , nrows = 2)
-  #   print(final_plot)
-  #   
-  # }
-} else if(error == "RMSE"){
-  leaderboard <- leaderboard %>% dplyr::arrange(avgRMSE)
-  # if(periods > 1){
-  #   final_forecast_plot <- plot_forecast(modelOutput$leadForecast)
-  #   final_plot <- plotly::subplot(plotly::subplot(p4, p5, nrows = 1, titleY = TRUE, titleX = TRUE, margin = 0.06),
-  #                                 final_forecast_plot , nrows = 2)
-  #   print(final_plot)
-  #   
-  # }
-}
 modelOutput$leaderboard <- leaderboard
 eval(parse(text = paste("modelOutput$leadForecast <- modelOutput$Forecast_Final$", leaderboard$Model_Name[1], sep = ""))) 
 
 
+if(error == "MAPE"){
+  leaderboard <- leaderboard %>% dplyr::arrange(avgMAPE)
+  if(periods > 1){
+    final_forecast_plot <- TSstudio::plot_forecast(modelOutput$leadForecast)
+    final_plot <- plotly::subplot(plotly::subplot(p1, p2, nrows = 1), final_forecast_plot, nrows = 2, margin = 0.06)
+    
+  }
+} else if(error == "RMSE"){
+  leaderboard <- leaderboard %>% dplyr::arrange(avgRMSE)
+  if(periods > 1){
+    final_forecast_plot <- TSstudio::plot_forecast(modelOutput$leadForecast)
+    final_plot <- plotly::subplot(plotly::subplot(p4, p5, nrows = 1), final_forecast_plot, nrows = 2, margin = 0.06)
 
-final_plot <- plotly::subplot(plotly::subplot(p4, p5, nrows = 1, titleY = TRUE, titleX = TRUE, margin = 0.06),
-                              plot_forecast(modelOutput$leadForecast))
+  }
+}
 
+modelOutput$summary_plot <- final_plot
 print(final_plot)
 print(leaderboard)
 return(modelOutput)
