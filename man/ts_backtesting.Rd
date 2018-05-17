@@ -20,9 +20,13 @@ ts_backtesting(ts.obj, models = "abehntw", periods = 6, error = "MAPE",
  'b' - Bayesian Structural Time Series (bsts package)
  
  'e' - ets (forecast package) 
+ 
  'h' - hybrid timse series model (forecastHybrid package) 
+ 
  'n' - Neural Network Time Series (forecast package)
+ 
  't' - tbats (forecast package)
+ 
  'w' - Holt Winters (stats package)}
 
 \item{periods}{The number of periods to evaluate the models (with a minimum of 2)}
