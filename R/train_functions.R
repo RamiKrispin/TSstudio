@@ -8,10 +8,15 @@
 #'  'b' - Bayesian Structural Time Series (bsts package)
 #'  
 #'  'e' - ets (forecast package) 
+#'  
 #'  'h' - hybrid timse series model (forecastHybrid package) 
+#'  
 #'  'n' - Neural Network Time Series (forecast package)
+#'  
 #'  't' - tbats (forecast package)
+#'  
 #'  'w' - Holt Winters (stats package)
+#'  
 #' @param periods The number of periods to evaluate the models (with a minimum of 2)
 #' @param error The type of error to evaluate by - "MAPE"  (default) or "RMSE"
 #' @param window_size An integer, the size of the backtesting window
@@ -304,7 +309,7 @@ if("h" %in% model_char){
 }
 
 if((i -s + 1) > 1){
-p1 <- p2 <- p3 <- p4 <- p5 <- p6 <-NULL
+p <- p1 <- p2 <- p3 <- p4 <- p5 <- p6 <-NULL
 
 p1 <- plotly::plot_ly(data = MAPE_df) 
 
@@ -315,6 +320,20 @@ for(r1 in 2:ncol(MAPE_df)){
                                  line = list(color = color_ramp[(r1 -1)]))
 }
   
+p <- TSstudio::ts_plot(ts.obj = train, title = base::paste("Backtesting over ", periods, sep = "")) %>%
+  plotly::add_lines(x = stats::time(test), y = base::as.numeric(test), line = list(color = "green", width = 4, dash = "dash")) %>% 
+  plotly::add_trace(showlegend = FALSE) %>%
+  plotly::layout(xaxis = list(range = c(base::min(stats::time(ts.obj)), base::max(stats::time(ts.obj)))))
+
+  # plotly::layout(shapes = list(list(type = "rect", 
+  #                              fillcolor = "blue", 
+  #                              line = list(color = "blue"), 
+  #                              opacity = 0.3, 
+  #                              x0 = min(time(test)), x1 = max(time(test)), xref = "x", 
+  #                              y0 = min(ts.obj), y1 = max(ts.obj), yref = "y"))
+  #                )
+
+
 p1 <- p1 %>% plotly::layout(xaxis = list(tickvals = MAPE_df[, 1], ticktext = MAPE_df[, 1],
                                          range = c(min(MAPE_df$Period), max(MAPE_df$Period))))
 
@@ -375,9 +394,12 @@ p5 <- p5 %>% plotly::layout(title = "Error Distribution by Model",
 p6 <- plotly::subplot(p4, p5, nrows = 2, titleY = TRUE, titleX = TRUE, margin = 0.06)
 
 if(error == "MAPE" & plot & periods > 1){
-print(p3)
+
+  p7 <- plotly::subplot(plotly::subplot(p1, p2, nrows = 1), p, nrows = 2, margin = 0.06)
+  print(p7)
 } else if(error == "RMSE" & plot $ periods > 1){
-  print(p6)
+  p7 <- plotly::subplot(plotly::subplot(p4, p5, nrows = 1), p, nrows = 2, margin = 0.06)
+  print(p7)
 }
 }
 }
