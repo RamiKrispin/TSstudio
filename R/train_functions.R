@@ -2,8 +2,11 @@
 #' @export ts_backtesting
 #' @param ts.obj A univariate time series object of a class "ts"
 #' @param models String, define the type of models to use in the training function:
+#' 
 #'  'a' - auto.arima (forecast package)
+#'  
 #'  'b' - Bayesian Structural Time Series (bsts package)
+#'  
 #'  'e' - ets (forecast package) 
 #'  'h' - hybrid timse series model (forecastHybrid package) 
 #'  'n' - Neural Network Time Series (forecast package)

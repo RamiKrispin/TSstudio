@@ -14,14 +14,16 @@ ts_backtesting(ts.obj, models = "abehntw", periods = 6, error = "MAPE",
 \item{ts.obj}{A univariate time series object of a class "ts"}
 
 \item{models}{String, define the type of models to use in the training function:
-'a' - auto.arima (forecast package)
 
-'b' - Bayesian Structural Time Series (bsts package)
-'e' - ets (forecast package) 
-'h' - hybrid timse series model (forecastHybrid package) 
-'n' - Neural Network Time Series (forecast package)
-'t' - tbats (forecast package)
-'w' - Holt Winters (stats package)}
+ 'a' - auto.arima (forecast package)
+ 
+ 'b' - Bayesian Structural Time Series (bsts package)
+ 
+ 'e' - ets (forecast package) 
+ 'h' - hybrid timse series model (forecastHybrid package) 
+ 'n' - Neural Network Time Series (forecast package)
+ 't' - tbats (forecast package)
+ 'w' - Holt Winters (stats package)}
 
 \item{periods}{The number of periods to evaluate the models (with a minimum of 2)}
 
