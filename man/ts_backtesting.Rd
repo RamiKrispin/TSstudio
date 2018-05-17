@@ -5,7 +5,7 @@
 \title{Evaluation Function for Forecasting Models}
 \usage{
 ts_backtesting(ts.obj, models = "abehntw", periods = 6, error = "MAPE",
-  h_training = 3, h = 3, plot = TRUE, a.arg = NULL,
+  window_size = 3, h = 3, plot = TRUE, a.arg = NULL,
   b.arg = list(linear_trend = TRUE, seasonal = TRUE, niter = 1000, ping = 100,
   family = "gaussian", seed = 1234), e.arg = NULL, h.arg = NULL,
   n.arg = NULL, t.arg = NULL, w.arg = NULL, parallel = FALSE)
@@ -15,6 +15,7 @@ ts_backtesting(ts.obj, models = "abehntw", periods = 6, error = "MAPE",
 
 \item{models}{String, define the type of models to use in the training function:
 'a' - auto.arima (forecast package)
+
 'b' - Bayesian Structural Time Series (bsts package)
 'e' - ets (forecast package) 
 'h' - hybrid timse series model (forecastHybrid package) 
@@ -26,7 +27,7 @@ ts_backtesting(ts.obj, models = "abehntw", periods = 6, error = "MAPE",
 
 \item{error}{The type of error to evaluate by - "MAPE"  (default) or "RMSE"}
 
-\item{h_training}{An integer, the horizon each model should be tested}
+\item{window_size}{An integer, the size of the backtesting window}
 
 \item{h}{Integer, the horizon of the selected forecasting model}
 
