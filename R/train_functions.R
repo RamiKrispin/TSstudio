@@ -64,7 +64,10 @@ ts_backtesting <- function(ts.obj,
 
 `%>%` <- magrittr::`%>%`
   
-a <- model_list <- model_char <- color_ramp <- forecast_list <- NULL
+a <- model_list <- model_char <- color_ramp <- forecast_list <- obj.name <- NULL
+
+obj.name <- base::deparse(base::substitute(ts.obj))
+
 
 # Define the model type
 for(s in 1:nchar(models)){
@@ -311,6 +314,11 @@ if("h" %in% model_char){
 if((i -s + 1) > 1){
 p <- p1 <- p2 <- p3 <- p4 <- p5 <- p6 <-NULL
 
+p <-   plotly::plot_ly(x = stats::time(train), y = base::as.numeric(train), mode = "lines", name = "Training", type = "scatter", line = list(color = "#00526d")) %>%
+  plotly::add_lines(x = stats::time(test), y = base::as.numeric(test), line = list(color = "green", width = 4, dash = "dash"), name = "Testing") %>% 
+  plotly::layout(xaxis = list(range = c(base::min(stats::time(ts.obj)), base::max(stats::time(ts.obj)))), 
+                 title = base::paste(obj.name, " - Backtesting", sep = "")) 
+
 p1 <- plotly::plot_ly(data = MAPE_df) 
 
 for(r1 in 2:ncol(MAPE_df)){
@@ -320,19 +328,6 @@ for(r1 in 2:ncol(MAPE_df)){
                                  line = list(color = color_ramp[(r1 -1)]))
 }
   
-p <- TSstudio::ts_plot(ts.obj = train, title = base::paste("Backtesting over ", periods, sep = "")) %>%
-  plotly::add_lines(x = stats::time(test), y = base::as.numeric(test), line = list(color = "green", width = 4, dash = "dash")) %>% 
-  plotly::add_trace(showlegend = FALSE) %>%
-  plotly::layout(xaxis = list(range = c(base::min(stats::time(ts.obj)), base::max(stats::time(ts.obj)))))
-
-  # plotly::layout(shapes = list(list(type = "rect", 
-  #                              fillcolor = "blue", 
-  #                              line = list(color = "blue"), 
-  #                              opacity = 0.3, 
-  #                              x0 = min(time(test)), x1 = max(time(test)), xref = "x", 
-  #                              y0 = min(ts.obj), y1 = max(ts.obj), yref = "y"))
-  #                )
-
 
 p1 <- p1 %>% plotly::layout(xaxis = list(tickvals = MAPE_df[, 1], ticktext = MAPE_df[, 1],
                                          range = c(min(MAPE_df$Period), max(MAPE_df$Period))))
@@ -391,14 +386,16 @@ p4 <- p4 %>% plotly::layout(title = "Error by Period",
                             xaxis = list(title = "Period", tickvals = RMSE_df[, 1], ticktext = RMSE_df[, 1]))
 p5 <- p5 %>% plotly::layout(title = "Error Distribution by Model",
                             yaxis = list(title = "RMSE"))
-p6 <- plotly::subplot(p4, p5, nrows = 2, titleY = TRUE, titleX = TRUE, margin = 0.06)
+p6 <- plotly::subplot(p4, p5, nrows = 2, titleY = TRUE, titleX = TRUE, margin = 0.1)
 
 if(error == "MAPE" & plot & periods > 1){
 
-  p7 <- plotly::subplot(plotly::subplot(p1, p2, nrows = 1), p, nrows = 2, margin = 0.06)
+  p7 <- plotly::subplot(plotly::subplot(p1, p2, nrows = 1, titleY = TRUE, shareY = TRUE, margin = 0.02, titleX = TRUE), 
+                        p, nrows = 2, margin = 0.08, titleY = T)
   print(p7)
 } else if(error == "RMSE" & plot $ periods > 1){
-  p7 <- plotly::subplot(plotly::subplot(p4, p5, nrows = 1), p, nrows = 2, margin = 0.06)
+  p7 <- plotly::subplot(plotly::subplot(p1, p2, nrows = 1, titleY = TRUE, shareY = TRUE, margin = 0.02, titleX = TRUE), 
+                        p, nrows = 2, margin = 0.08, titleY = TRUE)
   print(p7)
 }
 }
@@ -434,14 +431,14 @@ if(error == "MAPE"){
   leaderboard <- leaderboard %>% dplyr::arrange(avgMAPE)
   if(periods > 1){
     final_forecast_plot <- TSstudio::plot_forecast(modelOutput$leadForecast)
-    final_plot <- plotly::subplot(plotly::subplot(p1, p2, nrows = 1), final_forecast_plot, nrows = 2, margin = 0.06)
+    final_plot <- plotly::subplot(plotly::subplot(p1, p2, nrows = 1, titleY = TRUE), final_forecast_plot, nrows = 2, margin = 0.1)
     
   }
 } else if(error == "RMSE"){
   leaderboard <- leaderboard %>% dplyr::arrange(avgRMSE)
   if(periods > 1){
     final_forecast_plot <- TSstudio::plot_forecast(modelOutput$leadForecast)
-    final_plot <- plotly::subplot(plotly::subplot(p4, p5, nrows = 1), final_forecast_plot, nrows = 2, margin = 0.06)
+    final_plot <- plotly::subplot(plotly::subplot(p4, p5, nrows = 1, titleY = TRUE), final_forecast_plot, nrows = 2, margin = 0.1)
 
   }
 }
