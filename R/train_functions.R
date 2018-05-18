@@ -314,10 +314,11 @@ if("h" %in% model_char){
 if((i -s + 1) > 1){
 p <- p1 <- p2 <- p3 <- p4 <- p5 <- p6 <-NULL
 
+
 p <-   plotly::plot_ly(x = stats::time(train), y = base::as.numeric(train), mode = "lines", name = "Training", type = "scatter", line = list(color = "#00526d")) %>%
   plotly::add_lines(x = stats::time(test), y = base::as.numeric(test), line = list(color = "green", width = 4, dash = "dash"), name = "Testing") %>% 
   plotly::layout(xaxis = list(range = c(base::min(stats::time(ts.obj)), base::max(stats::time(ts.obj)))), 
-                 title = base::paste(obj.name, " - Backtesting", sep = "")) 
+                 title = base::paste(obj.name, " Backtesting - Error Distribution by Period/Model", sep = ""), annotations = a) 
 
 p1 <- plotly::plot_ly(data = MAPE_df) 
 
@@ -424,20 +425,59 @@ leaderboard <- base::suppressMessages(
 
 names(leaderboard)[1] <- "Model_Name"
 modelOutput$leaderboard <- leaderboard
-eval(parse(text = paste("modelOutput$leadForecast <- modelOutput$Forecast_Final$", leaderboard$Model_Name[1], sep = ""))) 
 
+
+forecast_final_plot_arg <- list(
+  text = paste(obj.name, " Best Forecast by ", error, " - ", leaderboard$Model_Name[1], sep = ""),
+  xref = "paper",
+  yref = "paper",
+  yanchor = "bottom",
+  xanchor = "center",
+  align = "center",
+  x = 0.5,
+  y = 1,
+  showarrow = FALSE
+)
 
 if(error == "MAPE"){
   leaderboard <- leaderboard %>% dplyr::arrange(avgMAPE)
+  eval(parse(text = paste("modelOutput$leadForecast <- modelOutput$Forecast_Final$", leaderboard$Model_Name[1], sep = ""))) 
   if(periods > 1){
-    final_forecast_plot <- TSstudio::plot_forecast(modelOutput$leadForecast)
+    forecast_final_plot_arg <- list(
+      text = paste(obj.name, " Best Forecast by ", error, " - ", leaderboard$Model_Name[1], sep = ""),
+      xref = "paper",
+      yref = "paper",
+      yanchor = "bottom",
+      xanchor = "center",
+      align = "center",
+      x = 0.5,
+      y = 1,
+      showarrow = FALSE
+    )
+    
+    final_forecast_plot <- TSstudio::plot_forecast(modelOutput$leadForecast) %>% 
+      plotly::layout(annotations = forecast_final_plot_arg) 
     final_plot <- plotly::subplot(plotly::subplot(p1, p2, nrows = 1, titleY = TRUE), final_forecast_plot, nrows = 2, margin = 0.1)
     
   }
 } else if(error == "RMSE"){
   leaderboard <- leaderboard %>% dplyr::arrange(avgRMSE)
+  eval(parse(text = paste("modelOutput$leadForecast <- modelOutput$Forecast_Final$", leaderboard$Model_Name[1], sep = ""))) 
+  
   if(periods > 1){
-    final_forecast_plot <- TSstudio::plot_forecast(modelOutput$leadForecast)
+    forecast_final_plot_arg <- list(
+      text = paste(obj.name, " Best Forecast by ", error, " - ", leaderboard$Model_Name[1], sep = ""),
+      xref = "paper",
+      yref = "paper",
+      yanchor = "bottom",
+      xanchor = "center",
+      align = "center",
+      x = 0.5,
+      y = 1,
+      showarrow = FALSE
+    )
+    final_forecast_plot <- TSstudio::plot_forecast(modelOutput$leadForecast) %>% 
+      plotly::layout(annotations = forecast_final_plot_arg)
     final_plot <- plotly::subplot(plotly::subplot(p4, p5, nrows = 1, titleY = TRUE), final_forecast_plot, nrows = 2, margin = 0.1)
 
   }
