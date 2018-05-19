@@ -322,7 +322,8 @@ plot_forecast <- function(forecast_obj,
     Ytitle <- ""
   }  
 # Setting the plot
-  
+ if(forecast::is.forecast(forecast_obj)){ 
+   p <- NULL
   p <- plotly::plot_ly() %>%
     plotly::add_lines(x = stats::time(forecast_obj$x), y = forecast_obj$x,
                        name = "Observed",
@@ -354,6 +355,38 @@ plot_forecast <- function(forecast_obj,
     plotly::layout(title = title,
                      xaxis = list(title = Xtitle),
                      yaxis = list(title = Ytitle))
-  
   return(p)
+ } else if(class(forecast_obj) == "bsts.prediction"){
+   # p <- NULL
+   # 
+   # x_index_start <- base::max(zoo::index(forecast_obj$original.series)) + 1
+   # x_forecast <- c(x_index_start:(x_index_start + base::length(forecast_obj$mean) -1)) 
+   # y_forecast <- forecast_obj$mean
+   # p <- plotly::plot_ly() %>%
+   #    plotly::add_lines(x = zoo::index(forecast_obj$original.series), y = as.numeric(forecast_obj$original.series),
+   #                      name = "Observed",
+   #                      mode = "lines", 
+   #                      type = 'scatter',
+   #                      line = list(width = width, color = color)
+   #    )
+   #  
+   #  intervals_str <- rownames(forecast_obj$interval)
+   #  intervals_numeric <- as.numeric(gsub("%", "", intervals_str))
+   #  if(length(intervals_str) == 2){
+   #    lower <- which.min(intervals_numeric)
+   #    upper <- which.max(intervals_numeric)
+   #    p <- p %>% plotly::add_ribbons(x = stats::time(forecast_obj$mean), 
+   #                                   ymin = forecast_obj$lower[, i], 
+   #                                   ymax = forecast_obj$upper[, i],
+   #                                   color = I(base::paste("gray", base::as.numeric(sub("%", "", (forecast_obj$level[i]))) - 5*i, sep = "")),
+   #                                   name = base::paste(forecast_obj$level[i], "% confidence", sep = "")
+   #    )
+   #  }
+    print("The bsts plot is under constraction")
+  
+ } else{
+    stop("The input object is neither 'forecast' nor 'bsts.prediction' object")
+  }
+  
+  
 }
