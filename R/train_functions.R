@@ -394,7 +394,7 @@ if(error == "MAPE" & plot & periods > 1){
   p7 <- plotly::subplot(plotly::subplot(p1, p2, nrows = 1, titleY = TRUE, shareY = TRUE, margin = 0.02, titleX = TRUE), 
                         p, nrows = 2, margin = 0.08, titleY = T)
   print(p7)
-} else if(error == "RMSE" & plot $ periods > 1){
+} else if(error == "RMSE" & plot & periods > 1){
   p7 <- plotly::subplot(plotly::subplot(p1, p2, nrows = 1, titleY = TRUE, shareY = TRUE, margin = 0.02, titleX = TRUE), 
                         p, nrows = 2, margin = 0.08, titleY = TRUE)
   print(p7)
