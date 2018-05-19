@@ -8,7 +8,7 @@ plot_forecast(forecast_obj, title = NULL, Xtitle = NULL, Ytitle = NULL,
   color = NULL, width = 2)
 }
 \arguments{
-\item{forecast_obj}{A forecast object from the forecast package}
+\item{forecast_obj}{A forecast object from the forecast, forecastHybrid, or bsts packages}
 
 \item{title}{A character, a plot title, optional}
 
