@@ -122,6 +122,7 @@ model_char <-  base::unlist(base::strsplit(models, split = ""))
 modelOutput$Models_Final <- list()
 modelOutput$Forecast_Final <- list()
 
+# Final forecast
 if("a" %in% model_char){
   model_list <- c(model_list, "auto.arima")
   md_auto.arima <- fc_auto.arima <- NULL
@@ -130,7 +131,7 @@ if("a" %in% model_char){
   fc_auto.arima <- forecast::forecast(md_auto.arima, h = h)
   modelOutput$Models_Final$auto.arima <- md_auto.arima
   modelOutput$Forecast_Final$auto.arima <- fc_auto.arima
-
+  
 }
 
 if("w" %in% model_char){
@@ -181,7 +182,7 @@ if("b" %in% model_char){
     ss <- bsts::AddSeasonal(ss, ts.obj, 
                             nseasons = stats::frequency(ts.obj))
   }
- 
+  
   md_bsts <- bsts::bsts(ts.obj, 
                         state.specification = ss, 
                         niter = b.arg$niter, 
@@ -311,7 +312,7 @@ if("h" %in% model_char){
   RMSE_df$hybrid[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4], 2)
 }
 
-if((i -s + 1) > 1){
+if((i -s + 1) >= 1){
 p <- p1 <- p2 <- p3 <- p4 <- p5 <- p6 <-NULL
 
 
@@ -395,12 +396,15 @@ if(error == "MAPE" & plot & periods > 1){
                         p, nrows = 2, margin = 0.08, titleY = T)
   print(p7)
 } else if(error == "RMSE" & plot & periods > 1){
-  p7 <- plotly::subplot(plotly::subplot(p1, p2, nrows = 1, titleY = TRUE, shareY = TRUE, margin = 0.02, titleX = TRUE), 
+  p7 <- plotly::subplot(plotly::subplot(p4, p5, nrows = 1, titleY = TRUE, shareY = TRUE, margin = 0.02, titleX = TRUE), 
                         p, nrows = 2, margin = 0.08, titleY = TRUE)
   print(p7)
 }
 }
 }
+
+
+
 
 
 modelOutput$MAPE_score <- MAPE_df
