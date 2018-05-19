@@ -255,7 +255,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
 #'  Plotting Forecast Object
 #' @export plot_forecast
 #' @description Visualization functions for forecast package forecasting objects
-#' @param forecast_obj A forecast object from the forecast package
+#' @param forecast_obj A forecast object from the forecast, forecastHybrid, or bsts packages
 #' @param title A character, a plot title, optional
 #' @param Xtitle Set the X axis title, default set to NULL
 #' @param Ytitle Set the Y axis title, default set to NULL
@@ -357,33 +357,62 @@ plot_forecast <- function(forecast_obj,
                      yaxis = list(title = Ytitle))
   return(p)
  } else if(class(forecast_obj) == "bsts.prediction"){
-   # p <- NULL
-   # 
-   # x_index_start <- base::max(zoo::index(forecast_obj$original.series)) + 1
-   # x_forecast <- c(x_index_start:(x_index_start + base::length(forecast_obj$mean) -1)) 
-   # y_forecast <- forecast_obj$mean
-   # p <- plotly::plot_ly() %>%
-   #    plotly::add_lines(x = zoo::index(forecast_obj$original.series), y = as.numeric(forecast_obj$original.series),
-   #                      name = "Observed",
-   #                      mode = "lines", 
-   #                      type = 'scatter',
-   #                      line = list(width = width, color = color)
-   #    )
-   #  
-   #  intervals_str <- rownames(forecast_obj$interval)
-   #  intervals_numeric <- as.numeric(gsub("%", "", intervals_str))
-   #  if(length(intervals_str) == 2){
-   #    lower <- which.min(intervals_numeric)
-   #    upper <- which.max(intervals_numeric)
-   #    p <- p %>% plotly::add_ribbons(x = stats::time(forecast_obj$mean), 
-   #                                   ymin = forecast_obj$lower[, i], 
-   #                                   ymax = forecast_obj$upper[, i],
-   #                                   color = I(base::paste("gray", base::as.numeric(sub("%", "", (forecast_obj$level[i]))) - 5*i, sep = "")),
-   #                                   name = base::paste(forecast_obj$level[i], "% confidence", sep = "")
-   #    )
-   #  }
-    print("The bsts plot is under constraction")
-  
+   p <- NULL
+
+   x_index_start <- base::max(zoo::index(forecast_obj$original.series)) + 1
+   x_forecast <- c(x_index_start:(x_index_start + base::length(forecast_obj$mean) -1))
+   y_forecast <- forecast_obj$mean
+   p <- plotly::plot_ly() %>%
+      plotly::add_lines(x = zoo::index(forecast_obj$original.series), y = as.numeric(forecast_obj$original.series),
+                        name = "Observed",
+                        mode = "lines",
+                        type = 'scatter',
+                        line = list(width = width, color = color)
+      )
+
+    intervals_str <- rownames(forecast_obj$interval)
+    intervals_numeric <- as.numeric(gsub("%", "", intervals_str))
+    if(base::length(intervals_str) %% 2 == 0){
+      intervals_temp <- c <- NULL
+      intervals_temp <- intervals_numeric
+      c <- 1
+      while(base::length(intervals_temp) > 0){
+      lower <- intervals_temp[which.min(intervals_temp)]
+      upper <- intervals_temp[which.max(intervals_temp)]
+      p <- p %>% plotly::add_ribbons(x = x_forecast,
+                                     ymin = forecast_obj$interval[which(intervals_numeric == lower), ],
+                                     ymax = forecast_obj$interval[which(intervals_numeric == upper), ],
+                                     color = I(base::paste("gray", round(upper - c*5) , sep = "")),
+                                     name = base::paste(100 - 2 * (100 - upper), "% confidence", sep = "")
+      )
+      c <- c + 1
+      intervals_temp[base::which.min(intervals_temp)] <- NA
+      intervals_temp[base::which.max(intervals_temp)] <- NA
+      intervals_temp <- intervals_temp[!is.na(intervals_temp)]
+      }
+    } else if(base::length(intervals_str) > 2){
+      warning("The number of the available confidence intervals is not symmetric, will use only the upper and lower intervals")
+      intervals_temp <- c <- NULL
+      intervals_temp <- intervals_numeric
+      c <- 1
+      lower <- intervals_temp[which.min(intervals_temp)]
+      upper <- intervals_temp[which.max(intervals_temp)]
+      p <- p %>% plotly::add_ribbons(x = x_forecast,
+                                     ymin = forecast_obj$interval[which(intervals_numeric == lower), ],
+                                     ymax = forecast_obj$interval[which(intervals_numeric == upper), ],
+                                     color = I(base::paste("gray", round(upper - c*5) , sep = "")),
+                                     name = base::paste(100 - 2 * (100 - upper), "% confidence", sep = "")
+      )
+    }
+    p <- p %>%
+      plotly::add_lines(x = x_forecast, y = y_forecast, 
+                        name = "Forecasted",
+                        line = list(width = width, color = color, dash = "dash")
+      ) %>%
+      plotly::layout(title = title,
+                     xaxis = list(title = Xtitle),
+                     yaxis = list(title = Ytitle))
+    return(p)
  } else{
     stop("The input object is neither 'forecast' nor 'bsts.prediction' object")
   }
