@@ -16,7 +16,7 @@ Imports:
   data.table(>= 1.11.2),
   dplyr(>= 0.7.5),
   forecast (>= 8.2),
-  forecastHybrid(>= 2.0.10)
+  forecastHybrid(>= 2.0.10),
   lubridate (>= 1.6.0),
   magrittr (>= 1.5),
   plotly (>= 4.7.1),
@@ -24,7 +24,6 @@ Imports:
   reshape2 (>= 1.4.2),
   xts (>= 0.10-1),
   zoo (>= 1.8-0)
-  
 Suggests:
     knitr,
     rmarkdown,
