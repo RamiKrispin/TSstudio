@@ -96,7 +96,7 @@ zoo_to_ts <- function(zoo.obj){
 #' 
 #' ## and the rest as a training partition
 #' 
-#' data(USgas, package = "TSstudio)
+#' data(USgas, package = "TSstudio")
 #' 
 #' split_USgas <- ts_split(ts.obj = USgase, sample.out = 12)
 #'
