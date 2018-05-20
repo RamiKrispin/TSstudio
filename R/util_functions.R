@@ -90,11 +90,11 @@ zoo_to_ts <- function(zoo.obj){
 #' @description Split a time series object into training and testing partitions
 #' @examples
 #' 
-#' # Split the USgas dataset into training and testing partitions
+#' ## Split the USgas dataset into training and testing partitions
 #' 
-#' # Set the last 12 months as a testing partition 
+#' ## Set the last 12 months as a testing partition 
 #' 
-#' # and the rest as a training partition
+#' ## and the rest as a training partition
 #' 
 #' data(USgas, package = "TSstudio)
 #' 
