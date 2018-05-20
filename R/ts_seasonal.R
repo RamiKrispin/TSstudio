@@ -364,7 +364,7 @@ ts_heatmap <- function(ts.obj, last = NULL) {
   
   if(!base::is.null(last)){
     
-    df <- df[, c(1, (base::ncol(df) - base::ceiling(last / frequency(ts.obj))):ncol(df))]  
+    df <- df[, c(1, (base::ncol(df) - base::ceiling(last / stats::frequency(ts.obj))):ncol(df))]  
   }
   
   z <- base::as.matrix(df[, -1])
