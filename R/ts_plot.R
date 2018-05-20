@@ -113,7 +113,9 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
     }
     
     
-  } else if(base::is.data.frame(ts.obj)){ # Case 3 the object is a data frame 
+  } else if(base::is.data.frame(ts.obj) | 
+            dplyr::is.tbl(ts.obj) | 
+            data.table::is.data.table(ts.obj)){ # Case 3 the object is a data frame 
     # Identify the columns classes
     col_class <- base::lapply(ts.obj, class)
     # Check if Date object exist
