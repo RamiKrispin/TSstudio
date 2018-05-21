@@ -460,7 +460,8 @@ if(error == "MAPE"){
     )
     
     final_forecast_plot <- TSstudio::plot_forecast(modelOutput$leadForecast) %>% 
-      plotly::layout(annotations = forecast_final_plot_arg) 
+      plotly::layout(annotations = forecast_final_plot_arg, 
+                     title = base::paste(obj.name, " Backtesting - Error Distribution by Period/Model", sep = "")) 
     final_plot <- plotly::subplot(plotly::subplot(p1, p2, nrows = 1, titleY = TRUE, shareY = TRUE, margin = 0.02, titleX = TRUE), 
                                   final_forecast_plot, nrows = 2, margin = 0.1, titleY = TRUE)
     
