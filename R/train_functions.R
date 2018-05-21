@@ -393,7 +393,7 @@ p6 <- plotly::subplot(p4, p5, nrows = 2, titleY = TRUE, titleX = TRUE, margin = 
 if(error == "MAPE" & plot & periods > 1){
 
   p7 <- plotly::subplot(plotly::subplot(p1, p2, nrows = 1, titleY = TRUE, shareY = TRUE, margin = 0.02, titleX = TRUE), 
-                        p, nrows = 2, margin = 0.08, titleY = T)
+                        p, nrows = 2, margin = 0.08, titleY = TRUE)
   print(p7)
 } else if(error == "RMSE" & plot & periods > 1){
   p7 <- plotly::subplot(plotly::subplot(p4, p5, nrows = 1, titleY = TRUE, shareY = TRUE, margin = 0.02, titleX = TRUE), 
@@ -461,7 +461,8 @@ if(error == "MAPE"){
     
     final_forecast_plot <- TSstudio::plot_forecast(modelOutput$leadForecast) %>% 
       plotly::layout(annotations = forecast_final_plot_arg) 
-    final_plot <- plotly::subplot(plotly::subplot(p1, p2, nrows = 1, titleY = TRUE), final_forecast_plot, nrows = 2, margin = 0.1)
+    final_plot <- plotly::subplot(plotly::subplot(p1, p2, nrows = 1, titleY = TRUE, shareY = TRUE, margin = 0.02, titleX = TRUE), 
+                                  final_forecast_plot, nrows = 2, margin = 0.1, titleY = TRUE)
     
   }
 } else if(error == "RMSE"){
@@ -482,7 +483,8 @@ if(error == "MAPE"){
     )
     final_forecast_plot <- TSstudio::plot_forecast(modelOutput$leadForecast) %>% 
       plotly::layout(annotations = forecast_final_plot_arg)
-    final_plot <- plotly::subplot(plotly::subplot(p4, p5, nrows = 1, titleY = TRUE), final_forecast_plot, nrows = 2, margin = 0.1)
+    final_plot <- plotly::subplot(plotly::subplot(p4, p5,  nrows = 1, titleY = TRUE, shareY = TRUE, margin = 0.02, titleX = TRUE), 
+                                  final_forecast_plot, nrows = 2, margin = 0.1, titleY = TRUE)
 
   }
 }
