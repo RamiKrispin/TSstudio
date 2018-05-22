@@ -7,7 +7,7 @@
 ts_heatmap(ts.obj, last = NULL)
 }
 \arguments{
-\item{ts.obj}{a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)}
+\item{ts.obj}{A univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)}
 
 \item{last}{Subset the data to the last number of observations}
 }

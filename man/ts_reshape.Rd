@@ -4,14 +4,20 @@
 \alias{ts_reshape}
 \title{Transform Time Series Object to Data Frame Format}
 \usage{
-ts_reshape(ts.obj, type = "wide")
+ts_reshape(ts.obj, type = "wide", frequency = NULL)
 }
 \arguments{
-\item{ts.obj}{a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)}
+\item{ts.obj}{a univariate time series object of a class "ts", "zoo", "xts" (support only series with either monthly or quarterly frequency). 
+In addition it support the data frame family (data.frame, data.table, tbl, tibble, etc.) as long as there is a date and numeric objects in the data frame.}
 
 \item{type}{The reshape type - 
+
 "wide" set the years as the columns and the cycle units (months or quarter) as the rows, or
+
 "long" split the time object to year, cycle unit and value}
+
+\item{frequency}{An integer, define the series frequency when more than one option is avaiable and the input is one of the data frame family. 
+If set to NULL will use the first option by default when applicable - daily = c(7, 365)}
 }
 \description{
 Transform time series object into data frame format

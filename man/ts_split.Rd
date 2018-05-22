@@ -25,7 +25,7 @@ Split a time series object into training and testing partitions
 
 data(USgas, package = "TSstudio")
 
-split_USgas <- ts_split(ts.obj = USgase, sample.out = 12)
+split_USgas <- ts_split(ts.obj = USgas, sample.out = 12)
 
 training <- split_USgas$train
 testing <- split_USgas$test
