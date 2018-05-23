@@ -98,7 +98,7 @@ zoo_to_ts <- function(zoo.obj){
 #' 
 #' data(USgas, package = "TSstudio")
 #' 
-#' split_USgas <- ts_split(ts.obj = USgase, sample.out = 12)
+#' split_USgas <- ts_split(ts.obj = USgas, sample.out = 12)
 #'
 #' training <- split_USgas$train
 #' testing <- split_USgas$test
@@ -147,28 +147,113 @@ ts_split <- function(ts.obj, sample.out = NULL){
 
 #'  Transform Time Series Object to Data Frame Format
 #' @export
-#' @param ts.obj a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)
+#' @param ts.obj a univariate time series object of a class "ts", "zoo", "xts" (support only series with either monthly or quarterly frequency). 
+#' In addition it support the data frame family (data.frame, data.table, tbl, tibble, etc.) as long as there is a date and numeric objects in the data frame.
 #' @param type The reshape type - 
+#' 
 #' "wide" set the years as the columns and the cycle units (months or quarter) as the rows, or
+#' 
 #' "long" split the time object to year, cycle unit and value
+#' 
+#' @param frequency An integer, define the series frequency when more than one option is avaiable and the input is one of the data frame family. 
+#' If set to NULL will use the first option by default when applicable - daily = c(7, 365) 
 #' @description Transform time series object into data frame format
 #' @examples
 #' 
 #' data(USgas)
 #' USgas_df <- ts_reshape(USgas)
 
-ts_reshape <- function(ts.obj, type = "wide"){
+# ---- ts_reshape functions ----
+
+ts_reshape <- function(ts.obj, 
+                       type = "wide", frequency = NULL){
   
   `%>%` <- magrittr::`%>%`
-  df <- df_table <- freq <-  freq_name <-NULL
+  df <- df_table <- freq <-  freq_name <- df_temp <- NULL
   
   obj.name <- base::deparse(base::substitute(ts.obj))
-  # --------------Error handling --------------
+  # ---- ts_reshape error handling ----
   if(!type %in% c("long", "wide")){
     warning("The 'type' parameter is not valid, using the default option - 'wide'")
     type <- "wide"
   }
   
+  # Check if the input format is a data frame
+  if(base::is.data.frame(ts.obj) | 
+     dplyr::is.tbl(ts.obj) | 
+     data.table::is.data.table(ts.obj)){
+    
+    # Identify the columns classes
+    col_class <- base::lapply(ts.obj, class)
+    # Check if Date object exist
+    if("Date" %in%  col_class){
+      date_col <- base::which(col_class == "Date")
+    } else {
+      stop("No 'Date' object available in the data frame,", 
+           "please check if the data format is defined properly")
+    }
+    
+    # If there is more than one Date object in the data frame will select the first one
+    if(length(date_col) >1){
+      warning("There are multipe 'date' objects in the data frame,",
+              "using the first 'date' object as the plot index")
+      date_col <- date_col[1]
+    }
+    # Identify the numeric/integer objects in the data frame  
+    numeric_col <- base::which(col_class == "numeric" | col_class == "integer")
+    # Stop if there is no any numeric values in the data frame, otherwise build the data frame 
+    if(base::length(numeric_col) == 0){
+      stop("None of the data frame columns is numeric,", 
+           "please check if the data format is defined properly")
+    }
+    
+    # Check if the object has multiple time series
+    if(length(numeric_col) == 1){
+      df_temp <- base::data.frame(date = ts.obj[, date_col], y =  ts.obj[, numeric_col])
+    } else {
+      warning("There are more than one numeric column in the input object,",
+              "selecting the first numeric column as the input object")
+      df_temp <- base::data.frame(date = ts.obj[, date_col], y = ts.obj[, numeric_col[1]])
+    }
+    
+    # Check the frequnecy of the series
+    df_temp <- df_temp %>% dplyr::arrange(date) # Setting the order of the data frame by the date
+    df_temp$time_diff <- df_temp$date - dplyr::lag(df_temp$date, n = 1) # Creating a time diff object to check if the series is regular
+    if(which(is.na(df_temp$time_diff) == TRUE) == 1){ # Check that only the first observation is missing after the first diff
+      # Case 1 - the series is daily
+      if(min(df_temp$time_diff, na.rm = TRUE) == max(df_temp$time_diff, na.rm = TRUE) &  
+         mean(df_temp$time_diff, na.rm = TRUE) == max(df_temp$time_diff, na.rm = TRUE) &
+         mean(df_temp$time_diff, na.rm = TRUE) == 1){
+        if(is.null(frequency)){
+          warning("The frequency argument is set to NULL, using the default value (frequency == 7)")
+          frequency <- 7
+        } else if(!base::is.numeric(frequency)){
+          stop("The value of the 'frequency' argument is not numeric")
+        } else if(!frequency %in% c(7, 365)){
+          warning("The value of the 'frequency' argument is not valid, using the default value (frequency == 7)")
+          frequency <- 7
+        }
+        
+        if(frequency == 7){
+          df_temp$year <- lubridate::year(df_temp$date)
+          df_temp$week <- lubridate::week(df_temp$date)
+          df_temp$epiweek <- lubridate::epiweek(df_temp$date)
+          df_temp$year <- ifelse(df_temp$epiweek >50 & df_temp$week == 1, df_temp$year - 1, df_temp$year)
+          
+          df_temp$dec_left <- base::paste(df_temp$year, df_temp$epiweek, sep = "_")
+          df_temp$dec_right <- lubridate::wday(df_temp$date)
+          
+          df <- base::data.frame(dec_left = df_temp$dec_left, 
+                                 dec_right = df_temp$dec_right, 
+                                 value = df_temp$y)
+          freq_name <- "day"
+          cycle_type <- "year_week"
+        }
+        
+        
+      }
+    }
+  }
   if (stats::is.ts(ts.obj)) {
     if (stats::is.mts(ts.obj)) {
       warning("The 'ts.obj' has multiple columns, only the first column will be plot")
@@ -179,8 +264,10 @@ ts_reshape <- function(ts.obj, type = "wide"){
                            value = base::as.numeric(ts.obj))
     if(stats::frequency(ts.obj) == 4){
       freq_name <- "quarter"
+      cycle_type <- "year"
     } else if(stats::frequency(ts.obj) == 12){
       freq_name <- "month"
+      cycle_type <- "year"
     }else {
       stop("The frequency of the series is invalid, ",
            "the function support only 'monthly' or 'quarterly' frequencies")
@@ -198,19 +285,23 @@ ts_reshape <- function(ts.obj, type = "wide"){
                              dec_right = lubridate::quarter(ts.obj), 
                              value = as.numeric(ts.obj))
       freq_name <- "quarter"
+      cycle_type <- "year"
     } else if (freq == "monthly") {
       df <- base::data.frame(dec_left = lubridate::year(ts.obj), 
                              dec_right = lubridate::month(ts.obj), 
                              value = as.numeric(ts.obj))
       freq_name <- "month"
+      cycle_type <- "year"
     } else if (freq == "weekly") {
       df <- data.frame(dec_left = lubridate::year(ts.obj),
                        dec_right = lubridate::week(ts.obj), value = as.numeric(ts.obj))
       freq_name <- "week"
+      cycle_type <- "year"
     } else if (freq == "daily") {
       df <- data.frame(dec_left = lubridate::month(ts.obj),
                        dec_right = lubridate::day(ts.obj), value = as.numeric(ts.obj))
       freq_name <- "day"
+      cycle_type <- "year_week"
     } else if (!freq %in% c("daily", "weekly", "monthly", "quarterly")) {
       stop("The frequency of the series is invalid,",
            "the function support only 'daily', 'weekly', 'monthly' or 'quarterly' frequencies")
@@ -220,7 +311,7 @@ ts_reshape <- function(ts.obj, type = "wide"){
   # -------------- Setting the table for long or wide format --------------
   if(type == "long"){
     df_table <- df[base::order(df$dec_left, df$dec_right),]
-    names(df_table)[1] <- "year"
+    names(df_table)[1] <- cycle_type
     names(df_table)[2] <- freq_name
   } else if(type == "wide"){
     df_table <- reshape2::dcast(df, dec_right ~ dec_left)
