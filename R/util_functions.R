@@ -240,7 +240,7 @@ ts_reshape <- function(ts.obj,
           df_temp$epiweek <- lubridate::epiweek(df_temp$date)
           df_temp$year <- ifelse(df_temp$epiweek >50 & df_temp$week == 1, df_temp$year - 1, df_temp$year)
           
-          df_temp$dec_left <- base::paste(df_temp$year, df_temp$epiweek, sep = "_")
+          df_temp$dec_left <- df_temp$year + df_temp$epiweek / 100
           df_temp$dec_right <- lubridate::wday(df_temp$date)
           
           df <- base::data.frame(dec_left = df_temp$dec_left, 
