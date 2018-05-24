@@ -314,7 +314,7 @@ ts_reshape <- function(ts.obj,
     names(df_table)[1] <- cycle_type
     names(df_table)[2] <- freq_name
   } else if(type == "wide"){
-    df_table <- reshape2::dcast(df, dec_right ~ dec_left)
+    df_table <- reshape2::dcast(df, dec_right ~ dec_left, value.var = "value", fun.aggregate = sum)
     names(df_table)[1] <- freq_name
   }
   
