@@ -298,10 +298,26 @@ ts_reshape <- function(ts.obj,
       freq_name <- "week"
       cycle_type <- "year"
     } else if (freq == "daily") {
-      df <- data.frame(dec_left = lubridate::month(ts.obj),
-                       dec_right = lubridate::day(ts.obj), value = as.numeric(ts.obj))
+      df_temp <- NULL
+      df_temp <- base::data.frame(year = lubirdate::year(zoo::index(ts.obj)),
+                                  week = lubirdate::week(zoo::index(ts.obj)),
+                                  epiweek = lubirdate::epiweek(zoo::index(ts.obj))
+                                  )
+      
+      df_temp$year <- lubridate::year(df_temp$date)
+      df_temp$week <- lubridate::week(df_temp$date)
+      df_temp$epiweek <- lubridate::epiweek(df_temp$date)
+      df_temp$year <- ifelse(df_temp$epiweek >50 & df_temp$week == 1, df_temp$year - 1, df_temp$year)
+      
+      df_temp$dec_left <- df_temp$year + df_temp$epiweek / 100
+      df_temp$dec_right <- lubridate::wday(df_temp$date)
+      
+      df <- base::data.frame(dec_left = df_temp$dec_left, 
+                             dec_right = df_temp$dec_right, 
+                             value = df_temp$y)
       freq_name <- "day"
       cycle_type <- "year_week"
+    
     } else if (!freq %in% c("daily", "weekly", "monthly", "quarterly")) {
       stop("The frequency of the series is invalid,",
            "the function support only 'daily', 'weekly', 'monthly' or 'quarterly' frequencies")
