@@ -298,10 +298,21 @@ ts_reshape <- function(ts.obj,
       freq_name <- "week"
       cycle_type <- "year"
     } else if (freq == "daily") {
+      if(is.null(frequency)){
+        warning("The frequency argument is set to NULL, using the default value (frequency == 7)")
+        frequency <- 7
+      } else if(!base::is.numeric(frequency)){
+        stop("The value of the 'frequency' argument is not numeric")
+      } else if(!frequency %in% c(7, 365)){
+        warning("The value of the 'frequency' argument is not valid, using the default value (frequency == 7)")
+        frequency <- 7
+      }
       df_temp <- NULL
-      df_temp <- base::data.frame(year = lubirdate::year(zoo::index(ts.obj)),
-                                  week = lubirdate::week(zoo::index(ts.obj)),
-                                  epiweek = lubirdate::epiweek(zoo::index(ts.obj))
+      df_temp <- base::data.frame(date = zoo::index(ts.obj),
+                                  y = as.numeric(ts.obj[, 1]),
+                                  year = lubridate::year(zoo::index(ts.obj)),
+                                  week = lubridate::week(zoo::index(ts.obj)),
+                                  epiweek = lubridate::epiweek(zoo::index(ts.obj))
                                   )
       
       df_temp$year <- lubridate::year(df_temp$date)
