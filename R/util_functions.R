@@ -248,6 +248,15 @@ ts_reshape <- function(ts.obj,
                                  value = df_temp$y)
           freq_name <- "day"
           cycle_type <- "year_week"
+        } else if(frequency == 365){
+          df_temp$dec_left <- lubridate::year(df_temp$date)
+          df_temp$dec_right <-lubridate::yday(df_temp$date)
+          
+          df <- base::data.frame(dec_left = df_temp$dec_left, 
+                                 dec_right = df_temp$dec_right, 
+                                 value = df_temp$y)
+          freq_name <- "day"
+          cycle_type <- "year_day"
         }
         
         
@@ -307,6 +316,7 @@ ts_reshape <- function(ts.obj,
         warning("The value of the 'frequency' argument is not valid, using the default value (frequency == 7)")
         frequency <- 7
       }
+      if(frequency == 7){
       df_temp <- NULL
       df_temp <- base::data.frame(date = zoo::index(ts.obj),
                                   y = as.numeric(ts.obj[, 1]),
@@ -328,6 +338,7 @@ ts_reshape <- function(ts.obj,
                              value = df_temp$y)
       freq_name <- "day"
       cycle_type <- "year_week"
+      }
     
     } else if (!freq %in% c("daily", "weekly", "monthly", "quarterly")) {
       stop("The frequency of the series is invalid,",
