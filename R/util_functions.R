@@ -18,7 +18,7 @@ xts_to_ts <- function(xts.obj){
     } else {
       stop("The object is not a valid 'xts' object")
     }
-    
+      
   }
   
   if (xts::is.xts(xts.obj) | zoo::is.zoo(xts.obj)) {
@@ -260,7 +260,25 @@ ts_reshape <- function(ts.obj,
         }
         
         
-      }
+      
+        # Case 2 - the series is a weekly
+        } else if(min(df_temp$time_diff, na.rm = TRUE) == max(df_temp$time_diff, na.rm = TRUE) &  
+                  mean(df_temp$time_diff, na.rm = TRUE) == max(df_temp$time_diff, na.rm = TRUE) &
+                  mean(df_temp$time_diff, na.rm = TRUE) == 7){ 
+          df_temp$year <- lubridate::year(df_temp$date)
+          df_temp$week <- lubridate::week(df_temp$date)
+          df_temp$epiweek <- lubridate::epiweek(df_temp$date)
+          df_temp$year <- ifelse(df_temp$epiweek >50 & df_temp$week == 1, df_temp$year - 1, df_temp$year)
+          
+          df_temp$dec_left <- lubridate::year(df_temp$date)
+          df_temp$dec_right <- lubridate::week(df_temp$date)
+          
+          df <- base::data.frame(dec_left = df_temp$dec_left, 
+                                 dec_right = df_temp$dec_right, 
+                                 value = df_temp$y)
+          freq_name <- "week"
+          cycle_type <- "year"
+        }
     }
   }
   if (stats::is.ts(ts.obj)) {
@@ -352,7 +370,22 @@ ts_reshape <- function(ts.obj,
     names(df_table)[1] <- cycle_type
     names(df_table)[2] <- freq_name
   } else if(type == "wide"){
-    df_table <- reshape2::dcast(df, dec_right ~ dec_left, value.var = "value", fun.aggregate = sum)
+    df_table <- reshape2::dcast(df, dec_right ~ dec_left, 
+                                value.var = "value",
+                                fill = NULL,
+                                fun.aggregate = sum
+                                )
+    
+    if(df$dec_right[1] > 1 & 
+       colnames(df_table)[2] == as.character(df$dec_left[1])){
+      df_table[1:(df$dec_right[1] -1), 2] <- NA
+      
+    }
+    
+    if(df$dec_right[nrow(df)] < nrow(df) & 
+       colnames(df_table)[ncol(df_table)] == as.character(df$dec_left[nrow(df)])){
+      df_table[(df$dec_right[nrow(df)] + 1):nrow(df_table), ncol(df_table)] <- NA
+    }
     names(df_table)[1] <- freq_name
   }
   
