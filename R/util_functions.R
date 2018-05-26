@@ -296,15 +296,38 @@ ts_reshape <- function(ts.obj,
     if(stats::frequency(ts.obj) == 4){
       freq_name <- "quarter"
       cycle_type <- "year"
+      df <- base::data.frame(dec_left = floor(stats::time(ts.obj)), 
+                             dec_right = stats::cycle(ts.obj), 
+                             value = base::as.numeric(ts.obj))
     } else if(stats::frequency(ts.obj) == 12){
       freq_name <- "month"
       cycle_type <- "year"
+      df <- base::data.frame(dec_left = floor(stats::time(ts.obj)), 
+                             dec_right = stats::cycle(ts.obj), 
+                             value = base::as.numeric(ts.obj))
     } else if(round(stats::frequency(ts.obj)) == 52 ){
+      
+      # Need to update!!!
+      ###################
+        day_year <- cycle(ts.obj)[1]
+        first_year <- base::floor(stats::time(ts.obj)[1])
+      
+      df <- base::data.frame(dec_left = floor(stats::time(ts.obj)), 
+                             dec_right = stats::cycle(ts.obj), 
+                             value = base::as.numeric(ts.obj))
+      
+      
       freq_name <- "week"
       cycle_type <- "year"
     }else if(round(stats::frequency(ts.obj)) == 365 ){
-      freq_name <- "daily"
+      
+      # Need to update!!!
+      ###################
+      freq_name <- "day"
       cycle_type <- "year"
+      df <- base::data.frame(dec_left = floor(stats::time(ts.obj)), 
+                             dec_right = stats::cycle(ts.obj), 
+                             value = base::as.numeric(ts.obj))
     } else {
       stop("The frequency of the series is invalid, ",
            "the function support only 'weekly', 'monthly' or 'quarterly' frequencies")
