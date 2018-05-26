@@ -286,6 +286,10 @@ ts_reshape <- function(ts.obj,
       warning("The 'ts.obj' has multiple columns, only the first column will be plot")
       ts.obj <- ts.obj[, 1]
     }
+    
+    ### Need to rethink about the daily frequency
+
+    #############################################
     df <- base::data.frame(dec_left = floor(stats::time(ts.obj)), 
                            dec_right = stats::cycle(ts.obj), 
                            value = base::as.numeric(ts.obj))
@@ -295,9 +299,15 @@ ts_reshape <- function(ts.obj,
     } else if(stats::frequency(ts.obj) == 12){
       freq_name <- "month"
       cycle_type <- "year"
-    }else {
+    } else if(round(stats::frequency(ts.obj)) == 52 ){
+      freq_name <- "week"
+      cycle_type <- "year"
+    }else if(round(stats::frequency(ts.obj)) == 365 ){
+      freq_name <- "daily"
+      cycle_type <- "year"
+    } else {
       stop("The frequency of the series is invalid, ",
-           "the function support only 'monthly' or 'quarterly' frequencies")
+           "the function support only 'weekly', 'monthly' or 'quarterly' frequencies")
     }
   } else if (xts::is.xts(ts.obj) | zoo::is.zoo(ts.obj)) {
     if (!is.null(base::dim(ts.obj))) {
