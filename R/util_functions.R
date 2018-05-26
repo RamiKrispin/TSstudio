@@ -215,7 +215,7 @@ ts_reshape <- function(ts.obj,
               "selecting the first numeric column as the input object")
       df_temp <- base::data.frame(date = ts.obj[, date_col], y = ts.obj[, numeric_col[1]])
     }
-    
+    names(df_temp) <- c("date", "y")
     # Check the frequnecy of the series
     df_temp <- df_temp %>% dplyr::arrange(date) # Setting the order of the data frame by the date
     df_temp$time_diff <- df_temp$date - dplyr::lag(df_temp$date, n = 1) # Creating a time diff object to check if the series is regular
