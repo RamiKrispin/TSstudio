@@ -166,7 +166,8 @@ ts_split <- function(ts.obj, sample.out = NULL){
 # ---- ts_reshape functions ----
 
 ts_reshape <- function(ts.obj, 
-                       type = "wide", frequency = NULL){
+                       type = "wide", 
+                       frequency = NULL){
   
   `%>%` <- magrittr::`%>%`
   df <- df_table <- freq <-  freq_name <- df_temp <- NULL
@@ -250,7 +251,7 @@ ts_reshape <- function(ts.obj,
           cycle_type <- "year_week"
         } else if(frequency == 365){
           df_temp$dec_left <- lubridate::year(df_temp$date)
-          df_temp$dec_right <-lubridate::yday(df_temp$date)
+          df_temp$dec_right <- lubridate::yday(df_temp$date)
           
           df <- base::data.frame(dec_left = df_temp$dec_left, 
                                  dec_right = df_temp$dec_right, 
@@ -405,15 +406,9 @@ ts_reshape <- function(ts.obj,
   } else if(type == "wide"){
     df_table <- reshape2::dcast(df, dec_right ~ dec_left, 
                                 value.var = "value",
-                                fill = NULL,
+                                fill = NA_real_,
                                 fun.aggregate = sum
                                 )
-    
-    if(df$dec_right[1] > 1 & 
-       colnames(df_table)[2] == as.character(df$dec_left[1])){
-      df_table[1:(df$dec_right[1] -1), 2] <- NA
-      
-    }
     
     if(df$dec_right[nrow(df)] < nrow(df) & 
        colnames(df_table)[ncol(df_table)] == as.character(df$dec_left[nrow(df)])){
