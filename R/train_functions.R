@@ -89,7 +89,7 @@ ts_backtesting <- function(ts.obj,
                         w.arg = NULL,
                         parallel = FALSE){
 
-`%>%` <- magrittr::`%>%`
+`%>%` <- magrittr::`%>%` 
   
 a <- model_list <- model_char <- color_ramp <- forecast_list <- obj.name <- NULL
 
