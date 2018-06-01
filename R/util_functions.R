@@ -326,9 +326,17 @@ ts_reshape <- function(ts.obj,
       ###################
       freq_name <- "day"
       cycle_type <- "year"
-      df <- base::data.frame(dec_left = floor(stats::time(ts.obj)), 
-                             dec_right = stats::cycle(ts.obj), 
-                             value = base::as.numeric(ts.obj))
+      if(base::floor(stats::time(ts.obj))[1] == 1){
+        df <- base::data.frame(dec_left = base::floor(stats::time(ts.obj)),
+                               dec_right = NA,
+                               value = base::as.numeric(ts.obj)
+                               )
+      }
+      
+      # length(unique(df$dec_left))
+      # df <- base::data.frame(dec_left = floor(stats::time(ts.obj)), 
+      #                        dec_right = stats::cycle(ts.obj), 
+      #                        value = base::as.numeric(ts.obj))
     } else {
       stop("The frequency of the series is invalid, ",
            "the function support only 'weekly', 'monthly' or 'quarterly' frequencies")
