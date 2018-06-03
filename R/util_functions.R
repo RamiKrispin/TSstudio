@@ -318,8 +318,6 @@ ts_reshape <- function(ts.obj,
       cycle_type <- "year"
     }else if(stats::frequency(ts.obj) == 365 ){
       
-      # Need to update!!!
-      ###################
       freq_name <- "day"
       cycle_type <- "year"
 
@@ -332,27 +330,25 @@ ts_reshape <- function(ts.obj,
         df$dec_left <- ifelse((df$dec_left_temp != df$lag) & df$dec_right == 1, df$lag, df$dec_left_temp)
         df$dec_left_temp <- df$lag <- NULL
         
-      # length(unique(df$dec_left))
-      # df <- base::data.frame(dec_left = floor(stats::time(ts.obj)), 
-      #                        dec_right = stats::cycle(ts.obj), 
-      #                        value = base::as.numeric(ts.obj))
     } else if(round(stats::frequency(ts.obj)) == 365 ){
-      
-      # Need to update!!!
-      ###################
       freq_name <- "day"
       cycle_type <- "year"
-      if(base::floor(stats::time(ts.obj))[1] == 1){
         df <- base::data.frame(dec_left = base::floor(stats::time(ts.obj)),
                                dec_right = NA,
                                value = base::as.numeric(ts.obj)
         )
-      }
+        
+        for(i in 1:nrow(df)){
+          if(i == 1){
+            df$dec_right[i] <- stats::cycle(ts.obj)[1]
+          } else if(df$dec_left[i] == df$dec_left[i - 1]){
+            df$dec_right[i] <- df$dec_right[i - 1] + 1
+          } else{
+            df$dec_right[i] <- 1
+          }
+        }
       
-      # length(unique(df$dec_left))
-      # df <- base::data.frame(dec_left = floor(stats::time(ts.obj)), 
-      #                        dec_right = stats::cycle(ts.obj), 
-      #                        value = base::as.numeric(ts.obj))
+
     } else {
       stop("The frequency of the series is invalid, ",
            "the function support only 'weekly', 'monthly' or 'quarterly' frequencies")
