@@ -302,22 +302,44 @@ ts_reshape <- function(ts.obj,
       df <- base::data.frame(dec_left = floor(stats::time(ts.obj)), 
                              dec_right = stats::cycle(ts.obj), 
                              value = base::as.numeric(ts.obj))
-    } else if(round(stats::frequency(ts.obj)) == 52 ){
-      
-      # Need to update!!!
-      ###################
-        day_year <- cycle(ts.obj)[1]
-        first_year <- base::floor(stats::time(ts.obj)[1])
-      
-      df <- base::data.frame(dec_left = floor(stats::time(ts.obj)), 
+    } else if(stats::frequency(ts.obj)== 52 ){
+      # Weekly data
+      df <- base::data.frame(dec_left = NA,
+                             dec_left_temp = base::as.integer(stats::time(ts.obj)), 
                              dec_right = stats::cycle(ts.obj), 
                              value = base::as.numeric(ts.obj))
+      
+      df$lag <- dplyr::lead(df$dec_left_temp, n = 1)
+      
+      df$dec_left <- ifelse((df$dec_left_temp != df$lag) & df$dec_right == 1, df$lag, df$dec_left_temp)
+      df$dec_left_temp <- df$lag <- NULL
+      
+      freq_name <- "week"
+      cycle_type <- "year"
+    
+    }else if(round(stats::frequency(ts.obj)) == 52 ){
+      # Weekly data with non-integer frequency
+      df <- base::data.frame(dec_left = base::floor(stats::time(ts.obj)),
+                             dec_right = NA,
+                             value = base::as.numeric(ts.obj)
+      )
+      
+      for(i in 1:nrow(df)){
+        if(i == 1){
+          df$dec_right[i] <- stats::cycle(ts.obj)[1]
+        } else if(df$dec_left[i] == df$dec_left[i - 1]){
+          df$dec_right[i] <- df$dec_right[i - 1] + 1
+        } else{
+          df$dec_right[i] <- 1
+        }
+      }
       
       
       freq_name <- "week"
       cycle_type <- "year"
-    }else if(stats::frequency(ts.obj) == 365 ){
       
+    }else if(stats::frequency(ts.obj) == 365 ){ 
+      # Daily data
       freq_name <- "day"
       cycle_type <- "year"
 
@@ -331,6 +353,7 @@ ts_reshape <- function(ts.obj,
         df$dec_left_temp <- df$lag <- NULL
         
     } else if(round(stats::frequency(ts.obj)) == 365 ){
+      # Daily data with non-integer frequency
       freq_name <- "day"
       cycle_type <- "year"
         df <- base::data.frame(dec_left = base::floor(stats::time(ts.obj)),
