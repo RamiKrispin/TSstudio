@@ -466,11 +466,6 @@ ts_reshape <- function(ts.obj,
                                 fill = NA_real_,
                                 fun.aggregate = sum
                                 )
-    
-    # if(df$dec_right[nrow(df)] < nrow(df) & 
-    #    colnames(df_table)[ncol(df_table)] == as.character(df$dec_left[nrow(df)])){
-    #   df_table[(df$dec_right[nrow(df)] + 1):nrow(df_table), ncol(df_table)] <- NA
-    # }
     names(df_table)[1] <- freq_name
   }
   
