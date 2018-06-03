@@ -7,8 +7,8 @@
 ts_reshape(ts.obj, type = "wide", frequency = NULL)
 }
 \arguments{
-\item{ts.obj}{a univariate time series object of a class "ts", "zoo", "xts" (support only series with either monthly or quarterly frequency). 
-In addition it support the data frame family (data.frame, data.table, tbl, tibble, etc.) as long as there is a date and numeric objects in the data frame.}
+\item{ts.obj}{a univariate time series object of a class "ts", "zoo", "xts", and the data frame family (data.frame, data.table, tbl, tibble, etc.) with a 
+Date column and at least one numeric column. This function support time series objects with a daily, weekly, monthly or quarterly frequencies}
 
 \item{type}{The reshape type - 
 
