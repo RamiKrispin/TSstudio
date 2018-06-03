@@ -333,16 +333,19 @@ ts_polar <- function(ts.obj, title = NULL, width = 600, height = 600,
 
 #'  Heatmap Plot for Time Series
 #' @export
-#' @param ts.obj a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)
+#' @param ts.obj A univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)
 #' @param last Subset the data to the last number of observations
+#' @param frequency An integer, relevant only if using daily data as input, ignore otherwise. 
+#' Provides the ability to transform daily data to weekday (if set to 7) 
+#' or day of the year (if set to 365) structure.If not set or NULL will use by default the weekday option.
 #' @description Heatmap plot for time series object by it periodicity (currently support only monthly and quarterly frequency)
 #' @examples
 #' data(USgas)
 #' ts_heatmap(USgas) 
 
-# The ts_seasonal function ####
+# --- The ts_heatmap function ---
 
-ts_heatmap <- function(ts.obj, last = NULL) {
+ts_heatmap <- function(ts.obj, last = NULL, frequency = NULL) {
   
   `%>%` <- magrittr::`%>%`
   df <-  p <- obj.name <-  NULL
@@ -359,7 +362,7 @@ ts_heatmap <- function(ts.obj, last = NULL) {
   }
   
   obj.name <- base::deparse(base::substitute(ts.obj))
-  df <- TSstudio::ts_reshape(ts.obj, type = "wide")
+  df <- TSstudio::ts_reshape(ts.obj, type = "wide", frequency = frequency)
   
   
   if(!base::is.null(last)){
