@@ -241,7 +241,14 @@ ts_reshape <- function(ts.obj,
           df_temp$epiweek <- lubridate::epiweek(df_temp$date)
           df_temp$year <- ifelse(df_temp$epiweek >50 & df_temp$week == 1, df_temp$year - 1, df_temp$year)
           df_temp$year <- ifelse(df_temp$epiweek == 1 & df_temp$week > 50, df_temp$year + 1, df_temp$year)
-          df_temp$dec_left <- df_temp$year + df_temp$epiweek / 100
+          
+          df_temp <- df_temp %>% dplyr::left_join(df_temp %>% 
+                                                    dplyr::group_by(year) %>%
+                                                    dplyr::summarise(max_epiweek = max(epiweek)))
+          
+          df_temp$max_epiweek <- ifelse(df_temp$max_epiweek <52, 52, df_temp$max_epiweek)
+          
+          df_temp$dec_left <- df_temp$year + df_temp$epiweek / df_temp$max_epiweek
           df_temp$dec_right <- lubridate::wday(df_temp$date)
           
           df <- base::data.frame(dec_left = df_temp$dec_left, 
@@ -287,9 +294,6 @@ ts_reshape <- function(ts.obj,
       warning("The 'ts.obj' has multiple columns, only the first column will be plot")
       ts.obj <- ts.obj[, 1]
     }
-    df <- base::data.frame(dec_left = floor(stats::time(ts.obj)), 
-                           dec_right = stats::cycle(ts.obj), 
-                           value = base::as.numeric(ts.obj))
     if(stats::frequency(ts.obj) == 4){
       freq_name <- "quarter"
       cycle_type <- "year"
@@ -467,6 +471,7 @@ ts_reshape <- function(ts.obj,
                                 fun.aggregate = sum
                                 )
     names(df_table)[1] <- freq_name
+    
   }
   
   # -------------- Function end --------------
