@@ -147,8 +147,8 @@ ts_split <- function(ts.obj, sample.out = NULL){
 
 #'  Transform Time Series Object to Data Frame Format
 #' @export
-#' @param ts.obj a univariate time series object of a class "ts", "zoo", "xts" (support only series with either monthly or quarterly frequency). 
-#' In addition it support the data frame family (data.frame, data.table, tbl, tibble, etc.) as long as there is a date and numeric objects in the data frame.
+#' @param ts.obj a univariate time series object of a class "ts", "zoo", "xts", and the data frame family (data.frame, data.table, tbl, tibble, etc.) with a 
+#' Date column and at least one numeric column. This function support time series objects with a daily, weekly, monthly or quarterly frequencies 
 #' @param type The reshape type - 
 #' 
 #' "wide" set the years as the columns and the cycle units (months or quarter) as the rows, or
