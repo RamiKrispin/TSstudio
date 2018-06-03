@@ -4,17 +4,25 @@
 \alias{ts_heatmap}
 \title{Heatmap Plot for Time Series}
 \usage{
-ts_heatmap(ts.obj, last = NULL)
+ts_heatmap(ts.obj, last = NULL, frequency = NULL)
 }
 \arguments{
-\item{ts.obj}{A univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)}
+\item{ts.obj}{A univariate time series object of a class "ts", "zoo", "xts", and the data frame family (data.frame, data.table, tbl, tibble, etc.) with a 
+Date column and at least one numeric column. This function support time series objects with a daily, weekly, monthly and quarterly frequencies}
 
-\item{last}{Subset the data to the last number of observations}
+\item{last}{An integer, set the last number of observations to present}
+
+\item{frequency}{An integer, relevant only if using daily data as input, ignore otherwise. 
+Provides the ability to transform daily data to weekday (if set to 7) 
+or day of the year (if set to 365) structure.If not set or NULL will use by default the weekday option.}
 }
 \description{
-Heatmap plot for time series object by it periodicity (currently support only monthly and quarterly frequency)
+Heatmap plot for time series object by it periodicity (currently support only daily, weekly, monthly and quarterly frequencies)
 }
 \examples{
 data(USgas)
-ts_heatmap(USgas) 
+ts_heatmap(USgas)
+
+# Show only the last 4 years
+ts_heatmap(USgas, last = 4 *12)   
 }
