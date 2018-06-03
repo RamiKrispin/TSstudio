@@ -287,10 +287,6 @@ ts_reshape <- function(ts.obj,
       warning("The 'ts.obj' has multiple columns, only the first column will be plot")
       ts.obj <- ts.obj[, 1]
     }
-    
-    ### Need to rethink about the daily frequency
-
-    #############################################
     df <- base::data.frame(dec_left = floor(stats::time(ts.obj)), 
                            dec_right = stats::cycle(ts.obj), 
                            value = base::as.numeric(ts.obj))
@@ -320,7 +316,27 @@ ts_reshape <- function(ts.obj,
       
       freq_name <- "week"
       cycle_type <- "year"
-    }else if(round(stats::frequency(ts.obj)) == 365 ){
+    }else if(stats::frequency(ts.obj) == 365 ){
+      
+      # Need to update!!!
+      ###################
+      freq_name <- "day"
+      cycle_type <- "year"
+
+        df <- base::data.frame(dec_left_temp = base::as.integer(stats::time(ts.obj)), 
+                               dec_right = stats::cycle(ts.obj), 
+                               value = base::as.numeric(ts.obj))
+      
+        df$lag <- dplyr::lead(df$dec_left_temp, n = 1)
+        
+        df$dec_left <- ifelse((df$dec_left_temp != df$lag) & df$dec_right == 1, df$lag, df$dec_left_temp)
+        df$dec_left_temp <- df$lag <- NULL
+        
+      # length(unique(df$dec_left))
+      # df <- base::data.frame(dec_left = floor(stats::time(ts.obj)), 
+      #                        dec_right = stats::cycle(ts.obj), 
+      #                        value = base::as.numeric(ts.obj))
+    } else if(round(stats::frequency(ts.obj)) == 365 ){
       
       # Need to update!!!
       ###################
@@ -330,7 +346,7 @@ ts_reshape <- function(ts.obj,
         df <- base::data.frame(dec_left = base::floor(stats::time(ts.obj)),
                                dec_right = NA,
                                value = base::as.numeric(ts.obj)
-                               )
+        )
       }
       
       # length(unique(df$dec_left))
