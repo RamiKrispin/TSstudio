@@ -5,10 +5,9 @@
 \title{Evaluation Function for Forecasting Models}
 \usage{
 ts_backtesting(ts.obj, models = "abehntw", periods = 6, error = "MAPE",
-  window_size = 3, h = 3, plot = TRUE, a.arg = NULL,
-  b.arg = list(linear_trend = TRUE, seasonal = TRUE, niter = 1000, ping = 100,
-  family = "gaussian", seed = 1234), e.arg = NULL, h.arg = NULL,
-  n.arg = NULL, t.arg = NULL, w.arg = NULL, parallel = FALSE)
+  window_size = 3, h = 3, plot = TRUE, a.arg = NULL, b.arg = NULL,
+  e.arg = NULL, h.arg = NULL, n.arg = NULL, t.arg = NULL,
+  w.arg = NULL, parallel = FALSE)
 }
 \arguments{
 \item{ts.obj}{A univariate time series object of a class "ts"}
@@ -41,13 +40,21 @@ ts_backtesting(ts.obj, models = "abehntw", periods = 6, error = "MAPE",
 
 \item{a.arg}{List, an optional arguments to pass to the auto.arima function}
 
-\item{b.arg}{List, an optional arguments to pass to the bsts function}
+\item{b.arg}{List, an optional arguments to pass to the bsts function, optional arguments:
 
-\item{e.arg}{List, an optional arguments to pass to the ets function}
+linear_trend = c(TRUE, FALSE), use linear trend if set to TRUE (default)
 
-\item{h.arg}{List, an optional arguments to pass to the hybridModel function}
+seasonal = c(TRUE, FALSE), add seasonal component if set to TRUE (default)
 
-\item{n.arg}{List, an optional arguments to pass to the nnetar function}
+niter, set the number of Markov chain Monte Carlo, default set to 1000
+
+ping, A scalar giving the desired frequency of status messages, default set to 100 (niter/10)
+
+family = c("gaussian", "logit", "poisson", "student"),
+ The model family for the observation equation, default set to "gaussian
+ 
+seed, An integer to use as the random seed for the underlying C++ code of the model, default set to 1234
+#'}
 
 \item{t.arg}{List, an optional arguments to pass to the tbats function}
 
