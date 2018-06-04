@@ -145,22 +145,6 @@ if(!base::is.logical(plot)){
   plot <- TRUE
 }
 
-# Check if the bsts arguments are valid
-if(is.null(b.arg)){
-  warning("The 'b.arg' value is not valid, using default setting")
-  
-  b.arg <-  list(linear_trend = TRUE,
-               seasonal = TRUE,
-               niter = 1000,
-               ping = 100,
-               family = "gaussian",
-               seed=1234)
-} else if()
-
-
-
-
-
 
 # Setting the output object
 modelOutput <- list()
@@ -222,6 +206,93 @@ if("t" %in% model_char){
 }
 
 if("b" %in% model_char){
+  
+  # Check if the bsts arguments are valid
+  if(is.null(b.arg)){
+    warning("The 'b.arg' value is not valid, using default setting")
+    
+    b.arg <-  list(linear_trend = TRUE,
+                   seasonal = TRUE,
+                   niter = 1000,
+                   ping = 100,
+                   family = "gaussian",
+                   seed=1234)
+  } else{
+    
+    if("linear_trend" %in% names(b.arg)){
+    if(!b.arg$linear_trend %in% c(TRUE, FALSE)){
+      warning("The value of the 'linear_trend' argument of the bsts model is invalid, using default (TRUE)")
+      b.arg$linear_trend <- TRUE
+    }
+    } else {
+      warning("The 'linear_trend' was not defined, using TRUE as default")
+      b.arg$linear_trend <- TRUE
+    }
+    
+    if("seasonal" %in% names(b.arg)){
+      if(!b.arg$seasonal %in% c(TRUE, FALSE)){
+        warning("The value of the 'seasonal' argument of the bsts model is invalid, using TRUE as default")
+        b.arg$seasonal <- TRUE 
+      } 
+    } else {
+      warning("The 'seasonal' argument was not defined, using TRUE as default")
+      b.arg$seasonal <- TRUE
+    }
+    
+    if("niter" %in% names(b.arg)){
+      if(!base::is.numeric(b.arg$niter)){
+        warning("The value of the 'niter' argument of the bsts model is invalid, setting the argument to 1000")
+        b.arg$niter <- 1000 
+      } else if(b.arg$niter %% 1 != 0){
+        warning("The value of the 'niter' argument of the bsts model is not integer, setting the argument to 1000")
+        b.arg$niter <- 1000 
+      }
+    } else {
+      warning("The 'niter' argument was not defined, setting the argument to 1000")
+      b.arg$niter <- 1000
+    }
+    
+    if("ping" %in% names(b.arg)){
+      if(!base::is.numeric(b.arg$ping)){
+        warning("The value of the 'ping' argument of the bsts model is invalid, setting the argument to 100")
+        b.arg$ping <- 100 
+      } else if(b.arg$ping %% 1 != 0){
+        warning("The value of the 'ping' argument of the bsts model is not integer, setting the argument to 100")
+        b.arg$ping <- 1000 
+      }
+    } else {
+      warning("The 'ping' argument was not defined, setting the argument to 100")
+      b.arg$ping <- 100
+    }
+  
+    if("seed" %in% names(b.arg)){
+      if(!base::is.numeric(b.arg$seed)){
+        warning("The value of the 'seed' argument of the bsts model is invalid, setting the argument to 1234")
+        b.arg$seed <- 1234 
+      } else if(b.arg$seed %% 1 != 0){
+        warning("The value of the 'seed' argument of the bsts model is not integer, setting the argument to 1234")
+        b.arg$seed <- 1234 
+      }
+    } else {
+      warning("The 'seed' argument was not defined, setting the argument to 1234")
+      b.arg$seed <- 1234
+    }
+    
+  
+  if("family" %in% names(b.arg)){
+    if(!b.arg$family %in% c("gaussian", "logit", "poisson", "student")){
+      warning("The value of the 'family' argument of the bsts model is invalid, using 'gaussian' as default")
+      b.arg$family <- "gaussian"
+    }
+  } else{
+    warning("The value of the 'family' argument is missing, using 'gaussian' as default")
+    b.arg$family <- "gaussian"
+  }
+  
+    
+    }
+
+  
   model_list <- c(model_list, "bsts")
   md_bsts <- fc_bsts <- ss <- fit.bsts <- burn <-  NULL
   ss <- list()
