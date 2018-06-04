@@ -23,10 +23,21 @@
 #' @param h Integer, the horizon of the selected forecasting model
 #' @param plot Logical, if TRUE desplay a plot with the backtesting progress
 #' @param a.arg List, an optional arguments to pass to the auto.arima function
-#' @param b.arg List, an optional arguments to pass to the bsts function
-#' @param e.arg List, an optional arguments to pass to the ets function
-#' @param h.arg List, an optional arguments to pass to the hybridModel function
-#' @param n.arg List, an optional arguments to pass to the nnetar function
+#' @param b.arg List, an optional arguments to pass to the bsts function, optional arguments:
+#' 
+#' linear_trend = c(TRUE, FALSE), use linear trend if set to TRUE (default)
+#' 
+#' seasonal = c(TRUE, FALSE), add seasonal component if set to TRUE (default)
+#' 
+#' niter, set the number of Markov chain Monte Carlo, default set to 1000
+#' 
+#' ping, A scalar giving the desired frequency of status messages, default set to 100 (niter/10)
+#' 
+#' family = c("gaussian", "logit", "poisson", "student"),
+#'  The model family for the observation equation, default set to "gaussian
+#'  
+#' seed, An integer to use as the random seed for the underlying C++ code of the model, default set to 1234
+#' #'   
 #' @param t.arg List, an optional arguments to pass to the tbats function
 #' @param w.arg List, an optional arguments to pass to the Holtwinters function
 #' @param parallel Logical, if TRUE use parallel option when applicable (auto.arima, hybridModel)
@@ -76,12 +87,7 @@ ts_backtesting <- function(ts.obj,
                         h = 3,
                         plot = TRUE,
                         a.arg = NULL,
-                        b.arg = list(linear_trend = TRUE,
-                                     seasonal = TRUE,
-                                     niter = 1000,
-                                     ping = 100,
-                                     family = "gaussian",
-                                     seed=1234),
+                        b.arg = NULL,
                         e.arg = NULL,
                         h.arg = NULL,
                         n.arg = NULL,
@@ -138,6 +144,23 @@ if(!base::is.logical(plot)){
   warning("The value of the 'plot' parameter is invalid, using default option TRUE")
   plot <- TRUE
 }
+
+# Check if the bsts arguments are valid
+if(is.null(b.arg)){
+  warning("The 'b.arg' value is not valid, using default setting")
+  
+  b.arg <-  list(linear_trend = TRUE,
+               seasonal = TRUE,
+               niter = 1000,
+               ping = 100,
+               family = "gaussian",
+               seed=1234)
+} else if()
+
+
+
+
+
 
 # Setting the output object
 modelOutput <- list()
