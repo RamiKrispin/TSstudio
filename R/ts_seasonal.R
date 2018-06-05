@@ -6,7 +6,7 @@
 #' (if there are more, by defualt will use the first of each)
 #' @param type The type of the seasonal plot - 
 #' "normal" to split the series by full cycle units, or
-#' "cycle" to split by cycle units, or
+#' "cycle" to split by cycle units (applicable only for monthly and quarterly data), or
 #' "box" for box-plot by cycle units, or
 #' "all" for all the three plots together
 #' @param Ygrid Logic,show the Y axis grid if set to TRUE
@@ -24,7 +24,7 @@
 
 # The ts_seasonal function ####
 
-ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE, title = NULL, last = NULL) {
+ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE, title = NULL, last = NULL, daily.box = NULL) {
   
   `%>%` <- magrittr::`%>%`
   df <- df1 <- df_wide <- p <- obj.name <- NULL
@@ -74,9 +74,24 @@ ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE, t
     } else if(stats::frequency(ts.obj) == 4){
       freq <- "quarterly"
       df$dec_right <- base::paste("Qr.", df$dec_right, sep = " ")
+    } else if(base::round(stats::frequency(ts.obj), 0 ) == 365){
+      freq <- "daily"
+      first_time <- time(ts.obj)[1]
+      
+      year <- as.integer(first_time)
+      day <- (first_time - year) * 365 
+      first_date <- as.Date(day, origin = lubridate::ymd(paste(year, "-01-01", sep = "")))
+      
+      df <- data.frame(date = seq.Date(from = first_date, length.out = length(ts.obj), by = "days"), value = as.numeric(ts.obj))
+      df$month <- lubridate::month(df$date, label = TRUE)
+      df$wday <- lubridate::wday(df$date, label = TRUE)
+      df$week <- factor(lubridate::week(df$date), ordered = TRUE)
+      df$dec_left <- lubridate::year(df$date)
+      df$dec_right <- lubridate::yday(df$date)
+      
     } else {
       stop("The frequency of the series is invalid, ",
-           "the function support only 'monthly' or 'quarterly' frequencies")
+           "the function support only 'daily', 'monthly' or 'quarterly' frequencies")
     }
   } else if (xts::is.xts(ts.obj) | zoo::is.zoo(ts.obj)) {
     if (!is.null(base::dim(ts.obj))) {
@@ -209,6 +224,9 @@ ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE, t
                                      mode = "lines", 
                                      type = "scatter",
                                      line = list(color = color_ramp[(f -1)]))
+        
+        
+        
                                      
       }
     }
@@ -217,15 +235,24 @@ ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE, t
                                            showgrid = Xgrid, 
                                            dtick = 1), 
                               yaxis = list(title = obj.name, showgrid = Ygrid))
+    
+    
+    
     return(p)
   }
   
   if(type != "all"){
     p <- seasonal_sub(df = df, type = type, Xgrid = Xgrid, Ygrid = Ygrid, freq = freq, title = title)
+    if(freq == "daily"){
+      p <- p %>% plotly::layout(xaxis = list(autotick = FALSE, dtick = 25, title = "Day of the Year"))
+    }
   } else {
     n <- c <- b <- NULL
     n <- seasonal_sub(df = df, type = "normal", Xgrid = Xgrid, Ygrid = Ygrid, freq = freq, title = title) %>% 
       plotly::layout(yaxis = list(title = "By Year"))
+    if(freq == "daily"){
+      n <- n %>% plotly::layout(xaxis = list(autotick = FALSE, dtick = 25, title = "Day of the Year"))
+    }
     c <- seasonal_sub(df = df, type = "cycle", Xgrid = Xgrid, Ygrid = Ygrid, freq = freq, title = title) %>% 
       plotly::layout(yaxis = list(title = "By Month"))
     b <- seasonal_sub(df = df, type = "box", Xgrid = Xgrid, Ygrid = Ygrid, freq = freq, title = title) %>% 
