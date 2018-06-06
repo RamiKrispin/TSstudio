@@ -5,7 +5,7 @@
 \title{Seasonality Visualization of Time Series Object}
 \usage{
 ts_seasonal(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE,
-  title = NULL, last = NULL)
+  title = NULL, last = NULL, daily.box = NULL)
 }
 \arguments{
 \item{ts.obj}{A univariate time series object of a class "ts", "zoo", or "xts" 
@@ -15,7 +15,7 @@ Also, this function supports data frame objects as long as there is at least one
 
 \item{type}{The type of the seasonal plot - 
 "normal" to split the series by full cycle units, or
-"cycle" to split by cycle units, or
+"cycle" to split by cycle units (applicable only for monthly and quarterly data), or
 "box" for box-plot by cycle units, or
 "all" for all the three plots together}
 
