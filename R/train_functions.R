@@ -420,8 +420,8 @@ fc <- stats::predict(md, horizon = window_size, quantiles = c(.025, .975))
 
 
 pred <- fc$mean
-MAPE_df$bsts[i - s + 1] <- base::round(mean(100 * base::abs((pred - test) / pred)), 2)
-RMSE_df$bsts[i - s + 1] <- base::round((mean((pred - test)^ 2)) ^ 0.5, 2)
+MAPE_df$bsts[i - s + 1] <- base::round(mean(100 * base::abs((test - pred) / test)), 2)
+RMSE_df$bsts[i - s + 1] <- base::round((mean((test - pred)^ 2)) ^ 0.5, 2)
 }
 
 if("h" %in% model_char){
