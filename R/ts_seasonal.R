@@ -470,3 +470,148 @@ ts_surface <- function(ts.obj) {
   return(p)
 }
 
+
+#' Moving Average Time Series Data
+#' @export
+#' @param ts.obj a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)
+#' @param k A single or multiple integers (by default using 3, 6 and 9), set the amount of past and future periods to use for calculating the moving average 
+#' @param double A single integer, an optional argument. If not NULL (by default), will apply a second moving average process on the initial moving average output
+#' @param plot A boolean, if TRUE will plot the results
+#' @param title A character, if not NULL (by default), will use the input as the plot title
+#' @param Xtitle A character, if not NULL (by default), will use the input as the plot x - axis title
+#' @param Ytitle A character, if not NULL (by default), will use the input as the plot y - axis title
+#' @description Calculate the moving average (and double moving average) for time series data. 
+#' @examples
+#' 
+#' # Using moving average to smooth the USVsales dataset (US Monthly Total Vehicle Sales)
+#' # Applying 4 degrees of moving average   
+#' USVS_MA <- ts_ma(ts.obj = USVSales, k = c(3, 6, 9, 12))
+#' 
+#' # Plot only the moving average with k = 12
+#' ts_plot(USVS_MA$ma_12, title = "Moving Average, k = 12")
+#' 
+#' # Using moving average to smooth the USgas dataset (US Monthly Natural Gas Consuption)
+#' # Adding double moving average with degree of 6 to smooth the strong seasonality
+#' USgas_MA <- ts_ma(ts.obj = USgas, k = c(6, 9), double = 6)
+#' 
+#' # Extract the plot
+#' USgas_MA$plot
+
+ts_ma <- function(ts.obj, k = c(3, 6, 9), double = NULL, plot = TRUE, title = NULL, Xtitle = NULL, Ytitle = NULL){
+  
+  obj.name <- ts_merged <- ts_obj <- ts_temp <- ts_ma <- c <- p <- NULL
+  obj.name <- base::deparse(base::substitute(ts.obj))
+  
+  # Error Handling  
+  if (stats::is.ts(ts.obj)) {
+    if (stats::is.mts(ts.obj)) {
+      warning("The 'ts.obj' has multiple columns, only the first column will be plot")
+      ts.obj <- ts.obj[, 1]
+    }
+  }
+    
+  if(!base::is.logical(plot)){
+    warning("The value of the 'plot' argument is not valid (can apply either TRUE or FALSE) and will be ignore")
+    plot <- TRUE
+  }
+  
+  if(!base::is.null(title)){
+    if(!base::is.character(title)){
+      warning("The value of the 'title' is not valid (only character can be used as an input), and will be ignore")
+      title <- NULL
+    }
+  } else {
+    title <- paste(obj.name, "- Moving Average", sep = " ")
+  }
+  
+  if(!base::is.null(Xtitle)){
+    if(!base::is.character(Xtitle)){
+      warning("The value of the 'Xtitle' is not valid (only character can be used as an input), and will be ignore")
+      Xtitle <- NULL
+    }
+  }
+  
+  if(!base::is.null(Ytitle)){
+    if(!base::is.character(Ytitle)){
+      warning("The value of the 'Ytitle' is not valid (only character can be used as an input), and will be ignore")
+      Ytitle <- NULL
+    }
+  }
+  if(!base::is.null(double)){
+    if(!base::is.numeric(double)){
+      warning("The 'double' parameter is not a numeric number and will be ignore")
+      double <- NULL
+    } else if(!base::all(double %% 1 == 0)){
+      warning("The 'double' parameter is not an integer number and will be ignore")
+      double <- NULL
+    }
+  } else if(base::length(double) > 1){
+    warning("The 'double' parameter is restricted to single value (integer), only the first one will be used")
+    double <- dobule[1]
+  }
+  
+  
+  if(!base::is.numeric(k)){
+    stop("The 'k' parameter is not valid, please make sure that you are using only integers as input")
+  } else if(!base::all(k %% 1 == 0)){
+    stop("The 'k' parameter is not valid, please make sure that you are using only integers as input")
+  } else if(base::length(k) > 8){
+    warning("The 'k' parameter is restricted up to 8 inputs (integers), only the first 8 values will be used")
+    k <- k[1:8]
+  }
+  
+  if(base::max(k) * 2 + 1 > base::length(ts.obj)){
+    stop("The length of the series is too short to apply the moving average with the given 'k' parameter")
+  }
+  
+  # Setting function to calculate moving average
+  ma_fun <- function(ts.obj, k){
+    ts_obj <- ts_temp <- NULL
+    ts_obj <- ts_temp <- ts.obj
+    for(i in 1:k){
+      ts_obj <- stats::ts.intersect(stats::lag(ts_temp, k = i), ts_obj, stats::lag(ts_temp, k = -i))
+    }
+    ts_ma <- NULL
+    ts_ma <- base::Reduce("+", lapply(ts_obj, I)) / (k * 2 + 1)
+    return(ts_ma)
+  }
+  
+  ts_merged <- ts.obj
+  color_ramp <- RColorBrewer::brewer.pal(8,"Dark2")
+  color_ramp_double <- RColorBrewer::brewer.pal(8,"Set1")
+  output <- list()
+  output$ts.obj <- ts.obj 
+  p <- plotly::plot_ly(x = stats::time(ts.obj), y = base::as.numeric(ts.obj), name = obj.name, type = "scatter", mode = "lines")
+  c <- 1
+  
+  for(i in k){
+    ts_ma <- NULL
+    ts_ma <- ma_fun(ts.obj = ts.obj, k = i)
+    base::eval(base::parse(text = base::paste("output$ma_", i, " <- ts_ma", sep = "")))
+    p <- p %>% plotly::add_lines(x = stats::time(ts_ma), y = base::as.numeric(ts_ma), 
+                                 name = base::paste("MA - ", i, sep = " "), 
+                                 line = list(dash = "dash", color = color_ramp[c], width = 4))
+    if(!base::is.null(double)){
+      ts_ma_d <- NULL
+      ts_ma_d <- ma(ts.obj = ts_ma, k = double)
+      base::eval(base::parse(text = base::paste("output$double_ma_", i, "_", double, " <- ts_ma_d", sep = "")))
+      p <- p %>% plotly::add_lines(x = stats::time(ts_ma_d), y = base::as.numeric(ts_ma_d), 
+                                   name = base::paste("Double MA - ", i, sep = " "), 
+                                   line = list(dash = "dot", color = color_ramp_double[c], width = 4))
+    }
+    c <- c + 1
+  }
+  
+  p <- p %>% plotly::layout(title = title, xaxis = list(title = Xtitle), yaxis = list(title = Ytitle))
+  
+  output$plot <- p 
+  
+  if(plot){
+    print(p)
+  }
+  
+  output$parameters <- list(k = k, double = double)
+  class(output) <- "ts_ma"
+  return(output)
+}
+
