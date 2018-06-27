@@ -596,7 +596,7 @@ ts_ma <- function(ts.obj, k = c(3, 6, 9), double = NULL, plot = TRUE, title = NU
       ts_ma_d <- ma_fun(ts.obj = ts_ma1, k = double)
       base::eval(base::parse(text = base::paste("output$double_ma_", i, "_", double, " <- ts_ma_d", sep = "")))
       p <- p %>% plotly::add_lines(x = stats::time(ts_ma_d), y = base::as.numeric(ts_ma_d),
-                                   name = base::paste("Double MA - ", i, sep = " "),
+                                   name = base::paste("Double MA - ", i, "/", double, sep = " "),
                                    line = list(dash = "dot", color = color_ramp_double[c], width = 4))
     }
     c <- c + 1
