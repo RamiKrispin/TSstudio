@@ -585,18 +585,18 @@ ts_ma <- function(ts.obj, k = c(3, 6, 9), double = NULL, plot = TRUE, title = NU
   c <- 1
   
   for(i in k){
-    ts_ma <- NULL
-    ts_ma <- ma_fun(ts.obj = ts.obj, k = i)
-    base::eval(base::parse(text = base::paste("output$ma_", i, " <- ts_ma", sep = "")))
-    p <- p %>% plotly::add_lines(x = stats::time(ts_ma), y = base::as.numeric(ts_ma), 
+    ts_ma1 <- NULL
+    ts_ma1 <- ma_fun(ts.obj = ts.obj, k = i)
+    base::eval(base::parse(text = base::paste("output$ma_", i, " <- ts_ma1", sep = "")))
+    p <- p %>% plotly::add_lines(x = stats::time(ts_ma1), y = base::as.numeric(ts_ma1), 
                                  name = base::paste("MA - ", i, sep = " "), 
                                  line = list(dash = "dash", color = color_ramp[c], width = 4))
     if(!base::is.null(double)){
       ts_ma_d <- NULL
-      ts_ma_d <- ma(ts.obj = ts_ma, k = double)
+      ts_ma_d <- ma_fun(ts.obj = ts_ma1, k = double)
       base::eval(base::parse(text = base::paste("output$double_ma_", i, "_", double, " <- ts_ma_d", sep = "")))
-      p <- p %>% plotly::add_lines(x = stats::time(ts_ma_d), y = base::as.numeric(ts_ma_d), 
-                                   name = base::paste("Double MA - ", i, sep = " "), 
+      p <- p %>% plotly::add_lines(x = stats::time(ts_ma_d), y = base::as.numeric(ts_ma_d),
+                                   name = base::paste("Double MA - ", i, sep = " "),
                                    line = list(dash = "dot", color = color_ramp_double[c], width = 4))
     }
     c <- c + 1
