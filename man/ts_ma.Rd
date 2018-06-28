@@ -4,8 +4,8 @@
 \alias{ts_ma}
 \title{Moving Average Time Series Data}
 \usage{
-ts_ma(ts.obj, k = c(3, 6, 9), double = NULL, plot = TRUE, title = NULL,
-  Xtitle = NULL, Ytitle = NULL)
+ts_ma(ts.obj, k = c(3, 6, 9), double = NULL, plot = TRUE,
+  multiple = FALSE, title = NULL, Xtitle = NULL, Ytitle = NULL)
 }
 \arguments{
 \item{ts.obj}{a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)}
@@ -16,6 +16,8 @@ ts_ma(ts.obj, k = c(3, 6, 9), double = NULL, plot = TRUE, title = NULL,
 
 \item{plot}{A boolean, if TRUE will plot the results}
 
+\item{multiple}{A boolean, if TRUE (and k > 1) will create multiple plots, one for each moving average degree. By default is set to FALSE}
+
 \item{title}{A character, if not NULL (by default), will use the input as the plot title}
 
 \item{Xtitle}{A character, if not NULL (by default), will use the input as the plot x - axis title}
@@ -23,7 +25,7 @@ ts_ma(ts.obj, k = c(3, 6, 9), double = NULL, plot = TRUE, title = NULL,
 \item{Ytitle}{A character, if not NULL (by default), will use the input as the plot y - axis title}
 }
 \description{
-Calculate the moving average (and double moving average) for time series data.
+Calculate the moving average (and double moving average) for time series data
 }
 \examples{
 
