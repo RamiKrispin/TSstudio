@@ -591,14 +591,15 @@ ts_ma <- function(ts.obj, k = c(3, 6, 9), double = NULL, plot = TRUE, multiple =
   color_ramp <- RColorBrewer::brewer.pal(8,"Dark2")
   color_ramp_double <- RColorBrewer::brewer.pal(8,"Set1")
   output <- list()
-  output$ts.obj <- ts.obj 
+  output$ts.obj <- ts.obj
+  legend_flag <- base::ifelse(multiple, FALSE, TRUE)
   p <- plotly::plot_ly(x = stats::time(ts.obj), 
                        y = base::as.numeric(ts.obj), 
                        name = obj.name, 
                        type = "scatter", 
                        mode = "lines", 
                        line = list(color = "#00526d"),
-                       showlegend = F)
+                       showlegend = legend_flag)
   c <- 1
   
   for(i in k){
@@ -610,12 +611,27 @@ ts_ma <- function(ts.obj, k = c(3, 6, 9), double = NULL, plot = TRUE, multiple =
                                  name = base::paste("MA - ", i, sep = " "), 
                                  line = list(dash = "dash", color = color_ramp[c], width = 4)) 
     } else if(multiple){
+      if(base::is.null(double)){
+        annotations_single <- list(
+          text = base::paste("Moving Average - ", i, sep = " "),
+          xref = "paper",
+          yref = "paper",
+          yanchor = "bottom",
+          xanchor = "center",
+          align = "center",
+          x = 0.5,
+          y = 0,
+          showarrow = FALSE
+        )
+      } else {
+        annotations_single <- NULL
+      }
       p_m[[c]] <- p %>% plotly::add_lines(x = stats::time(ts_ma1), y = base::as.numeric(ts_ma1), 
-                                          name = base::paste("MA - ", i, sep = " "), 
+                                          name = base::paste("MA -", i, sep = " "), 
                                           line = list(dash = "dash", color = color_ramp[c], 
                                                       width = 4),
-                                          showlegend = T) %>%
-        plotly::layout(xaxis = list(title = "test", tickvals = "test", ticktext = "test"))
+                                          showlegend = TRUE)  %>% 
+        plotly::layout(annotations = annotations_single)
     }
     if(!base::is.null(double)){
       ts_ma_d <- NULL
@@ -626,22 +642,36 @@ ts_ma <- function(ts.obj, k = c(3, 6, 9), double = NULL, plot = TRUE, multiple =
                                    name = base::paste("Double MA - ", i, "/", double, sep = " "),
                                    line = list(dash = "dot", color = color_ramp_double[c], width = 4))
       } else if(multiple){
+        annotations_double <- list(
+          text = base::paste("Double Moving Average - ", i, "/", double, sep = " "),
+          xref = "paper",
+          yref = "paper",
+          yanchor = "bottom",
+          xanchor = "center",
+          align = "center",
+          x = 0.5,
+          y = 0,
+          showarrow = FALSE
+        )
+        
         p_m[[c]] <- p_m[[c]] %>% plotly::add_lines(x = stats::time(ts_ma_d), y = base::as.numeric(ts_ma_d),
                                             name = base::paste("Double MA - ", i, "/", double, sep = " "),
                                             line = list(dash = "dot", 
                                             color = color_ramp_double[c], width = 4),
-                                            showlegend = TRUE)
+                                            showlegend = TRUE) %>% 
+          plotly::layout(annotations = annotations_double)
       }
     }
     c <- c + 1
   }
   
   if(!multiple){
-  p <- p %>% plotly::layout(title = title, xaxis = list(title = Xtitle), yaxis = list(title = Ytitle))
+  p <- p %>% plotly::layout(title = title, xaxis = list(title = Xtitle), yaxis = list(title = Ytitle),  showlegend = TRUE) 
   output$plot <- p 
   } else if(multiple){
     output$plot <- plotly::subplot(p_m, nrows = base::length(p_m), 
-                                   shareX = TRUE, titleX = TRUE)
+                                   shareX = TRUE, titleX = TRUE, titleY = TRUE) %>%
+      plotly::layout(title = title)
   }
   
   
