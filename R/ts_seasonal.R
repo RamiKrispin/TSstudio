@@ -488,6 +488,11 @@ ts_surface <- function(ts.obj) {
 #' # Applying 4 degrees of moving average   
 #' USVS_MA <- ts_ma(ts.obj = USVSales, k = c(3, 6, 9, 12))
 #' 
+#' # Display each moving average (by degree) on a separate plot and adding a title for the plot
+#' USVS_MA <- ts_ma(ts.obj = USVSales, k = c(3, 6, 9, 12), 
+#'                  multiple = TRUE, 
+#'                  title = "Moving Average for the US Vehical Sales Series")
+#' 
 #' # Plot only the moving average with k = 12
 #' ts_plot(USVS_MA$ma_12, title = "Moving Average, k = 12")
 #' 
