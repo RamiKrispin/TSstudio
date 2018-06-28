@@ -477,10 +477,11 @@ ts_surface <- function(ts.obj) {
 #' @param k A single or multiple integers (by default using 3, 6 and 9), set the amount of past and future periods to use for calculating the moving average 
 #' @param double A single integer, an optional argument. If not NULL (by default), will apply a second moving average process on the initial moving average output
 #' @param plot A boolean, if TRUE will plot the results
+#' @param multiple A boolean, if TRUE (and k > 1) will create multiple plots, one for each moving average degree. By default is set to FALSE
 #' @param title A character, if not NULL (by default), will use the input as the plot title
 #' @param Xtitle A character, if not NULL (by default), will use the input as the plot x - axis title
 #' @param Ytitle A character, if not NULL (by default), will use the input as the plot y - axis title
-#' @description Calculate the moving average (and double moving average) for time series data. 
+#' @description Calculate the moving average (and double moving average) for time series data
 #' @examples
 #' 
 #' # Using moving average to smooth the USVsales dataset (US Monthly Total Vehicle Sales)
@@ -497,7 +498,7 @@ ts_surface <- function(ts.obj) {
 #' # Extract the plot
 #' USgas_MA$plot
 
-ts_ma <- function(ts.obj, k = c(3, 6, 9), double = NULL, plot = TRUE, title = NULL, Xtitle = NULL, Ytitle = NULL){
+ts_ma <- function(ts.obj, k = c(3, 6, 9), double = NULL, plot = TRUE, multiple = FALSE, title = NULL, Xtitle = NULL, Ytitle = NULL){
   
   obj.name <- ts_merged <- ts_obj <- ts_temp <- ts_ma <- c <- p <- NULL
   obj.name <- base::deparse(base::substitute(ts.obj))
@@ -513,6 +514,16 @@ ts_ma <- function(ts.obj, k = c(3, 6, 9), double = NULL, plot = TRUE, title = NU
   if(!base::is.logical(plot)){
     warning("The value of the 'plot' argument is not valid (can apply either TRUE or FALSE) and will be ignore")
     plot <- TRUE
+  }
+  
+  if(!base::is.logical(multiple)){
+    warning("The value of the 'multiple' argument is not valid (can apply either TRUE or FALSE) and will be ignore")
+    multiple <- FALSE
+  } else if(base::length(k) == 1 & multiple){
+    warning("The 'multiple' aregument cannot be used when k == 1")
+    multiple <- FALSE
+  } else if(base::length(k) > 1 & multiple){
+    p_m <- list()
   }
   
   if(!base::is.null(title)){
@@ -581,33 +592,62 @@ ts_ma <- function(ts.obj, k = c(3, 6, 9), double = NULL, plot = TRUE, title = NU
   color_ramp_double <- RColorBrewer::brewer.pal(8,"Set1")
   output <- list()
   output$ts.obj <- ts.obj 
-  p <- plotly::plot_ly(x = stats::time(ts.obj), y = base::as.numeric(ts.obj), name = obj.name, type = "scatter", mode = "lines")
+  p <- plotly::plot_ly(x = stats::time(ts.obj), 
+                       y = base::as.numeric(ts.obj), 
+                       name = obj.name, 
+                       type = "scatter", 
+                       mode = "lines", 
+                       line = list(color = "#00526d"),
+                       showlegend = F)
   c <- 1
   
   for(i in k){
     ts_ma1 <- NULL
     ts_ma1 <- ma_fun(ts.obj = ts.obj, k = i)
     base::eval(base::parse(text = base::paste("output$ma_", i, " <- ts_ma1", sep = "")))
+    if(!multiple){
     p <- p %>% plotly::add_lines(x = stats::time(ts_ma1), y = base::as.numeric(ts_ma1), 
                                  name = base::paste("MA - ", i, sep = " "), 
-                                 line = list(dash = "dash", color = color_ramp[c], width = 4))
+                                 line = list(dash = "dash", color = color_ramp[c], width = 4)) 
+    } else if(multiple){
+      p_m[[c]] <- p %>% plotly::add_lines(x = stats::time(ts_ma1), y = base::as.numeric(ts_ma1), 
+                                          name = base::paste("MA - ", i, sep = " "), 
+                                          line = list(dash = "dash", color = color_ramp[c], 
+                                                      width = 4),
+                                          showlegend = T) %>%
+        plotly::layout(xaxis = list(title = "test", tickvals = "test", ticktext = "test"))
+    }
     if(!base::is.null(double)){
       ts_ma_d <- NULL
       ts_ma_d <- ma_fun(ts.obj = ts_ma1, k = double)
       base::eval(base::parse(text = base::paste("output$double_ma_", i, "_", double, " <- ts_ma_d", sep = "")))
+      if(!multiple){
       p <- p %>% plotly::add_lines(x = stats::time(ts_ma_d), y = base::as.numeric(ts_ma_d),
                                    name = base::paste("Double MA - ", i, "/", double, sep = " "),
                                    line = list(dash = "dot", color = color_ramp_double[c], width = 4))
+      } else if(multiple){
+        p_m[[c]] <- p_m[[c]] %>% plotly::add_lines(x = stats::time(ts_ma_d), y = base::as.numeric(ts_ma_d),
+                                            name = base::paste("Double MA - ", i, "/", double, sep = " "),
+                                            line = list(dash = "dot", 
+                                            color = color_ramp_double[c], width = 4),
+                                            showlegend = TRUE)
+      }
     }
     c <- c + 1
   }
   
+  if(!multiple){
   p <- p %>% plotly::layout(title = title, xaxis = list(title = Xtitle), yaxis = list(title = Ytitle))
-  
   output$plot <- p 
+  } else if(multiple){
+    output$plot <- plotly::subplot(p_m, nrows = base::length(p_m), 
+                                   shareX = TRUE, titleX = TRUE)
+  }
+  
+  
   
   if(plot){
-    print(p)
+    print(output$plot)
   }
   
   output$parameters <- list(k = k, double = double)
