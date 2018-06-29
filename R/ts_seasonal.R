@@ -505,6 +505,8 @@ ts_surface <- function(ts.obj) {
 
 ts_ma <- function(ts.obj, k = c(3, 6, 9), double = NULL, plot = TRUE, multiple = FALSE, title = NULL, Xtitle = NULL, Ytitle = NULL){
   
+  `%>%` <- magrittr::`%>%`
+  
   obj.name <- ts_merged <- ts_obj <- ts_temp <- ts_ma <- c <- p <- NULL
   obj.name <- base::deparse(base::substitute(ts.obj))
   
@@ -631,6 +633,7 @@ ts_ma <- function(ts.obj, k = c(3, 6, 9), double = NULL, plot = TRUE, multiple =
       } else {
         annotations_single <- NULL
       }
+      annotations_single <- NULL
       p_m[[c]] <- p %>% plotly::add_lines(x = stats::time(ts_ma1), y = base::as.numeric(ts_ma1), 
                                           name = base::paste("MA -", i, sep = " "), 
                                           line = list(dash = "dash", color = color_ramp[c], 
@@ -658,7 +661,7 @@ ts_ma <- function(ts.obj, k = c(3, 6, 9), double = NULL, plot = TRUE, multiple =
           y = 0,
           showarrow = FALSE
         )
-        
+        #annotations_double <- NULL
         p_m[[c]] <- p_m[[c]] %>% plotly::add_lines(x = stats::time(ts_ma_d), y = base::as.numeric(ts_ma_d),
                                             name = base::paste("Double MA - ", i, "/", double, sep = " "),
                                             line = list(dash = "dot", 
