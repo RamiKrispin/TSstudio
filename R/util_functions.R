@@ -477,3 +477,29 @@ ts_reshape <- function(ts.obj,
   # -------------- Function end --------------
   return(df_table)
 }
+
+
+#' Summation of Multiple Time Series Object
+#' @export
+#' @param mts.obj a multivariate time series object of a class "mts"
+#' @description A row sum function for multiple time series object ("mts"), return the
+#' the summation of the "mts" object as a "ts" object
+#' @examples
+#' 
+#' x <- matrix(c(1:100, 1:100, 1:100), ncol = 3)
+#' mts.obj <- ts(x, start = c(2000, 1), frequency = 12)
+#' ts_total <- ts_sum(mts.obj)
+#' 
+
+
+ts_sum <- function(mts.obj){
+  if(!stats::is.mts(mts.obj)){
+    stop("The input object is not 'mts' class")
+  }
+  
+  tsSum <- stats::ts(rowSums(mts.obj), 
+                     start = stats::start(mts.obj), 
+                     frequency = stats::frequency(mts.obj))
+  
+  return(tsSum)
+}
