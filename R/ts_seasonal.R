@@ -586,11 +586,13 @@ ts_ma <- function(ts.obj, k = c(3, 6, 9), double = NULL, plot = TRUE, multiple =
   ma_fun <- function(ts.obj, k){
     ts_obj <- ts_temp <- NULL
     ts_obj <- ts_temp <- ts.obj
+    
     for(i in 1:k){
       ts_obj <- stats::ts.intersect(stats::lag(ts_temp, k = i), ts_obj, stats::lag(ts_temp, k = -i))
     }
+    
     ts_ma <- NULL
-    ts_ma <- base::Reduce("+", lapply(ts_obj, I)) / (k * 2 + 1)
+    ts_ma <- TSstudio::ts_sum(mts.obj = ts_obj) / (2 * k + 1)
     return(ts_ma)
   }
   
@@ -633,7 +635,7 @@ ts_ma <- function(ts.obj, k = c(3, 6, 9), double = NULL, plot = TRUE, multiple =
       } else {
         annotations_single <- NULL
       }
-      annotations_single <- NULL
+
       p_m[[c]] <- p %>% plotly::add_lines(x = stats::time(ts_ma1), y = base::as.numeric(ts_ma1), 
                                           name = base::paste("MA -", i, sep = " "), 
                                           line = list(dash = "dash", color = color_ramp[c], 
@@ -661,7 +663,7 @@ ts_ma <- function(ts.obj, k = c(3, 6, 9), double = NULL, plot = TRUE, multiple =
           y = 0,
           showarrow = FALSE
         )
-        #annotations_double <- NULL
+
         p_m[[c]] <- p_m[[c]] %>% plotly::add_lines(x = stats::time(ts_ma_d), y = base::as.numeric(ts_ma_d),
                                             name = base::paste("Double MA - ", i, "/", double, sep = " "),
                                             line = list(dash = "dot", 
