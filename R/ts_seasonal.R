@@ -474,7 +474,15 @@ ts_surface <- function(ts.obj) {
 #' Moving Average Time Series Data
 #' @export
 #' @param ts.obj a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)
-#' @param k A single or multiple integers (by default using 3, 6 and 9), set the amount of past and future periods to use for calculating the moving average 
+#' @param k A single or multiple integers (by default using 3, 6 and 9), 
+#' the k argument set a symatric moving average
+#' set the amount of past and future periods to be use to calculating the moving average 
+#' @param left An integer (optional argument, default set to NULL), can be used, 
+#' along with the right argument, an unbalanced moving average. 
+#' The left defines the number of lags to includes in the moving average.
+#' @param right An integer (optional argument, default set to NULL), can be used, 
+#' along with the left argument, to set an unbalanced moving average. 
+#' The right defines the number of negative lags to includes in the moving average.
 #' @param double A single integer, an optional argument. If not NULL (by default), will apply a second moving average process on the initial moving average output
 #' @param plot A boolean, if TRUE will plot the results
 #' @param multiple A boolean, if TRUE (and k > 1) will create multiple plots, one for each moving average degree. By default is set to FALSE
@@ -503,7 +511,13 @@ ts_surface <- function(ts.obj) {
 #' # Extract the plot
 #' USgas_MA$plot
 
-ts_ma <- function(ts.obj, k = c(3, 6, 9), double = NULL, plot = TRUE, multiple = FALSE, title = NULL, Xtitle = NULL, Ytitle = NULL){
+ts_ma <- function(ts.obj, 
+                  k = c(3, 6, 9), 
+                  left = NULL,
+                  right = NULL,
+                  double = NULL, 
+                  plot = TRUE, multiple = FALSE, 
+                  title = NULL, Xtitle = NULL, Ytitle = NULL){
   
   `%>%` <- magrittr::`%>%`
   
@@ -595,6 +609,7 @@ ts_ma <- function(ts.obj, k = c(3, 6, 9), double = NULL, plot = TRUE, multiple =
     ts_ma <- TSstudio::ts_sum(mts.obj = ts_obj) / (2 * k + 1)
     return(ts_ma)
   }
+  
   
   ts_merged <- ts.obj
   color_ramp <- RColorBrewer::brewer.pal(8,"Dark2")
