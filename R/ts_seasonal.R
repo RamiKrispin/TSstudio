@@ -477,10 +477,10 @@ ts_surface <- function(ts.obj) {
 #' @param k A single or multiple integers (by default using 3, 6 and 9), 
 #' the k argument set a symatric moving average
 #' set the amount of past and future periods to be use to calculating the moving average 
-#' @param left An integer (optional argument, default set to NULL), can be used, 
+#' @param left A single integer (optional argument, default set to NULL), can be used, 
 #' along with the right argument, an unbalanced moving average. 
 #' The left defines the number of lags to includes in the moving average.
-#' @param right An integer (optional argument, default set to NULL), can be used, 
+#' @param right A single integer (optional argument, default set to NULL), can be used, 
 #' along with the left argument, to set an unbalanced moving average. 
 #' The right defines the number of negative lags to includes in the moving average.
 #' @param double A single integer, an optional argument. If not NULL (by default), will apply a second moving average process on the initial moving average output
@@ -584,12 +584,34 @@ ts_ma <- function(ts.obj,
   
   
   if(!base::is.numeric(k)){
-    stop("The 'k' parameter is not valid, please make sure that you are using only integers as input")
+    stop("The 'k' argument is not valid, please make sure that you are using only integers as input")
   } else if(!base::all(k %% 1 == 0)){
-    stop("The 'k' parameter is not valid, please make sure that you are using only integers as input")
+    stop("The 'k' argument is not valid, please make sure that you are using only integers as input")
   } else if(base::length(k) > 8){
     warning("The 'k' parameter is restricted up to 8 inputs (integers), only the first 8 values will be used")
     k <- k[1:8]
+  }
+  
+  if(!base::is.null(left)){
+    if(!base::is.numeric(left)){
+      stop("The 'left' argument is not valid, please make sure that you are using only integers as input")
+    } else if(base::length(left) != 1){
+      warning("The 'left' argument has too many inputs, can hanlde only single integer. Will use only the first input")
+      left <- left[1]
+    } else if(left %% 1 != 0){
+      stop("The 'left' argument is not an integer type")
+    }
+  }
+  
+  if(!base::is.null(right)){
+    if(!base::is.numeric(right)){
+      stop("The 'right' argument is not valid, please make sure that you are using only integers as input")
+    } else if(!base::length(right) != 1){
+      warning("The 'right' argument has too many inputs, can hanlde only single integer. Will use only the first input")
+      right <- right[1]
+    } else if(right %% 1 != 0){
+      stop("The 'right' argument is not an integer type")
+    }
   }
   
   if(base::max(k) * 2 + 1 > base::length(ts.obj)){
