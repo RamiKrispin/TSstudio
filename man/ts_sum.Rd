@@ -7,7 +7,7 @@
 ts_sum(mts.obj)
 }
 \arguments{
-\item{mts.obj}{a multivariate time series object of a class "mts"}
+\item{mts.obj}{A multivariate time series object of a class "mts"}
 }
 \description{
 A row sum function for multiple time series object ("mts"), return the

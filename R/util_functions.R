@@ -481,7 +481,7 @@ ts_reshape <- function(ts.obj,
 
 #' Summation of Multiple Time Series Object
 #' @export
-#' @param mts.obj a multivariate time series object of a class "mts"
+#' @param mts.obj A multivariate time series object of a class "mts"
 #' @description A row sum function for multiple time series object ("mts"), return the
 #' the summation of the "mts" object as a "ts" object
 #' @examples
