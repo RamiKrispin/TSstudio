@@ -629,12 +629,12 @@ ts_ma <- function(ts.obj,
   } else if(base::length(k) > 8){
     warning("The 'k' parameter is restricted up to 8 inputs (integers), only the first 8 values will be used")
     k <- k[1:8]
+  } else if(base::max(k) * 2 + 1 > base::length(ts.obj)){
+    stop("The length of the series is too short to apply the moving average with the given 'k' parameter")
   }
   }
   
-  if(base::max(k) * 2 + 1 > base::length(ts.obj)){
-    stop("The length of the series is too short to apply the moving average with the given 'k' parameter")
-  }
+ 
   
   # Setting function to calculate moving average
    ma_fun <- function(ts.obj, k_left, k_right){
@@ -745,11 +745,11 @@ ts_ma <- function(ts.obj,
   if(!base::is.null(k_left) | !base::is.null(k_right)){
     ts_ma2 <- NULL
     ts_ma2 <- ma_fun(ts.obj = ts.obj, k_left = k_left, k_right = k_right)
-    base::eval(base::parse(text = base::paste("output$unbalanced_ma",k_left, "_on_", k_right, " <- ts_ma2", sep = "")))
+    base::eval(base::parse(text = base::paste("output$unbalanced_ma_order", ma_order + 1, " <- ts_ma2", sep = "")))
     
     if(!multiple){
       p <- p %>% plotly::add_lines(x = stats::time(ts_ma2), y = base::as.numeric(ts_ma2), 
-                                   name = base::paste("Unblanced MA Oreder", k_left +  k_right + 1, 
+                                   name = base::paste("Unblanced MA Oreder", ma_order + 1, 
                                                       sep = " "), 
                                    line = list(dash = "dashdot", color = color_ramp[c], width = 4)) 
     } else if(multiple){
@@ -770,7 +770,7 @@ ts_ma <- function(ts.obj,
       }
       
       p_m[[c]] <- p %>% plotly::add_lines(x = stats::time(ts_ma2), y = base::as.numeric(ts_ma2), 
-                                          name = base::paste("Unblanced MA Order ", order + 1, sep = " "), 
+                                          name = base::paste("Unblanced MA Order ", ma_order + 1, sep = " "), 
                                           line = list(dash = "dashdot", color = color_ramp[c], 
                                                       width = 4),
                                           showlegend = TRUE)  %>% 
@@ -784,7 +784,7 @@ ts_ma <- function(ts.obj,
 
       ts_ma2_d <- NULL
       ts_ma2_d <- ma_fun(ts.obj = ts_ma2, k_left = double, k_right = double)
-      base::eval(base::parse(text = base::paste("output$double_unbalanced_ma",k_left, "_on_", k_right, " <- ts_ma2_d", sep = "")))
+      base::eval(base::parse(text = base::paste("output$double_unbalanced_ma_order", ma_order + 1, " <- ts_ma2_d", sep = "")))
 
       if(!multiple){
         p <- p %>% plotly::add_lines(x = stats::time(ts_ma2_d), y = base::as.numeric(ts_ma2_d),
@@ -823,7 +823,7 @@ ts_ma <- function(ts.obj,
   if(!base::is.null(double)){
     ts_ma2_d <- NULL
     ts_ma2_d <- ma_fun(ts.obj = ts_ma1, k_left = double, k_right = double)
-    base::eval(base::parse(text = base::paste("output$double_unbalanced_ma", k_left, "_on_", k_right, " <- ts_ma_d", sep = "")))
+    base::eval(base::parse(text = base::paste("output$double_unbalanced_ma_order", ma_order + 1, " <- ts_ma_d", sep = "")))
   }
   
   if(!multiple){
