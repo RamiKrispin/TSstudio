@@ -521,7 +521,7 @@ ts_ma <- function(ts.obj,
   
   `%>%` <- magrittr::`%>%`
   
-  obj.name <- ts_merged <- ts_obj <- ts_temp <- ts_ma <- c <- p <-  p_m <- NULL
+  obj.name <- ts_merged <- ts_obj <- ts_temp <- ts_ma <- c <- p <-  p_m <- ma_order <-  NULL
   left_flag <- right_flag <- k_flag <- FALSE
   obj.name <- base::deparse(base::substitute(ts.obj))
   
@@ -602,7 +602,7 @@ ts_ma <- function(ts.obj,
     } else if(k_left %% 1 != 0){
       stop("The 'k_left' argument is not an integer type")
     } else {
-      left_flag <- TRUE
+      ma_order <- k_left
     }
   }
   
@@ -614,9 +614,14 @@ ts_ma <- function(ts.obj,
       k_right <- k_right[1]
     } else if(k_right %% 1 != 0){
       stop("The 'k_right' argument is not an integer type")
+    } else if(!base::is.null(k_left)){
+      ma_order <- k_left + k_right
+    } else {
+      ma_order <- k_right
     }
   }
-
+  
+  if(!base::is.null(k)){
   if(!base::is.numeric(k)){
     stop("The 'k' argument is not valid, please make sure that you are using only integers as input")
   } else if(!base::all(k %% 1 == 0)){
@@ -624,6 +629,7 @@ ts_ma <- function(ts.obj,
   } else if(base::length(k) > 8){
     warning("The 'k' parameter is restricted up to 8 inputs (integers), only the first 8 values will be used")
     k <- k[1:8]
+  }
   }
   
   if(base::max(k) * 2 + 1 > base::length(ts.obj)){
@@ -749,7 +755,7 @@ ts_ma <- function(ts.obj,
     } else if(multiple){
       if(base::is.null(double)){
         annotations_single <- list(
-          text = base::paste("Unbalance Moving Average Order", k_left + k_right + 1, sep = " "),
+          text = base::paste("Unbalance Moving Average Order", ma_order + 1, sep = " "),
           xref = "paper",
           yref = "paper",
           yanchor = "bottom",
@@ -764,7 +770,7 @@ ts_ma <- function(ts.obj,
       }
       
       p_m[[c]] <- p %>% plotly::add_lines(x = stats::time(ts_ma2), y = base::as.numeric(ts_ma2), 
-                                          name = base::paste("Unblanced MA Order ", k_left + k_right + 1, sep = " "), 
+                                          name = base::paste("Unblanced MA Order ", order + 1, sep = " "), 
                                           line = list(dash = "dashdot", color = color_ramp[c], 
                                                       width = 4),
                                           showlegend = TRUE)  %>% 
@@ -783,12 +789,12 @@ ts_ma <- function(ts.obj,
       if(!multiple){
         p <- p %>% plotly::add_lines(x = stats::time(ts_ma2_d), y = base::as.numeric(ts_ma2_d),
                                      name = base::paste("Unblanced Double MA Order", 
-                                                        double, "x", k_right + k_left + 1, sep = " "),
+                                                        double, "x", ma_order + 1, sep = " "),
                                      line = list(dash = "longdash", color = color_ramp_double[c], width = 4))
       } else if(multiple){
         annotations_double <- list(
           text = base::paste("Double Unbalance Moving Average Order -",double, "x",  
-                             k_left + k_right + 1, sep = " "),
+                             ma_order + 1, sep = " "),
           xref = "paper",
           yref = "paper",
           yanchor = "bottom",
@@ -801,7 +807,7 @@ ts_ma <- function(ts.obj,
 
         p_m[[c]] <- p_m[[c]] %>% plotly::add_lines(x = stats::time(ts_ma2_d), y = base::as.numeric(ts_ma2_d),
                                                    name = base::paste("Double Unbalanced MA Order",
-                                                                      double, "x", k_right + k_left + 1, 
+                                                                      double, "x", ma_order + 1, 
                                                                       sep = " "),
                                                    line = list(dash = "longdash",
                                                                color = color_ramp_double[c], width = 4),
