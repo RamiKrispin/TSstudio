@@ -546,10 +546,14 @@ ts_ma <- function(ts.obj,
   if(!base::is.logical(multiple)){
     warning("The value of the 'multiple' argument is not valid (can apply either TRUE or FALSE) and will be ignore")
     multiple <- FALSE
-  } else if(base::length(k) == 1 & multiple){
-    warning("The 'multiple' aregument cannot be used when k == 1")
+  } else if(base::length(k) == 1 & multiple & 
+            base::is.null(k_left) &
+            base::is.null(k_right)){
+    warning("The 'multiple' aregument cannot be used when using multiple moving averages")
     multiple <- FALSE
-  } else if(base::length(k) > 1 & multiple){
+  } else if((base::length(k) > 1 | (base::length(k) ==1 & 
+            (!base::is.null(k_left) | !base::is.null(k_right)))) &
+             multiple){
     p_m <- list()
   }
   
@@ -673,7 +677,7 @@ ts_ma <- function(ts.obj,
     base::eval(base::parse(text = base::paste("output$ma_", i, " <- ts_ma1", sep = "")))
     if(!multiple){
     p <- p %>% plotly::add_lines(x = stats::time(ts_ma1), y = base::as.numeric(ts_ma1), 
-                                 name = base::paste("MA - ", i, sep = " "), 
+                                 name = base::paste("MA Order ", i * 2 + 1, sep = " "), 
                                  line = list(dash = "dash", color = color_ramp[c], width = 4)) 
     } else if(multiple){
       if(base::is.null(double)){
@@ -693,7 +697,7 @@ ts_ma <- function(ts.obj,
       }
 
       p_m[[c]] <- p %>% plotly::add_lines(x = stats::time(ts_ma1), y = base::as.numeric(ts_ma1), 
-                                          name = base::paste("MA -", i, sep = " "), 
+                                          name = base::paste("MA Order", i * 2 + 1, sep = " "), 
                                           line = list(dash = "dash", color = color_ramp[c], 
                                                       width = 4),
                                           showlegend = TRUE)  %>% 
@@ -705,11 +709,11 @@ ts_ma <- function(ts.obj,
       base::eval(base::parse(text = base::paste("output$double_ma_", i, "_", double, " <- ts_ma_d", sep = "")))
       if(!multiple){
       p <- p %>% plotly::add_lines(x = stats::time(ts_ma_d), y = base::as.numeric(ts_ma_d),
-                                   name = base::paste("Double MA - ", i, "/", double, sep = " "),
+                                   name = base::paste("Double MA Order ", double, "x", i * 2 + 1, sep = " "),
                                    line = list(dash = "dot", color = color_ramp_double[c], width = 4))
       } else if(multiple){
         annotations_double <- list(
-          text = base::paste("Double Moving Average - ", i, "/", double, sep = " "),
+          text = base::paste("Double Moving Average Order -", double, "x", i * 2 + 1, sep = " "),
           xref = "paper",
           yref = "paper",
           yanchor = "bottom",
@@ -721,7 +725,7 @@ ts_ma <- function(ts.obj,
         )
 
         p_m[[c]] <- p_m[[c]] %>% plotly::add_lines(x = stats::time(ts_ma_d), y = base::as.numeric(ts_ma_d),
-                                            name = base::paste("Double MA - ", i, "/", double, sep = " "),
+                                            name = base::paste("Double MA Order", double, "x", i * 2 + 1, sep = " "),
                                             line = list(dash = "dot", 
                                             color = color_ramp_double[c], width = 4),
                                             showlegend = TRUE) %>% 
@@ -739,12 +743,13 @@ ts_ma <- function(ts.obj,
     
     if(!multiple){
       p <- p %>% plotly::add_lines(x = stats::time(ts_ma2), y = base::as.numeric(ts_ma2), 
-                                   name = base::paste("MA (unblanced) - ", k_left, "/", k_right, sep = " "), 
+                                   name = base::paste("Unblanced MA Oreder", k_left +  k_right + 1, 
+                                                      sep = " "), 
                                    line = list(dash = "dashdot", color = color_ramp[c], width = 4)) 
     } else if(multiple){
       if(base::is.null(double)){
         annotations_single <- list(
-          text = base::paste("Unbalance Moving Average -", k_left, "on", k_right, sep = " "),
+          text = base::paste("Unbalance Moving Average Order", k_left + k_right + 1, sep = " "),
           xref = "paper",
           yref = "paper",
           yanchor = "bottom",
@@ -759,7 +764,7 @@ ts_ma <- function(ts.obj,
       }
       
       p_m[[c]] <- p %>% plotly::add_lines(x = stats::time(ts_ma2), y = base::as.numeric(ts_ma2), 
-                                          name = base::paste("MA (unblanced) - ", k_left, "/", k_right, sep = " "), 
+                                          name = base::paste("Unblanced MA Order ", k_left + k_right + 1, sep = " "), 
                                           line = list(dash = "dashdot", color = color_ramp[c], 
                                                       width = 4),
                                           showlegend = TRUE)  %>% 
@@ -777,11 +782,13 @@ ts_ma <- function(ts.obj,
 
       if(!multiple){
         p <- p %>% plotly::add_lines(x = stats::time(ts_ma2_d), y = base::as.numeric(ts_ma2_d),
-                                     name = base::paste("Double MA (unblanced) - ", k_left, "/", k_right, sep = " "),
+                                     name = base::paste("Unblanced Double MA Order", 
+                                                        double, "x", k_right + k_left + 1, sep = " "),
                                      line = list(dash = "longdash", color = color_ramp_double[c], width = 4))
       } else if(multiple){
         annotations_double <- list(
-          text = base::paste("Double (", double, ") Unbalance Moving Average - ", k_left, " on ", k_right, sep = ""),
+          text = base::paste("Double Unbalance Moving Average Order -",double, "x",  
+                             k_left + k_right + 1, sep = " "),
           xref = "paper",
           yref = "paper",
           yanchor = "bottom",
@@ -793,7 +800,9 @@ ts_ma <- function(ts.obj,
         )
 
         p_m[[c]] <- p_m[[c]] %>% plotly::add_lines(x = stats::time(ts_ma2_d), y = base::as.numeric(ts_ma2_d),
-                                                   name = base::paste("Double MA (unblanced) - ", k_left, "/", k_right, sep = " "),
+                                                   name = base::paste("Double Unbalanced MA Order",
+                                                                      double, "x", k_right + k_left + 1, 
+                                                                      sep = " "),
                                                    line = list(dash = "longdash",
                                                                color = color_ramp_double[c], width = 4),
                                                    showlegend = TRUE) %>%
