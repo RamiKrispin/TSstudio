@@ -474,9 +474,9 @@ ts_surface <- function(ts.obj) {
 #' Moving Average Time Series Data
 #' @export
 #' @param ts.obj a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)
-#' @param k A single or multiple integers (by default using 3, 6 and 9), 
-#' the k argument set a symatric moving average
-#' set the amount of past and future periods to be use to calculating the moving average 
+#' @param k A single or multiple integers (by default using 3, 6, and 9 as inputs), 
+#' define a two-sides moving averages by setting the number of past and future to use 
+#' in each moving average window along with current observation. 
 #' @param k_left A single integer (optional argument, default set to NULL), can be used, 
 #' along with the k_right argument, an unbalanced moving average. 
 #' The k_left defines the number of lags to includes in the moving average.
@@ -531,6 +531,11 @@ ts_ma <- function(ts.obj,
       ts.obj <- ts.obj[, 1]
     }
   }
+  
+  if((base::is.null(k) & base::is.null(k_left) & base::is.null(k_right)) | 
+     (base::is.numeric(k) | base::is.numeric(k_left) | base::is.numeric(k_right))){
+    stop("Neither of the moving averages arguments set properly ('k', 'k_left', 'k_right')")
+  }
     
   if(!base::is.logical(plot)){
     warning("The value of the 'plot' argument is not valid (can apply either TRUE or FALSE) and will be ignore")
@@ -583,15 +588,6 @@ ts_ma <- function(ts.obj,
   }
   
   
-  if(!base::is.numeric(k)){
-    stop("The 'k' argument is not valid, please make sure that you are using only integers as input")
-  } else if(!base::all(k %% 1 == 0)){
-    stop("The 'k' argument is not valid, please make sure that you are using only integers as input")
-  } else if(base::length(k) > 8){
-    warning("The 'k' parameter is restricted up to 8 inputs (integers), only the first 8 values will be used")
-    k <- k[1:8]
-  }
-  
   if(!base::is.null(k_left)){
     if(!base::is.numeric(k_left)){
       stop("The 'k_left' argument is not valid, please make sure that you are using only integers as input")
@@ -612,6 +608,15 @@ ts_ma <- function(ts.obj,
     } else if(k_right %% 1 != 0){
       stop("The 'k_right' argument is not an integer type")
     }
+  }
+
+  if(!base::is.numeric(k)){
+    stop("The 'k' argument is not valid, please make sure that you are using only integers as input")
+  } else if(!base::all(k %% 1 == 0)){
+    stop("The 'k' argument is not valid, please make sure that you are using only integers as input")
+  } else if(base::length(k) > 8){
+    warning("The 'k' parameter is restricted up to 8 inputs (integers), only the first 8 values will be used")
+    k <- k[1:8]
   }
   
   if(base::max(k) * 2 + 1 > base::length(ts.obj)){

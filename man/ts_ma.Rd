@@ -11,9 +11,9 @@ ts_ma(ts.obj, k = c(3, 6, 9), k_left = NULL, k_right = NULL,
 \arguments{
 \item{ts.obj}{a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)}
 
-\item{k}{A single or multiple integers (by default using 3, 6 and 9), 
-the k argument set a symatric moving average
-set the amount of past and future periods to be use to calculating the moving average}
+\item{k}{A single or multiple integers (by default using 3, 6, and 9 as inputs), 
+define a two-sides moving averages by setting the number of past and future to use 
+in each moving average window along with current observation.}
 
 \item{k_left}{A single integer (optional argument, default set to NULL), can be used, 
 along with the k_right argument, an unbalanced moving average. 
