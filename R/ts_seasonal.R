@@ -477,12 +477,12 @@ ts_surface <- function(ts.obj) {
 #' @param k A single or multiple integers (by default using 3, 6 and 9), 
 #' the k argument set a symatric moving average
 #' set the amount of past and future periods to be use to calculating the moving average 
-#' @param left A single integer (optional argument, default set to NULL), can be used, 
-#' along with the right argument, an unbalanced moving average. 
-#' The left defines the number of lags to includes in the moving average.
-#' @param right A single integer (optional argument, default set to NULL), can be used, 
-#' along with the left argument, to set an unbalanced moving average. 
-#' The right defines the number of negative lags to includes in the moving average.
+#' @param k_left A single integer (optional argument, default set to NULL), can be used, 
+#' along with the k_right argument, an unbalanced moving average. 
+#' The k_left defines the number of lags to includes in the moving average.
+#' @param k_right A single integer (optional argument, default set to NULL), can be used, 
+#' along with the k_left argument, to set an unbalanced moving average. 
+#' The k_right defines the number of negative lags to includes in the moving average.
 #' @param double A single integer, an optional argument. If not NULL (by default), will apply a second moving average process on the initial moving average output
 #' @param plot A boolean, if TRUE will plot the results
 #' @param multiple A boolean, if TRUE (and k > 1) will create multiple plots, one for each moving average degree. By default is set to FALSE
@@ -513,8 +513,8 @@ ts_surface <- function(ts.obj) {
 
 ts_ma <- function(ts.obj, 
                   k = c(3, 6, 9), 
-                  left = NULL,
-                  right = NULL,
+                  k_left = NULL,
+                  k_right = NULL,
                   double = NULL, 
                   plot = TRUE, multiple = FALSE, 
                   title = NULL, Xtitle = NULL, Ytitle = NULL){
@@ -592,25 +592,25 @@ ts_ma <- function(ts.obj,
     k <- k[1:8]
   }
   
-  if(!base::is.null(left)){
-    if(!base::is.numeric(left)){
-      stop("The 'left' argument is not valid, please make sure that you are using only integers as input")
-    } else if(base::length(left) != 1){
-      warning("The 'left' argument has too many inputs, can hanlde only single integer. Will use only the first input")
-      left <- left[1]
-    } else if(left %% 1 != 0){
-      stop("The 'left' argument is not an integer type")
+  if(!base::is.null(k_left)){
+    if(!base::is.numeric(k_left)){
+      stop("The 'k_left' argument is not valid, please make sure that you are using only integers as input")
+    } else if(base::length(k_left) != 1){
+      warning("The 'k_left' argument has too many inputs, can hanlde only single integer. Will use only the first input")
+      k_left <- k_left[1]
+    } else if(k_left %% 1 != 0){
+      stop("The 'k_left' argument is not an integer type")
     }
   }
   
-  if(!base::is.null(right)){
-    if(!base::is.numeric(right)){
-      stop("The 'right' argument is not valid, please make sure that you are using only integers as input")
-    } else if(!base::length(right) != 1){
-      warning("The 'right' argument has too many inputs, can hanlde only single integer. Will use only the first input")
-      right <- right[1]
-    } else if(right %% 1 != 0){
-      stop("The 'right' argument is not an integer type")
+  if(!base::is.null(k_right)){
+    if(!base::is.numeric(k_right)){
+      stop("The 'k_right' argument is not valid, please make sure that you are using only integers as input")
+    } else if(!base::length(k_right) != 1){
+      warning("The 'k_right' argument has too many inputs, can hanlde only single integer. Will use only the first input")
+      k_right <- k_right[1]
+    } else if(k_right %% 1 != 0){
+      stop("The 'k_right' argument is not an integer type")
     }
   }
   

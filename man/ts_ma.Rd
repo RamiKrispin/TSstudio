@@ -4,9 +4,9 @@
 \alias{ts_ma}
 \title{Moving Average Time Series Data}
 \usage{
-ts_ma(ts.obj, k = c(3, 6, 9), left = NULL, right = NULL, double = NULL,
-  plot = TRUE, multiple = FALSE, title = NULL, Xtitle = NULL,
-  Ytitle = NULL)
+ts_ma(ts.obj, k = c(3, 6, 9), k_left = NULL, k_right = NULL,
+  double = NULL, plot = TRUE, multiple = FALSE, title = NULL,
+  Xtitle = NULL, Ytitle = NULL)
 }
 \arguments{
 \item{ts.obj}{a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)}
@@ -15,13 +15,13 @@ ts_ma(ts.obj, k = c(3, 6, 9), left = NULL, right = NULL, double = NULL,
 the k argument set a symatric moving average
 set the amount of past and future periods to be use to calculating the moving average}
 
-\item{left}{A single integer (optional argument, default set to NULL), can be used, 
-along with the right argument, an unbalanced moving average. 
-The left defines the number of lags to includes in the moving average.}
+\item{k_left}{A single integer (optional argument, default set to NULL), can be used, 
+along with the k_right argument, an unbalanced moving average. 
+The k_left defines the number of lags to includes in the moving average.}
 
-\item{right}{A single integer (optional argument, default set to NULL), can be used, 
-along with the left argument, to set an unbalanced moving average. 
-The right defines the number of negative lags to includes in the moving average.}
+\item{k_right}{A single integer (optional argument, default set to NULL), can be used, 
+along with the k_left argument, to set an unbalanced moving average. 
+The k_right defines the number of negative lags to includes in the moving average.}
 
 \item{double}{A single integer, an optional argument. If not NULL (by default), will apply a second moving average process on the initial moving average output}
 
