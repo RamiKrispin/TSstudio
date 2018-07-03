@@ -512,24 +512,31 @@ ts_surface <- function(ts.obj) {
 #' 
 #' @examples
 #' 
-#' # Using moving average to smooth the USVsales dataset (US Monthly Total Vehicle Sales)
-#' # Applying 4 degrees of moving average   
-#' USVS_MA <- ts_ma(ts.obj = USVSales, k = c(3, 6, 9, 12))
+#' # A one-side moving average order of 7
+#' USgas_MA7 <- ts_ma(USgas, k_left = 6, k = NULL)
 #' 
-#' # Display each moving average (by degree) on a separate plot and adding a title for the plot
-#' USVS_MA <- ts_ma(ts.obj = USVSales, k = c(3, 6, 9, 12), 
-#'                  multiple = TRUE, 
-#'                  title = "Moving Average for the US Vehical Sales Series")
+#' # A two-sided moving average order of 13
+#' USgas_two_side_MA <- ts_ma(USgas, k = 6)
 #' 
-#' # Plot only the moving average with k = 12
-#' ts_plot(USVS_MA$ma_12, title = "Moving Average, k = 12")
+#' # Unbalanced moving average of order 12
+#'  USVSales_MA12 <- ts_ma(USVSales, k_left = 6, k_right = 5, k = NULL, 
+#'  title = "US Monthly Total Vehicle Sales - MA", 
+#'  Ytitle = "Thousand of Units")
+#'
+#' # Adding double MA of order 2 to balanced the series:
+#' USVSales_MA12 <- ts_ma(USVSales, k_left = 6, k_right = 5, k = NULL, 
+#'  double = 2,
+#'  title = "US Monthly Total Vehicle Sales - MA", 
+#'  Ytitle = "Thousand of Units")
 #' 
-#' # Using moving average to smooth the USgas dataset (US Monthly Natural Gas Consuption)
-#' # Adding double moving average with degree of 6 to smooth the strong seasonality
-#' USgas_MA <- ts_ma(ts.obj = USgas, k = c(6, 9), double = 6)
-#' 
-#' # Extract the plot
-#' USgas_MA$plot
+#' # Adding several types of two-sided moving averages along with the unblanced
+#' # Plot each on a separate plot
+#' USVSales_MA12 <- ts_ma(USVSales, k_left = 6, k_right = 5, k = c(3, 6, 9), 
+#' double = 2, multiple = TRUE,
+#' title = "US Monthly Total Vehicle Sales - MA", 
+#' Ytitle = "Thousand of Units")
+
+
 
 ts_ma <- function(ts.obj, 
                   k = c(3, 6, 9), 
