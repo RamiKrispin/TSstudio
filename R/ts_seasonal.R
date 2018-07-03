@@ -490,6 +490,26 @@ ts_surface <- function(ts.obj) {
 #' @param Xtitle A character, if not NULL (by default), will use the input as the plot x - axis title
 #' @param Ytitle A character, if not NULL (by default), will use the input as the plot y - axis title
 #' @description Calculate the moving average (and double moving average) for time series data
+#' @details 
+#' A one-side moving averages (also known as simple moving averages) calculation for Y[t] (observation Y of the series at time t):
+#' 
+#' MA[t|k] = (Y[t-k] + Y[t-(k-1)] +...+ Y[t]) / (k + 1), 
+#' 
+#' where k defines the number of consecutive observations to be used on each rolling window along with the current observation 
+#' 
+#' Similarly, a two-sided moving averages with an order of (2*k + 1) for Y[t]:
+#' 
+#' MA[t|k] = (Y[t-k] + Y[t-(k-1)] +...+ Y[t] +...+ Y[t+(k-1)] + Y[t+k]) / (2*k + 1)
+#' 
+#' Unbalanced moving averages with an order of (k1 + k2 + 1) for observation Y[t]:
+#' 
+#' MA[t|k1 & k2] = (Y[t-k1] + Y[t-(k1-1)] +...+ Y[t] +...+ Y[t+(k2-1)] + Y[t+k2]) / (k1 + k2 + 1)
+#' 
+#' The unbalanced moving averages is a special case of two-sides moving averages, 
+#' where k1 and k2 represent the number of past and future periods, 
+#' respectively to be used in each rolling window, and k1 != k2 
+#' (otherwise it is a normal two-sided moving averages function)
+#' 
 #' @examples
 #' 
 #' # Using moving average to smooth the USVsales dataset (US Monthly Total Vehicle Sales)
@@ -778,10 +798,6 @@ ts_ma <- function(ts.obj,
     }
 
     if(!base::is.null(double)){
-
-
-
-
       ts_ma2_d <- NULL
       ts_ma2_d <- ma_fun(ts.obj = ts_ma2, k_left = double, k_right = double)
       base::eval(base::parse(text = base::paste("output$double_unbalanced_ma_order", ma_order + 1, " <- ts_ma2_d", sep = "")))
@@ -815,16 +831,8 @@ ts_ma <- function(ts.obj,
           plotly::layout(annotations = annotations_double)
       }
     }
-
-
-    
   }
   
-  if(!base::is.null(double)){
-    ts_ma2_d <- NULL
-    ts_ma2_d <- ma_fun(ts.obj = ts_ma1, k_left = double, k_right = double)
-    base::eval(base::parse(text = base::paste("output$double_unbalanced_ma_order", ma_order + 1, " <- ts_ma_d", sep = "")))
-  }
   
   if(!multiple){
   p <- p %>% plotly::layout(title = title, xaxis = list(title = Xtitle), yaxis = list(title = Ytitle),  showlegend = TRUE) 

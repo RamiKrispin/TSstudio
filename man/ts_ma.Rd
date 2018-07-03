@@ -38,6 +38,26 @@ The k_right defines the number of negative lags to includes in the moving averag
 \description{
 Calculate the moving average (and double moving average) for time series data
 }
+\details{
+A one-side moving averages (also known as simple moving averages) calculation for Y[t] (observation Y of the series at time t):
+
+MA[t|k] = (Y[t-k] + Y[t-(k-1)] +...+ Y[t]) / (k + 1), 
+
+where k defines the number of consecutive observations to be used on each rolling window along with the current observation 
+
+Similarly, a two-sided moving averages (order 2*k + 1) for Y[t]:
+
+MA[t|k] = (Y[t-k] + Y[t-(k-1)] +...+ Y[t] +...+ Y[t+(k-1)] + Y[t+k]) / (2*k + 1)
+
+Unbalanced moving averages with an order (k1 + k2 + 1) for observation Y[t]:
+
+MA[t|k1 & k2] = (Y[t-k1] + Y[t-(k1-1)] +...+ Y[t] +...+ Y[t+(k2-1)] + Y[t+k2]) / (k1 + k2 + 1)
+
+The unbalanced moving averages is a special case of two-sides moving averages, 
+where k1 and k2 represent the number of past and future periods, 
+respectively to be used in each rolling window, and k1 != k2 
+(otherwise it is a normal two-sided moving averages function)
+}
 \examples{
 
 # Using moving average to smooth the USVsales dataset (US Monthly Total Vehicle Sales)
