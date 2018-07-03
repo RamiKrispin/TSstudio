@@ -715,7 +715,7 @@ ts_ma <- function(ts.obj,
     } else if(multiple){
       if(base::is.null(double)){
         annotations_single <- list(
-          text = base::paste("Moving Average - ", i, sep = " "),
+          text = base::paste("Moving Average Order", i * 2 + 1, sep = " "),
           xref = "paper",
           yref = "paper",
           yanchor = "bottom",
@@ -746,7 +746,7 @@ ts_ma <- function(ts.obj,
                                    line = list(dash = "dot", color = color_ramp_double[c], width = 4))
       } else if(multiple){
         annotations_double <- list(
-          text = base::paste("Double Moving Average Order -", double, "x", i * 2 + 1, sep = " "),
+          text = base::paste("Double Moving Average Order", double, "x", i * 2 + 1, sep = " "),
           xref = "paper",
           yref = "paper",
           yanchor = "bottom",
@@ -797,7 +797,7 @@ ts_ma <- function(ts.obj,
       }
       
       p_m[[c]] <- p %>% plotly::add_lines(x = stats::time(ts_ma2), y = base::as.numeric(ts_ma2), 
-                                          name = base::paste("Unblanced MA Order ", ma_order + 1, sep = " "), 
+                                          name = base::paste("Unblanced MA Order", ma_order + 1, sep = " "), 
                                           line = list(dash = "dashdot", color = color_ramp[c], 
                                                       width = 4),
                                           showlegend = TRUE)  %>% 
