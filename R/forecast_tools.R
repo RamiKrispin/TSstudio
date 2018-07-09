@@ -1,6 +1,6 @@
 #'  Visualize of the Fitted and the Forecasted vs the Actual Values
 #' @export test_forecast
-#' @param actual The full time series object (support "ts", "zoo" and "xts" formats)
+#' @param actual The full time series object (supports "ts", "zoo" and "xts" formats)
 #' @param forecast.obj The forecast output of the training set with horizon 
 #' align to the length of the testing (support forecasted objects from the “forecast” package)
 #' @param train Training partition, a subset of the first n observation in the series (not requiredthed)
@@ -37,7 +37,7 @@ test_forecast <- function(actual, forecast.obj,
   `%>%` <- magrittr::`%>%`
   # Error handling
   if (!forecast::is.forecast(forecast.obj)) {
-    stop("The class of theforecast object is not \"forecast\"")
+    stop("The class of the forecast object is not \"forecast\"")
   }
   if (base::length(forecast.obj$x) + base::length(test) != base::length(actual)) {
     stop("The length of the train and test sets are different from the length of the actual set")
