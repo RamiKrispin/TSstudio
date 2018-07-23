@@ -2,32 +2,32 @@
 % Please edit documentation in R/ts_seasonal.R
 \name{ts_ma}
 \alias{ts_ma}
-\title{Moving Average Time Series Data}
+\title{Moving Average Method for Time Series Data}
 \usage{
-ts_ma(ts.obj, k = c(3, 6, 9), k_left = NULL, k_right = NULL,
+ts_ma(ts.obj, n = c(3, 6, 9), n_left = NULL, n_right = NULL,
   double = NULL, plot = TRUE, multiple = FALSE, title = NULL,
   Xtitle = NULL, Ytitle = NULL)
 }
 \arguments{
 \item{ts.obj}{a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)}
 
-\item{k}{A single or multiple integers (by default using 3, 6, and 9 as inputs), 
+\item{n}{A single or multiple integers (by default using 3, 6, and 9 as inputs), 
 define a two-sides moving averages by setting the number of past and future to use 
 in each moving average window along with current observation.}
 
-\item{k_left}{A single integer (optional argument, default set to NULL), can be used, 
-along with the k_right argument, an unbalanced moving average. 
-The k_left defines the number of lags to includes in the moving average.}
+\item{n_left}{A single integer (optional argument, default set to NULL), can be used, 
+along with the n_right argument, an unbalanced moving average. 
+The n_left defines the number of lags to includes in the moving average.}
 
-\item{k_right}{A single integer (optional argument, default set to NULL), can be used, 
-along with the k_left argument, to set an unbalanced moving average. 
-The k_right defines the number of negative lags to includes in the moving average.}
+\item{n_right}{A single integer (optional argument, default set to NULL), can be used, 
+along with the n_left argument, to set an unbalanced moving average. 
+The n_right defines the number of negative lags to includes in the moving average.}
 
 \item{double}{A single integer, an optional argument. If not NULL (by default), will apply a second moving average process on the initial moving average output}
 
 \item{plot}{A boolean, if TRUE will plot the results}
 
-\item{multiple}{A boolean, if TRUE (and k > 1) will create multiple plots, one for each moving average degree. By default is set to FALSE}
+\item{multiple}{A boolean, if TRUE (and n > 1) will create multiple plots, one for each moving average degree. By default is set to FALSE}
 
 \item{title}{A character, if not NULL (by default), will use the input as the plot title}
 
@@ -41,13 +41,13 @@ Calculate the moving average (and double moving average) for time series data
 \details{
 A one-side moving averages (also known as simple moving averages) calculation for Y[t] (observation Y of the series at time t):
 
-MA[t|k] = (Y[t-k] + Y[t-(k-1)] +...+ Y[t]) / (k + 1), 
+MA[t|n] = (Y[t-n] + Y[t-(n-1)] +...+ Y[t]) / (n + 1), 
 
-where k defines the number of consecutive observations to be used on each rolling window along with the current observation 
+where n defines the number of consecutive observations to be used on each rolling window along with the current observation 
 
-Similarly, a two-sided moving averages with an order of (2*k + 1) for Y[t]:
+Similarly, a two-sided moving averages with an order of (2*n + 1) for Y[t]:
 
-MA[t|k] = (Y[t-k] + Y[t-(k-1)] +...+ Y[t] +...+ Y[t+(k-1)] + Y[t+k]) / (2*k + 1)
+MA[t|n] = (Y[t-n] + Y[t-(n-1)] +...+ Y[t] +...+ Y[t+(n-1)] + Y[t+n]) / (2*n + 1)
 
 Unbalanced moving averages with an order of (k1 + k2 + 1) for observation Y[t]:
 
@@ -61,25 +61,25 @@ respectively to be used in each rolling window, and k1 != k2
 \examples{
 
 # A one-side moving average order of 7
-USgas_MA7 <- ts_ma(USgas, k_left = 6, k = NULL)
+USgas_MA7 <- ts_ma(USgas, n_left = 6, n = NULL)
 
 # A two-sided moving average order of 13
-USgas_two_side_MA <- ts_ma(USgas, k = 6)
+USgas_two_side_MA <- ts_ma(USgas, n = 6)
 
 # Unbalanced moving average of order 12
- USVSales_MA12 <- ts_ma(USVSales, k_left = 6, k_right = 5, k = NULL, 
+ USVSales_MA12 <- ts_ma(USVSales, n_left = 6, n_right = 5, n = NULL, 
  title = "US Monthly Total Vehicle Sales - MA", 
  Ytitle = "Thousand of Units")
 
 # Adding double MA of order 2 to balanced the series:
-USVSales_MA12 <- ts_ma(USVSales, k_left = 6, k_right = 5, k = NULL, 
+USVSales_MA12 <- ts_ma(USVSales, n_left = 6, n_right = 5, n = NULL, 
  double = 2,
  title = "US Monthly Total Vehicle Sales - MA", 
  Ytitle = "Thousand of Units")
 
 # Adding several types of two-sided moving averages along with the unblanced
 # Plot each on a separate plot
-USVSales_MA12 <- ts_ma(USVSales, k_left = 6, k_right = 5, k = c(3, 6, 9), 
+USVSales_MA12 <- ts_ma(USVSales, n_left = 6, n_right = 5, n = c(3, 6, 9), 
 double = 2, multiple = TRUE,
 title = "US Monthly Total Vehicle Sales - MA", 
 Ytitle = "Thousand of Units")

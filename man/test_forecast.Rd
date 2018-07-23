@@ -8,7 +8,7 @@ test_forecast(actual, forecast.obj, train = NULL, test, Ygrid = FALSE,
   Xgrid = FALSE, hover = TRUE)
 }
 \arguments{
-\item{actual}{The full time series object (support "ts", "zoo" and "xts" formats)}
+\item{actual}{The full time series object (supports "ts", "zoo" and "xts" formats)}
 
 \item{forecast.obj}{The forecast output of the training set with horizon 
 align to the length of the testing (support forecasted objects from the “forecast” package)}

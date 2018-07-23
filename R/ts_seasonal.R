@@ -471,21 +471,21 @@ ts_surface <- function(ts.obj) {
 }
 
 
-#' Moving Average Time Series Data
+#' Moving Average Method for Time Series Data
 #' @export
 #' @param ts.obj a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)
-#' @param k A single or multiple integers (by default using 3, 6, and 9 as inputs), 
+#' @param n A single or multiple integers (by default using 3, 6, and 9 as inputs), 
 #' define a two-sides moving averages by setting the number of past and future to use 
 #' in each moving average window along with current observation. 
-#' @param k_left A single integer (optional argument, default set to NULL), can be used, 
-#' along with the k_right argument, an unbalanced moving average. 
-#' The k_left defines the number of lags to includes in the moving average.
-#' @param k_right A single integer (optional argument, default set to NULL), can be used, 
-#' along with the k_left argument, to set an unbalanced moving average. 
-#' The k_right defines the number of negative lags to includes in the moving average.
+#' @param n_left A single integer (optional argument, default set to NULL), can be used, 
+#' along with the n_right argument, an unbalanced moving average. 
+#' The n_left defines the number of lags to includes in the moving average.
+#' @param n_right A single integer (optional argument, default set to NULL), can be used, 
+#' along with the n_left argument, to set an unbalanced moving average. 
+#' The n_right defines the number of negative lags to includes in the moving average.
 #' @param double A single integer, an optional argument. If not NULL (by default), will apply a second moving average process on the initial moving average output
 #' @param plot A boolean, if TRUE will plot the results
-#' @param multiple A boolean, if TRUE (and k > 1) will create multiple plots, one for each moving average degree. By default is set to FALSE
+#' @param multiple A boolean, if TRUE (and n > 1) will create multiple plots, one for each moving average degree. By default is set to FALSE
 #' @param title A character, if not NULL (by default), will use the input as the plot title
 #' @param Xtitle A character, if not NULL (by default), will use the input as the plot x - axis title
 #' @param Ytitle A character, if not NULL (by default), will use the input as the plot y - axis title
@@ -493,13 +493,13 @@ ts_surface <- function(ts.obj) {
 #' @details 
 #' A one-side moving averages (also known as simple moving averages) calculation for Y[t] (observation Y of the series at time t):
 #' 
-#' MA[t|k] = (Y[t-k] + Y[t-(k-1)] +...+ Y[t]) / (k + 1), 
+#' MA[t|n] = (Y[t-n] + Y[t-(n-1)] +...+ Y[t]) / (n + 1), 
 #' 
-#' where k defines the number of consecutive observations to be used on each rolling window along with the current observation 
+#' where n defines the number of consecutive observations to be used on each rolling window along with the current observation 
 #' 
-#' Similarly, a two-sided moving averages with an order of (2*k + 1) for Y[t]:
+#' Similarly, a two-sided moving averages with an order of (2*n + 1) for Y[t]:
 #' 
-#' MA[t|k] = (Y[t-k] + Y[t-(k-1)] +...+ Y[t] +...+ Y[t+(k-1)] + Y[t+k]) / (2*k + 1)
+#' MA[t|n] = (Y[t-n] + Y[t-(n-1)] +...+ Y[t] +...+ Y[t+(n-1)] + Y[t+n]) / (2*n + 1)
 #' 
 #' Unbalanced moving averages with an order of (k1 + k2 + 1) for observation Y[t]:
 #' 
@@ -513,25 +513,25 @@ ts_surface <- function(ts.obj) {
 #' @examples
 #' 
 #' # A one-side moving average order of 7
-#' USgas_MA7 <- ts_ma(USgas, k_left = 6, k = NULL)
+#' USgas_MA7 <- ts_ma(USgas, n_left = 6, n = NULL)
 #' 
 #' # A two-sided moving average order of 13
-#' USgas_two_side_MA <- ts_ma(USgas, k = 6)
+#' USgas_two_side_MA <- ts_ma(USgas, n = 6)
 #' 
 #' # Unbalanced moving average of order 12
-#'  USVSales_MA12 <- ts_ma(USVSales, k_left = 6, k_right = 5, k = NULL, 
+#'  USVSales_MA12 <- ts_ma(USVSales, n_left = 6, n_right = 5, n = NULL, 
 #'  title = "US Monthly Total Vehicle Sales - MA", 
 #'  Ytitle = "Thousand of Units")
 #'
 #' # Adding double MA of order 2 to balanced the series:
-#' USVSales_MA12 <- ts_ma(USVSales, k_left = 6, k_right = 5, k = NULL, 
+#' USVSales_MA12 <- ts_ma(USVSales, n_left = 6, n_right = 5, n = NULL, 
 #'  double = 2,
 #'  title = "US Monthly Total Vehicle Sales - MA", 
 #'  Ytitle = "Thousand of Units")
 #' 
 #' # Adding several types of two-sided moving averages along with the unblanced
 #' # Plot each on a separate plot
-#' USVSales_MA12 <- ts_ma(USVSales, k_left = 6, k_right = 5, k = c(3, 6, 9), 
+#' USVSales_MA12 <- ts_ma(USVSales, n_left = 6, n_right = 5, n = c(3, 6, 9), 
 #' double = 2, multiple = TRUE,
 #' title = "US Monthly Total Vehicle Sales - MA", 
 #' Ytitle = "Thousand of Units")
@@ -539,9 +539,9 @@ ts_surface <- function(ts.obj) {
 
 
 ts_ma <- function(ts.obj, 
-                  k = c(3, 6, 9), 
-                  k_left = NULL,
-                  k_right = NULL,
+                  n = c(3, 6, 9), 
+                  n_left = NULL,
+                  n_right = NULL,
                   double = NULL, 
                   plot = TRUE, multiple = FALSE, 
                   title = NULL, Xtitle = NULL, Ytitle = NULL){
@@ -560,9 +560,9 @@ ts_ma <- function(ts.obj,
     }
   }
   
-  if((base::is.null(k) & base::is.null(k_left) & base::is.null(k_right)) | 
-     (!base::is.numeric(k) & !base::is.numeric(k_left) & !base::is.numeric(k_right))){
-    stop("Neither of the moving averages arguments set properly ('k', 'k_left', 'k_right')")
+  if((base::is.null(n) & base::is.null(n_left) & base::is.null(n_right)) | 
+     (!base::is.numeric(n) & !base::is.numeric(n_left) & !base::is.numeric(n_right))){
+    stop("Neither of the moving averages arguments set properly ('n', 'n_left', 'n_right')")
   }
     
   if(!base::is.logical(plot)){
@@ -573,13 +573,13 @@ ts_ma <- function(ts.obj,
   if(!base::is.logical(multiple)){
     warning("The value of the 'multiple' argument is not valid (can apply either TRUE or FALSE) and will be ignore")
     multiple <- FALSE
-  } else if(base::length(k) == 1 & multiple & 
-            base::is.null(k_left) &
-            base::is.null(k_right)){
+  } else if(base::length(n) == 1 & multiple & 
+            base::is.null(n_left) &
+            base::is.null(n_right)){
     warning("The 'multiple' aregument cannot be used when using multiple moving averages")
     multiple <- FALSE
-  } else if((base::length(k) > 1 | (base::length(k) ==1 & 
-            (!base::is.null(k_left) | !base::is.null(k_right)))) &
+  } else if((base::length(n) > 1 | (base::length(n) ==1 & 
+            (!base::is.null(n_left) | !base::is.null(n_right)))) &
              multiple){
     p_m <- list()
   }
@@ -620,68 +620,68 @@ ts_ma <- function(ts.obj,
   }
   
   
-  if(!base::is.null(k_left)){
-    if(!base::is.numeric(k_left)){
-      stop("The 'k_left' argument is not valid, please make sure that you are using only integers as input")
-    } else if(base::length(k_left) != 1){
-      warning("The 'k_left' argument has too many inputs, can hanlde only single integer. Will use only the first input")
-      k_left <- k_left[1]
-    } else if(k_left %% 1 != 0){
-      stop("The 'k_left' argument is not an integer type")
+  if(!base::is.null(n_left)){
+    if(!base::is.numeric(n_left)){
+      stop("The 'n_left' argument is not valid, please make sure that you are using only integers as input")
+    } else if(base::length(n_left) != 1){
+      warning("The 'n_left' argument has too many inputs, can hanlde only single integer. Will use only the first input")
+      n_left <- n_left[1]
+    } else if(n_left %% 1 != 0){
+      stop("The 'n_left' argument is not an integer type")
     } else {
-      ma_order <- k_left
+      ma_order <- n_left
     }
   }
   
-  if(!base::is.null(k_right)){
-    if(!base::is.numeric(k_right)){
-      stop("The 'k_right' argument is not valid, please make sure that you are using only integers as input")
-    } else if(base::length(k_right) != 1){
-      warning("The 'k_right' argument has too many inputs, can hanlde only single integer. Will use only the first input")
-      k_right <- k_right[1]
-    } else if(k_right %% 1 != 0){
-      stop("The 'k_right' argument is not an integer type")
-    } else if(!base::is.null(k_left)){
-      ma_order <- k_left + k_right
+  if(!base::is.null(n_right)){
+    if(!base::is.numeric(n_right)){
+      stop("The 'n_right' argument is not valid, please make sure that you are using only integers as input")
+    } else if(base::length(n_right) != 1){
+      warning("The 'n_right' argument has too many inputs, can hanlde only single integer. Will use only the first input")
+      n_right <- n_right[1]
+    } else if(n_right %% 1 != 0){
+      stop("The 'n_right' argument is not an integer type")
+    } else if(!base::is.null(n_left)){
+      ma_order <- n_left + n_right
     } else {
-      ma_order <- k_right
+      ma_order <- n_right
     }
   }
   
-  if(!base::is.null(k)){
-  if(!base::is.numeric(k)){
-    stop("The 'k' argument is not valid, please make sure that you are using only integers as input")
-  } else if(!base::all(k %% 1 == 0)){
-    stop("The 'k' argument is not valid, please make sure that you are using only integers as input")
-  } else if(base::length(k) > 8){
-    warning("The 'k' parameter is restricted up to 8 inputs (integers), only the first 8 values will be used")
-    k <- k[1:8]
-  } else if(base::max(k) * 2 + 1 > base::length(ts.obj)){
-    stop("The length of the series is too short to apply the moving average with the given 'k' parameter")
+  if(!base::is.null(n)){
+  if(!base::is.numeric(n)){
+    stop("The 'n' argument is not valid, please make sure that you are using only integers as input")
+  } else if(!base::all(n %% 1 == 0)){
+    stop("The 'n' argument is not valid, please make sure that you are using only integers as input")
+  } else if(base::length(n) > 8){
+    warning("The 'n' parameter is restricted up to 8 inputs (integers), only the first 8 values will be used")
+    n <- n[1:8]
+  } else if(base::max(n) * 2 + 1 > base::length(ts.obj)){
+    stop("The length of the series is too short to apply the moving average with the given 'n' parameter")
   }
   }
   
  
   
   # Setting function to calculate moving average
-   ma_fun <- function(ts.obj, k_left, k_right){
+   ma_fun <- function(ts.obj, n_left, n_right){
     
     ts_left <- ts_right <- ts_intersect <- ma_order <-  NULL
-    if(!base::is.null(k_left)){
-      for(i in 1:k_left){
-        ts_left <- stats::ts.intersect(stats::lag(ts.obj, k = -i), ts_left)
+    if(!base::is.null(n_left)){
+      for(i in 1:n_left){
+        ts_left <- stats::ts.intersect(stats::lag(ts.obj, n = -i), ts_left)
       }
-      ma_order <- k_left
+      ma_order <- n_left
     }
     
-    if(!base::is.null(k_right)){
-      for(i in 1:k_right){
-        ts_right <- stats::ts.intersect(stats::lag(ts.obj, k =  i), ts_right)
+    if(!base::is.null(n_right)){
+      for(i in 1:n_right){
+        ts_right <- stats::ts.intersect(stats::lag(ts.obj, n =  i), ts_right)
       }
-      if(!base::is.null(k_left)){
-        ma_order <- ma_order + k_right
+      if(!base::is.null(n_left)){
+        ma_order <- ma_order + n_right
       } else {
-        ma_order <- k_right
+        ma_order <- n_right
       }
     }
 
@@ -703,10 +703,10 @@ ts_ma <- function(ts.obj,
                        line = list(color = "#00526d"),
                        showlegend = legend_flag)
   c <- 1
-  if(!base::is.null(k)){
-    for(i in k){
+  if(!base::is.null(n)){
+    for(i in n){
     ts_ma1 <- NULL
-    ts_ma1 <- ma_fun(ts.obj = ts.obj, k_left = i, k_right = i)
+    ts_ma1 <- ma_fun(ts.obj = ts.obj, n_left = i, n_right = i)
     base::eval(base::parse(text = base::paste("output$ma_", i, " <- ts_ma1", sep = "")))
     if(!multiple){
     p <- p %>% plotly::add_lines(x = stats::time(ts_ma1), y = base::as.numeric(ts_ma1), 
@@ -738,7 +738,7 @@ ts_ma <- function(ts.obj,
     }
     if(!base::is.null(double)){
       ts_ma_d <- NULL
-      ts_ma_d <- ma_fun(ts.obj = ts_ma1, k_left = double, k_right = double)
+      ts_ma_d <- ma_fun(ts.obj = ts_ma1, n_left = double, n_right = double)
       base::eval(base::parse(text = base::paste("output$double_ma_", i, "_", double, " <- ts_ma_d", sep = "")))
       if(!multiple){
       p <- p %>% plotly::add_lines(x = stats::time(ts_ma_d), y = base::as.numeric(ts_ma_d),
@@ -769,9 +769,9 @@ ts_ma <- function(ts.obj,
   }
   }
   # ---------- Unblanced MA ----------
-  if(!base::is.null(k_left) | !base::is.null(k_right)){
+  if(!base::is.null(n_left) | !base::is.null(n_right)){
     ts_ma2 <- NULL
-    ts_ma2 <- ma_fun(ts.obj = ts.obj, k_left = k_left, k_right = k_right)
+    ts_ma2 <- ma_fun(ts.obj = ts.obj, n_left = n_left, n_right = n_right)
     base::eval(base::parse(text = base::paste("output$unbalanced_ma_order", ma_order + 1, " <- ts_ma2", sep = "")))
     
     if(!multiple){
@@ -806,7 +806,7 @@ ts_ma <- function(ts.obj,
 
     if(!base::is.null(double)){
       ts_ma2_d <- NULL
-      ts_ma2_d <- ma_fun(ts.obj = ts_ma2, k_left = double, k_right = double)
+      ts_ma2_d <- ma_fun(ts.obj = ts_ma2, n_left = double, n_right = double)
       base::eval(base::parse(text = base::paste("output$double_unbalanced_ma_order", ma_order + 1, " <- ts_ma2_d", sep = "")))
 
       if(!multiple){
@@ -856,7 +856,7 @@ ts_ma <- function(ts.obj,
     print(output$plot)
   }
   
-  output$parameters <- list(k = k, double = double, k_left = k_left, k_right = k_right)
+  output$parameters <- list(n = n, double = double, n_left = n_left, n_right = n_right)
   class(output) <- "ts_ma"
   return(output)
 }
