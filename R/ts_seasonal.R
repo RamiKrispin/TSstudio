@@ -486,6 +486,7 @@ ts_surface <- function(ts.obj) {
 #' @param double A single integer, an optional argument. If not NULL (by default), will apply a second moving average process on the initial moving average output
 #' @param plot A boolean, if TRUE will plot the results
 #' @param multiple A boolean, if TRUE (and n > 1) will create multiple plots, one for each moving average degree. By default is set to FALSE
+#' @param separate A boolean, if TRUE will separate the orignal series from the moving average output
 #' @param title A character, if not NULL (by default), will use the input as the plot title
 #' @param Xtitle A character, if not NULL (by default), will use the input as the plot x - axis title
 #' @param Ytitle A character, if not NULL (by default), will use the input as the plot y - axis title
@@ -543,7 +544,7 @@ ts_ma <- function(ts.obj,
                   n_left = NULL,
                   n_right = NULL,
                   double = NULL, 
-                  plot = TRUE, multiple = FALSE, 
+                  plot = TRUE, multiple = FALSE, separate = TRUE,
                   title = NULL, Xtitle = NULL, Ytitle = NULL){
   
   `%>%` <- magrittr::`%>%`
@@ -568,6 +569,11 @@ ts_ma <- function(ts.obj,
   if(!base::is.logical(plot)){
     warning("The value of the 'plot' argument is not valid (can apply either TRUE or FALSE) and will be ignore")
     plot <- TRUE
+  }
+  
+  if(!base::is.logical(separate)){
+    warning("The value of the 'separate' argument is not valid (can apply either TRUE or FALSE) and will be ignore")
+    separate <- TRUE
   }
   
   if(!base::is.logical(multiple)){
@@ -669,14 +675,14 @@ ts_ma <- function(ts.obj,
     ts_left <- ts_right <- ts_intersect <- ma_order <-  NULL
     if(!base::is.null(n_left)){
       for(i in 1:n_left){
-        ts_left <- stats::ts.intersect(stats::lag(ts.obj, n = -i), ts_left)
+        ts_left <- stats::ts.intersect(stats::lag(ts.obj, k = -i), ts_left)
       }
       ma_order <- n_left
     }
     
     if(!base::is.null(n_right)){
       for(i in 1:n_right){
-        ts_right <- stats::ts.intersect(stats::lag(ts.obj, n =  i), ts_right)
+        ts_right <- stats::ts.intersect(stats::lag(ts.obj, k =  i), ts_right)
       }
       if(!base::is.null(n_left)){
         ma_order <- ma_order + n_right
