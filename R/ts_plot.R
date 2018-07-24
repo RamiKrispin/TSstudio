@@ -1,7 +1,8 @@
 #'  Plotting Time Series Objects
 #' @export ts_plot
 #' @description Visualization functions for time series object
-#' @param ts.obj A univariate or multivariate time series object of class "ts", "mts", "zoo" or "xts"
+#' @param ts.obj A univariate or multivariate time series object of class "ts", "mts", "zoo", "xts", or any data frame object with 
+#' a minimum of one numeric column and either a Date or POSIXt class column
 #' @param line.mode A plotly argument, define the plot type, c("lines", "lines+markers", "markers")
 #' @param width An Integer, define the plot width, default is set to 2
 #' @param dash A plotly argument, define the line style, c(NULL, "dot", "dash")

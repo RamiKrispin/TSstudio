@@ -9,7 +9,8 @@ ts_plot(ts.obj, line.mode = "lines", width = 2, dash = NULL,
   Ytitle = NULL, title = NULL, Xgrid = FALSE, Ygrid = FALSE)
 }
 \arguments{
-\item{ts.obj}{A univariate or multivariate time series object of class "ts", "mts", "zoo" or "xts"}
+\item{ts.obj}{A univariate or multivariate time series object of class "ts", "mts", "zoo", "xts", or any data frame object with 
+a minimum of one numeric column and either a Date or POSIXt class column}
 
 \item{line.mode}{A plotly argument, define the plot type, c("lines", "lines+markers", "markers")}
 
