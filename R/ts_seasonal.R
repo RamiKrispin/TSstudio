@@ -538,7 +538,6 @@ ts_surface <- function(ts.obj) {
 #' Ytitle = "Thousand of Units")
 
 
-
 ts_ma <- function(ts.obj, 
                   n = c(3, 6, 9), 
                   n_left = NULL,
@@ -550,6 +549,7 @@ ts_ma <- function(ts.obj,
   `%>%` <- magrittr::`%>%`
   
   obj.name <- ts_merged <- ts_obj <- ts_temp <- ts_ma <- c <- p <-  p_m <- ma_order <-  NULL
+  output <- titles <- NULL
   left_flag <- right_flag <- k_flag <- FALSE
   obj.name <- base::deparse(base::substitute(ts.obj))
   
@@ -565,7 +565,7 @@ ts_ma <- function(ts.obj,
      (!base::is.numeric(n) & !base::is.numeric(n_left) & !base::is.numeric(n_right))){
     stop("Neither of the moving averages arguments set properly ('n', 'n_left', 'n_right')")
   }
-    
+  
   if(!base::is.logical(plot)){
     warning("The value of the 'plot' argument is not valid (can apply either TRUE or FALSE) and will be ignore")
     plot <- TRUE
@@ -585,8 +585,8 @@ ts_ma <- function(ts.obj,
     warning("The 'multiple' aregument cannot be used when using multiple moving averages")
     multiple <- FALSE
   } else if((base::length(n) > 1 | (base::length(n) ==1 & 
-            (!base::is.null(n_left) | !base::is.null(n_right)))) &
-             multiple){
+                                    (!base::is.null(n_left) | !base::is.null(n_right)))) &
+            multiple){
     p_m <- list()
   }
   
@@ -612,6 +612,7 @@ ts_ma <- function(ts.obj,
       Ytitle <- NULL
     }
   }
+  
   if(!base::is.null(double)){
     if(!base::is.numeric(double)){
       warning("The 'double' parameter is not a numeric number and will be ignore")
@@ -655,22 +656,22 @@ ts_ma <- function(ts.obj,
   }
   
   if(!base::is.null(n)){
-  if(!base::is.numeric(n)){
-    stop("The 'n' argument is not valid, please make sure that you are using only integers as input")
-  } else if(!base::all(n %% 1 == 0)){
-    stop("The 'n' argument is not valid, please make sure that you are using only integers as input")
-  } else if(base::length(n) > 8){
-    warning("The 'n' parameter is restricted up to 8 inputs (integers), only the first 8 values will be used")
-    n <- n[1:8]
-  } else if(base::max(n) * 2 + 1 > base::length(ts.obj)){
-    stop("The length of the series is too short to apply the moving average with the given 'n' parameter")
-  }
+    if(!base::is.numeric(n)){
+      stop("The 'n' argument is not valid, please make sure that you are using only integers as input")
+    } else if(!base::all(n %% 1 == 0)){
+      stop("The 'n' argument is not valid, please make sure that you are using only integers as input")
+    } else if(base::length(n) > 8){
+      warning("The 'n' parameter is restricted up to 8 inputs (integers), only the first 8 values will be used")
+      n <- n[1:8]
+    } else if(base::max(n) * 2 + 1 > base::length(ts.obj)){
+      stop("The length of the series is too short to apply the moving average with the given 'n' parameter")
+    }
   }
   
- 
+  
   
   # Setting function to calculate moving average
-   ma_fun <- function(ts.obj, n_left, n_right){
+  ma_fun <- function(ts.obj, n_left, n_right){
     
     ts_left <- ts_right <- ts_intersect <- ma_order <-  NULL
     if(!base::is.null(n_left)){
@@ -690,16 +691,61 @@ ts_ma <- function(ts.obj,
         ma_order <- n_right
       }
     }
-
-    ts_intersect <- TSstudio::ts_sum(stats::ts.intersect(ts_left, ts.obj, ts_right)) / (ma_order + 1)
+    ma_order <- ma_order + 1
+    ts_intersect <- TSstudio::ts_sum(stats::ts.intersect(ts_left, ts.obj, ts_right)) / (ma_order)
+    return(ts_intersect)
   }
   
-  ts_merged <- ts.obj
-  color_ramp <- RColorBrewer::brewer.pal(8,"Dark2")
-  color_ramp_double <- RColorBrewer::brewer.pal(8,"Set1")
+  
+  
+  # Creating a list  
   output <- list()
-  output$ts.obj <- ts.obj
-  legend_flag <- base::ifelse(multiple, FALSE, TRUE)
+  titles <- list()
+  
+  
+  
+  if(!base::is.null(n)){
+    for(i in n){
+      ts_ma1 <- ma_title <- ma_order <- NULL
+      ma_order <- 2 * i + 1
+      ts_ma1 <- ma_fun(ts.obj = ts.obj, n_left = i, n_right = i)
+      ma_title <- paste("Two Sided Moving Average - Order", 2 * i + 1, sep = " ")
+      base::eval(base::parse(text = base::paste("output$ma_", i, " <- ts_ma1", sep = "")))
+      base::eval(base::parse(text = base::paste("titles$ma_", i, " <- ma_title", sep = "")))
+      if(!base::is.null(double)){
+        ts_ma_d <- ma_title <- NULL
+        ts_ma_d <- ma_fun(ts.obj = ts_ma1, n_left = double, n_right = double)
+        ma_title <- paste("Double Two Sided Moving Average - Order", double, "x", ma_order, sep = " ")
+        base::eval(base::parse(text = base::paste("output$double_ma_", double,"_x_", ma_order, " <- ts_ma_d", sep = "")))
+        base::eval(base::parse(text = base::paste("titles$double_ma_", double,"_x_", ma_order, " <- ma_title", sep = "")))
+      }
+    }
+  }
+  
+  if(!base::is.null(n_left) | !base::is.null(n_right)){
+    ts_ma2 <- ma_title <- ma_order <- NULL
+    
+    ma_order <- 1
+    
+    if(!base::is.null(n_right)){
+      ma_order <- ma_order + n_right
+    } 
+    
+    if(!base::is.null(n_left)){
+      ma_order <- ma_order + n_left
+    } 
+    
+    ts_ma2 <- ma_fun(ts.obj = ts.obj, n_left = n_left, n_right = n_right)
+    ma_title <- paste("Two Sided Moving Average - Order", ma_order, sep = " ")
+    base::eval(base::parse(text = base::paste("output$unbalanced_ma_", ma_order, " <- ts_ma2", sep = "")))
+    if(!base::is.null(double)){
+      ts_ma_d <- ma_title <- NULL
+      ts_ma_d <- ma_fun(ts.obj = ts_ma2, n_left = double, n_right = double)
+      ma_title <- paste("Double Two Sided Moving Average - Order", double, "x",  ma_order, sep = " ")
+      base::eval(base::parse(text = base::paste("output$double_unbalanced_ma_", double,"_x_", ma_order, " <- ts_ma2", sep = "")))
+      base::eval(base::parse(text = base::paste("titles$double_unbalanced_ma_", double,"_x_", ma_order, " <- ma_title", sep = "")))
+    }
+  }
   
   p <- plotly::plot_ly(x = stats::time(ts.obj), 
                        y = base::as.numeric(ts.obj), 
@@ -708,162 +754,22 @@ ts_ma <- function(ts.obj,
                        mode = "lines", 
                        line = list(color = "#00526d"),
                        showlegend = legend_flag)
-  c <- 1
-  if(!base::is.null(n)){
-    for(i in n){
-    ts_ma1 <- NULL
-    ts_ma1 <- ma_fun(ts.obj = ts.obj, n_left = i, n_right = i)
-    base::eval(base::parse(text = base::paste("output$ma_", i, " <- ts_ma1", sep = "")))
-    if(!multiple){
-    p <- p %>% plotly::add_lines(x = stats::time(ts_ma1), y = base::as.numeric(ts_ma1), 
-                                 name = base::paste("MA Order ", i * 2 + 1, sep = " "), 
-                                 line = list(dash = "dash", color = color_ramp[c], width = 4)) 
-    } else if(multiple){
-      if(base::is.null(double)){
-        annotations_single <- list(
-          text = base::paste("Moving Average Order", i * 2 + 1, sep = " "),
-          xref = "paper",
-          yref = "paper",
-          yanchor = "bottom",
-          xanchor = "center",
-          align = "center",
-          x = 0.5,
-          y = 0,
-          showarrow = FALSE
-        )
-      } else {
-        annotations_single <- NULL
-      }
-
-      p_m[[c]] <- p %>% plotly::add_lines(x = stats::time(ts_ma1), y = base::as.numeric(ts_ma1), 
-                                          name = base::paste("MA Order", i * 2 + 1, sep = " "), 
-                                          line = list(dash = "dash", color = color_ramp[c], 
-                                                      width = 4),
-                                          showlegend = TRUE)  %>% 
-        plotly::layout(annotations = annotations_single)
-    }
-    if(!base::is.null(double)){
-      ts_ma_d <- NULL
-      ts_ma_d <- ma_fun(ts.obj = ts_ma1, n_left = double, n_right = double)
-      base::eval(base::parse(text = base::paste("output$double_ma_", i, "_", double, " <- ts_ma_d", sep = "")))
-      if(!multiple){
-      p <- p %>% plotly::add_lines(x = stats::time(ts_ma_d), y = base::as.numeric(ts_ma_d),
-                                   name = base::paste("Double MA Order ", double, "x", i * 2 + 1, sep = " "),
-                                   line = list(dash = "dot", color = color_ramp_double[c], width = 4))
-      } else if(multiple){
-        annotations_double <- list(
-          text = base::paste("Double Moving Average Order", double, "x", i * 2 + 1, sep = " "),
-          xref = "paper",
-          yref = "paper",
-          yanchor = "bottom",
-          xanchor = "center",
-          align = "center",
-          x = 0.5,
-          y = 0,
-          showarrow = FALSE
-        )
-
-        p_m[[c]] <- p_m[[c]] %>% plotly::add_lines(x = stats::time(ts_ma_d), y = base::as.numeric(ts_ma_d),
-                                            name = base::paste("Double MA Order", double, "x", i * 2 + 1, sep = " "),
-                                            line = list(dash = "dot", 
-                                            color = color_ramp_double[c], width = 4),
-                                            showlegend = TRUE) %>% 
-          plotly::layout(annotations = annotations_double)
-      }
-    }
-    c <- c + 1
-  }
-  }
-  # ---------- Unblanced MA ----------
-  if(!base::is.null(n_left) | !base::is.null(n_right)){
-    ts_ma2 <- NULL
-    ts_ma2 <- ma_fun(ts.obj = ts.obj, n_left = n_left, n_right = n_right)
-    base::eval(base::parse(text = base::paste("output$unbalanced_ma_order", ma_order + 1, " <- ts_ma2", sep = "")))
-    
-    if(!multiple){
-      p <- p %>% plotly::add_lines(x = stats::time(ts_ma2), y = base::as.numeric(ts_ma2), 
-                                   name = base::paste("Unblanced MA Oreder", ma_order + 1, 
-                                                      sep = " "), 
-                                   line = list(dash = "dashdot", color = color_ramp[c], width = 4)) 
-    } else if(multiple){
-      if(base::is.null(double)){
-        annotations_single <- list(
-          text = base::paste("Unbalance Moving Average Order", ma_order + 1, sep = " "),
-          xref = "paper",
-          yref = "paper",
-          yanchor = "bottom",
-          xanchor = "center",
-          align = "center",
-          x = 0.5,
-          y = 0,
-          showarrow = FALSE
-        )
-      } else {
-        annotations_single <- NULL
-      }
+  
+  ma_list <- base::names(output)[base::which(base::names(output) != "series")]
+  if(separate & multiple){
+    plots <- NULL
+    plots <- list()
+    for(i in names(output)){
       
-      p_m[[c]] <- p %>% plotly::add_lines(x = stats::time(ts_ma2), y = base::as.numeric(ts_ma2), 
-                                          name = base::paste("Unblanced MA Order", ma_order + 1, sep = " "), 
-                                          line = list(dash = "dashdot", color = color_ramp[c], 
-                                                      width = 4),
-                                          showlegend = TRUE)  %>% 
-        plotly::layout(annotations = annotations_single)
-    }
-
-    if(!base::is.null(double)){
-      ts_ma2_d <- NULL
-      ts_ma2_d <- ma_fun(ts.obj = ts_ma2, n_left = double, n_right = double)
-      base::eval(base::parse(text = base::paste("output$double_unbalanced_ma_order", ma_order + 1, " <- ts_ma2_d", sep = "")))
-
-      if(!multiple){
-        p <- p %>% plotly::add_lines(x = stats::time(ts_ma2_d), y = base::as.numeric(ts_ma2_d),
-                                     name = base::paste("Unblanced Double MA Order", 
-                                                        double, "x", ma_order + 1, sep = " "),
-                                     line = list(dash = "longdash", color = color_ramp_double[c], width = 4))
-      } else if(multiple){
-        annotations_double <- list(
-          text = base::paste("Double Unbalance Moving Average Order -",double, "x",  
-                             ma_order + 1, sep = " "),
-          xref = "paper",
-          yref = "paper",
-          yanchor = "bottom",
-          xanchor = "center",
-          align = "center",
-          x = 0.5,
-          y = 0,
-          showarrow = FALSE
-        )
-
-        p_m[[c]] <- p_m[[c]] %>% plotly::add_lines(x = stats::time(ts_ma2_d), y = base::as.numeric(ts_ma2_d),
-                                                   name = base::paste("Double Unbalanced MA Order",
-                                                                      double, "x", ma_order + 1, 
-                                                                      sep = " "),
-                                                   line = list(dash = "longdash",
-                                                               color = color_ramp_double[c], width = 4),
-                                                   showlegend = TRUE) %>%
-          plotly::layout(annotations = annotations_double)
-      }
     }
   }
   
   
-  if(!multiple){
-  p <- p %>% plotly::layout(title = title, xaxis = list(title = Xtitle), yaxis = list(title = Ytitle),  showlegend = TRUE) 
-  output$plot <- p 
-  } else if(multiple){
-    output$plot <- plotly::subplot(p_m, nrows = base::length(p_m), 
-                                   shareX = TRUE, titleX = TRUE, titleY = TRUE) %>%
-      plotly::layout(title = title)
-  }
+  # Saving the original series
+  output$series <- ts.obj
   
-  
-  
-  if(plot){
-    print(output$plot)
-  }
-  
-  output$parameters <- list(n = n, double = double, n_left = n_left, n_right = n_right)
   class(output) <- "ts_ma"
-  return(output)
-}
+  return(output)  
+}  
+
 
