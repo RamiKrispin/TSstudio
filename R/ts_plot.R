@@ -27,7 +27,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
                       Xgrid = FALSE, Ygrid = FALSE){
   `%>%` <- magrittr::`%>%`
   df <- p <- plot_list <- dim_flag <- plot_list <- obj.name <- NULL 
-  col_class <- date_col <-  numeric_col <- NULL
+  col_class <- col_date <- col_POSIXt <- date_col <-  numeric_col <- NULL
   obj.name <- base::deparse(base::substitute(ts.obj))
   
   # Error handling
@@ -118,20 +118,47 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
             data.table::is.data.table(ts.obj)){ # Case 3 the object is a data frame 
     # Identify the columns classes
     col_class <- base::lapply(ts.obj, class)
-    # Check if Date object exist
-    if("Date" %in%  col_class){
-      date_col <- base::which(col_class == "Date")
-    } else {
-      stop("No 'Date' object available in the data frame,", 
-           "please check if the data format is defined properly")
-    }
+    col_date <- base::lapply(ts.obj, lubridate::is.Date)
+    col_POSIXt <- base::lapply(ts.obj, lubridate::is.POSIXt)
     
-    # If there is more than one Date object in the data frame will select the first one
-    if(length(date_col) >1){
-      warning("There are multipe 'date' objects in the data frame,",
-              "using the first 'date' object as the plot index")
-      date_col <- date_col[1]
-    }
+    # Check if Date object exist
+    if(any(col_date == TRUE) & any(col_POSIXt == TRUE)){
+      d <- t <- NULL
+      d <- base::min(base::which(col_date == TRUE))
+      t <- base::min(base::which(col_POSIXt == TRUE))
+      if(d > t){
+        warning("The data frame contain multiple date or time objects,",
+                "using the first one as the plot index")
+        date_col <- t
+      } else {
+        warning("The data frame contain multiple date or time objects,",
+                "using the first one as the plot index")
+        date_col <- d
+      }
+    } else if(any(col_date == TRUE) | any(col_POSIXt == TRUE)){
+      if(any(col_date == TRUE)){
+        if(lenght(col_date == TRUE) > 1){
+          date_col <-  base::min(base::which(col_date == TRUE))
+          warning("There are multipe 'date' objects in the data frame,",
+                  "using the first one object as the plot index")
+        } else {
+          date_col <-  base::min(base::which(col_date == TRUE))
+      }
+      } else if(any(col_POSIXt == TRUE)){
+        if(lenght(col_POSIXt == TRUE) > 1){
+          date_col <-  base::min(base::which(col_POSIXt == TRUE))
+          warning("There are multipe 'POSIXt' objects in the data frame,",
+                  "using the first one as the plot index")
+        } else {
+          date_col <-  base::min(base::which(col_POSIXt == TRUE))
+        }
+      } 
+      }else {
+        stop("No 'Date' or 'POSIXt' object available in the data frame,", 
+             "please check if the data format defined properly")
+      }
+      
+
     # Identify the numeric/integer objects in the data frame  
     numeric_col <- base::which(col_class == "numeric" | col_class == "integer")
     # Stop if there is no any numeric values in the data frame, otherwise build the data frame 
