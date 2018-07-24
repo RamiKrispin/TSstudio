@@ -136,17 +136,17 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
                 "using the first one as the plot index")
         date_col <- d
       }
-    } else if(any(col_date == TRUE) | any(col_POSIXt == TRUE)){
-      if(any(col_date == TRUE)){
-        if(lenght(col_date == TRUE) > 1){
+    } else if(base::any(col_date == TRUE) | base::any(col_POSIXt == TRUE)){
+      if(base::any(col_date == TRUE)){
+        if(base::length(col_date == TRUE) > 1){
           date_col <-  base::min(base::which(col_date == TRUE))
           warning("There are multipe 'date' objects in the data frame,",
                   "using the first one object as the plot index")
         } else {
           date_col <-  base::min(base::which(col_date == TRUE))
       }
-      } else if(any(col_POSIXt == TRUE)){
-        if(lenght(col_POSIXt == TRUE) > 1){
+      } else if(base::any(col_POSIXt == TRUE)){
+        if(base::length(col_POSIXt == TRUE) > 1){
           date_col <-  base::min(base::which(col_POSIXt == TRUE))
           warning("There are multipe 'POSIXt' objects in the data frame,",
                   "using the first one as the plot index")
