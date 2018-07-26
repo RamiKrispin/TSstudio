@@ -118,6 +118,8 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
             dplyr::is.tbl(ts.obj) | 
             data.table::is.data.table(ts.obj)){ # Case 3 the object is a data frame 
     # Identify the columns classes
+    
+    ts.obj <- base::as.data.frame(ts.obj)
     col_class <- base::lapply(ts.obj, class)
     col_date <- base::lapply(ts.obj, lubridate::is.Date)
     col_POSIXt <- base::lapply(ts.obj, lubridate::is.POSIXt)
