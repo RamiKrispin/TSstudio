@@ -490,7 +490,9 @@ ts_surface <- function(ts.obj) {
 #' @param title A character, if not NULL (by default), will use the input as the plot title
 #' @param Xtitle A character, if not NULL (by default), will use the input as the plot x - axis title
 #' @param Ytitle A character, if not NULL (by default), will use the input as the plot y - axis title
+#' @param show_legend A boolean, if TRUE will show the plot legend
 #' @description Calculate the moving average (and double moving average) for time series data
+#' @return A list with the original series, the moving averages outputs and the plot
 #' @details 
 #' A one-side moving averages (also known as simple moving averages) calculation for Y[t] (observation Y of the series at time t):
 #' 
@@ -543,7 +545,8 @@ ts_ma <- function(ts.obj,
                   n_left = NULL,
                   n_right = NULL,
                   double = NULL, 
-                  plot = TRUE, multiple = FALSE, separate = TRUE,
+                  plot = TRUE, show_legend = FALSE,
+                  multiple = FALSE, separate = TRUE,
                   title = NULL, Xtitle = NULL, Ytitle = NULL){
   
   `%>%` <- magrittr::`%>%`
@@ -569,6 +572,11 @@ ts_ma <- function(ts.obj,
   if(!base::is.logical(plot)){
     warning("The value of the 'plot' argument is not valid (can apply either TRUE or FALSE) and will be ignore")
     plot <- TRUE
+  }
+  
+  if(!base::is.logical(show_legend)){
+    warning("The value of the 'show_legend' argument is not valid (can apply either TRUE or FALSE) and will be ignore")
+    show_legend <- FALSE
   }
   
   if(!base::is.logical(separate)){
@@ -715,9 +723,9 @@ ts_ma <- function(ts.obj,
       if(!base::is.null(double)){
         ts_ma_d <- ma_title <- NULL
         ts_ma_d <- ma_fun(ts.obj = ts_ma1, n_left = double, n_right = double)
-        ma_title <- paste("Double Two Sided Moving Average - Order", double, "x", ma_order, sep = " ")
-        base::eval(base::parse(text = base::paste("output$double_ma_", double,"_x_", ma_order, " <- ts_ma_d", sep = "")))
-        base::eval(base::parse(text = base::paste("titles$double_ma_", double,"_x_", ma_order, " <- ma_title", sep = "")))
+        ma_title <- paste("Double Two Sided Moving Average - Order", 2 * double + 1, "x", ma_order, sep = " ")
+        base::eval(base::parse(text = base::paste("output$double_ma_", 2 * double + 1,"_x_", ma_order, " <- ts_ma_d", sep = "")))
+        base::eval(base::parse(text = base::paste("titles$double_ma_", 2 * double + 1,"_x_", ma_order, " <- ma_title", sep = "")))
       }
     }
   }
@@ -738,32 +746,213 @@ ts_ma <- function(ts.obj,
     ts_ma2 <- ma_fun(ts.obj = ts.obj, n_left = n_left, n_right = n_right)
     ma_title <- paste("Two Sided Moving Average - Order", ma_order, sep = " ")
     base::eval(base::parse(text = base::paste("output$unbalanced_ma_", ma_order, " <- ts_ma2", sep = "")))
+    base::eval(base::parse(text = base::paste("titles$unbalanced_ma_", ma_order, " <- ma_title", sep = "")))
     if(!base::is.null(double)){
       ts_ma_d <- ma_title <- NULL
       ts_ma_d <- ma_fun(ts.obj = ts_ma2, n_left = double, n_right = double)
-      ma_title <- paste("Double Two Sided Moving Average - Order", double, "x",  ma_order, sep = " ")
-      base::eval(base::parse(text = base::paste("output$double_unbalanced_ma_", double,"_x_", ma_order, " <- ts_ma2", sep = "")))
-      base::eval(base::parse(text = base::paste("titles$double_unbalanced_ma_", double,"_x_", ma_order, " <- ma_title", sep = "")))
+      ma_title <- paste("Double Two Sided Moving Average - Order", 2 * double + 1, "x",  ma_order, sep = " ")
+      base::eval(base::parse(text = base::paste("output$double_unbalanced_ma_", 2 * double + 1,"_x_", ma_order, " <- ts_ma2", sep = "")))
+      base::eval(base::parse(text = base::paste("titles$double_unbalanced_ma_", 2 * double + 1,"_x_", ma_order, " <- ma_title", sep = "")))
     }
   }
   
-  p <- plotly::plot_ly(x = stats::time(ts.obj), 
-                       y = base::as.numeric(ts.obj), 
-                       name = obj.name, 
-                       type = "scatter", 
-                       mode = "lines", 
-                       line = list(color = "#00526d"),
-                       showlegend = legend_flag)
   
   ma_list <- base::names(output)[base::which(base::names(output) != "series")]
   if(separate & multiple){
-    plots <- NULL
+    plots <- c <- NULL
     plots <- list()
+    plots[[1]] <- plotly::plot_ly(x = stats::time(ts.obj), 
+                                  y = base::as.numeric(ts.obj), 
+                                  name = obj.name, 
+                                  type = "scatter", 
+                                  mode = "lines", 
+                                  line = list(color = "#00526d"),
+                                  showlegend = legend_flag) %>%
+      plotly::layout(annotations = list(text =  obj.name, 
+                                        xref = "paper", 
+                                        yref = "paper",
+                                        yanchor = "bottom",
+                                        xanchor = "center",
+                                        align = "cneter",
+                                        x = 0.5,
+                                        y = 1, 
+                                        showarrow = FALSE,
+                                        font = list(size = 12)))
+    
+    c <- 2
+    color_ramp <- viridis::inferno(base::length(output), alpha = 1, direction = 1, begin = 0, end = 0.9)
     for(i in names(output)){
+      plots[[c]] <- plotly::plot_ly(x = stats::time(output[[i]]), 
+                                    y = base::as.numeric(output[[i]]), 
+                                    type = "scatter",
+                                    mode = "line",
+                                    line = list(color = color_ramp[c -1])) %>%
+        plotly::layout(annotations = list(text =  titles[[i]], 
+                                          xref = "paper", 
+                                          yref = "paper",
+                                          yanchor = "bottom",
+                                          xanchor = "center",
+                                          align = "cneter",
+                                          x = 0.5,
+                                          y = 1, 
+                                          showarrow = FALSE,
+                                          font = list(size = 12)))
+      c <- c + 1
+    }
+    plot_rows <- ifelse(length(plots) > 5, base::ceiling(base::length(plots)/2), base::length(plots))
+    if(show_legend){
+      output$plot <- plotly::subplot(plots, nrows = plot_rows, margin = 0.02) 
+    } else {
+      output$plot <- plotly::subplot(plots, nrows = plot_rows, margin = 0.02) %>% plotly::hide_legend()
+    }
+    
+  } else if(!separate & multiple){
+    plots <- c <- NULL
+    plots <- list()
+    c <- 1
+    for(i in names(output)){
+      plots[[c]] <- plotly::plot_ly(x = stats::time(ts.obj), 
+                                    y = base::as.numeric(ts.obj), 
+                                    name = obj.name, 
+                                    type = "scatter", 
+                                    mode = "lines", 
+                                    line = list(color = "#00526d"),
+                                    showlegend = legend_flag) %>%
+        plotly::add_lines(x = stats::time(output[[i]]), 
+                          y = base::as.numeric(output[[i]]),
+                          line = list(color = color_ramp[c - 1], dash = "dash")
+        ) %>%
+        plotly::layout(annotations = list(text =  titles[[i]], 
+                                          xref = "paper", 
+                                          yref = "paper",
+                                          yanchor = "bottom",
+                                          xanchor = "center",
+                                          align = "cneter",
+                                          x = 0.5,
+                                          y = 1, 
+                                          showarrow = FALSE,
+                                          font = list(size = 12)))
       
+      c <- c + 1
+    }
+    plot_rows <- ifelse(length(plots) > 5, base::ceiling(base::length(plots)/2), base::length(plots))
+    if(show_legend){
+      output$plot <- plotly::subplot(plots, nrows = plot_rows, margin = 0.02) 
+    } else {
+      output$plot <- plotly::subplot(plots, nrows = plot_rows, margin = 0.02) %>% plotly::hide_legend()
+    }
+  } else if(separate & !multiple){
+    p1 <- p2 <- c <-  NULL
+    p1 <- plotly::plot_ly(x = stats::time(ts.obj), 
+                          y = base::as.numeric(ts.obj), 
+                          name = obj.name, 
+                          type = "scatter", 
+                          mode = "lines", 
+                          line = list(color = "#00526d"),
+                          showlegend = TRUE) %>%
+      plotly::layout(annotations = list(text =  obj.name, 
+                                        xref = "paper", 
+                                        yref = "paper",
+                                        yanchor = "bottom",
+                                        xanchor = "center",
+                                        align = "cneter",
+                                        x = 0.5,
+                                        y = 1, 
+                                        showarrow = FALSE,
+                                        font = list(size = 12)))
+    
+    
+    c <- 1 
+    p2 <- plotly::plot_ly()
+    for(i in names(output)){
+      p2 <- p2 %>% 
+        plotly::add_lines(
+          x = stats::time(output[[i]]), 
+          y = base::as.numeric(output[[i]]),
+          line = list(color = color_ramp[c], dash = "dash"),
+          name = titles[[i]]
+        )
+      c <- c + 1
+    }
+    p2 <- p2 %>% 
+      plotly::layout(annotations = list(text =  "Moving Average Output", 
+                                        xref = "paper", 
+                                        yref = "paper",
+                                        yanchor = "bottom",
+                                        xanchor = "center",
+                                        align = "cneter",
+                                        x = 0.5,
+                                        y = 1, 
+                                        showarrow = FALSE,
+                                        font = list(size = 12)))
+    
+    
+    
+    if(show_legend){
+      output$plot <- plotly::subplot(p1, p2, nrows = 2, margin = 0.02) 
+    } else {
+      output$plot <- plotly::subplot(p1, p2, nrows = 2, margin = 0.02) %>% plotly::hide_legend()
+    }
+    
+  }else if(!separate & !multiple){
+    p <- c <- NULL
+    
+    p <- plotly::plot_ly(x = stats::time(ts.obj), 
+                         y = base::as.numeric(ts.obj), 
+                         name = obj.name, 
+                         type = "scatter", 
+                         mode = "lines", 
+                         line = list(color = "#00526d"),
+                         showlegend = TRUE) %>%
+      plotly::layout(annotations = list(text =  obj.name, 
+                                        xref = "paper", 
+                                        yref = "paper",
+                                        yanchor = "bottom",
+                                        xanchor = "center",
+                                        align = "cneter",
+                                        x = 0.5,
+                                        y = 1, 
+                                        showarrow = FALSE,
+                                        font = list(size = 12)))
+    
+    
+    c <- 1 
+    for(i in names(output)){
+      p <- p %>% 
+        plotly::add_lines(
+          x = stats::time(output[[i]]), 
+          y = base::as.numeric(output[[i]]),
+          line = list(color = color_ramp[c], dash = "dash"),
+          name = titles[[i]]
+        )
+      c <- c + 1
+    }
+    p <- p %>% 
+      plotly::layout(annotations = list(text =  "Moving Average Output", 
+                                        xref = "paper", 
+                                        yref = "paper",
+                                        yanchor = "bottom",
+                                        xanchor = "center",
+                                        align = "cneter",
+                                        x = 0.5,
+                                        y = 1, 
+                                        showarrow = FALSE,
+                                        font = list(size = 12)))
+    
+    
+    
+    if(show_legend){
+      output$plot <- p 
+    } else {
+      output$plot <- p %>% plotly::hide_legend()
     }
   }
   
+  
+  
+  if(plot){
+    output$plot
+  }
   
   # Saving the original series
   output$series <- ts.obj
