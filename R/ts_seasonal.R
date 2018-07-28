@@ -490,6 +490,7 @@ ts_surface <- function(ts.obj) {
 #' @param title A character, if not NULL (by default), will use the input as the plot title
 #' @param Xtitle A character, if not NULL (by default), will use the input as the plot x - axis title
 #' @param Ytitle A character, if not NULL (by default), will use the input as the plot y - axis title
+#' @param margin A numeric, set the plot margin when using the multiple or/and separate option, default value is 0.03
 #' @param show_legend A boolean, if TRUE will show the plot legend
 #' @description Calculate the moving average (and double moving average) for time series data
 #' @return A list with the original series, the moving averages outputs and the plot
@@ -546,7 +547,7 @@ ts_ma <- function(ts.obj,
                   n_right = NULL,
                   double = NULL, 
                   plot = TRUE, show_legend = FALSE,
-                  multiple = FALSE, separate = TRUE,
+                  multiple = FALSE, separate = TRUE, margin = 0.03,
                   title = NULL, Xtitle = NULL, Ytitle = NULL){
   
   `%>%` <- magrittr::`%>%`
@@ -801,9 +802,9 @@ ts_ma <- function(ts.obj,
     }
     plot_rows <- ifelse(length(plots) > 5, base::ceiling(base::length(plots)/2), base::length(plots))
     if(show_legend){
-      output$plot <- plotly::subplot(plots, nrows = plot_rows, margin = 0.03) 
+      output$plot <- plotly::subplot(plots, nrows = plot_rows, margin = margin) 
     } else {
-      output$plot <- plotly::subplot(plots, nrows = plot_rows, margin = 0.03) %>% plotly::hide_legend()
+      output$plot <- plotly::subplot(plots, nrows = plot_rows, margin = margin) %>% plotly::hide_legend()
     }
     
   } else if(!separate & multiple){
@@ -838,9 +839,9 @@ ts_ma <- function(ts.obj,
     }
     plot_rows <- ifelse(length(plots) > 5, base::ceiling(base::length(plots)/2), base::length(plots))
     if(show_legend){
-      output$plot <- plotly::subplot(plots, nrows = plot_rows, margin = 0.03) 
+      output$plot <- plotly::subplot(plots, nrows = plot_rows, margin = margin) 
     } else {
-      output$plot <- plotly::subplot(plots, nrows = plot_rows, margin = 0.03) %>% plotly::hide_legend()
+      output$plot <- plotly::subplot(plots, nrows = plot_rows, margin = margin) %>% plotly::hide_legend()
     }
   } else if(separate & !multiple){
     p1 <- p2 <- c <-  NULL
@@ -891,9 +892,9 @@ ts_ma <- function(ts.obj,
     
     
     if(show_legend){
-      output$plot <- plotly::subplot(p1, p2, nrows = 2, margin = 0.03) 
+      output$plot <- plotly::subplot(p1, p2, nrows = 2, margin = margin) 
     } else {
-      output$plot <- plotly::subplot(p1, p2, nrows = 2, margin = 0.03) %>% plotly::hide_legend()
+      output$plot <- plotly::subplot(p1, p2, nrows = 2, margin = margin) %>% plotly::hide_legend()
     }
     
   }else if(!separate & !multiple){
