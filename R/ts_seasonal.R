@@ -767,7 +767,7 @@ ts_ma <- function(ts.obj,
                                   type = "scatter", 
                                   mode = "lines", 
                                   line = list(color = "#00526d"),
-                                  showlegend = legend_flag) %>%
+                                  showlegend = show_legend) %>%
       plotly::layout(annotations = list(text =  obj.name, 
                                         xref = "paper", 
                                         yref = "paper",
@@ -801,9 +801,9 @@ ts_ma <- function(ts.obj,
     }
     plot_rows <- ifelse(length(plots) > 5, base::ceiling(base::length(plots)/2), base::length(plots))
     if(show_legend){
-      output$plot <- plotly::subplot(plots, nrows = plot_rows, margin = 0.02) 
+      output$plot <- plotly::subplot(plots, nrows = plot_rows, margin = 0.03) 
     } else {
-      output$plot <- plotly::subplot(plots, nrows = plot_rows, margin = 0.02) %>% plotly::hide_legend()
+      output$plot <- plotly::subplot(plots, nrows = plot_rows, margin = 0.03) %>% plotly::hide_legend()
     }
     
   } else if(!separate & multiple){
@@ -818,7 +818,7 @@ ts_ma <- function(ts.obj,
                                     type = "scatter", 
                                     mode = "lines", 
                                     line = list(color = "#00526d"),
-                                    showlegend = legend_flag) %>%
+                                    showlegend = show_legend) %>%
         plotly::add_lines(x = stats::time(output[[i]]), 
                           y = base::as.numeric(output[[i]]),
                           line = list(color = color_ramp[c - 1], dash = "dash")
@@ -838,9 +838,9 @@ ts_ma <- function(ts.obj,
     }
     plot_rows <- ifelse(length(plots) > 5, base::ceiling(base::length(plots)/2), base::length(plots))
     if(show_legend){
-      output$plot <- plotly::subplot(plots, nrows = plot_rows, margin = 0.02) 
+      output$plot <- plotly::subplot(plots, nrows = plot_rows, margin = 0.03) 
     } else {
-      output$plot <- plotly::subplot(plots, nrows = plot_rows, margin = 0.02) %>% plotly::hide_legend()
+      output$plot <- plotly::subplot(plots, nrows = plot_rows, margin = 0.03) %>% plotly::hide_legend()
     }
   } else if(separate & !multiple){
     p1 <- p2 <- c <-  NULL
@@ -891,9 +891,9 @@ ts_ma <- function(ts.obj,
     
     
     if(show_legend){
-      output$plot <- plotly::subplot(p1, p2, nrows = 2, margin = 0.02) 
+      output$plot <- plotly::subplot(p1, p2, nrows = 2, margin = 0.03) 
     } else {
-      output$plot <- plotly::subplot(p1, p2, nrows = 2, margin = 0.02) %>% plotly::hide_legend()
+      output$plot <- plotly::subplot(p1, p2, nrows = 2, margin = 0.03) %>% plotly::hide_legend()
     }
     
   }else if(!separate & !multiple){
@@ -951,9 +951,8 @@ ts_ma <- function(ts.obj,
   }
   
   
-  
   if(plot){
-    output$plot
+    print(output$plot)
   }
   
   # Saving the original series
