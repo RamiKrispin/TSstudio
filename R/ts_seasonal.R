@@ -810,6 +810,7 @@ ts_ma <- function(ts.obj,
     plots <- c <- NULL
     plots <- list()
     c <- 1
+    color_ramp <- viridis::inferno(base::length(output), alpha = 1, direction = 1, begin = 0, end = 0.9)
     for(i in names(output)){
       plots[[c]] <- plotly::plot_ly(x = stats::time(ts.obj), 
                                     y = base::as.numeric(ts.obj), 
@@ -863,6 +864,7 @@ ts_ma <- function(ts.obj,
     
     
     c <- 1 
+    color_ramp <- viridis::inferno(base::length(output), alpha = 1, direction = 1, begin = 0, end = 0.9)
     p2 <- plotly::plot_ly()
     for(i in names(output)){
       p2 <- p2 %>% 
@@ -896,7 +898,7 @@ ts_ma <- function(ts.obj,
     
   }else if(!separate & !multiple){
     p <- c <- NULL
-    
+    color_ramp <- viridis::inferno(base::length(output), alpha = 1, direction = 1, begin = 0, end = 0.9)
     p <- plotly::plot_ly(x = stats::time(ts.obj), 
                          y = base::as.numeric(ts.obj), 
                          name = obj.name, 
@@ -960,5 +962,3 @@ ts_ma <- function(ts.obj,
   class(output) <- "ts_ma"
   return(output)  
 }  
-
-
