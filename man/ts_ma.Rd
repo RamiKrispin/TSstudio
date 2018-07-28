@@ -6,7 +6,8 @@
 \usage{
 ts_ma(ts.obj, n = c(3, 6, 9), n_left = NULL, n_right = NULL,
   double = NULL, plot = TRUE, show_legend = FALSE, multiple = FALSE,
-  separate = TRUE, title = NULL, Xtitle = NULL, Ytitle = NULL)
+  separate = TRUE, margin = 0.03, title = NULL, Xtitle = NULL,
+  Ytitle = NULL)
 }
 \arguments{
 \item{ts.obj}{a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)}
@@ -32,6 +33,8 @@ The n_right defines the number of negative lags to includes in the moving averag
 \item{multiple}{A boolean, if TRUE (and n > 1) will create multiple plots, one for each moving average degree. By default is set to FALSE}
 
 \item{separate}{A boolean, if TRUE will separate the orignal series from the moving average output}
+
+\item{margin}{A numeric, set the plot margin when using the multiple or/and separate option, default value is 0.03}
 
 \item{title}{A character, if not NULL (by default), will use the input as the plot title}
 
