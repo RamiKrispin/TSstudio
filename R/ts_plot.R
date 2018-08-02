@@ -367,10 +367,12 @@ plot_forecast <- function(forecast_obj,
 # Checking if the object has confidence interval
   if("upper" %in% base::names(forecast_obj) &
      "lower" %in% base::names(forecast_obj)){
-    for(i in 1:base::dim(forecast_obj$upper)[2]){
+    # bug fix for if forecast has only one level
+    lvls <- if(is.null(dim(forecast_obj$upper))) 1 else dim(forecast_obj$upper)[2]
+    for(i in 1:lvls){
       p <- p %>% plotly::add_ribbons(x = stats::time(forecast_obj$mean), 
-                                     ymin = forecast_obj$lower[, i], 
-                                     ymax = forecast_obj$upper[, i],
+                                     ymin = if(lvls > 1) forecast_obj$lower[, i] else forecast_obj$lower, 
+                                     ymax = if(lvls > 1) forecast_obj$upper[, i] else forecast_obj$upper,
                                      color = I(base::paste("gray", base::as.numeric(sub("%", "", (forecast_obj$level[i]))) - 5*i, sep = "")),
                                      name = base::paste(forecast_obj$level[i], "% confidence", sep = "")
                                      )
