@@ -41,7 +41,6 @@ ts_backtesting(ts.obj, models = "abehntw", periods = 6, error = "MAPE",
 \item{a.arg}{List, an optional arguments to pass to the auto.arima function}
 
 \item{b.arg}{List, an optional arguments to pass to the bsts function, optional arguments:
-
 linear_trend = c(TRUE, FALSE), use linear trend if set to TRUE (default)
 
 seasonal = c(TRUE, FALSE), add seasonal component if set to TRUE (default)
@@ -55,6 +54,12 @@ family = c("gaussian", "logit", "poisson", "student"),
  
 seed, An integer to use as the random seed for the underlying C++ code of the model, default set to 1234
 #'}
+
+\item{e.arg}{List, an optional argument to pass to the ets function}
+
+\item{h.arg}{List, an optional argument to pass to the HoltWinter function}
+
+\item{n.arg}{List, an optional argument to pass to the nnetar function}
 
 \item{t.arg}{List, an optional arguments to pass to the tbats function}
 
@@ -70,13 +75,13 @@ of each model over a sequence of periods to identify the performance of a model 
 \examples{
 \dontrun{
 data(USgas)
-USgas_backtesting <- ts_evaluate(USgas, periods = 6, window_size = 24, h = 60, error = "RMSE")
+USgas_backtesting <- ts_backtesting(USgas, periods = 6, window_size = 24, h = 60, error = "RMSE")
 
 # Selecting a specific models (auto.arima, ets and nnetar)
-USgas_backtesting <- ts_evaluate(USgas, models = "aen", periods = 6, window_size = 24, h = 60)
+USgas_backtesting <- ts_backtesting(USgas, models = "aen", periods = 6, window_size = 24, h = 60)
 
 # Using some of the models arguments 
- USgas_backtesting <- ts_evaluate(USgas, models = "aen", periods = 6, window_size = 24, h = 60, error = "MAPE"
+ USgas_backtesting <- ts_backtesting(USgas, models = "aen", periods = 6, window_size = 24, h = 60, error = "MAPE"
  a.arg = list(stepwise = FALSE), n.arg = list(P =2 , p = 12, repeats = 50))
 
 # Retrieve the models leaderboard
@@ -91,12 +96,7 @@ USgas_backtesting$Forecast_Final$ets$mean
 # Retrieve the ets forecast during the first period of testing
 USgas_backtesting$period_1$ets$forecast$mean
 
-# Get a summary of the models RMSE results for each testing period
-USgas_backtesting$RMSE_score
-
 # Get the final plot of the models performance and the selected forecasting model
 USgas_backtesting$summary_plot
-
-
 }
 }
