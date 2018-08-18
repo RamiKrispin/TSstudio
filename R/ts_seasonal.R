@@ -1,18 +1,27 @@
 #'  Seasonality Visualization of Time Series Object
+#'  Seasonality Visualization of Time Series Object
 #' @export ts_seasonal
-#' @param ts.obj A univariate time series object of a class "ts", "zoo", or "xts" 
-#' (support only series with either monthly or quarterly frequency). 
-#' Also, this function supports data frame objects as long as there is at least one "Date" and "numeric" objects 
-#' (if there are more, by defualt will use the first of each)
+#' @param ts.obj Input object, either a univariate time series object of a class "ts", "zoo", "xts", or a data frame object of a class
+#' "data.frame", "tbl", "data.table" as long as there is at least one "Date"/"POSIXt" and a "numeric" objects 
+#' (if there are more then one, by defualt will use the first of each). 
+#' Currently support only daily, weekly, monthly, and quarterly frequencies 
 #' @param type The type of the seasonal plot - 
 #' "normal" to split the series by full cycle units, or
 #' "cycle" to split by cycle units (applicable only for monthly and quarterly data), or
 #' "box" for box-plot by cycle units, or
 #' "all" for all the three plots together
-#' @param Ygrid Logic,show the Y axis grid if set to TRUE
-#' @param Xgrid Logic,show the X axis grid if set to TRUE
 #' @param title Plot title - Character object
+#' @param Ygrid Logic,show the Y axis grid if set to TRUE (default)
+#' @param Xgrid Logic,show the X axis grid if set to TRUE (defualt)
 #' @param last Subset the data to the last number of observations
+#' @param palette A character, the color palette to be used when the "cycle" or "box" plot are being selected 
+#' (by setting the type to "cycle", "box", or "all"). 
+#' All the palettes in the RColorBrewer and viridis packages are available to be use, the
+#' default option is "Set1" from the RColorBrewer package
+#' @param palette_normal A character, the color palette to be used when the "normal" plot is being selected 
+#' (by setting the type to "normal" or "all"). 
+#' All the palettes in the RColorBrewer and viridis packages are available to be used, the
+#' default palette is "Spectral" from the RColorBrewer package
 #' @description Visualize time series object by it periodicity, currently support only monthly and quarterly frequency
 #' @examples
 #' data(USgas)
@@ -20,19 +29,33 @@
 #' 
 #' # Seasonal box plot
 #' ts_seasonal(USgas, type = "box") 
+#' 
+#' # Plot all the types 
+#' ts_seasonal(USgas, type = "all")
 
 
 # The ts_seasonal function ####
 
-ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE, title = NULL, last = NULL, daily.box = NULL) {
+ts_seasonal <- function(ts.obj, 
+                        type = "normal", 
+                        title = NULL,
+                        Ygrid = TRUE, 
+                        Xgrid = TRUE, 
+                        last = NULL,
+                        palette = "Set1",
+                        palette_normal = "Spectral") {
   
   `%>%` <- magrittr::`%>%`
-  df <- df1 <- df_wide <- p <- obj.name <- NULL
+  df <- freq <- obj.name <- brewer_palettes <- viridis_palettes <- palette_type <- NULL
+  n_colors <- NULL
   diff_mean <- col_class <- date_col <-  numeric_col <- NULL
   obj.name <- base::deparse(base::substitute(ts.obj))
+  
+  
+  
   # Set the plot title
   if(base::is.null(title)){
-  title <- paste("Seasonality Plot -", obj.name, sep = " ")
+    title <- paste("Seasonality Plot -", obj.name, sep = " ")
   } else if(!base::is.character(title)){
     warning("The 'title' object is not character object, using the default option")
     title <- paste("Seasonality Plot -", obj.name, sep = " ")
@@ -42,226 +65,282 @@ ts_seasonal <- function(ts.obj, type = "normal", Ygrid = FALSE, Xgrid = FALSE, t
   # Error handling
   # Checking the last parameter
   if(!base::is.null(last)){
-  if(!base::is.numeric(last) | last <= 0){
-    stop("The 'last' parameter is not valid")
-  } else {
-        if(last != round(last)){
-          stop("The 'last' parameter is not integer")
-        }
+    if(!base::is.numeric(last) | last <= 0){
+      stop("The 'last' parameter is not valid")
+    } else {
+      if(last != base::round(last)){
+        stop("The 'last' parameter is not integer")
       }
+    }
   }
   
-  if(type != "normal" & type != "cycle" & 
-     type != "box" & type != "all" ){
+  # Checking the type parameter
+  if(type != "normal" && type != "cycle" && 
+     type != "box" && type != "all" ){
     type <- "normal"
     warning("The 'type' parameter is invalide,", 
             "using the default option - 'normal'")
   }
   
-  # Case the input is a time series object
-  if (stats::is.ts(ts.obj)) {
-    if (stats::is.mts(ts.obj)) {
-      warning("The 'ts.obj' has multiple columns, only the first column will be plot")
-      ts.obj <- ts.obj[, 1]
-    }
-    df <- base::data.frame(dec_left = floor(stats::time(ts.obj)), 
-                           dec_right = stats::cycle(ts.obj), value = base::as.numeric(ts.obj))
-    if(stats::frequency(ts.obj) == 12){
-      freq <- "monthly"
-      df$dec_right <- base::factor(df$dec_right,
-                                   levels = base::unique(df$dec_right),
-                                   labels = base::month.abb[as.numeric(base::unique(df$dec_right))])
-    } else if(stats::frequency(ts.obj) == 4){
-      freq <- "quarterly"
-      df$dec_right <- base::paste("Qr.", df$dec_right, sep = " ")
-    } else if(base::round(stats::frequency(ts.obj), 0 ) == 365){
-      freq <- "daily"
-      first_time <- time(ts.obj)[1]
-      
-      year <- as.integer(first_time)
-      day <- (first_time - year) * 365 
-      first_date <- as.Date(day, origin = lubridate::ymd(paste(year, "-01-01", sep = "")))
-      
-      df <- data.frame(date = seq.Date(from = first_date, length.out = length(ts.obj), by = "days"), value = as.numeric(ts.obj))
-      df$month <- lubridate::month(df$date, label = TRUE)
-      df$wday <- lubridate::wday(df$date, label = TRUE)
-      df$week <- factor(lubridate::week(df$date), ordered = TRUE)
-      df$dec_left <- lubridate::year(df$date)
-      df$dec_right <- lubridate::yday(df$date)
-      
-    } else {
-      stop("The frequency of the series is invalid, ",
-           "the function support only 'daily', 'monthly' or 'quarterly' frequencies")
-    }
-  } else if (xts::is.xts(ts.obj) | zoo::is.zoo(ts.obj)) {
-    if (!is.null(base::dim(ts.obj))) {
-      if (base::dim(ts.obj)[2] > 1) {
-        warning("The 'ts.obj' has multiple columns, only the first column will be plot")
-        ts.obj <- ts.obj[, 1]
-      }
-    }
-    freq <- xts::periodicity(ts.obj)[[6]]
-    if (freq == "quarterly") {
-      df <- base::data.frame(dec_left = lubridate::year(ts.obj), 
-                             dec_right = lubridate::quarter(ts.obj), 
-                             value = as.numeric(ts.obj))
-    } else if (freq == "monthly") {
-      df <- base::data.frame(dec_left = lubridate::year(ts.obj), 
-                             dec_right = lubridate::month(ts.obj), value = as.numeric(ts.obj))
-      df$dec_right <- base::factor(df$dec_right,
-                                   levels = base::unique(df$dec_right),
-                                   labels = base::month.abb[as.numeric(base::unique(df$dec_right))])
-      # } else if (freq == "weekly") {
-      #   df <- data.frame(dec_left = lubridate::year(ts.obj), 
-      #                    dec_right = lubridate::week(ts.obj), value = as.numeric(ts.obj))
-      # } else if (freq == "daily") {
-      #   df <- data.frame(dec_left = lubridate::month(ts.obj), 
-      #                    dec_right = lubridate::day(ts.obj), value = as.numeric(ts.obj))
-    } else if (freq != "quarterly" & freq != "monthly") {
-      stop("The frequency of the series is invalid,",
-           "the function support only 'monthly' or 'quarterly' frequencies")
+  # Checking the Ygrid and Xgrid parameters
+  if(!base::is.logical(Ygrid)){
+    Ygrid <- TRUE
+    warning("The 'Ygrid' argument is not a boolean operator, setting it to TRUE")
+  }
+  
+  if(!base::is.logical(Xgrid)){
+    Xgrid <- TRUE
+    warning("The 'Xgrid' argument is not a boolean operator, setting it to TRUE")
+  }
+  
+  # Stage 1 transforming the time series object to data frame
+  # Input ts object
+  if(stats::is.ts(ts.obj)){
+    if(stats::is.mts(ts.obj)){
+      ts.obj <- ts.obj[,1]
+      warning("The input object is a 'mts' class, by defualt will use only the first series as an input")
     }
     
-  } else if(base::is.data.frame(ts.obj)){
-    col_class <- base::lapply(ts.obj, class)
-    if("Date" %in%  col_class){
-      date_col <- base::which(col_class == "Date")
-      if(length(date_col) >1){
-        warning("There are multipe 'date' objects in the data frame,",
-                "using the first 'date' object in the data frame as the plot index")
-        date_col <- date_col[1]
+    freq <- stats::frequency(ts.obj)
+    
+    if(base::length(ts.obj) < freq){
+      stop("The length of the series is smaller than the length of full cycle")
+    }
+    
+    start_main <- stats::start(ts.obj)[1]
+    start_minor <- stats::start(ts.obj)[2]
+    
+    if(freq %in% c(7, 52, 365, 12, 4)){
+      minor1 <- base::seq(from = start_minor, to = freq, by = 1)
+      minor2 <- base::rep(x = 1:freq, length.out = base::length(ts.obj) - base::length(minor1))
+      main1 <- base::rep(x = start_main, length.out = base::length(minor1))
+      main2 <- base::rep(x = (start_main + 1):stats::end(ts.obj)[1], 
+                         each = freq, 
+                         len = base::length(ts.obj) - base::length(minor1))
+      df <- data.frame(main = c(main1, main2), 
+                       minor = c(minor1, minor2), 
+                       y = base::as.numeric(ts.obj))
+      
+      if(freq == 12){
+        df$minor <-  base::factor(base::month.abb[df$minor], levels = month.abb)
       }
-    } else {
-      stop("None of the data frame columns is 'Date' object,",
+    } 
+    # Input xts or zoo objects
+  } else if(xts::is.xts(ts.obj) | zoo::is.zoo(ts.obj)){
+    if(!base::is.null(base::ncol(ts.obj))){
+      ts.obj <- ts.obj[,1]
+      warning("The input object is a multiple time series object, by defualt will use only the first series as an input")
+    }
+    if(lubridate::is.Date(zoo::index(ts.obj))){
+      if(xts::periodicity(ts.obj)$scale == "daily"){
+        df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+                         minor = lubridate::yday(zoo::index(ts.obj)), 
+                         y = base::as.numeric(ts.obj[,1]))
+      } else if(xts::periodicity(ts.obj)$scale == "weekly"){
+        df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+                         minor = lubridate::week(zoo::index(ts.obj)), 
+                         y = base::as.numeric(ts.obj[,1]))
+      } else if(xts::periodicity(ts.obj)$scale == "monthly"){
+        df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+                         minor = lubridate::month(zoo::index(ts.obj), label = TRUE), 
+                         y = base::as.numeric(ts.obj[,1]))
+      } else if(xts::periodicity(ts.obj)$scale == "quarterly"){
+        df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+                         minor = lubridate::quarter(zoo::index(ts.obj)), 
+                         y = base::as.numeric(ts.obj[,1]))
+      } 
+    }
+    # Input data.frame or tbl or data.table objects
+  } else if(base::is.data.frame(ts.obj) | 
+            dplyr::is.tbl(ts.obj) | 
+            data.table::is.data.table(ts.obj)){ # Case 3 the object is a data frame 
+    # Identify the columns classes
+    
+    ts.obj <- base::as.data.frame(ts.obj)
+    col_class <- base::lapply(ts.obj, class)
+    col_date <- base::lapply(ts.obj, lubridate::is.Date)
+    col_POSIXt <- base::lapply(ts.obj, lubridate::is.POSIXt)
+    
+    # Check if Date object exist
+    if(any(col_date == TRUE) & any(col_POSIXt == TRUE)){
+      d <- t <- NULL
+      d <- base::min(base::which(col_date == TRUE))
+      t <- base::min(base::which(col_POSIXt == TRUE))
+      if(d > t){
+        warning("The data frame contain multiple date or time objects,",
+                "using the first one as the plot index")
+        date_col <- t
+      } else {
+        warning("The data frame contain multiple date or time objects,",
+                "using the first one as the plot index")
+        date_col <- d
+      }
+    } else if(base::any(col_date == TRUE) | base::any(col_POSIXt == TRUE)){
+      if(base::any(col_date == TRUE)){
+        if(base::length(base::which(col_date == TRUE)) > 1){
+          date_col <-  base::min(base::which(col_date == TRUE))
+          warning("There are multipe 'date' objects in the data frame,",
+                  "using the first one object as the plot index")
+        } else {
+          date_col <-  base::min(base::which(col_date == TRUE))
+        }
+      } else if(base::any(col_POSIXt == TRUE)){
+        if(base::length(base::which(col_POSIXt == TRUE)) > 1){
+          date_col <-  base::min(base::which(col_POSIXt == TRUE))
+          warning("There are multipe 'POSIXt' objects in the data frame,",
+                  "using the first one as the plot index")
+        } else {
+          date_col <-  base::min(base::which(col_POSIXt == TRUE))
+        }
+      } 
+    }else {
+      stop("No 'Date' or 'POSIXt' object available in the data frame,", 
+           "please check if the data format defined properly")
+    }
+    
+    
+    # Identify the numeric/integer objects in the data frame  
+    numeric_col <- base::which(col_class == "numeric" | col_class == "integer")
+    # Stop if there is no any numeric values in the data frame, otherwise build the data frame 
+    if(base::length(numeric_col) == 0){
+      stop("None of the data frame columns is numeric,", 
            "please check if the data format is defined properly")
     }
-    numeric_col <- base::which(col_class == "numeric" | col_class == "integer")
-      if(base::length(numeric_col) == 0){
-        stop("None of the data frame columns is numeric,",
-             "please check if the data format is defined properly")
-      } else {
-        if(length(numeric_col) > 1){
-          warning("There are more than one columns with numeric values,",
-                  "only the first numeric column will be plot")
-          numeric_col <- numeric_col[1]
-        }
-      }
-        
-        
-        df1 <- base::data.frame(date = ts.obj[, date_col], value = ts.obj[, numeric_col])
-        df1$date_lag <- c(NA, as.Date(df1$date[-nrow(df1)]))
-        df1$dif <- df1$date - as.Date(df1$date_lag,  origin= "1970-01-01")
-        
-        diff_mean <- mean(df1$dif, na.rm = TRUE)
-        
-        if(diff_mean >= 28 & diff_mean <= 31 ){
-          freq <- "monthly"
-          df <- data.frame(dec_left = lubridate::year(df1$date), 
-                           dec_right = lubridate::month(df1$date), 
-                           value = df1$value) 
-          df$dec_right <- base::factor(df$dec_right,
-                                       levels = base::unique(df$dec_right),
-                                       labels = base::month.abb[as.numeric(base::unique(df$dec_right))])
-        }else  if(diff_mean >= 89 & diff_mean <= 92 ){
-          freq <- "quarterly"
-          df <- data.frame(dec_left = lubridate::year(df1$date), 
-                           dec_right = paste("Qr.", lubridate::quarter(df1$date), sep = " ") , 
-                           value = df1$value) 
-          
-        } else{
-          stop("Couldn't identify the frequency of the data frame, ", 
-               "please check if the  frequency of the date object is monthly or quarterly")
-        }
-      }
-
+    
+    # Check if the object has multiple time series
+    df_temp <- NULL
+    if(length(numeric_col) == 1){
+      df_temp <- base::data.frame(date = ts.obj[, date_col], y =  ts.obj[, numeric_col])
+    } else {
+      warning("The input object is a multiple time series object, by defualt will use only the first series as an input")
+      df_temp <- base::data.frame(date = ts.obj[, date_col], ts.obj[, numeric_col[1]])
+    }
+    
+    data_diff <- NULL
+    date_diff <- base::diff(as.numeric(df_temp$date))
+    
+    if(base::min(date_diff) == base::max(date_diff) & base::mean(date_diff) == 1){
+      # Daily
+      df <- data.frame(main = lubridate::year(df_temp$date),
+                       minor = lubridate::yday(df_temp$date),
+                       y = df_temp$y)
+    } else if(base::min(date_diff) == base::max(date_diff) & base::mean(date_diff) == 7){
+      # Weekly
+      df <- data.frame(main = lubridate::year(df_temp$date),
+                       minor = lubridate::week(df_temp$date),
+                       y = df_temp$y)
+    } else if(base::min(date_diff) >= 28 &  base::max(date_diff) <= 31 & 
+              base::mean(date_diff) < 31 & base::mean(date_diff) > 28){
+      # Monthly
+      df <- data.frame(main = lubridate::year(df_temp$date),
+                       minor = lubridate::month(df_temp$date, label = TRUE),
+                       y = df_temp$y)
+    } else if(base::min(date_diff) >= 90 &  base::max(date_diff) <= 92 & 
+              base::mean(date_diff) < 92 & base::mean(date_diff) > 90){
+      # Quarterly
+      df <- data.frame(main = lubridate::year(df_temp$date),
+                       minor = lubridate::quarter(df_temp$date),
+                       y = df_temp$y)
+      
+    } else{
+      stop("The frequency of the input dataset is not valid, must be on of the following - daily, weekly, monthly or quarterly")
+    }
+  }
+  
   if(!base::is.null(last)){
-  df <- df[(base::nrow(df) - last):base::nrow(df),]  
+    df <- df[(base::nrow(df) - last + 1):base::nrow(df),]
   }
   
+  # Checking colors setting
+  brewer_palettes <- row.names(RColorBrewer::brewer.pal.info)
+  viridis_palettes <- c("viridis", "magma", "plasma", "inferno", "cividis")
   
-  seasonal_sub <- function(df, type, Xgrid, Ygrid, freq, title){  
-    p <- NULL
-    
-    if(type == "normal"){
-      df_wide <- reshape2::dcast(df, dec_right ~ dec_left)
-    } else if(type == "cycle" | type == "box"){
-      df_wide <- reshape2::dcast(df, dec_left ~ dec_right)
+  if(type %in% c("cycle", "box", "all")){
+    if(palette %in% brewer_palettes){
+      n_colors <- NULL
+      n_colors <- RColorBrewer::brewer.pal.info$maxcolors[row.names(RColorBrewer::brewer.pal.info)  == palette]
+      colors_list <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(n_colors, palette))(base::length(base::unique(df$minor)))
+    } else if (palette %in% viridis_palettes){
+      color_list <- viridis::viridis_pal(option = base::eval(palette))(base::length(base::unique(df$minor)))  
+    } else {
+      warning("The value of the 'palette' argument is in valid, using the default option 'Set1'")
+      palette <- "Set1"
+      n_colors <- NULL
+      n_colors <- RColorBrewer::brewer.pal.info$maxcolors[row.names(RColorBrewer::brewer.pal.info)  == palette]
+      colors_list <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, palette))(base::length(base::unique(df$minor)))
     }
-    if(freq == "monthly"){
-      color_ramp <- c(RColorBrewer::brewer.pal(6,"Dark2"), RColorBrewer::brewer.pal(6,"Set2"))
-    } else if(freq == "quarterly"){
-      color_ramp <- RColorBrewer::brewer.pal(4,"Dark2")
-    }
-    if(type == "normal"){
-      color_ramp <- colormap::colormap_pal()(ncol(df_wide))
-    }
-    
-    p <- plotly::plot_ly()
-    if(type == "box"){
-      for (f in 2:ncol(df_wide)) {
-        
-        p <- p %>% plotly::add_trace(y = df_wide[, f], 
-                                     type = "box", 
-                                     name = colnames(df_wide)[f],
-                                     boxpoints = "all", jitter = 0.3,
-                                     pointpos = -1.8,
-                                     marker = list(color = color_ramp[(f -1)]),
-                                     line = list(color = color_ramp[(f -1)])
-        )
-      }
-    } else if(type == "cycle"){
-      for (f in 2:ncol(df_wide)) {
-        p <- p %>% plotly::add_trace(x = df_wide[, 1], y = df_wide[, f], 
-                                     name = names(df_wide)[f], 
-                                     mode = "lines", 
-                                     type = "scatter",
-                                     line = list(color = color_ramp[(f -1)]))
-      }
-    } else if(type == "normal"){
-      for (f in 2:ncol(df_wide)) {
-        p <- p %>% plotly::add_trace(x = df_wide[, 1], y = df_wide[, f], 
-                                     name = names(df_wide)[f], 
-                                     mode = "lines", 
-                                     type = "scatter",
-                                     line = list(color = color_ramp[(f -1)]))
-        
-        
-        
-                                     
-      }
-    }
-    p <- p %>% plotly::layout(title = title, 
-                              xaxis = list(title = "", autotick = F, 
-                                           showgrid = Xgrid, 
-                                           dtick = 1), 
-                              yaxis = list(title = obj.name, showgrid = Ygrid))
-    
-    
-    
-    return(p)
   }
   
-  if(type != "all"){
-    p <- seasonal_sub(df = df, type = type, Xgrid = Xgrid, Ygrid = Ygrid, freq = freq, title = title)
-    if(freq == "daily"){
-      p <- p %>% plotly::layout(xaxis = list(autotick = FALSE, dtick = 25, title = "Day of the Year"))
+  if(type %in% c("normal", "all")){
+    if(palette_normal %in% brewer_palettes){
+      n_colros <- NULL
+      n_colors <- RColorBrewer::brewer.pal.info$maxcolors[row.names(RColorBrewer::brewer.pal.info)  == palette_normal]
+      colors_list_normal <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(n_colors, palette_normal))(base::max(df$main) - base::min(df$main) + 1)
+    } else if (palette_normal %in% viridis_palettes){
+      color_list <- viridis::viridis_pal(option = base::eval(palette_normal))(base::max(df$main) - base::min(df$main) + 1)
+    } else {
+      warning("The value of the 'palette_normal' argument is in valid, using the default option 'Spectral'")
+      palette_normal <- "Spectral"
+      n_colors <- RColorBrewer::brewer.pal.info$maxcolors[row.names(RColorBrewer::brewer.pal.info)  == palette_normal]
+      colors_list_normal <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(n_colors, palette_normal))(base::max(df$main) - base::min(df$main) + 1)
     }
-  } else {
-    n <- c <- b <- NULL
-    n <- seasonal_sub(df = df, type = "normal", Xgrid = Xgrid, Ygrid = Ygrid, freq = freq, title = title) %>% 
-      plotly::layout(yaxis = list(title = "By Year"))
-    if(freq == "daily"){
-      n <- n %>% plotly::layout(xaxis = list(autotick = FALSE, dtick = 25, title = "Day of the Year"))
+  }  
+  
+  if(type == "normal" | type == "all"){
+    p_normal <- plotly::plot_ly()
+    for(i in base::min(df$main):base::max(df$main)){
+      temp <- NULL
+      temp <- df %>% dplyr::filter(main == i)
+      
+      p_normal <- p_normal %>%
+        plotly::add_lines(x = temp$minor, y = temp$y, name = i, line = list(color = colors_list_normal[i + 1 - base::min(df$main)]))
     }
-    c <- seasonal_sub(df = df, type = "cycle", Xgrid = Xgrid, Ygrid = Ygrid, freq = freq, title = title) %>% 
-      plotly::layout(yaxis = list(title = "By Month"))
-    b <- seasonal_sub(df = df, type = "box", Xgrid = Xgrid, Ygrid = Ygrid, freq = freq, title = title) %>% 
-      plotly::layout(yaxis = list(title = "By Month"))
-    p <- plotly::subplot(n,c,b, nrows = 3, titleY = T) %>% plotly::hide_legend()
+    p_normal <- p_normal %>% plotly::layout(yaxis = list(title = "By Frequency Cycle"))
   }
+  
+  if(type == "cycle" | type == "all"){
+    df_t <- NULL
+    df_t <- base::suppressMessages(df %>% reshape2::dcast(main ~ minor))
+    p_cycle <- plotly::plot_ly()
+    for(i in 2:ncol(df_t)){
+      p_cycle <- p_cycle %>% 
+        plotly::add_lines(x = df_t[, 1], y = df_t[, i], name = colnames(df_t)[i], line = list(color = colors_list[i - 1]))
+    }
+    
+    p_cycle <- p_cycle %>% plotly::layout(yaxis = list(title = "By Frequency Unit"))
+  }
+  
+  if(type == "box" | type == "all"){
+    minor <- base::unique(df$minor)
+    p_box <- plotly::plot_ly()
+    c <- NULL
+    c <- 1
+    for(i in minor){
+      p_box <- p_box %>% plotly::add_trace(data = df %>% dplyr::filter(minor == i), y = ~ y,  type = "box", 
+                                           line = list(color = colors_list[c]), 
+                                           boxpoints = "all",
+                                           jitter = 0.3,
+                                           pointpos = -1.8, 
+                                           name = i)
+      c <- c + 1
+    }
+    p_box <- p_box %>% plotly::layout(yaxis = list(title = "By Frequency Unit"))
+  }
+  
+  if(type == "all"){
+    p <- plotly::subplot(p_normal, p_cycle, p_box, nrows = 3, titleY = TRUE)
+  } else if(type == "normal"){
+    p <- p_normal
+  } else if(type == "cycle"){
+    p <- p_cycle
+  } else if(type == "box"){
+    p <- p_box
+  }
+  
+  p <- p %>% plotly::layout(title = title)
+  
   return(p)
 }
-
 #'  Polor Plot for Time Series Object
 #' @export
 #' @param ts.obj A univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)
