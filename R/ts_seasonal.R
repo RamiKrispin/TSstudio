@@ -341,6 +341,8 @@ ts_seasonal <- function(ts.obj,
   
   return(p)
 }
+
+
 #'  Polor Plot for Time Series Object
 #' @export
 #' @param ts.obj A univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)
