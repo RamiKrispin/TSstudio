@@ -609,7 +609,9 @@ if(error == "MAPE"){
 }
 
 modelOutput$summary_plot <- final_plot
+if(plot){
 print(final_plot)
+}
 print(leaderboard)
 return(modelOutput)
 }
