@@ -705,8 +705,11 @@ ts_heatmap <- function(ts.obj, last = NULL, wday = TRUE, color = "Blues", title 
       df1 <- NULL
       df1 <- df %>% dplyr::filter(main == i) %>%
         dplyr::arrange(minor) 
-      
-      df1$week <- base::rep(1:53, each = 7)[df1$wday[1]:(base::nrow(df1) + df1$wday[1] - 1)]
+      if(df1$minor[1] != 1){
+        df1$week <-  base::rep(base::ceiling(df1$minor[1] / 7):53, each = 7 )[df1$wday[1]:(base::nrow(df1) + df1$wday[1] - 1)]
+      } else if(df1$minor[1] == 1){
+        df1$week <- base::rep(1:53, each = 7)[df1$wday[1]:(base::nrow(df1) + df1$wday[1] - 1)]  
+      }
       
       df2 <- base::suppressMessages(df1 %>% dplyr::select(wday1, week, y) %>%reshape2::dcast(wday1 ~ week))
       
@@ -782,7 +785,7 @@ ts_heatmap <- function(ts.obj, last = NULL, wday = TRUE, color = "Blues", title 
                          xgap = xgap,
                          ygap = ygap
     ) %>% plotly::layout(
-      title = base::paste("Heatmap -", obj.name, sep = " "),
+      title = title,
       xaxis = list(title = "Year"),
       yaxis = list(title = time_unit)
     )
