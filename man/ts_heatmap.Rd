@@ -4,17 +4,24 @@
 \alias{ts_heatmap}
 \title{Heatmap Plot for Time Series}
 \usage{
-ts_heatmap(ts.obj, last = NULL, frequency = NULL)
+ts_heatmap(ts.obj, last = NULL, wday = TRUE, color = "Blues",
+  title = NULL)
 }
 \arguments{
 \item{ts.obj}{A univariate time series object of a class "ts", "zoo", "xts", and the data frame family (data.frame, data.table, tbl, tibble, etc.) with a 
 Date column and at least one numeric column. This function support time series objects with a daily, weekly, monthly and quarterly frequencies}
 
-\item{last}{An integer, set the last number of observations to present}
+\item{last}{An integer (optional), set a subset using only the last observations in the series}
 
-\item{frequency}{An integer, relevant only if using daily data as input, ignore otherwise. 
-Provides the ability to transform daily data to weekday (if set to 7) 
-or day of the year (if set to 365) structure.If not set or NULL will use by default the weekday option.}
+\item{wday}{An boolean, provides a weekday veiw for daily data (relevent only for objects with dates such as xts, zoo, data.frame, etc.)}
+
+\item{color}{A character, setting the color palette of the heatmap. 
+Corresponding to any of the RColorBrewer palette or any other arguments of the \code{\link[col_numeric]{scales}} function. 
+By default using the "Blues" palette}
+
+\item{title}{A character (optional), set the plot title}
+
+\item{padding}{A boolean, if TRUE will add to the heatmap spaces between the observations}
 }
 \description{
 Heatmap plot for time series object by it periodicity (currently support only daily, weekly, monthly and quarterly frequencies)
