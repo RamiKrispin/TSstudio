@@ -442,10 +442,13 @@ ts_polar <- function(ts.obj, title = NULL, width = 600, height = 600,
 #' @export
 #' @param ts.obj A univariate time series object of a class "ts", "zoo", "xts", and the data frame family (data.frame, data.table, tbl, tibble, etc.) with a 
 #' Date column and at least one numeric column. This function support time series objects with a daily, weekly, monthly and quarterly frequencies 
-#' @param last An integer, set the last number of observations to present
-#' @param frequency An integer, relevant only if if the input data has daily frequency, ignored otherwise. 
-#' Provides the ability to transform daily data to weekday (if set to 7) 
-#' or day of the year (if set to 365) structure.If not set or NULL will use by default the weekday option.
+#' @param last An integer (optional), set a subset using only the last observations in the series
+#' @param wday An boolean, provides a weekday veiw for daily data (relevent only for objects with dates such as xts, zoo, data.frame, etc.)
+#' @param color A character, setting the color palette of the heatmap. 
+#' Corresponding to any of the RColorBrewer palette or any other arguments of the \code{\link[col_numeric]{scales}} function. 
+#' By default using the "Blues" palette
+#' @param title A character (optional), set the plot title
+#' @param padding A boolean, if TRUE will add to the heatmap spaces between the observations
 #' @description Heatmap plot for time series object by it periodicity (currently support only daily, weekly, monthly and quarterly frequencies)
 #' @examples
 #' data(USgas)
@@ -456,53 +459,334 @@ ts_polar <- function(ts.obj, title = NULL, width = 600, height = 600,
 
 # --- The ts_heatmap function ---
 
-ts_heatmap <- function(ts.obj, last = NULL, frequency = NULL) {
+
+ts_heatmap <- function(ts.obj, last = NULL, wday = TRUE, color = "Blues", title = NULL) {
   
   `%>%` <- magrittr::`%>%`
-  df <-  p <- obj.name <-  NULL
+  df <- df1 <- df2 <- freq <- obj.name <- NULL
+  diff_mean <- col_class <- date_col <-  numeric_col <- NULL
+  obj.name <- base::deparse(base::substitute(ts.obj))
   
+  
+  
+  # Set the plot title
+  if(base::is.null(title)){
+    title <- base::paste("Heatmap -", obj.name, sep = " ")
+  } else if(!base::is.character(title)){
+    warning("The 'title' object is not character object, using the default option")
+    title <- base::paste("Heatmap -", obj.name, sep = " ")
+  } 
+  
+  
+  # Error handling
   # Checking the last parameter
   if(!base::is.null(last)){
     if(!base::is.numeric(last) | last <= 0){
       stop("The 'last' parameter is not valid")
     } else {
-      if(last != round(last)){
+      if(last != base::round(last)){
         stop("The 'last' parameter is not integer")
       }
     }
   }
   
-  obj.name <- base::deparse(base::substitute(ts.obj))
-  df <- TSstudio::ts_reshape(ts.obj, type = "wide", frequency = frequency)
   
-  
-  if(!base::is.null(last)){
+  # Stage 1 transforming the time series object to data frame
+  # Input ts object
+  if(stats::is.ts(ts.obj)){
+    if(stats::is.mts(ts.obj)){
+      ts.obj <- ts.obj[,1]
+      warning("The input object is a 'mts' class, by defualt will use only the first series as an input")
+    }
     
-    df <- df[, c(1, (base::ncol(df) - base::ceiling(last / stats::frequency(ts.obj))):ncol(df))]  
-  }
-  
-  z <- base::as.matrix(df[, -1])
-  z_text <- base::matrix(NA, nrow = nrow(z), ncol = ncol(z))
-  time_unit <- base::trimws(base::names(df)[1])
-  time_unit_up <- base::paste(base::toupper(base::substr(time_unit, 1, 1)), 
-                              base::substr(time_unit,2, base::nchar(time_unit)), sep = "")
-  for(c in 1:base::ncol(z_text)){
-    for(r in 1:base::nrow(z_text)){
-      z_text[r, c] <- base::paste('Value: ', z[r,c],
-                                  '<br> Year : ', base::colnames(z)[c],
-                                  '<br>' ,time_unit_up, ' :', r, sep = " ")
+    freq <- stats::frequency(ts.obj)
+    
+    if(base::length(ts.obj) < freq){
+      stop("The length of the series is smaller than the length of full cycle")
+    }
+    
+    start_main <- stats::start(ts.obj)[1]
+    start_minor <- stats::start(ts.obj)[2]
+    
+    if(freq %in% c(7, 52, 365, 12, 4)){
+      minor1 <- base::seq(from = start_minor, to = freq, by = 1)
+      minor2 <- base::rep(x = 1:freq, length.out = base::length(ts.obj) - base::length(minor1))
+      main1 <- base::rep(x = start_main, length.out = base::length(minor1))
+      main2 <- base::rep(x = (start_main + 1):stats::end(ts.obj)[1], 
+                         each = freq, 
+                         len = base::length(ts.obj) - base::length(minor1))
+      df <- data.frame(main = c(main1, main2), 
+                       minor = c(minor1, minor2), 
+                       y = base::as.numeric(ts.obj))
+      
+      if(freq == 365){
+        time_unit <- "Day of the year" 
+      } else if(freq == 7){
+        time_unit <- "Day of the week"
+      } else if(freq == 52){
+        time_unit <- "Week"
+      } else if(freq == 12){
+        df$minor <-  base::factor(base::month.abb[df$minor], levels = month.abb)
+        time_unit <- "Month"
+      } else if(freq == 4){
+        time_unit <- "Quarter"
+      }
+      
+    } else {
+      stop("The frequency of the input object is not valid, must be on of the following - daily, weekly, monthly or quarterly")
+    } 
+    # Input xts or zoo objects
+  } else if(xts::is.xts(ts.obj) | zoo::is.zoo(ts.obj)){
+    if(!base::is.null(base::ncol(ts.obj))){
+      if(base::ncol(ts.obj) > 1){
+        ts.obj <- ts.obj[,1]
+        warning("The input object is a multiple time series object, by defualt will use only the first series as an input")
+      }
+    }
+    if(lubridate::is.Date(zoo::index(ts.obj))){
+      if(xts::periodicity(ts.obj)$scale == "daily"){
+        df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+                         minor = lubridate::yday(zoo::index(ts.obj)), 
+                         wday = lubridate::wday(zoo::index(ts.obj)),
+                         wday1 = lubridate::wday(zoo::index(ts.obj),label = TRUE),
+                         y = base::as.numeric(ts.obj[,1]))
+        time_unit <- "Day"
+      } else if(xts::periodicity(ts.obj)$scale == "weekly"){
+        df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+                         minor = lubridate::week(zoo::index(ts.obj)), 
+                         y = base::as.numeric(ts.obj[,1]))
+        time_unit <- "Week"
+      } else if(xts::periodicity(ts.obj)$scale == "monthly"){
+        df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+                         minor = lubridate::month(zoo::index(ts.obj), label = TRUE), 
+                         y = base::as.numeric(ts.obj[,1]))
+        time_unit <- "Month"
+      } else if(xts::periodicity(ts.obj)$scale == "quarterly"){
+        df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+                         minor = lubridate::quarter(zoo::index(ts.obj)), 
+                         y = base::as.numeric(ts.obj[,1]))
+        time_unit <- "Quarter"
+      } 
+    }
+    # Input data.frame or tbl or data.table objects
+  } else if(base::is.data.frame(ts.obj) | 
+            dplyr::is.tbl(ts.obj) | 
+            data.table::is.data.table(ts.obj)){ # Case 3 the object is a data frame 
+    # Identify the columns classes
+    
+    ts.obj <- base::as.data.frame(ts.obj)
+    col_class <- base::lapply(ts.obj, class)
+    col_date <- base::lapply(ts.obj, lubridate::is.Date)
+    col_POSIXt <- base::lapply(ts.obj, lubridate::is.POSIXt)
+    
+    # Check if Date object exist
+    if(any(col_date == TRUE) & any(col_POSIXt == TRUE)){
+      d <- t <- NULL
+      d <- base::min(base::which(col_date == TRUE))
+      t <- base::min(base::which(col_POSIXt == TRUE))
+      if(d > t){
+        warning("The data frame contain multiple date or time objects,",
+                "using the first one as the plot index")
+        date_col <- t
+      } else {
+        warning("The data frame contain multiple date or time objects,",
+                "using the first one as the plot index")
+        date_col <- d
+      }
+    } else if(base::any(col_date == TRUE) | base::any(col_POSIXt == TRUE)){
+      if(base::any(col_date == TRUE)){
+        if(base::length(base::which(col_date == TRUE)) > 1){
+          date_col <-  base::min(base::which(col_date == TRUE))
+          warning("There are multipe 'date' objects in the data frame,",
+                  "using the first one object as the plot index")
+        } else {
+          date_col <-  base::min(base::which(col_date == TRUE))
+        }
+      } else if(base::any(col_POSIXt == TRUE)){
+        if(base::length(base::which(col_POSIXt == TRUE)) > 1){
+          date_col <-  base::min(base::which(col_POSIXt == TRUE))
+          warning("There are multipe 'POSIXt' objects in the data frame,",
+                  "using the first one as the plot index")
+        } else {
+          date_col <-  base::min(base::which(col_POSIXt == TRUE))
+        }
+      } 
+    }else {
+      stop("No 'Date' or 'POSIXt' object available in the data frame,", 
+           "please check if the data format defined properly")
+    }
+    
+    
+    # Identify the numeric/integer objects in the data frame  
+    numeric_col <- base::which(col_class == "numeric" | col_class == "integer")
+    # Stop if there is no any numeric values in the data frame, otherwise build the data frame 
+    if(base::length(numeric_col) == 0){
+      stop("None of the data frame columns is numeric,", 
+           "please check if the data format is defined properly")
+    }
+    
+    # Check if the object has multiple time series
+    df_temp <- NULL
+    if(length(numeric_col) == 1){
+      df_temp <- base::data.frame(date = ts.obj[, date_col], y =  ts.obj[, numeric_col])
+    } else {
+      warning("The input object is a multiple time series object, by defualt will use only the first series as an input")
+      df_temp <- base::data.frame(date = ts.obj[, date_col], ts.obj[, numeric_col[1]])
+    }
+    
+    data_diff <- NULL
+    date_diff <- base::diff(as.numeric(df_temp$date))
+    
+    if(base::min(date_diff) == base::max(date_diff) & base::mean(date_diff) == 1){
+      # Daily
+      df <- data.frame(main = lubridate::year(df_temp$date),
+                       minor = lubridate::yday(df_temp$date),
+                       wday = lubridate::wday(df_temp$date),
+                       wday1 = lubridate::wday(df_temp$date, label = TRUE),
+                       y = df_temp$y)
+      time_unit <- "Day"
+    } else if(base::min(date_diff) == base::max(date_diff) & base::mean(date_diff) == 7){
+      # Weekly
+      df <- data.frame(main = lubridate::year(df_temp$date),
+                       minor = lubridate::week(df_temp$date),
+                       y = df_temp$y)
+      time_unit <- "Week"
+    } else if(base::min(date_diff) >= 28 &  base::max(date_diff) <= 31 & 
+              base::mean(date_diff) < 31 & base::mean(date_diff) > 28){
+      # Monthly
+      df <- data.frame(main = lubridate::year(df_temp$date),
+                       minor = lubridate::month(df_temp$date, label = TRUE),
+                       y = df_temp$y)
+      time_unit <- "Month"
+    } else if(base::min(date_diff) >= 90 &  base::max(date_diff) <= 92 & 
+              base::mean(date_diff) < 92 & base::mean(date_diff) > 90){
+      # Quarterly
+      df <- data.frame(main = lubridate::year(df_temp$date),
+                       minor = lubridate::quarter(df_temp$date),
+                       y = df_temp$y)
+      time_unit <- "Quarter"
+      
+    } else{
+      stop("The frequency of the input dataset is not valid, must be on of the following - daily, weekly, monthly or quarterly")
     }
   }
-  p <- plotly::plot_ly(z = z, x = colnames(df[,-1]), y = df[,1], type = "heatmap",
-                       hoverinfo = 'text',
-                       text = z_text
-  ) %>% plotly::layout(
-    title = base::paste("Heatmap -", obj.name, sep = " "),
-    xaxis = list(title = "Year"),
-    yaxis = list(title = time_unit_up)
-  )
+  
+  if(!base::is.null(last)){
+    df <- df[(base::nrow(df) - last + 1):base::nrow(df),]
+  }
   
   
+  
+  if(padding){
+    if(time_unit %in% c("Month", "Quarter")){
+      xgap = 3
+      ygap = 3
+    } else if(time_unit == "Day" & wday){
+      xgap = 1
+      ygap = 1
+    }else {
+      xgap = 1
+      ygap = NULL
+    }
+  } else {
+    xgap <- NULL
+    ygap <- NULL
+  }
+  
+  
+  if(time_unit == "Day" & wday){
+    p_list <- vals <- o <- cols <- colz <- NULL
+    vals <- unique(scales::rescale(df$y))
+    o <- base::order(vals, decreasing = FALSE)
+    cols <- scales::col_numeric(color, domain = NULL)(vals)
+    colz <- setNames(data.frame(vals[o], cols[o]), NULL)
+    
+    p_list <- base::lapply(base::min(df$main):base::max(df$main), function(i){
+      df1 <- NULL
+      df1 <- df %>% dplyr::filter(main == i) %>%
+        dplyr::arrange(minor) 
+      
+      df1$week <- base::rep(1:53, each = 7)[df1$wday[1]:(base::nrow(df1) + df1$wday[1] - 1)]
+      
+      df2 <- base::suppressMessages(df1 %>% dplyr::select(wday1, week, y) %>%reshape2::dcast(wday1 ~ week))
+      
+      z <- base::as.matrix(df2[, -1])
+      z_text <- base::matrix(NA, nrow = nrow(z), ncol = ncol(z))
+      for(c in 1:base::ncol(z_text)){
+        for(r in 1:base::nrow(z_text)){
+          z_text[r, c] <- base::paste('Value: ', z[r,c],
+                                      '<br> Year : ', i,
+                                      '<br>' ,time_unit, ' :', r, sep = " ")
+        }
+      }
+      if(i == base::min(df$main)){
+        showscale <- TRUE
+      } else {
+        showscale <- FALSE
+      }
+      p_day <- plotly::plot_ly(z = z, x = colnames(df2[,-1]), y = df2[,1], 
+                               type = "heatmap",
+                               colorscale = colz,
+                               hoverinfo = 'text',
+                               text = z_text,
+                               xgap = xgap,
+                               ygap = xgap,
+                               showscale = showscale
+      ) %>% plotly::layout(
+        xaxis = list(title = i, range = c(0,54)),
+        yaxis = list(title = time_unit),
+        annotations = list(text = i, 
+                           showarrow = FALSE, 
+                           yref = "paper",
+                           yanchor = "bottom",
+                           xanchor = "center",
+                           align = "center",
+                           x = 25,
+                           y = -0.25)
+      ) %>% plotly::colorbar(limits = c(base::min(df1$y), base::max(df1$y)))
+      
+      return(p_day)
+    })
+    p <- plotly::subplot(p_list, nrows = base::length(base::unique(df$main))) %>% 
+      plotly::layout(title = title)
+  } else {
+    df1 <- base::suppressMessages(df %>% reshape2::dcast(minor ~ main))
+    
+    
+    
+    z <- base::as.matrix(df1[, -1])
+    z_text <- base::matrix(NA, nrow = nrow(z), ncol = ncol(z))
+    # time_unit <- base::trimws(base::names(df)[1])
+    # time_unit_up <- base::paste(base::toupper(base::substr(time_unit, 1, 1)), 
+    #                             base::substr(time_unit,2, base::nchar(time_unit)), sep = "")
+    for(c in 1:base::ncol(z_text)){
+      for(r in 1:base::nrow(z_text)){
+        z_text[r, c] <- base::paste('Value: ', z[r,c],
+                                    '<br> Year : ', base::colnames(z)[c],
+                                    '<br>' ,time_unit, ' :', r, sep = " ")
+      }
+    }
+    
+    
+    
+    vals <- base::unique(scales::rescale(c(df$y)))
+    o <- order(vals, decreasing = FALSE)
+    cols <- scales::col_numeric(color, domain = NULL)(vals)
+    colz <- setNames(data.frame(vals[o], cols[o]), NULL)
+    
+    p <- plotly::plot_ly(z = z, x = colnames(df1[,-1]), y = df1[,1], 
+                         type = "heatmap",
+                         colorscale = colz,
+                         hoverinfo = 'text',
+                         text = z_text,
+                         xgap = xgap,
+                         ygap = ygap
+    ) %>% plotly::layout(
+      title = base::paste("Heatmap -", obj.name, sep = " "),
+      xaxis = list(title = "Year"),
+      yaxis = list(title = time_unit)
+    )
+  }
   return(p)
 }
 
