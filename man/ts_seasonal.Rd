@@ -2,8 +2,7 @@
 % Please edit documentation in R/ts_seasonal.R
 \name{ts_seasonal}
 \alias{ts_seasonal}
-\title{Seasonality Visualization of Time Series Object
- Seasonality Visualization of Time Series Object}
+\title{Seasonality Visualization of Time Series Object}
 \usage{
 ts_seasonal(ts.obj, type = "normal", title = NULL, Ygrid = TRUE,
   Xgrid = TRUE, last = NULL, palette = "Set1",
