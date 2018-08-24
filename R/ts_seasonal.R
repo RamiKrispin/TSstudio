@@ -1,5 +1,4 @@
 #'  Seasonality Visualization of Time Series Object
-#'  Seasonality Visualization of Time Series Object
 #' @export ts_seasonal
 #' @param ts.obj Input object, either a univariate time series object of a class "ts", "zoo", "xts", or a data frame object of a class
 #' "data.frame", "tbl", "data.table" as long as there is at least one "Date"/"POSIXt" and a "numeric" objects 
@@ -444,7 +443,7 @@ ts_polar <- function(ts.obj, title = NULL, width = 600, height = 600,
 #' @param ts.obj A univariate time series object of a class "ts", "zoo", "xts", and the data frame family (data.frame, data.table, tbl, tibble, etc.) with a 
 #' Date column and at least one numeric column. This function support time series objects with a daily, weekly, monthly and quarterly frequencies 
 #' @param last An integer, set the last number of observations to present
-#' @param frequency An integer, relevant only if using daily data as input, ignore otherwise. 
+#' @param frequency An integer, relevant only if if the input data has daily frequency, ignored otherwise. 
 #' Provides the ability to transform daily data to weekday (if set to 7) 
 #' or day of the year (if set to 365) structure.If not set or NULL will use by default the weekday option.
 #' @description Heatmap plot for time series object by it periodicity (currently support only daily, weekly, monthly and quarterly frequencies)
