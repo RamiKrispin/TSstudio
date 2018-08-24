@@ -477,7 +477,10 @@ ts_heatmap <- function(ts.obj, last = NULL, wday = TRUE, color = "Blues", title 
     title <- base::paste("Heatmap -", obj.name, sep = " ")
   } 
   
-  
+  if(!base::is.logical(padding)){
+    warning("The 'padding' argument is not valid, setting it to TRUE (default)")
+    padding <- TRUE
+  }
   # Error handling
   # Checking the last parameter
   if(!base::is.null(last)){
