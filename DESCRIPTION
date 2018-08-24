@@ -22,6 +22,7 @@ Imports:
   plotly (>= 4.7.1),
   RColorBrewer(>= 1.1-2),
   reshape2 (>= 1.4.2),
+  scales(>= 1.0.0),
   viridis (>= 0.5.1),
   xts (>= 0.10-1),
   zoo (>= 1.8-0)
