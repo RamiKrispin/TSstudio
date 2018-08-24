@@ -460,7 +460,7 @@ ts_polar <- function(ts.obj, title = NULL, width = 600, height = 600,
 # --- The ts_heatmap function ---
 
 
-ts_heatmap <- function(ts.obj, last = NULL, wday = TRUE, color = "Blues", title = NULL) {
+ts_heatmap <- function(ts.obj, last = NULL, wday = TRUE, color = "Blues", title = NULL, padding = TRUE) {
   
   `%>%` <- magrittr::`%>%`
   df <- df1 <- df2 <- freq <- obj.name <- NULL
