@@ -5,7 +5,7 @@
 \title{Heatmap Plot for Time Series}
 \usage{
 ts_heatmap(ts.obj, last = NULL, wday = TRUE, color = "Blues",
-  title = NULL)
+  title = NULL, padding = TRUE)
 }
 \arguments{
 \item{ts.obj}{A univariate time series object of a class "ts", "zoo", "xts", and the data frame family (data.frame, data.table, tbl, tibble, etc.) with a 
