@@ -699,11 +699,14 @@ ts_heatmap <- function(ts.obj, last = NULL, wday = TRUE, color = "Blues", title 
   
   if(time_unit == "Day" & wday){
     p_list <- vals <- o <- cols <- colz <- NULL
+    df$vals <- scales::rescale(df$y)
     vals <- unique(scales::rescale(df$y))
     o <- base::order(vals, decreasing = FALSE)
     cols <- scales::col_numeric(color, domain = NULL)(vals)
     colz <- setNames(data.frame(vals[o], cols[o]), NULL)
-    
+    colz_name <- colz
+    names(colz_name) <- c("vals", "cols")
+    df <- base::suppressMessages(df %>% dplyr::left_join(colz_name))
     p_list <- base::lapply(base::min(df$main):base::max(df$main), function(i){
       df1 <- NULL
       df1 <- df %>% dplyr::filter(main == i) %>%
@@ -713,6 +716,11 @@ ts_heatmap <- function(ts.obj, last = NULL, wday = TRUE, color = "Blues", title 
       } else if(df1$minor[1] == 1){
         df1$week <- base::rep(1:53, each = 7)[df1$wday[1]:(base::nrow(df1) + df1$wday[1] - 1)]  
       }
+      
+      
+      colz_sub <- df1 %>% dplyr::select(vals, cols) %>%
+        dplyr::arrange(-vals)
+      colz_sub <- setNames(colz_sub, NULL)
       
       df2 <- base::suppressMessages(df1 %>% dplyr::select(wday1, week, y) %>%reshape2::dcast(wday1 ~ week))
       
@@ -730,9 +738,18 @@ ts_heatmap <- function(ts.obj, last = NULL, wday = TRUE, color = "Blues", title 
       } else {
         showscale <- FALSE
       }
+      
+      df_temp <- base::suppressMessages(df1 %>% dplyr::select(y, cols) %>%
+                                          dplyr::distinct() %>% 
+                                          dplyr::arrange(y))
+      
+      df_temp$scale <- scales::rescale(df_temp$y)
+      colz_sub <- df_temp %>% dplyr::select(scale, cols)
+      colz_sub <- setNames(colz_sub, NULL)
+      
       p_day <- plotly::plot_ly(z = z, x = colnames(df2[,-1]), y = df2[,1], 
                                type = "heatmap",
-                               colorscale = colz,
+                               colorscale = colz_sub,
                                hoverinfo = 'text',
                                text = z_text,
                                xgap = xgap,
