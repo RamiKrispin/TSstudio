@@ -150,6 +150,14 @@ ts_seasonal <- function(ts.obj,
                          minor = lubridate::quarter(zoo::index(ts.obj)), 
                          y = base::as.numeric(ts.obj[,1]))
       } 
+    } else if(class(zoo::index(ts.obj)) == "yearqtr" & xts::periodicity(ts.obj)$scale == "quarterly"){
+      df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+                       minor = lubridate::quarter(zoo::index(ts.obj)), 
+                       y = base::as.numeric(ts.obj[,1]))
+    } else if(class(zoo::index(ts.obj)) == "yearmon" & xts::periodicity(ts.obj)$scale == "monthly"){
+      df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+                       minor = lubridate::quarter(zoo::index(ts.obj)), 
+                       y = base::as.numeric(ts.obj[,1]))
     }
     # Input data.frame or tbl or data.table objects
   } else if(base::is.data.frame(ts.obj) | 
