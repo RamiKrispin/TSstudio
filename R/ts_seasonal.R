@@ -580,6 +580,16 @@ ts_heatmap <- function(ts.obj, last = NULL, wday = TRUE, color = "Blues", title 
                          y = base::as.numeric(ts.obj[,1]))
         time_unit <- "Quarter"
       } 
+    } else if(class(zoo::index(ts.obj)) == "yearqtr" & xts::periodicity(ts.obj)$scale == "quarterly"){
+      df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+                       minor = lubridate::quarter(zoo::index(ts.obj)), 
+                       y = base::as.numeric(ts.obj[,1]))
+      time_unit <- "Quarter"
+    } else if(class(zoo::index(ts.obj)) == "yearmon" & xts::periodicity(ts.obj)$scale == "monthly"){
+      df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+                       minor = lubridate::month(zoo::index(ts.obj), label = TRUE), 
+                       y = base::as.numeric(ts.obj[,1]))
+      time_unit <- "Month"
     }
     # Input data.frame or tbl or data.table objects
   } else if(base::is.data.frame(ts.obj) | 
