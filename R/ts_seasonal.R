@@ -127,8 +127,10 @@ ts_seasonal <- function(ts.obj,
     # Input xts or zoo objects
   } else if(xts::is.xts(ts.obj) | zoo::is.zoo(ts.obj)){
     if(!base::is.null(base::ncol(ts.obj))){
-      ts.obj <- ts.obj[,1]
-      warning("The input object is a multiple time series object, by defualt will use only the first series as an input")
+      if(base::ncol(ts.obj) > 1){
+        ts.obj <- ts.obj[,1]
+        warning("The input object is a multiple time series object, by defualt will use only the first series as an input")
+      }
     }
     if(lubridate::is.Date(zoo::index(ts.obj))){
       if(xts::periodicity(ts.obj)$scale == "daily"){
