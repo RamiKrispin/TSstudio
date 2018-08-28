@@ -171,7 +171,7 @@ ts_seasonal <- function(ts.obj,
     col_POSIXt <- base::lapply(ts.obj, lubridate::is.POSIXt)
     
     # Check if Date object exist
-    if(any(col_date == TRUE) & any(col_POSIXt == TRUE)){
+    if(base::any(col_date == TRUE) & base::any(col_POSIXt == TRUE)){
       d <- t <- NULL
       d <- base::min(base::which(col_date == TRUE))
       t <- base::min(base::which(col_POSIXt == TRUE))
@@ -603,7 +603,7 @@ ts_heatmap <- function(ts.obj, last = NULL, wday = TRUE, color = "Blues", title 
     col_POSIXt <- base::lapply(ts.obj, lubridate::is.POSIXt)
     
     # Check if Date object exist
-    if(any(col_date == TRUE) & any(col_POSIXt == TRUE)){
+    if(base::any(col_date == TRUE) & base::any(col_POSIXt == TRUE)){
       d <- t <- NULL
       d <- base::min(base::which(col_date == TRUE))
       t <- base::min(base::which(col_POSIXt == TRUE))
