@@ -176,11 +176,11 @@ ts_seasonal <- function(ts.obj,
       d <- base::min(base::which(col_date == TRUE))
       t <- base::min(base::which(col_POSIXt == TRUE))
       if(d > t){
-        warning("The data frame contain multiple date or time objects,",
+        warning("The data frame contains multiple date or time objects,",
                 "using the first one as the plot index")
         date_col <- t
       } else {
-        warning("The data frame contain multiple date or time objects,",
+        warning("The data frame contains multiple date or time objects,",
                 "using the first one as the plot index")
         date_col <- d
       }
@@ -608,11 +608,11 @@ ts_heatmap <- function(ts.obj, last = NULL, wday = TRUE, color = "Blues", title 
       d <- base::min(base::which(col_date == TRUE))
       t <- base::min(base::which(col_POSIXt == TRUE))
       if(d > t){
-        warning("The data frame contain multiple date or time objects,",
+        warning("The data frame contains multiple date or time objects,",
                 "using the first one as the plot index")
         date_col <- t
       } else {
-        warning("The data frame contain multiple date or time objects,",
+        warning("The data frame contains multiple date or time objects,",
                 "using the first one as the plot index")
         date_col <- d
       }
