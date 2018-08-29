@@ -1388,9 +1388,39 @@ ts_ma <- function(ts.obj,
 #' ts_surface(USgas) 
 #' 
 #' 
-ts_quantile <- function(ts.obj, upper = 0.75, lower = 0.25, period = "monthly", type = "multiple", n = 1){
+ts_quantile <- function(ts.obj, upper = 0.75, lower = 0.25, period = NULL, type = "multiple", n = 1){
   
   freq <- quantiles <- palette <- NULL 
+  
+  # Error handling
+  if(!base::is.numeric(upper)){
+    warning("The value of the 'upper' argument is invalid, using the default - 0.75")
+    upper <- 0.75
+  } else if(upper >1 | upper <= 0){
+    warning("The value of the 'upper' argument is invalid, using the default - 0.75")
+    upper <- 0.75
+  }
+  
+  if(!base::is.numeric(lower)){
+    warning("The value of the 'upper' argument is invalid, using the default - 0.25")
+    lower <- 0.25
+  } else if(lower >=1 | lower < 0){
+    warning("The value of the 'lower' argument is invalid, using the default - 0.25")
+    upper <- 0.25
+  }
+  
+  if(lower <= upper){
+    stop("The value of the 'lower' argument cannot be greater or equal than the 'upper' argument")
+  }
+  
+  if(!base::is.numeric(n)){
+    warning("The value of the 'n' argument is invalid, using default - n = 1")
+    n <- 1
+  } else if(n%%1 != 0){
+    warning("The value of the 'n' argument is invalid, using default - n = 1")
+    n <- 1
+  }
+  
   
   quantiles <- c(lower, upper)
   palette <- base::data.frame(name = row.names(RColorBrewer::brewer.pal.info),
@@ -1405,7 +1435,9 @@ ts_quantile <- function(ts.obj, upper = 0.75, lower = 0.25, period = "monthly", 
   if(xts::is.xts(ts.obj) || zoo::is.zoo(ts.obj)){
     df <- base::data.frame(date = zoo::index(ts.obj), 
                            data = base::as.numeric(ts.obj))
-    if(xts::periodicity(ts.obj)$scale == "daily"){
+    if(xts::periodicity(ts.obj)$scale == "monthly"){
+      freq <- "monthly"
+    } else if(xts::periodicity(ts.obj)$scale == "daily"){
       freq <- "daily"
     } else if(xts::periodicity(ts.obj)$scale == "hourly" && xts::periodicity(ts.obj)$frequency == 3600){
       freq <- "hourly"
@@ -1504,29 +1536,41 @@ ts_quantile <- function(ts.obj, upper = 0.75, lower = 0.25, period = "monthly", 
   if(freq == "quarterly"){
     df$to <- lubridate::quarter(df$date)
     df$to_num <- lubridate::quarter(df$date)
+    # dtick <- 12
   }else if(freq == "monthly"){
     df$to <- lubridate::month(df$date, label = TRUE)
     df$to_num <- lubridate::month(df$date)
+    # dtick <- 12
   } else if(freq == "daily"){
     df$to <- lubridate::wday(df$date, label = TRUE)
     df$to_num <- lubridate::wday(df$date)
+    # dtick <- 12
   } else if(freq == "hourly"){
     df$to <- lubridate::hour(df$date)
     df$to_num <- lubridate::hour(df$date)
+    # dtick <- 12
   } else if(freq == "half-hour"){
     df$to <- lubridate::hour(df$date) + lubridate::minute(df$date) / 60
     df$to_num <- lubridate::hour(df$date) + lubridate::minute(df$date) / 60
+    # dtick <- 12
   }
   
-  if(period == "weekdays"){
+  if(base::is.null(period)){
+    df$period <- "Total"
+    df$period_num <- 1
+    # dtick <- 12
+  } else if(period == "weekdays"){
     df$period <- lubridate::wday(df$date, label = TRUE)
     df$period_num <- lubridate::wday(df$date)
+    # dtick <- 7
   } else if(period == "monthly"){
     df$period <- lubridate::month(df$date, label = TRUE)
     df$period_num <- lubridate::month(df$date)
+    # dtick <- 12
   } else if(period == "quarterly"){
     df$period <- base::factor(base::paste("Qr.", lubridate::quarter(df$date), sep = ""))
     df$period_num <- lubridate::quarter(df$date)
+    # dtick <- 4
   } else if(period == "yearly"){
     df$period <- lubridate::year(df$date)
     df$period_num <- lubridate::year(df$date) - min(lubridate::year(df$date)) + 1
@@ -1564,7 +1608,7 @@ ts_quantile <- function(ts.obj, upper = 0.75, lower = 0.25, period = "monthly", 
                         line = list(color = colors_set[9]),
                         name = x) %>%
       plotly::layout(yaxis = list(range = plot_range),
-                     xaxis = list(dtick = 4),
+                     xaxis = list(dtick = dtick),
                      annotations = list(text = x, 
                                         showarrow = FALSE, 
                                         xref = "paper",
