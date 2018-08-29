@@ -116,7 +116,7 @@ ts_seasonal <- function(ts.obj,
       main2 <- base::rep(x = (start_main + 1):stats::end(ts.obj)[1], 
                          each = freq, 
                          len = base::length(ts.obj) - base::length(minor1))
-      df <- data.frame(main = c(main1, main2), 
+      df <- base::data.frame(main = c(main1, main2), 
                        minor = c(minor1, minor2), 
                        y = base::as.numeric(ts.obj))
       
@@ -134,28 +134,28 @@ ts_seasonal <- function(ts.obj,
     }
     if(lubridate::is.Date(zoo::index(ts.obj))){
       if(xts::periodicity(ts.obj)$scale == "daily"){
-        df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+        df <- base::data.frame(main = lubridate::year(zoo::index(ts.obj)), 
                          minor = lubridate::yday(zoo::index(ts.obj)), 
                          y = base::as.numeric(ts.obj[,1]))
       } else if(xts::periodicity(ts.obj)$scale == "weekly"){
-        df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+        df <- base::data.frame(main = lubridate::year(zoo::index(ts.obj)), 
                          minor = lubridate::week(zoo::index(ts.obj)), 
                          y = base::as.numeric(ts.obj[,1]))
       } else if(xts::periodicity(ts.obj)$scale == "monthly"){
-        df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+        df <- base::data.frame(main = lubridate::year(zoo::index(ts.obj)), 
                          minor = lubridate::month(zoo::index(ts.obj), label = TRUE), 
                          y = base::as.numeric(ts.obj[,1]))
       } else if(xts::periodicity(ts.obj)$scale == "quarterly"){
-        df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+        df <- base::data.frame(main = lubridate::year(zoo::index(ts.obj)), 
                          minor = lubridate::quarter(zoo::index(ts.obj)), 
                          y = base::as.numeric(ts.obj[,1]))
       } 
     } else if(class(zoo::index(ts.obj)) == "yearqtr" & xts::periodicity(ts.obj)$scale == "quarterly"){
-      df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+      df <- base::data.frame(main = lubridate::year(zoo::index(ts.obj)), 
                        minor = lubridate::quarter(zoo::index(ts.obj)), 
                        y = base::as.numeric(ts.obj[,1]))
     } else if(class(zoo::index(ts.obj)) == "yearmon" & xts::periodicity(ts.obj)$scale == "monthly"){
-      df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+      df <- base::data.frame(main = lubridate::year(zoo::index(ts.obj)), 
                        minor = lubridate::quarter(zoo::index(ts.obj)), 
                        y = base::as.numeric(ts.obj[,1]))
     }
@@ -230,24 +230,24 @@ ts_seasonal <- function(ts.obj,
     
     if(base::min(date_diff) == base::max(date_diff) & base::mean(date_diff) == 1){
       # Daily
-      df <- data.frame(main = lubridate::year(df_temp$date),
+      df <- base::data.frame(main = lubridate::year(df_temp$date),
                        minor = lubridate::yday(df_temp$date),
                        y = df_temp$y)
     } else if(base::min(date_diff) == base::max(date_diff) & base::mean(date_diff) == 7){
       # Weekly
-      df <- data.frame(main = lubridate::year(df_temp$date),
+      df <- base::data.frame(main = lubridate::year(df_temp$date),
                        minor = lubridate::week(df_temp$date),
                        y = df_temp$y)
     } else if(base::min(date_diff) >= 28 &  base::max(date_diff) <= 31 & 
               base::mean(date_diff) < 31 & base::mean(date_diff) > 28){
       # Monthly
-      df <- data.frame(main = lubridate::year(df_temp$date),
+      df <- base::data.frame(main = lubridate::year(df_temp$date),
                        minor = lubridate::month(df_temp$date, label = TRUE),
                        y = df_temp$y)
     } else if(base::min(date_diff) >= 90 &  base::max(date_diff) <= 92 & 
               base::mean(date_diff) < 92 & base::mean(date_diff) > 90){
       # Quarterly
-      df <- data.frame(main = lubridate::year(df_temp$date),
+      df <- base::data.frame(main = lubridate::year(df_temp$date),
                        minor = lubridate::quarter(df_temp$date),
                        y = df_temp$y)
       
@@ -528,7 +528,7 @@ ts_heatmap <- function(ts.obj, last = NULL, wday = TRUE, color = "Blues", title 
       main2 <- base::rep(x = (start_main + 1):stats::end(ts.obj)[1], 
                          each = freq, 
                          len = base::length(ts.obj) - base::length(minor1))
-      df <- data.frame(main = c(main1, main2), 
+      df <- base::data.frame(main = c(main1, main2), 
                        minor = c(minor1, minor2), 
                        y = base::as.numeric(ts.obj))
       
@@ -558,35 +558,35 @@ ts_heatmap <- function(ts.obj, last = NULL, wday = TRUE, color = "Blues", title 
     }
     if(lubridate::is.Date(zoo::index(ts.obj))){
       if(xts::periodicity(ts.obj)$scale == "daily"){
-        df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+        df <- base::data.frame(main = lubridate::year(zoo::index(ts.obj)), 
                          minor = lubridate::yday(zoo::index(ts.obj)), 
                          wday = lubridate::wday(zoo::index(ts.obj)),
                          wday1 = lubridate::wday(zoo::index(ts.obj),label = TRUE),
                          y = base::as.numeric(ts.obj[,1]))
         time_unit <- "Day"
       } else if(xts::periodicity(ts.obj)$scale == "weekly"){
-        df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+        df <- base::data.frame(main = lubridate::year(zoo::index(ts.obj)), 
                          minor = lubridate::week(zoo::index(ts.obj)), 
                          y = base::as.numeric(ts.obj[,1]))
         time_unit <- "Week"
       } else if(xts::periodicity(ts.obj)$scale == "monthly"){
-        df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+        df <- base::data.frame(main = lubridate::year(zoo::index(ts.obj)), 
                          minor = lubridate::month(zoo::index(ts.obj), label = TRUE), 
                          y = base::as.numeric(ts.obj[,1]))
         time_unit <- "Month"
       } else if(xts::periodicity(ts.obj)$scale == "quarterly"){
-        df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+        df <- base::data.frame(main = lubridate::year(zoo::index(ts.obj)), 
                          minor = lubridate::quarter(zoo::index(ts.obj)), 
                          y = base::as.numeric(ts.obj[,1]))
         time_unit <- "Quarter"
       } 
     } else if(class(zoo::index(ts.obj)) == "yearqtr" & xts::periodicity(ts.obj)$scale == "quarterly"){
-      df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+      df <- base::data.frame(main = lubridate::year(zoo::index(ts.obj)), 
                        minor = lubridate::quarter(zoo::index(ts.obj)), 
                        y = base::as.numeric(ts.obj[,1]))
       time_unit <- "Quarter"
     } else if(class(zoo::index(ts.obj)) == "yearmon" & xts::periodicity(ts.obj)$scale == "monthly"){
-      df <- data.frame(main = lubridate::year(zoo::index(ts.obj)), 
+      df <- base::data.frame(main = lubridate::year(zoo::index(ts.obj)), 
                        minor = lubridate::month(zoo::index(ts.obj), label = TRUE), 
                        y = base::as.numeric(ts.obj[,1]))
       time_unit <- "Month"
@@ -662,7 +662,7 @@ ts_heatmap <- function(ts.obj, last = NULL, wday = TRUE, color = "Blues", title 
     
     if(base::min(date_diff) == base::max(date_diff) & base::mean(date_diff) == 1){
       # Daily
-      df <- data.frame(main = lubridate::year(df_temp$date),
+      df <- base::data.frame(main = lubridate::year(df_temp$date),
                        minor = lubridate::yday(df_temp$date),
                        wday = lubridate::wday(df_temp$date),
                        wday1 = lubridate::wday(df_temp$date, label = TRUE),
@@ -670,21 +670,21 @@ ts_heatmap <- function(ts.obj, last = NULL, wday = TRUE, color = "Blues", title 
       time_unit <- "Day"
     } else if(base::min(date_diff) == base::max(date_diff) & base::mean(date_diff) == 7){
       # Weekly
-      df <- data.frame(main = lubridate::year(df_temp$date),
+      df <- base::data.frame(main = lubridate::year(df_temp$date),
                        minor = lubridate::week(df_temp$date),
                        y = df_temp$y)
       time_unit <- "Week"
     } else if(base::min(date_diff) >= 28 &  base::max(date_diff) <= 31 & 
               base::mean(date_diff) < 31 & base::mean(date_diff) > 28){
       # Monthly
-      df <- data.frame(main = lubridate::year(df_temp$date),
+      df <- base::data.frame(main = lubridate::year(df_temp$date),
                        minor = lubridate::month(df_temp$date, label = TRUE),
                        y = df_temp$y)
       time_unit <- "Month"
     } else if(base::min(date_diff) >= 90 &  base::max(date_diff) <= 92 & 
               base::mean(date_diff) < 92 & base::mean(date_diff) > 90){
       # Quarterly
-      df <- data.frame(main = lubridate::year(df_temp$date),
+      df <- base::data.frame(main = lubridate::year(df_temp$date),
                        minor = lubridate::quarter(df_temp$date),
                        y = df_temp$y)
       time_unit <- "Quarter"
@@ -723,7 +723,7 @@ ts_heatmap <- function(ts.obj, last = NULL, wday = TRUE, color = "Blues", title 
     vals <- unique(scales::rescale(df$y))
     o <- base::order(vals, decreasing = FALSE)
     cols <- scales::col_numeric(color, domain = NULL)(vals)
-    colz <- setNames(data.frame(vals[o], cols[o]), NULL)
+    colz <- stats::setNames(base::data.frame(vals[o], cols[o]), NULL)
     colz_name <- colz
     names(colz_name) <- c("vals", "cols")
     df <- base::suppressMessages(df %>% dplyr::left_join(colz_name))
@@ -815,7 +815,7 @@ ts_heatmap <- function(ts.obj, last = NULL, wday = TRUE, color = "Blues", title 
     vals <- base::unique(scales::rescale(c(df$y)))
     o <- order(vals, decreasing = FALSE)
     cols <- scales::col_numeric(color, domain = NULL)(vals)
-    colz <- setNames(data.frame(vals[o], cols[o]), NULL)
+    colz <- base::setNames(base::data.frame(vals[o], cols[o]), NULL)
     
     p <- plotly::plot_ly(z = z, x = colnames(df1[,-1]), y = df1[,1], 
                          type = "heatmap",
