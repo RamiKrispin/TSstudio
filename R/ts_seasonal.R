@@ -1370,3 +1370,216 @@ ts_ma <- function(ts.obj,
   return(output)  
 }  
 
+
+#' Quantile Plot for Time Series
+#' @export
+#' @param ts.obj A univariate time series object of a class "zoo", "xts", or data frame family ("data.frame", "data.table", "tbl")
+#' @param upper A numeric value between 0 and 1 (excluding 0, and greater than the "lower" argument) set the upper bound of the quantile plot 
+#' (using the "probs" argument of the \code{\link[stats]{quantile}} function). By default set to 0.75
+#' @param lower A numeric value between 0 and 1 (excluding 1, and lower than the "upper" argument) set the upper bound of the quantile plot 
+#' (using the "probs" argument of the \code{\link[stats]{quantile}} function). By default set to 0.25
+#' @param period A character, set the period level of the data for the quantile calculation and plot representation. 
+#' Must be one level above the input frequency (e.g., an hourly data can represent by daily, weekdays, monthly, quarterly and yearly). 
+#' Possible options c("daily", "weekdays", "monthly", "quarterly", "yearly")
+#' @param type A character, set the display mode of the plot to either single plot for all periods ("single") or plot for each period ("multiple", default option)
+#' @param n An integer, set the number of plots rows to display (by setting the nrows argument in the \code{\link[plotly]{subplot}} function), must be an integer between 1 and the frequency of the period argument.
+#' @description A quantile plot of time series data, allows the user to display a quantile plot of a series by a subset period
+#' @examples
+#' ts_surface(USgas) 
+#' 
+#' 
+ts_quantile <- function(ts.obj, upper = 0.75, lower = 0.25, period = "monthly", type = "multiple", n = 1){
+  
+  freq <- quantiles <- palette <- NULL 
+  
+  quantiles <- c(lower, upper)
+  palette <- base::data.frame(name = row.names(RColorBrewer::brewer.pal.info),
+                              RColorBrewer::brewer.pal.info, 
+                              stringsAsFactors = FALSE) %>% 
+    dplyr::filter(category == "seq") %>% 
+    dplyr::select(name, n = maxcolors)
+  
+  palette <- palette[c(18, 1, 16, 3, 10, 17, 13, 8, 6, 2, 11, 5, 14, 12, 15, 9, 7, 4), ]
+  
+  
+  if(xts::is.xts(ts.obj) || zoo::is.zoo(ts.obj)){
+    df <- base::data.frame(date = zoo::index(ts.obj), 
+                           data = base::as.numeric(ts.obj))
+    if(xts::periodicity(ts.obj)$scale == "daily"){
+      freq <- "daily"
+    } else if(xts::periodicity(ts.obj)$scale == "hourly" && xts::periodicity(ts.obj)$frequency == 3600){
+      freq <- "hourly"
+    } else if(xts::periodicity(ts.obj)$scale == "minute" && xts::periodicity(ts.obj)$frequency == 30){
+      freq <- "half-hour"
+    } else{
+      stop("The frequency of the input object is invalid, the function support only 'daily', 'hourly' or 'half-hour'")
+    }
+    
+    # Case data frame input
+  } else if(base::is.data.frame(ts.obj) | 
+            dplyr::is.tbl(ts.obj) | 
+            data.table::is.data.table(ts.obj)){
+    
+    ts.obj <- base::as.data.frame(ts.obj)
+    col_class <- base::lapply(ts.obj, class)
+    col_POSIXt <- base::lapply(ts.obj, lubridate::is.POSIXt)
+    col_date <- base::lapply(ts.obj, lubridate::is.Date)
+    numeric_col <- base::which(col_class == "numeric" | col_class == "integer")
+    
+    
+    if(base::any(col_date == TRUE) & base::any(col_POSIXt == TRUE)){
+      d <- t <- NULL
+      d <- base::min(base::which(col_date == TRUE))
+      t <- base::min(base::which(col_POSIXt == TRUE))
+      if(d > t){
+        warning("The data frame contains multiple date or time objects,",
+                "using the first one as the series index")
+        date_col <- t
+      } else {
+        warning("The data frame contains multiple date or time objects,",
+                "using the first one as the plot index")
+        date_col <- d
+      }
+    } else if(base::any(col_date == TRUE) | base::any(col_POSIXt == TRUE)){
+      if(base::any(col_date == TRUE)){
+        if(base::length(base::which(col_date == TRUE)) > 1){
+          date_col <-  base::min(base::which(col_date == TRUE))
+          warning("There are multipe 'date' objects in the data frame,",
+                  "using the first one object as the plot index")
+        } else {
+          date_col <-  base::min(base::which(col_date == TRUE))
+        }
+      } else if(base::any(col_POSIXt == TRUE)){
+        if(base::length(base::which(col_POSIXt == TRUE)) > 1){
+          date_col <-  base::min(base::which(col_POSIXt == TRUE))
+          warning("There are multipe 'POSIXt' objects in the data frame,",
+                  "using the first one as the plot index")
+        } else {
+          date_col <-  base::min(base::which(col_POSIXt == TRUE))
+        }
+      } 
+    }else {
+      stop("No 'Date' or 'POSIXt' object available in the data frame,", 
+           "please check if the data format defined properly")
+    }
+    
+    # Identify the numeric/integer objects in the data frame  
+    numeric_col <- base::which(col_class == "numeric" | col_class == "integer")
+    # Stop if there is no any numeric values in the data frame, otherwise build the data frame 
+    if(base::length(numeric_col) == 0){
+      stop("None of the data frame columns is numeric,", 
+           "please check if the data format is defined properly")
+    }
+    
+    # Check if the object has multiple time series
+    df <- NULL
+    if(length(numeric_col) == 1){
+      df<- base::data.frame(date = ts.obj[, date_col], data =  ts.obj[, numeric_col])
+    } else {
+      warning("The input object is a multiple time series object, by defualt will use only the first series as an input")
+      df <- base::data.frame(date = ts.obj[, date_col], data = ts.obj[, numeric_col[1]])
+    }
+    
+    date_diff <- NULL
+    date_diff <- base::diff(base::as.numeric(df$date))
+    
+    if(base::min(date_diff) == base::max(date_diff) & base::mean(date_diff) == 1){
+      # Daily
+      freq <- "daily"
+    } else if(base::min(date_diff) == base::max(date_diff) & base::mean(date_diff) == 3600){
+      # Hourly
+      freq <- "hourly"
+    } else if(base::min(date_diff) == base::max(date_diff) & base::mean(date_diff) == 1800){
+      # Hourly
+      freq <- "half-hour"
+    } else {
+      stop("The frequency of the input object is invalid, the function support only 'daily', 'hourly' or 'half-hour'")
+    }
+    
+    
+  } else {
+    stop("The input value is invalid, the function support only 'xts', 'zoo', 'data.frame', 'data.table' or 'tbl' objects")
+  }
+  
+  if(freq == "quarterly"){
+    df$to <- lubridate::quarter(df$date)
+    df$to_num <- lubridate::quarter(df$date)
+  }else if(freq == "monthly"){
+    df$to <- lubridate::month(df$date, label = TRUE)
+    df$to_num <- lubridate::month(df$date)
+  } else if(freq == "daily"){
+    df$to <- lubridate::wday(df$date, label = TRUE)
+    df$to_num <- lubridate::wday(df$date)
+  } else if(freq == "hourly"){
+    df$to <- lubridate::hour(df$date)
+    df$to_num <- lubridate::hour(df$date)
+  } else if(freq == "half-hour"){
+    df$to <- lubridate::hour(df$date) + lubridate::minute(df$date) / 60
+    df$to_num <- lubridate::hour(df$date) + lubridate::minute(df$date) / 60
+  }
+  
+  if(period == "weekdays"){
+    df$period <- lubridate::wday(df$date, label = TRUE)
+    df$period_num <- lubridate::wday(df$date)
+  } else if(period == "monthly"){
+    df$period <- lubridate::month(df$date, label = TRUE)
+    df$period_num <- lubridate::month(df$date)
+  } else if(period == "quarterly"){
+    df$period <- base::factor(base::paste("Qr.", lubridate::quarter(df$date), sep = ""))
+    df$period_num <- lubridate::quarter(df$date)
+  } else if(period == "yearly"){
+    df$period <- lubridate::year(df$date)
+    df$period_num <- lubridate::year(df$date) - min(lubridate::year(df$date)) + 1
+  }
+  
+  
+  plot <- base::lapply(unique(df$period), function(x){
+    plot_range <- c(base::min(df$data), base::max(df$data))
+    colors_set <- df1 <- p <- NULL
+    df1 <- df %>% dplyr::filter(period == x) 
+    
+    
+    m <- base::unique(df1$period_num) 
+    
+    df1 <- df1 %>% 
+      dplyr::group_by(to) %>%
+      dplyr::summarise(mean = base::mean(data, na.rm = TRUE),
+                       median = stats::median(data, na.rm = TRUE),
+                       upper = stats::quantile(data, probs = quantiles[2], na.rm = TRUE),
+                       lower = stats::quantile(data, probs = quantiles[1], na.rm = TRUE))  
+    
+    
+    colors_set <- RColorBrewer::brewer.pal(palette$n[m], palette$name[m])
+    p <-  plotly::plot_ly(data = df1) %>%
+      plotly::add_ribbons(data = df1,
+                          x = ~ to,
+                          ymin = ~ lower,
+                          ymax = ~ upper,
+                          line = list(color = colors_set[4]),
+                          fillcolor = colors_set[3],
+                          showlegend = F,
+                          name = "Quantiles") %>%
+      plotly::add_lines(x = ~ to, 
+                        y = ~ median, 
+                        line = list(color = colors_set[9]),
+                        name = x) %>%
+      plotly::layout(yaxis = list(range = plot_range),
+                     xaxis = list(dtick = 4),
+                     annotations = list(text = x, 
+                                        showarrow = FALSE, 
+                                        xref = "paper",
+                                        yref = "paper",
+                                        yanchor = "bottom",
+                                        xanchor = "center",
+                                        align = "center",
+                                        x = 0.1,
+                                        y = 0)
+      )
+    return(p)
+    
+  })
+  
+  output <- plotly::subplot(plot, nrows = n, shareY = T, shareX = T)
+  return(output)
+}
+
