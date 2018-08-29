@@ -455,7 +455,7 @@ ts_polar <- function(ts.obj, title = NULL, width = 600, height = 600,
 #' @param last An integer (optional), set a subset using only the last observations in the series
 #' @param wday An boolean, provides a weekday veiw for daily data (relevent only for objects with dates such as xts, zoo, data.frame, etc.)
 #' @param color A character, setting the color palette of the heatmap. 
-#' Corresponding to any of the RColorBrewer palette or any other arguments of the \code{\link[col_numeric]{scales}} function. 
+#' Corresponding to any of the RColorBrewer palette or any other arguments of the \code{\link[scales]{col_numeric}} function. 
 #' By default using the "Blues" palette
 #' @param title A character (optional), set the plot title
 #' @param padding A boolean, if TRUE will add to the heatmap spaces between the observations
@@ -1369,3 +1369,4 @@ ts_ma <- function(ts.obj,
   class(output) <- "ts_ma"
   return(output)  
 }  
+
