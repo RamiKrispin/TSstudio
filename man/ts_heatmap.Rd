@@ -16,7 +16,7 @@ Date column and at least one numeric column. This function support time series o
 \item{wday}{An boolean, provides a weekday veiw for daily data (relevent only for objects with dates such as xts, zoo, data.frame, etc.)}
 
 \item{color}{A character, setting the color palette of the heatmap. 
-Corresponding to any of the RColorBrewer palette or any other arguments of the \code{\link[col_numeric]{scales}} function. 
+Corresponding to any of the RColorBrewer palette or any other arguments of the \code{\link[scales]{col_numeric}} function. 
 By default using the "Blues" palette}
 
 \item{title}{A character (optional), set the plot title}
