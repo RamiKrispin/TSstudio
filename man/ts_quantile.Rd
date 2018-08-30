@@ -4,7 +4,8 @@
 \alias{ts_quantile}
 \title{Quantile Plot for Time Series}
 \usage{
-ts_quantile(ts.obj, upper = 0.75, lower = 0.25, period = NULL, n = 1)
+ts_quantile(ts.obj, upper = 0.75, lower = 0.25, period = NULL, n = 1,
+  title = NULL, Xtitle = NULL, Ytitle = NULL)
 }
 \arguments{
 \item{ts.obj}{A univariate time series object of a class "zoo", "xts", or data frame family ("data.frame", "data.table", "tbl")}
@@ -21,7 +22,11 @@ Possible options c("daily", "weekdays", "monthly", "quarterly", "yearly")}
 
 \item{n}{An integer, set the number of plots rows to display (by setting the nrows argument in the \code{\link[plotly]{subplot}} function), must be an integer between 1 and the frequency of the period argument.}
 
-\item{type}{A character, set the display mode of the plot to either single plot for all periods ("single") or plot for each period ("multiple", default option)}
+\item{title}{A character, set the plot title, default set to NULL}
+
+\item{Xtitle}{A character, set the X axis title, default set to NULL}
+
+\item{Ytitle}{A character, set the Y axis title, default set to NULL}
 }
 \description{
 A quantile plot of time series data, allows the user to display a quantile plot of a series by a subset period
