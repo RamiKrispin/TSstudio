@@ -1381,17 +1381,46 @@ ts_ma <- function(ts.obj,
 #' @param period A character, set the period level of the data for the quantile calculation and plot representation. 
 #' Must be one level above the input frequency (e.g., an hourly data can represent by daily, weekdays, monthly, quarterly and yearly). 
 #' Possible options c("daily", "weekdays", "monthly", "quarterly", "yearly")
-#' @param type A character, set the display mode of the plot to either single plot for all periods ("single") or plot for each period ("multiple", default option)
 #' @param n An integer, set the number of plots rows to display (by setting the nrows argument in the \code{\link[plotly]{subplot}} function), must be an integer between 1 and the frequency of the period argument.
+#' @param Xtitle A character, set the X axis title, default set to NULL
+#' @param Ytitle A character, set the Y axis title, default set to NULL
+#' @param title A character, set the plot title, default set to NULL
 #' @description A quantile plot of time series data, allows the user to display a quantile plot of a series by a subset period
 #' @examples
 #' 
 #' 
-ts_quantile <- function(ts.obj, upper = 0.75, lower = 0.25, period = NULL, n = 1){
+ts_quantile <- function(ts.obj, upper = 0.75, lower = 0.25, period = NULL, n = 1, title = NULL, Xtitle = NULL, Ytitle = NULL){
   
-  freq <- quantiles <- palette <- NULL 
+  freq <- quantiles <- palette <- obj.name <- NULL 
+  obj.name <- base::deparse(base::substitute(ts.obj))
   
   # Error handling
+  # Set the plot titles
+  if(base::is.null(title)){
+    title <- paste("Quantile Plot -", obj.name, sep = " ")
+  } else if(!base::is.character(title)){
+    warning("The 'title' object is not character object, using the default option")
+    title <- paste("Quantile Plot -", obj.name, sep = " ")
+  }
+  
+  if(!base::is.null(Xtitle)){
+    if(!base::is.character(Xtitle)){
+      warning("The value of the 'Xtitle' is not valid")
+      Xtitle <- ""
+    } 
+  } else {
+    Xtitle <- ""
+  }
+  
+  if(!base::is.null(Ytitle)){
+    if(!base::is.character(Ytitle)){
+      warning("The value of the 'Ytitle' is not valid")
+      Ytitle <- ""
+    } 
+  } else {
+    Ytitle <- ""
+  }
+  
   # Quantile values
   if(!base::is.numeric(upper)){
     warning("The value of the 'upper' argument is invalid, using the default - 0.75")
@@ -1678,6 +1707,9 @@ ts_quantile <- function(ts.obj, upper = 0.75, lower = 0.25, period = NULL, n = 1
     plot[[x]]$plot %>% plotly::layout(yaxis = list(range = c(min_q, max_q)))
   })
   
-  output <- plotly::subplot(p, nrows = n, shareY = T, shareX = T)
+  output <- plotly::subplot(p, nrows = n, shareY = T, shareX = T, titleX = F, titleY = F) %>% 
+    plotly::layout(title = title, xaxis = list(title = Xtitle), yaxis = list(title = Ytitle))
+  
   return(output)
 }
+
