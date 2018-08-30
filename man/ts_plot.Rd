@@ -24,11 +24,11 @@ a minimum of one numeric column and either a Date or POSIXt class column}
 
 \item{type}{Applicable for multiple time series object, plot on a separate plot or all together c("single, "multiple)}
 
-\item{Xtitle}{Set the X axis title, default set to NULL}
+\item{Xtitle}{A character, set the X axis title, default set to NULL}
 
-\item{Ytitle}{Set the Y axis title, default set to NULL}
+\item{Ytitle}{A character, set the Y axis title, default set to NULL}
 
-\item{title}{Set the plot title, default set to NULL}
+\item{title}{A character, set the plot title, default set to NULL}
 
 \item{Xgrid}{Logic,show the X axis grid if set to TRUE}
 
