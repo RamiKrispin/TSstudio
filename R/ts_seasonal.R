@@ -1385,14 +1385,14 @@ ts_ma <- function(ts.obj,
 #' @param n An integer, set the number of plots rows to display (by setting the nrows argument in the \code{\link[plotly]{subplot}} function), must be an integer between 1 and the frequency of the period argument.
 #' @description A quantile plot of time series data, allows the user to display a quantile plot of a series by a subset period
 #' @examples
-#' ts_surface(USgas) 
 #' 
 #' 
-ts_quantile <- function(ts.obj, upper = 0.75, lower = 0.25, period = NULL, type = "multiple", n = 1){
+ts_quantile <- function(ts.obj, upper = 0.75, lower = 0.25, period = NULL, n = 1){
   
   freq <- quantiles <- palette <- NULL 
   
   # Error handling
+  # Quantile values
   if(!base::is.numeric(upper)){
     warning("The value of the 'upper' argument is invalid, using the default - 0.75")
     upper <- 0.75
@@ -1409,15 +1409,23 @@ ts_quantile <- function(ts.obj, upper = 0.75, lower = 0.25, period = NULL, type 
     upper <- 0.25
   }
   
-  if(lower <= upper){
+  if(lower >= upper){
     stop("The value of the 'lower' argument cannot be greater or equal than the 'upper' argument")
   }
   
   if(!base::is.numeric(n)){
-    warning("The value of the 'n' argument is invalid, using default - n = 1")
+    warning("The value of the 'n' argument is invalid (cannot use non numeric and intgeres values as input),",
+            " using the default value - 1")
     n <- 1
   } else if(n%%1 != 0){
-    warning("The value of the 'n' argument is invalid, using default - n = 1")
+    warning("The value of the 'n' argument is invalid (cannot use non integer values as input),",
+            " using the default value - 1")
+    n <- 1
+  }
+  
+  if(n != 1 & base::is.null(period)){
+    warning("The value of the 'n' argument is invalid (cannot apply more than one row when period is set to NULL),", 
+            " using the default value - 1")
     n <- 1
   }
   
@@ -1437,8 +1445,12 @@ ts_quantile <- function(ts.obj, upper = 0.75, lower = 0.25, period = NULL, type 
                            data = base::as.numeric(ts.obj))
     if(xts::periodicity(ts.obj)$scale == "monthly"){
       freq <- "monthly"
+      dtick <- 12
     } else if(xts::periodicity(ts.obj)$scale == "daily"){
       freq <- "daily"
+      if(base::is.null(period)){
+        
+      }
     } else if(xts::periodicity(ts.obj)$scale == "hourly" && xts::periodicity(ts.obj)$frequency == 3600){
       freq <- "hourly"
     } else if(xts::periodicity(ts.obj)$scale == "minute" && xts::periodicity(ts.obj)$frequency == 30){
@@ -1533,31 +1545,45 @@ ts_quantile <- function(ts.obj, upper = 0.75, lower = 0.25, period = NULL, type 
     stop("The input value is invalid, the function support only 'xts', 'zoo', 'data.frame', 'data.table' or 'tbl' objects")
   }
   
+  if(!base::is.null(period)){
+    if(freq == "daily" && period == "weekdays"){
+      warning("The value of the period argument is invalid, cannot apply a 'weekdays' subset with daily frequency. Using the default value - NULL")
+      period <- NULL
+    }
+  }
+  
+  
+  
+  
   if(freq == "quarterly"){
     df$to <- lubridate::quarter(df$date)
     df$to_num <- lubridate::quarter(df$date)
-    # dtick <- 12
+    dtick <- 1
   }else if(freq == "monthly"){
     df$to <- lubridate::month(df$date, label = TRUE)
     df$to_num <- lubridate::month(df$date)
-    # dtick <- 12
+    dtick <- 1
   } else if(freq == "daily"){
     df$to <- lubridate::wday(df$date, label = TRUE)
     df$to_num <- lubridate::wday(df$date)
-    # dtick <- 12
+    dtick <- 1
   } else if(freq == "hourly"){
     df$to <- lubridate::hour(df$date)
     df$to_num <- lubridate::hour(df$date)
-    # dtick <- 12
+    dtick <- 4
   } else if(freq == "half-hour"){
     df$to <- lubridate::hour(df$date) + lubridate::minute(df$date) / 60
     df$to_num <- lubridate::hour(df$date) + lubridate::minute(df$date) / 60
-    # dtick <- 12
+    dtick <- 4
   }
   
   if(base::is.null(period)){
     df$period <- "Total"
     df$period_num <- 1
+    if(n != 1){
+      warning("The value of the 'n' argument is invalid, setting it to 1")
+      n <- 1
+    }
     # dtick <- 12
   } else if(period == "weekdays"){
     df$period <- lubridate::wday(df$date, label = TRUE)
@@ -1576,6 +1602,7 @@ ts_quantile <- function(ts.obj, upper = 0.75, lower = 0.25, period = NULL, type 
     df$period_num <- lubridate::year(df$date) - min(lubridate::year(df$date)) + 1
   }
   
+  min_q <- max_q <- NULL
   
   plot <- base::lapply(unique(df$period), function(x){
     plot_range <- c(base::min(df$data), base::max(df$data))
@@ -1593,6 +1620,10 @@ ts_quantile <- function(ts.obj, upper = 0.75, lower = 0.25, period = NULL, type 
                        lower = stats::quantile(data, probs = quantiles[1], na.rm = TRUE))  
     
     
+    min_q <- base::min(df1$lower)
+    max_q <- base::max(df1$upper)
+    
+    
     colors_set <- RColorBrewer::brewer.pal(palette$n[m], palette$name[m])
     p <-  plotly::plot_ly(data = df1) %>%
       plotly::add_ribbons(data = df1,
@@ -1607,8 +1638,7 @@ ts_quantile <- function(ts.obj, upper = 0.75, lower = 0.25, period = NULL, type 
                         y = ~ median, 
                         line = list(color = colors_set[9]),
                         name = x) %>%
-      plotly::layout(yaxis = list(range = plot_range),
-                     xaxis = list(dtick = dtick),
+      plotly::layout(xaxis = list(dtick = dtick),
                      annotations = list(text = x, 
                                         showarrow = FALSE, 
                                         xref = "paper",
@@ -1619,11 +1649,35 @@ ts_quantile <- function(ts.obj, upper = 0.75, lower = 0.25, period = NULL, type 
                                         x = 0.1,
                                         y = 0)
       )
-    return(p)
+    
+    output <- base::list()
+    output$plot <- p
+    output$min <- min_q
+    output$max <- max_q
+    return(output)
     
   })
   
-  output <- plotly::subplot(plot, nrows = n, shareY = T, shareX = T)
+  min_q <- max_q <- NULL
+  for(i in 1:base::length(plot)){
+    if(i == 1){
+      min_q <- plot[[i]]$min
+      max_q <- plot[[i]]$max
+    } else{
+      if(min_q > plot[[i]]$min){
+        min_q <- plot[[i]]$min
+      }
+      if(max_q < plot[[i]]$max){
+        max_q <- plot[[i]]$max
+      }
+    }  
+  }
+  
+  p <- NULL
+  p <- base::lapply(1:base::length(plot), function(x){
+    plot[[x]]$plot %>% plotly::layout(yaxis = list(range = c(min_q, max_q)))
+  })
+  
+  output <- plotly::subplot(p, nrows = n, shareY = T, shareX = T)
   return(output)
 }
-
