@@ -740,7 +740,7 @@ ts_heatmap <- function(ts.obj, last = NULL, wday = TRUE, color = "Blues", title 
       
       colz_sub <- df1 %>% dplyr::select(vals, cols) %>%
         dplyr::arrange(-vals)
-      colz_sub <- setNames(colz_sub, NULL)
+      colz_sub <- stats::setNames(colz_sub, NULL)
       
       df2 <- base::suppressMessages(df1 %>% dplyr::select(wday1, week, y) %>%reshape2::dcast(wday1 ~ week))
       
@@ -765,7 +765,7 @@ ts_heatmap <- function(ts.obj, last = NULL, wday = TRUE, color = "Blues", title 
       
       df_temp$scale <- scales::rescale(df_temp$y)
       colz_sub <- df_temp %>% dplyr::select(scale, cols)
-      colz_sub <- setNames(colz_sub, NULL)
+      colz_sub <- stats::setNames(colz_sub, NULL)
       
       p_day <- plotly::plot_ly(z = z, x = colnames(df2[,-1]), y = df2[,1], 
                                type = "heatmap",
@@ -815,7 +815,7 @@ ts_heatmap <- function(ts.obj, last = NULL, wday = TRUE, color = "Blues", title 
     vals <- base::unique(scales::rescale(c(df$y)))
     o <- order(vals, decreasing = FALSE)
     cols <- scales::col_numeric(color, domain = NULL)(vals)
-    colz <- base::setNames(base::data.frame(vals[o], cols[o]), NULL)
+    colz <- stats::setNames(base::data.frame(vals[o], cols[o]), NULL)
     
     p <- plotly::plot_ly(z = z, x = colnames(df1[,-1]), y = df1[,1], 
                          type = "heatmap",
