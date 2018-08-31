@@ -46,7 +46,7 @@ ts_seasonal <- function(ts.obj,
   
   `%>%` <- magrittr::`%>%`
   df <- freq <- obj.name <- brewer_palettes <- viridis_palettes <- palette_type <- NULL
-  n_colors <- NULL
+  n_colors <- color_list_normal <- NULL
   diff_mean <- col_class <- date_col <-  numeric_col <- NULL
   obj.name <- base::deparse(base::substitute(ts.obj))
   
@@ -272,11 +272,11 @@ ts_seasonal <- function(ts.obj,
     } else if (palette %in% viridis_palettes){
       color_list <- viridis::viridis_pal(option = base::eval(palette))(base::length(base::unique(df$minor)))  
     } else {
-      warning("The value of the 'palette' argument is in valid, using the default option 'Set1'")
+      warning("The value of the 'palette' argument is invalid, using the default option 'Set1'")
       palette <- "Set1"
       n_colors <- NULL
       n_colors <- RColorBrewer::brewer.pal.info$maxcolors[row.names(RColorBrewer::brewer.pal.info)  == palette]
-      colors_list <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, palette))(base::length(base::unique(df$minor)))
+      colors_list <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(n_colors, palette))(base::length(base::unique(df$minor)))
     }
   }
   
@@ -286,7 +286,7 @@ ts_seasonal <- function(ts.obj,
       n_colors <- RColorBrewer::brewer.pal.info$maxcolors[row.names(RColorBrewer::brewer.pal.info)  == palette_normal]
       colors_list_normal <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(n_colors, palette_normal))(base::max(df$main) - base::min(df$main) + 1)
     } else if (palette_normal %in% viridis_palettes){
-      color_list <- viridis::viridis_pal(option = base::eval(palette_normal))(base::max(df$main) - base::min(df$main) + 1)
+      colors_list_normal <- viridis::viridis_pal(option = base::eval(palette_normal))(base::max(df$main) - base::min(df$main) + 1)
     } else {
       warning("The value of the 'palette_normal' argument is in valid, using the default option 'Spectral'")
       palette_normal <- "Spectral"
