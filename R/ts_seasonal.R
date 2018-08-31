@@ -270,7 +270,7 @@ ts_seasonal <- function(ts.obj,
       n_colors <- RColorBrewer::brewer.pal.info$maxcolors[row.names(RColorBrewer::brewer.pal.info)  == palette]
       colors_list <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(n_colors, palette))(base::length(base::unique(df$minor)))
     } else if (palette %in% viridis_palettes){
-      color_list <- viridis::viridis_pal(option = base::eval(palette))(base::length(base::unique(df$minor)))  
+      colors_list <- viridis::viridis_pal(option = base::eval(palette))(base::length(base::unique(df$minor)))  
     } else {
       warning("The value of the 'palette' argument is invalid, using the default option 'Set1'")
       palette <- "Set1"
