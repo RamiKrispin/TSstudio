@@ -1,0 +1,137 @@
+---
+title: "Plotting Time Series Data"
+author: "Rami Krispin (@Rami_Krispin)"
+date: "8/31/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(list(menu.graphics = FALSE, scipen=99, digits= 3))
+```
+
+The ts_plot is a versatile function for plotting time series objects. It is based on the plotly engine and supports multiple time series objects such as "ts", "mts", "zoo", "xts" and as well the data frame family ("data.frame", "data.table", and "tbl").
+
+#### Plotting a univariate time series
+
+Plotting a univariate time series data with the ts_plot function is straightforward: 
+
+```{r }
+library(TSstudio)
+# Loading the USgas dataset
+data("USgas")
+
+class(USgas)
+
+```
+
+```{r fig.height=5, fig.width=10}
+ts_plot(USgas)
+```
+
+
+
+By default, the function will set the input object name as the plot title and leave the X and Y axises empty. It is possible to label the axises and set a different title:
+
+```{r fig.height=5, fig.width=10}
+# Setting the plot titles
+ts_plot(USgas,
+        title = "US Natural Gas Consumption",
+        Xtitle = "Year",
+        Ytitle = "Billion Cubic Feet")
+```
+
+#### Line setting
+
+There are several arguments which allow modifying the line main characteristics such as the colors, width, and type of line. 
+
+The line.mode argument is equivalent to the mode argument of the plot_ly function, and there are 3 options:
+
+1. "line" - the default option, a clean line
+2. "line+markers" - a line with a markers
+3. "markers" - only markers
+
+The "dash" argument allows modifying the line to dashed or dotted by setting the argument to "dash" or "dot" respectively.  The line width, by default, set to 2 and can be modified with the "width" argument.
+
+For example, 
+
+```{r fig.height=5, fig.width=10}
+ts_plot(USgas,
+        title = "US Natural Gas Consumption",
+        Xtitle = "Year",
+        Ytitle = "Billion Cubic Feet",
+        line.mode = "lines+markers",
+        width = 3,
+        color = "green")
+```
+
+In addition, we can add grid lines for the Y and X axises and slider by setting the Xgrid, Ygrid and slider arguments to TRUE:
+
+```{r fig.height=5, fig.width=10}
+ts_plot(USgas,
+        title = "US Natural Gas Consumption",
+        Xtitle = "Year",
+        Ytitle = "Billion Cubic Feet",
+        line.mode = "lines+markers",
+        width = 1,
+        color = "#66C2A5",
+        Xgrid = TRUE,
+        Ygrid = TRUE,
+        slider = TRUE)
+```
+
+#### Ploting a multiple time series object
+
+The ts_plot can handle multiple time series objects such as "mts", "xts", "zoo" and data frame family objects. The example below demonstrates the plot options for a multiple time series object with the closing prices of  Apple, Facebook, Google and Microsoft stocks over time:
+```{r fig.height=5, fig.width=10, message=FALSE, warning=FALSE}
+library(TSstudio)
+library(xts)
+library(zoo)
+library(quantmod)
+# Loading the stock price of key technology companies:
+tckrs <- c("GOOGL", "FB", "AAPL", "MSFT")
+getSymbols(tckrs, 
+           from = "2013-01-01",
+           src = "yahoo"
+           )
+
+# Creating a multiple time series object
+closing <- cbind(AAPL$AAPL.Close, FB$FB.Close, GOOGL$GOOGL.Close, MSFT$MSFT.Close)
+names(closing) <- c("Apple", "Facebook", "Google", "Microsoft")
+
+class(closing)
+dim(closing)
+
+
+```
+
+The type argument defines whatever to plot all the series in a single plot ("single" option) or plot each series separately ("multiple" option):
+
+```{r fig.height=5, fig.width=10}
+# Plot each series in a sepreate (default option)
+ts_plot(closing,
+        title = "Top Technology Companies Stocks Prices Since 2013", 
+        type = "multiple")
+
+
+# All the series in one plot
+ts_plot(closing, 
+        title = "Top Technology Companies Stocks Prices Since 2013",
+        type = "single")
+
+
+```
+
+#### Plotting data frame objects
+
+Currently, the ts_plot function supports three classes of data frame - "data.frame", "data.table" and "tbl". To be able to plot a data frame object, it must contain one column with a date or time object ("Date" or "POSIXlt"/"POSIXct") and at least one numeric column. The US_indicators is an example of a data.frame object with time series data. It contains the monthly vehicle sales and the unemployment rate in the US since 1976 and a date object:
+
+```{r}
+data(US_indicators)
+str(US_indicators)
+```
+
+```{r fig.height=5, fig.width=10}
+ts_plot(US_indicators)
+```
+
