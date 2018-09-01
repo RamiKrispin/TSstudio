@@ -4,7 +4,7 @@ Title: Tools for Time Series Analysis and Forecasting
 Version: 0.1.2
 Author: Rami Krispin
 Maintainer: Rami Krispin <rami.krispin@gmail.com>
-Description: Provides a set of interactive visualization tools for time series analysis supporting ts, mts, zoo and xts objects. That includes visualization functions for forecasting model performance (forecasted vs. actual), time series interactive plots (single and multiple series) and seasonality plots.
+Description: Provides a set of tools for descriptive and predictive analysis of time series data. That includes functions for interactive visualization of time series objects and as well utility functions for automation time series forecasting.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
