@@ -24,7 +24,7 @@ packageVersion("TSstudio")
 
 In the following examples, we will use the USgas dataset. This dataset is one of the TSstudio package datasets, and a good example of a time series with a strong seasonal pattern. This dataset represents the monthly natural gas consumption in the US since 2000:
 
-```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
 # Load the US monthly natural gas consumption
 library(TSstudio)
 data("USgas")
@@ -46,7 +46,7 @@ The ts_seasonal function was designed for plotting time series data by its full 
 
 1. "normal" - type provides a break of the series by the cycle units (or years). This allows identifying whether the series has a reputable seasonal pattern: 
 
-```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
 ts_seasonal(USgas, type = "normal")
 
 ```
@@ -54,20 +54,20 @@ The colors are being set automatically by a sequential color palette in chronica
 
 2. "cycle" - this option provides a view of each frequency unit of the series across the full cycle units of the frequency, in the example below you can notice, for example, that the consumption during January in most of the years was the peak of the year:
 
-```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
 ts_seasonal(USgas, type = "cycle")
 ```
 
 3. "box" - for representing the cycle units with a box plot:
 
-```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
 ts_seasonal(USgas, type = "box")
 ```
 
 
 Alternatively, setting the type = “all”, print the three options above together in one plot:
 
-```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
 ts_seasonal(USgas, type = "all")
 ```
 
@@ -80,7 +80,7 @@ While the "box" mode provides a useful information about the distribution of eac
 The colors of the plots can be modified to any of the RColorBrewer or viridis packages palettes options (see below the available palettes). The "palette_normal" arguments set the colors of the "normal" mode. As mentioned above, colors set according to the chronological order of the lines. The "palette" argument set the colors of the both the "cycle" and "box" options. In the example below, the colors of the "normal" plot are set to "inferno" palette from the viridis package and the "cycle" and "box" plots are set to "Accent" palette from the RColorBrewer package. 
 
 
-```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
 ts_seasonal(USgas, type = "all", palette_normal = "inferno", palette = "Accent")
 ```
 
@@ -97,19 +97,19 @@ RColorBrewer::display.brewer.all()
 
 Another useful visualization tool for seasonality analysis is the ts_heatmap function for time series objects, where the y axis represents the cycle units and x axis represents the years:
 
-```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
 ts_heatmap(USgas)
 ```
 
 Likewise the ts_seasonal function, the heatmap colors can be set by any of the palettes in the RColorBrewer and viridis packages with the "color" argument: 
 
-```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
 ts_heatmap(USgas, color = "Reds")
 ```
 
 One of the main improvement in the current version is the ability to handle daily and weekly frequencies in addition to the monthly and quarterly. By default, daily data (whenever it has "Date" index) will appear in a format of weekday by year. For example, we will plot the daily demand for electricity in the UK (available in the UKgrid package):
 
-```{r fig.height=10, fig.width= 8, message=FALSE, warning=FALSE}
+```{r fig.height=10, fig.width= 10, message=FALSE, warning=FALSE}
 #install_github("RamiKrispin/UKgrid")
 library(UKgrid)
 
@@ -128,8 +128,29 @@ ts_surface(USgas)
 ```
 
 The ts_polar function provides a polar plot demonstrative of time series data where the year is represented by color and the magnitude is represented by the size of the cycle unit layer:
-```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
 ts_polar(USgas)
 ```
 
-Both function 
+#### Correlation Analysis
+
+The ts_lag, as the name implies, create a lag plot of time series data currently support only "ts", "xts", and "zoo" objects with monthly or quarterly frequency:
+
+```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
+ts_lags(USgas)
+```
+
+By default, it plots the last 12 lags, however the namber of lag can be modify with the "lag.max" argument:
+
+```{r fig.height=10, fig.width= 10, message=FALSE, warning=FALSE}
+ts_lags(USgas, lag.max = 24)
+```
+
+The ts_acf and ts_pacf are wrappers for the stats package acf and pacf functions, providing a colorful and interactive version for those functions:
+
+```{r, fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
+ts_acf(USgas, lag.max = 36)
+ts_pacf(USgas, lag.max = 36)
+
+```
+
