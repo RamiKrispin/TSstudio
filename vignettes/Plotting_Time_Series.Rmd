@@ -10,14 +10,22 @@ knitr::opts_chunk$set(echo = TRUE)
 options(list(menu.graphics = FALSE, scipen=99, digits= 3))
 ```
 
-The ts_plot is a versatile function for plotting time series objects. It is based on the plotly engine and supports multiple time series objects such as "ts", "mts", "zoo", "xts" and as well the data frame family ("data.frame", "data.table", and "tbl").
+The ts_plot is a versatile function for interactive plotting of time series objects. It is based on the [plotly](https://plot.ly/r/) engine and supports multiple time series objects such as "ts", "mts", "zoo", "xts" and as well the data frame family ("data.frame", "data.table", and "tbl").
+
+```{r}
+# install.packages("TSstudio")
+library(TSstudio)
+packageVersion("TSstudio")
+# Function documentation
+?ts_plot
+```
+
 
 #### Plotting a univariate time series
 
 Plotting a univariate time series data with the ts_plot function is straightforward: 
 
 ```{r }
-library(TSstudio)
 # Loading the USgas dataset
 data("USgas")
 
