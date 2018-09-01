@@ -3,3 +3,4 @@
 .RData
 .Ruserdata
 data-raw/**
+.DS_Store
