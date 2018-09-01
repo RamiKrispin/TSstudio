@@ -11,8 +11,7 @@ vignette: >
 
 ## **Overview**
 
-The TSstudio package provides a set of tools for descriptive analysis of a time series data supporting “ts”, “mts”, “zoo” and “xts” objects. That includes rich and interactive visualization plots, based on the engine of the [Plotly](https://plot.ly/r/) package, for seasonality, correlations, residuals, and forecasting performance plots. In addition, the TSstudio package supports the time series visualization functions of the [MLstudio](https://github.com/RamiKrispin/MLstudio) package.
-
+The TSstudio package provides a set of tools for time series analysis. That includes a variety of interactive visualizations tools, based on the [plotly](https://plot.ly/r/) package, for descriptive, seasonality and correlation analysis and as well forecasting supporting objects of the [forecast](https://github.com/robjhyndman/forecast) and other packages. 
 
 ## **Installation**
 
@@ -32,6 +31,8 @@ devtools::install_github("RamiKrispin/TSstudio")
 ## **Key Features**
 
 ### Visualization of time series objects with the ts_plot function
+
+The ts_plot function for visualization of time series objects support multiple types of time series class such as "ts", "mts", "xts", "zoo" and as well the data frame family ("data.frame", "tbl", "data.table") as long as it contains a date (Date or POSIXlt/ct) object.
 
 ```{r fig.height=5, fig.width=8, message=FALSE, warning=FALSE, include=TRUE}
 library(TSstudio)
@@ -64,9 +65,9 @@ ts_plot(Google,
 
 ```
 
-#### Available formats
+#### Plotting multiple time series data
 
-In addition for the “ts” object, the function supports “mts”, “zoo” and “xts” objects, including multiple time series objects: 
+It is possible to plot a multiple time series object ("mts", "xts", "zoo" or data frame), either in a single plot or on multiple plots (one for each): 
 
 ```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
 closing <- cbind(GOOGL$GOOGL.Close, FB$FB.Close, AAPL$AAPL.Close, MSFT$MSFT.Close)
@@ -88,7 +89,11 @@ ts_plot(closing,
 
 ### Seasonality analysis
 
-The TSstudio provides a variety of tools for seasonality analysis, currently supporting only monthly or quarterly data. The monthly consumption of natural gas in the US (USgas dataset) is a good example of a seasonal pattern within time series data:
+The TSstudio provides a variety of tools for seasonality analysis, currently, most of the functions support series with daily, weekly, monthly and quarterly frequency.
+
+#### The ts_seasonal function
+
+The ts_seasonal function provides the ability to plot a time series data by its frequency cycle (hence, for monthly frequency by a full year) or by frequency units (thus, for monthly data by the months of the year). For example, the USgas dataset, the US monthly consumption of natural gas (one of the package dataset), has a strong seasonal pattern:
 
 ```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
 # Load the US monthly natural gas consumption
@@ -108,14 +113,15 @@ ts_plot(USgas,
 
 The ts_seasonal function provides 3 types of seasonal plots:
 
-1. "normal" - break of a series by year, this allows identifying a seasonal pattern within the year 
+1. "normal" - type provides a break of the series by the cycle units (or years). This allows identifying whether the series has a reputable seasonal pattern: 
 
 ```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
 ts_seasonal(USgas, type = "normal")
 
 ```
+The colors are being set automatically by a sequential color palette in chronical order.
 
-2. "cycle" - break of a series by the cycle units (i.e. months or quarters), it can be used to identify trends and patterns between the cycle units:
+2. "cycle" - this option provides a view of each frequency unit of the series across the full cycle units of the frequency, in the example below you can notice, for example, that the consumption during January in most of the years was the peak of the year:
 
 ```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
 ts_seasonal(USgas, type = "cycle")
@@ -134,13 +140,43 @@ Alternatively, setting the type = “all”, print the three options above toget
 ts_seasonal(USgas, type = "all")
 ```
 
-#### The ts_heatmap and ts_surface functions
+Note: that the colors of the months in the "cycle" plot corresponding to the colors in the "box" plot. 
+
+In addition, you can modify the color palette using one of the RColorBrewer or viridis palette options: 
+
+```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+ts_seasonal(USgas, type = "all", palette_normal = "inferno", palette = "Accent")
+```
+
+
+
+#### The ts_heatmap function
 
 Another useful visualization tool for seasonality analysis is the ts_heatmap function for time series objects, where the y axis represents the cycle units and x axis represents the years:
 
 ```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
 ts_heatmap(USgas)
 ```
+
+By default, the function is using the "Blues" palette of the RColorBrewer package. You can modify the palette by modifying the color argument:
+
+```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+ts_heatmap(USgas, color = "Reds")
+```
+
+One of the main improvement since the last release is the support for daily and weekly frequency in addition to the monthly and quarterly. For example, we will plot the daily demand for electricity in the UK (available in the UKgrid package):
+
+```{r fig.height=5, fig.width= 8, message=FALSE, warning=FALSE}
+#install_github("RamiKrispin/UKgrid")
+library(UKgrid)
+
+UKgrid_daily <- extract_grid(type = "tbl", aggregate = "daily")
+head(UKgrid_daily)
+
+ts_heatmap(UKgrid_daily, color = "BuPu")
+```
+
+
 
 Similarly, the heatmap could be represented by a surface 3d plot:  
 
