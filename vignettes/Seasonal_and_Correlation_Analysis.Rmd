@@ -119,6 +119,34 @@ head(UKgrid_daily)
 ts_heatmap(UKgrid_daily, color = "BuPu")
 ```
 
+
+#### Quantile plot
+
+Generally, as the frequency of the series is more granular (hence, the data was captured in higher frequency such as seconds, minutes, etc.), potentially the data would have different seasonality  (or multi-seasonality) patterns. 
+
+A good example of a time series data with a multi-seasonality is the hourly demand for electricity which could have hourly (high consumption during the day lower during the night), weekly (high consumption during working days and lower during weekend and holidays), and monthly seasonality (consumption patterns depends on the region climeat across the year). To demonstrate the usages of this function we will load the UK demand for electricity dataset again, however, this time will use an hourly intervale format:
+
+```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
+UKgrid_hourly <- extract_grid(type = "xts", aggregate = "hourly")
+library(xts)
+periodicity(UKgrid_hourly)
+```
+
+```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
+ts_plot(UKgrid_hourly)
+```
+
+
+
+```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
+
+ts_quantile(UKgrid_hourly, period = NULL)
+ts_quantile(UKgrid_hourly, period = "weekdays")
+ts_quantile(UKgrid_hourly, period = "weekdays", n = 2)
+ts_quantile(UKgrid_hourly, period = "monthly", n = 2)
+
+```
+
 #### Surface and polar plots
 
 The ts_surface function provides a 3D representative for time series data 
