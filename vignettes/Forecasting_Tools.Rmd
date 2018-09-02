@@ -1,0 +1,13 @@
+---
+title: "Forecasting Tools"
+author: "Rami Krispin (@Rami_Krispin)"
+date: "9/2/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(list(menu.graphics = FALSE, scipen=99, digits= 3))
+```
+
+The TSstudio package provides a several utility tools for the forecasting workflow, including backtesting function for training, testing and visualize multiple forecasting models for time series data.  
