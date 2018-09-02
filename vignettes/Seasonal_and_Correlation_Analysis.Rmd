@@ -141,30 +141,51 @@ ts_plot(UKgrid_half_hour)
 By default, the ts_quantile function will calculate and plot the 25th and 75th percentiles (the lower and upper lines) and the median (the solid line) by the series frequency units:
 
 ```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
-ts_quantile(UKgrid_half_hour, period = NULL)
+ts_quantile(UKgrid_half_hour, period = NULL, title = "The UK National Grid Net Demand for Electricity - Quantile Plot")
 ```
 
 It is possible to modify the percentile range with the "lower" and "upper" argument. For instance, set the range between the 15th and 85th percentiles (the solid line remains the median): 
 
 ```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
-ts_quantile(UKgrid_half_hour, period = NULL, lower = 0.15, upper = 0.85)
+ts_quantile(UKgrid_half_hour, 
+            period = NULL, 
+            lower = 0.15, 
+            upper = 0.85,
+            title = "The UK National Grid Net Demand for Electricity - 24 Hours Quantile Plot")
 ```
 
 The "period" argument subset and plot the series quantiles by a specific frequency hierarchy. Hence, if the series frequency is a half-hour, we can subset and plot it by weekdays, months quarters and years. This allows checking if the series seasonal patterns vary on a different period's subsets. For instance, when setting the period for "weekdays" the output is a 24-hour quantile (by half-hour intervals) for each day of the week: 
 
 ```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
-ts_quantile(UKgrid_half_hour, period = "weekdays")
+ts_quantile(UKgrid_half_hour, 
+            period = "weekdays",
+            title = "The UK National Grid Net Demand for Electricity - 24 Hours Quantile Plot by Weekdays")
 ```
 
 The "n" argument set the plot rows number. This allows spreading the plots when using a higher number of plots:
 
 ```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
-ts_quantile(UKgrid_half_hour, period = "weekdays", n = 2)
+ts_quantile(UKgrid_half_hour, 
+            period = "weekdays", 
+            title = "The UK National Grid Net Demand for Electricity - 24 Hours Quantile Plot by Weekdays",
+            n = 2)
 ```
 
-And monthly subset:
+Monthly subset:
 ```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
-ts_quantile(UKgrid_half_hour, period = "monthly", n = 2)
+ts_quantile(UKgrid_half_hour, 
+            period = "monthly", 
+            title = "The UK National Grid Net Demand for Electricity - 24 Hours Quantile Plot by Months",
+            n = 2)
+```
+
+Yearly subset:
+
+```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
+ts_quantile(UKgrid_half_hour, 
+            period = "yearly", 
+            title = "The UK National Grid Net Demand for Electricity - 24 Hours Quantile Plot by Years",
+            n = 2)
 ```
 
 #### Surface and polar plots
