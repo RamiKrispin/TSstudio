@@ -124,26 +124,39 @@ ts_heatmap(UKgrid_daily, color = "BuPu")
 
 Generally, as the frequency of the series is more granular (hence, the data was captured in higher frequency such as seconds, minutes, etc.), potentially the data would have different seasonality  (or multi-seasonality) patterns. 
 
-A good example of a time series data with a multi-seasonality is the hourly demand for electricity which could have hourly (high consumption during the day lower during the night), weekly (high consumption during working days and lower during weekend and holidays), and monthly seasonality (consumption patterns depends on the region climeat across the year). To demonstrate the usages of this function we will load the UK demand for electricity dataset again, however, this time will use an hourly intervale format:
+A good example of a time series data with a multi-seasonality is the hourly demand for electricity which could have hourly (high consumption during the day lower during the night), weekly (high consumption during working days and lower during weekend and holidays), and monthly seasonality (consumption patterns depends on the region climeat across the year). To demonstrate the usages of this function we will load the UK demand for electricity dataset again, however, this time will use an half-hour intervale format:
 
 ```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
-UKgrid_hourly <- extract_grid(type = "xts", aggregate = "hourly")
+UKgrid_half_hour <- extract_grid(type = "xts", aggregate = NULL)
 library(xts)
-periodicity(UKgrid_hourly)
-```
-
-```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
-ts_plot(UKgrid_hourly)
+periodicity(UKgrid_half_hour)
 ```
 
 
 
 ```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
+ts_plot(UKgrid_half_hour)
+```
 
-ts_quantile(UKgrid_hourly, period = NULL)
-ts_quantile(UKgrid_hourly, period = "weekdays")
-ts_quantile(UKgrid_hourly, period = "weekdays", n = 2)
-ts_quantile(UKgrid_hourly, period = "monthly", n = 2)
+By default, the ts_quantile function will calculate and plot the 25th and 75th percentiles (the lower and upper lines) and the median (the solid line) by the series frequency units:
+
+```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
+ts_quantile(UKgrid_half_hour, period = NULL)
+```
+
+It is possible to modify the percentile range with the "lower" and "upper" argument. For instance, set the range between the 15th and 85th percentiles (the solid line remain the median): 
+
+```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
+ts_quantile(UKgrid_half_hour, period = NULL, lower = 0.15, upper = 0.85)
+```
+
+
+```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
+
+ts_quantile(UKgrid_half_hour, period = NULL)
+ts_quantile(UKgrid_half_hour, period = "weekdays")
+ts_quantile(UKgrid_half_hour, period = "weekdays", n = 2)
+ts_quantile(UKgrid_half_hour, period = "monthly", n = 2)
 
 ```
 
