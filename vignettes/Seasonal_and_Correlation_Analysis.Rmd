@@ -122,7 +122,7 @@ ts_heatmap(UKgrid_daily, color = "BuPu")
 
 #### Quantile plot
 
-Generally, as the frequency of the series is more granular (hence, the data was captured in higher frequency such as seconds, minutes, etc.), potentially the data would have different seasonality  (or multi-seasonality) patterns. 
+Generally, as the frequency of the series is more granular (hence, the data was captured in higher frequency such as seconds, minutes, etc.), potentially the data would have different seasonality  (or multi-seasonality) patterns. This function supports only time series objects with a "Date" or "POSIX" object as an index such as "xts", "zoo" and data frame family ("data.frame", "data.table", and "tbl") with a half-hourly, hourly, daily, monthly and quarterly frequencies. 
 
 A good example of a time series data with a multi-seasonality is the hourly demand for electricity which could have hourly (high consumption during the day lower during the night), weekly (high consumption during working days and lower during weekend and holidays), and monthly seasonality (consumption patterns depends on the region climeat across the year). To demonstrate the usages of this function we will load the UK demand for electricity dataset again, however, this time will use an half-hour intervale format:
 
@@ -144,20 +144,27 @@ By default, the ts_quantile function will calculate and plot the 25th and 75th p
 ts_quantile(UKgrid_half_hour, period = NULL)
 ```
 
-It is possible to modify the percentile range with the "lower" and "upper" argument. For instance, set the range between the 15th and 85th percentiles (the solid line remain the median): 
+It is possible to modify the percentile range with the "lower" and "upper" argument. For instance, set the range between the 15th and 85th percentiles (the solid line remains the median): 
 
 ```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
 ts_quantile(UKgrid_half_hour, period = NULL, lower = 0.15, upper = 0.85)
 ```
 
+The "period" argument subset and plot the series quantiles by a specific frequency hierarchy. Hence, if the series frequency is a half-hour, we can subset and plot it by weekdays, months quarters and years. This allows checking if the series seasonal patterns vary on a different period's subsets. For instance, when setting the period for "weekdays" the output is a 24-hour quantile (by half-hour intervals) for each day of the week: 
 
 ```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
-
-ts_quantile(UKgrid_half_hour, period = NULL)
 ts_quantile(UKgrid_half_hour, period = "weekdays")
-ts_quantile(UKgrid_half_hour, period = "weekdays", n = 2)
-ts_quantile(UKgrid_half_hour, period = "monthly", n = 2)
+```
 
+The "n" argument set the plot rows number. This allows spreading the plots when using a higher number of plots:
+
+```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
+ts_quantile(UKgrid_half_hour, period = "weekdays", n = 2)
+```
+
+And monthly subset:
+```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
+ts_quantile(UKgrid_half_hour, period = "monthly", n = 2)
 ```
 
 #### Surface and polar plots
