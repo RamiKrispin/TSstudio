@@ -23,9 +23,9 @@ ts_info(USgas)
 
 # mts object
 data("Coffee_Prices")
-get_info(Coffee_Prices)
+ts_info(Coffee_Prices)
 
 # xts object
 data("Michigan_CS")
-get_info(Michigan_CS)
+ts_info(Michigan_CS)
 }
