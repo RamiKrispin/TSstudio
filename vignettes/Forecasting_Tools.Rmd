@@ -18,14 +18,94 @@ library(TSstudio)
 packageVersion("TSstudio")
 ```
 
-We will use in the following examples the USgas dataset, one of the package dataset. The USgas dataset represents the monthly consumption of natural gas in the US since January 2000 in Billion Cubic Feet. The data was source from the U.S. Bureau of Transportation Statistics, Natural Gas Consumption [NATURALGAS], retrieved from FRED, Federal Reserve Bank of St. Louis; https://fred.stlouisfed.org/series/NATURALGAS.
+In the following examples, we will utilize tools from the TSstudio package along with forecasting models from the [forecast](https://cran.r-project.org/web/packages/forecast/index.html), [forecastHybrid](https://cran.r-project.org/web/packages/forecastHybrid/index.html) and [bsts](https://cran.r-project.org/web/packages/bsts/index.html) packages to forecast the monthly natural gas consumption in the US. The input data, the USgas dataset, is the historical monthly consumption of natural gas in the US since January 2000 in Billion Cubic Feet. This dataset is available in the TSstudio, and was sourced from the U.S. Bureau of Transportation Statistics, Natural Gas Consumption [NATURALGAS], retrieved from FRED, Federal Reserve Bank of St. Louis; https://fred.stlouisfed.org/series/NATURALGAS.
 
-```{r}
+```{r fig.height=5, fig.width=10}
 # Loading the data
 data("USgas", package = "TSstudio")
 
-class(USgas)
+ts_info(USgas)
 
-get_info(USgas)
+ts_plot(USgas,
+        title = "US Natural Gas Consumption",
+        Xtitle = "Year",
+        Ytitle = "Billion Cubic Feet"
+        )
 ```
+
+### Basic forecasting approach
+
+We will start with a simplistic forecasting approach, by splitting the historical dataset into training and testing partitions, train, test and evaluate a few models. The based model will be selected based on the performance in the testing partition and will retrain the model on the full dataset to forecast the consumption in the US in the next five years.
+
+#### Data prep
+
+The first step is to split the historical data for training and testing partitions. We will use the last 12 months for testing, and train the models on the rest of the data:
+
+```{r}
+USgas_splits <- ts_split(ts.obj = USgas, sample.out = 12)
+train <- USgas_splits$train
+test <- USgas_splits$test
+
+ts_info(train)
+ts_info(test)
+```
+
+#### Models training
+
+After the data was split into training and testing partitions, we will use those partitions to train and test auto.arima, ets and nnetar models from the forecast package. 
+
+```{r}
+library(forecast)
+
+# Setting the forecasting horizon to the length of the testing partition
+h <- length(test)
+
+# ARIMA
+md1 <- auto.arima(train)
+fc1 <- forecast(md1, h = h)
+# ETS
+md2 <- ets(train)
+fc2 <- forecast(md2, h = h)
+# NNETAR
+md3 <- nnetar(train)
+fc3 <- forecast(md3, h = h)
+```
+
+#### Evaluate the models performance
+
+The next step is to evaluate the forecasting models performance with the testing partition using the accuracy function from the forecast package:
+
+```{r}
+accuracy(fc1, test)
+accuracy(fc2, test)
+accuracy(fc3, test)
+```
+
+In some instance, there is an added value in visualizing both the fitted and forecasted values with respect to the training and testing partitions, as the standard score metrics (such as MAPE or RMSE) doesn't necessarily provide the full picture about the model performance. The test_forecast function creates a visualization of the fitted and forecasted values with respect to the training and testing partitions respectively. The MAPE and RMSE results from the accuracy function for both the training and testing partitions are available in the plot hover tooltip:
+
+
+```{r fig.height=5, fig.width=10}
+test_forecast(actual = USgas, forecast.obj = fc1, test = test)
+test_forecast(actual = USgas, forecast.obj = fc2, test = test)
+test_forecast(actual = USgas, forecast.obj = fc3, test = test)
+```
+
+Although the auto.arima achived the best results in both the MAPE and RMSE scores, the ets model did a better job of obtaining the yearly consumption peak. If you care more about the peak, you should consider on selecting the ets model. For simplicity reasons, we will select the model here based on its accuracy score on the testing partition:
+
+```{r fig.height=5, fig.width=10}
+md_final <- auto.arima(USgas)
+fc_final <- forecast(md_final, h = 60)
+plot_forecast(fc_final)
+```
+
+You can use the check_res function to check the residual of the final model:
+
+```{r fig.height=5, fig.width=10}
+check_res(md_final)
+```
+
+### Forecasting with backtesting
+
+A good performance of a model on single testing is a good indication, but not necessarily ensure that the model performance in the future will be similar. A more robust method to evaluate the performance and as well the stability of forecasting models is the backtesting method. This method is based on the use of an expanding window on the series to create a multiple training and testing sets organized in chronological order. This allows to test and evaluate the performance of a model over multiple instances. An accurate and as well stable model would maintain a good performance over time.
+
 
