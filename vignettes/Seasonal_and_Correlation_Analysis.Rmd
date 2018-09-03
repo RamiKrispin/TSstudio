@@ -29,7 +29,7 @@ In the following examples, we will use the USgas dataset. This dataset is one of
 library(TSstudio)
 data("USgas")
 
-class(USgas)
+ts_info(USgas)
 
 ts_plot(USgas,
         title = "US Natural Gas Consumption",
@@ -129,7 +129,7 @@ A good example of a time series data with a multi-seasonality is the hourly dema
 ```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
 UKgrid_half_hour <- extract_grid(type = "xts", aggregate = NULL)
 library(xts)
-periodicity(UKgrid_half_hour)
+ts_info(UKgrid_half_hour)
 ```
 
 
