@@ -503,3 +503,88 @@ ts_sum <- function(mts.obj){
   
   return(tsSum)
 }
+
+
+#' Get the Time Series Information
+#' @export
+#' @description Returning the time series object main characteristics 
+#' @param ts.obj A time series object of a class "ts", "mts", "xts", or "zoo"
+#' @return Text
+#' @examples
+#' 
+#' # ts object
+#' data("USgas")
+#' ts_info(USgas)
+#' 
+#' # mts object
+#' data("Coffee_Prices")
+#' get_info(Coffee_Prices)
+#' 
+#' # xts object
+#' data("Michigan_CS")
+#' get_info(Michigan_CS)
+
+ts_info <- function(ts.obj){
+  
+  # Error handling
+  if(!stats::is.ts(ts.obj) & !xts::is.xts(ts.obj) & !zoo::is.zoo(ts.obj)){
+    stop("The input object is not a valid time series object")
+  }
+  
+  obj.name <- info <- NULL
+  
+  obj.name <- base::deparse(base::substitute(ts.obj))
+  info <- list()
+  if(stats::is.ts(ts.obj) & !stats::is.mts(ts.obj)){
+    info$name <- obj.name
+    info$class <- "ts"
+    info$frequency <- stats::frequency(ts.obj)
+    info$start <- base::paste(stats::start(ts.obj), collapse = " ")
+    info$end <- base::paste(stats::end(ts.obj), collapse = " ")
+    info$length <- base::length(ts.obj)
+    info$var <- "1 variable"
+  } else if(stats::is.ts(ts.obj) & stats::is.mts(ts.obj)){
+    info$name <- obj.name
+    info$class <- "mts"
+    info$frequency <- stats::frequency(ts.obj)
+    info$start <- base::paste(stats::start(ts.obj), collapse = " ")
+    info$end <- base::paste(stats::end(ts.obj), collapse = " ")
+    info$length <- base::length(ts.obj)
+    info$var <- base::paste(dim(ts.obj)[2], "variables", sep = " ")
+  } else if(xts::is.xts(ts.obj)){
+    info$name <- obj.name
+    info$class <- "xts"
+    info$frequency <- stats::frequency(ts.obj)
+    info$start <- base::paste(stats::start(ts.obj), collapse = " ")
+    info$end <- base::paste(stats::end(ts.obj), collapse = " ")
+    info$length <- base::length(ts.obj)
+    if(base::is.null(base::dim(ts.obj)) & !base::is.null(base::length(ts.obj))){
+      info$var <- info$var <- "1 variable"
+    } else if(dim(ts.obj)[2] == 1){
+      info$var <- base::paste(dim(ts.obj)[2], "variable", sep = " ")
+    } else if(dim(ts.obj)[2] > 1){
+      info$var <- base::paste(dim(ts.obj)[2], "variables", sep = " ")
+    }
+    
+  } else if(zoo::is.zoo(ts.obj)){
+    info$name <- obj.name
+    info$class <- "zoo"
+    info$frequency <- stats::frequency(ts.obj)
+    info$start <- base::paste(stats::start(ts.obj), collapse = " ")
+    info$end <- base::paste(stats::end(ts.obj), collapse = " ")
+    info$length <- base::length(ts.obj)
+    if(base::is.null(base::dim(ts.obj)) & !base::is.null(base::length(ts.obj))){
+      info$var <- "1 variable"
+    } else if(dim(ts.obj)[2] == 1){
+      info$var <- base::paste(dim(ts.obj)[2], "variable", sep = " ")
+    } else if(dim(ts.obj)[2] > 1){
+      info$var <- base::paste(dim(ts.obj)[2], "variables", sep = " ")
+    }
+  }
+  
+  base::cat(base::paste("The", info$name, "series is a",   
+                        info$class, "object with", info$var, "and", info$length, "observations\n",
+                        "Frequency:", info$frequency, "\n",
+                        "Start time:", info$start, "\n",
+                        "End time:", info$end, "\n"))
+}
