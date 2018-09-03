@@ -29,7 +29,7 @@ Plotting a univariate time series data with the ts_plot function is straightforw
 # Loading the USgas dataset
 data("USgas")
 
-class(USgas)
+ts_info(USgas)
 
 ```
 
@@ -107,10 +107,7 @@ getSymbols(tckrs,
 closing <- cbind(AAPL$AAPL.Close, FB$FB.Close, GOOGL$GOOGL.Close, MSFT$MSFT.Close)
 names(closing) <- c("Apple", "Facebook", "Google", "Microsoft")
 
-class(closing)
-dim(closing)
-
-
+ts_info(closing)
 ```
 
 The type argument defines whatever to plot all the series in a single plot ("single" option) or plot each series separately ("multiple" option):
