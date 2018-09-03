@@ -10,4 +10,22 @@ knitr::opts_chunk$set(echo = TRUE)
 options(list(menu.graphics = FALSE, scipen=99, digits= 3))
 ```
 
-The TSstudio package provides a several utility tools for the forecasting workflow, including backtesting function for training, testing and visualize multiple forecasting models for time series data.  
+The TSstudio package provides a several utility tools for the forecasting workflow, including backtesting function for training, testing and visualize multiple forecasting models for time series data. 
+
+```{r}
+# install.packages("TSstudio")
+library(TSstudio)
+packageVersion("TSstudio")
+```
+
+We will use in the following examples the USgas dataset, one of the package dataset. The USgas dataset represents the monthly consumption of natural gas in the US since January 2000 in Billion Cubic Feet. The data was source from the U.S. Bureau of Transportation Statistics, Natural Gas Consumption [NATURALGAS], retrieved from FRED, Federal Reserve Bank of St. Louis; https://fred.stlouisfed.org/series/NATURALGAS.
+
+```{r}
+# Loading the data
+data("USgas", package = "TSstudio")
+
+class(USgas)
+
+get_info(USgas)
+```
+
