@@ -518,11 +518,11 @@ ts_sum <- function(mts.obj){
 #' 
 #' # mts object
 #' data("Coffee_Prices")
-#' get_info(Coffee_Prices)
+#' ts_info(Coffee_Prices)
 #' 
 #' # xts object
 #' data("Michigan_CS")
-#' get_info(Michigan_CS)
+#' ts_info(Michigan_CS)
 
 ts_info <- function(ts.obj){
   
@@ -582,7 +582,7 @@ ts_info <- function(ts.obj){
     }
   }
   
-  base::cat(base::paste("The", info$name, "series is a",   
+  base::cat(base::paste(" The", info$name, "series is a",   
                         info$class, "object with", info$var, "and", info$length, "observations\n",
                         "Frequency:", info$frequency, "\n",
                         "Start time:", info$start, "\n",
