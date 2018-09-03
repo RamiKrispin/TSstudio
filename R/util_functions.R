@@ -554,7 +554,7 @@ ts_info <- function(ts.obj){
   } else if(xts::is.xts(ts.obj)){
     info$name <- obj.name
     info$class <- "xts"
-    info$frequency <- stats::frequency(ts.obj)
+    info$frequency <- base::paste(xts::periodicity(ts.obj)$frequency, xts::periodicity(ts.obj)$units, collapse = " ")
     info$start <- base::paste(stats::start(ts.obj), collapse = " ")
     info$end <- base::paste(stats::end(ts.obj), collapse = " ")
     
@@ -572,7 +572,7 @@ ts_info <- function(ts.obj){
   } else if(zoo::is.zoo(ts.obj)){
     info$name <- obj.name
     info$class <- "zoo"
-    info$frequency <- stats::frequency(ts.obj)
+    info$frequency <- base::paste(xts::periodicity(ts.obj)$frequency, xts::periodicity(ts.obj)$units, collapse = " ")
     info$start <- base::paste(stats::start(ts.obj), collapse = " ")
     info$end <- base::paste(stats::end(ts.obj), collapse = " ")
     info$length <- base::length(ts.obj)
