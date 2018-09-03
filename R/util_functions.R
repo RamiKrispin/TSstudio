@@ -557,13 +557,16 @@ ts_info <- function(ts.obj){
     info$frequency <- stats::frequency(ts.obj)
     info$start <- base::paste(stats::start(ts.obj), collapse = " ")
     info$end <- base::paste(stats::end(ts.obj), collapse = " ")
-    info$length <- base::length(ts.obj)
+    
     if(base::is.null(base::dim(ts.obj)) & !base::is.null(base::length(ts.obj))){
       info$var <- info$var <- "1 variable"
+      info$length <- base::length(ts.obj)
     } else if(dim(ts.obj)[2] == 1){
       info$var <- base::paste(dim(ts.obj)[2], "variable", sep = " ")
+      info$length <- base::dim(ts.obj)[1]
     } else if(dim(ts.obj)[2] > 1){
       info$var <- base::paste(dim(ts.obj)[2], "variables", sep = " ")
+      info$length <- base::dim(ts.obj)[1]
     }
     
   } else if(zoo::is.zoo(ts.obj)){
@@ -574,11 +577,14 @@ ts_info <- function(ts.obj){
     info$end <- base::paste(stats::end(ts.obj), collapse = " ")
     info$length <- base::length(ts.obj)
     if(base::is.null(base::dim(ts.obj)) & !base::is.null(base::length(ts.obj))){
-      info$var <- "1 variable"
+      info$var <- info$var <- "1 variable"
+      info$length <- base::length(ts.obj)
     } else if(dim(ts.obj)[2] == 1){
       info$var <- base::paste(dim(ts.obj)[2], "variable", sep = " ")
+      info$length <- base::dim(ts.obj)[1]
     } else if(dim(ts.obj)[2] > 1){
       info$var <- base::paste(dim(ts.obj)[2], "variables", sep = " ")
+      info$length <- base::dim(ts.obj)[1]
     }
   }
   
