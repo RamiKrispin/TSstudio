@@ -114,7 +114,8 @@ The example below demonstrates the use of the backtesting to forecast consumptio
 
 ```{r message=FALSE, warning=FALSE, fig.height=5, fig.width=10}
 USgas_backtesting <- ts_backtesting(ts.obj = USgas,
-                                    models = "abehntw",                                                  periods = 6,
+                                    models = "abehntw",
+                                    periods = 6,
                                     error = "MAPE",
                                     window_size = 12,
                                     h = 60, 
