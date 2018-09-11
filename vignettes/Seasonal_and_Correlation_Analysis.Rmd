@@ -46,9 +46,9 @@ ts_plot(USgas,
 
 #### The ts_seasonal function
 
-The ts_seasonal function was designed for plotting time series data by its full frequency cycle (hence, hence break the series by years for monthly data) and/or by its frequency units (e.g., by the months of the year for monthly data). The function supports "ts", "xts", "zoo" and data frame family objects with a frequency between daily to quarterly. The function has three modes (and a fourth one that includes all the three modes together): 
+The `ts_seasonal` function was designed for plotting time series data by its full frequency cycle (hence, hence break the series by years for monthly data) and/or by its frequency units (e.g., by the months of the year for monthly data). The function supports `ts`, `xts`, `zoo` and data frame family objects with a frequency between daily to quarterly. The function has three modes (and a fourth one that includes all the three modes together): 
 
-1. "normal" - type provides a break of the series by the cycle units (or years). This allows identifying whether the series has a reputable seasonal pattern: 
+1. `normal` - type provides a break of the series by the cycle units (or years). This allows identifying whether the series has a reputable seasonal pattern: 
 
 ```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
 ts_seasonal(USgas, type = "normal")
@@ -56,13 +56,13 @@ ts_seasonal(USgas, type = "normal")
 ```
 The colors are being set automatically by a sequential color palette in chronical order.
 
-2. "cycle" - this option provides a view of each frequency unit of the series across the full cycle units of the frequency, in the example below you can notice, for example, that the consumption during January in most of the years was the peak of the year:
+2. `cycle` - this option provides a view of each frequency unit of the series across the full cycle units of the frequency, in the example below you can notice, for example, that the consumption during January in most of the years was the peak of the year:
 
 ```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
 ts_seasonal(USgas, type = "cycle")
 ```
 
-3. "box" - for representing the cycle units with a box plot:
+3. `box` - for representing the cycle units with a box plot:
 
 ```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
 ts_seasonal(USgas, type = "box")
