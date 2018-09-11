@@ -1389,6 +1389,8 @@ ts_ma <- function(ts.obj,
 #' @description A quantile plot of time series data, allows the user to display a quantile plot of a series by a subset period
 #' @examples
 #' 
+#' data(Michigan_CS)
+#' ts_quantile(Michigan_CS)
 #' 
 ts_quantile <- function(ts.obj, upper = 0.75, lower = 0.25, period = NULL, n = 1, title = NULL, Xtitle = NULL, Ytitle = NULL){
   
