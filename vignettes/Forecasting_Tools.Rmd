@@ -1,8 +1,12 @@
 ---
 title: "Forecasting Tools"
 author: "Rami Krispin (@Rami_Krispin)"
-date: "9/2/2018"
+date: "`r Sys.Date()`"
 output: html_document
+vignette: >
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteIndexEntry{Forecasting Tools}
+  %\usepackage[UTF-8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}

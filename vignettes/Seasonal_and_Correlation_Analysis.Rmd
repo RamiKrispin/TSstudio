@@ -1,8 +1,12 @@
 ---
 title: "Seasonal Analysis with the TSstudio Package"
 author: "Rami Krispin (@Rami_Krispin)"
-date: "8/31/2018"
+date: "`r Sys.Date()`"
 output: html_document
+vignette: >
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteIndexEntry{Seasonal Analysis with the TSstudio Package}
+  %\usepackage[UTF-8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}
@@ -22,7 +26,7 @@ packageVersion("TSstudio")
 
 #### The USgas dataset
 
-In the following examples, we will use the USgas dataset. This dataset is one of the TSstudio package datasets, and a good example of a time series with a strong seasonal pattern. This dataset represents the monthly natural gas consumption in the US since 2000:
+In the following examples, we will use the `USgas` dataset. This dataset is one of the TSstudio package datasets, and a good example of a time series with a strong seasonal pattern. This dataset represents the monthly natural gas consumption in the US since 2000:
 
 ```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
 # Load the US monthly natural gas consumption
