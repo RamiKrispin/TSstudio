@@ -75,28 +75,20 @@ of each model over a sequence of periods to identify the performance of a model 
 \examples{
 \dontrun{
 data(USgas)
-USgas_backtesting <- ts_backtesting(USgas, periods = 6, window_size = 24, h = 60, error = "RMSE")
+USgas_backtesting <- ts_backtesting(USgas, 
+                                    periods = 6, 
+                                    window_size = 24, 
+                                    h = 60, 
+                                    error = "RMSE")
 
 # Selecting a specific models (auto.arima, ets and nnetar)
-USgas_backtesting <- ts_backtesting(USgas, models = "aen", periods = 6, window_size = 24, h = 60)
-
-# Using some of the models arguments 
- USgas_backtesting <- ts_backtesting(USgas, models = "aen", periods = 6, window_size = 24, h = 60, error = "MAPE"
- a.arg = list(stepwise = FALSE), n.arg = list(P =2 , p = 12, repeats = 50))
+USgas_backtesting <- ts_backtesting(USgas, 
+                                    models = "aen", 
+                                    periods = 6, 
+                                    window_size = 24, 
+                                    h = 60)
 
 # Retrieve the models leaderboard
 USgas_backtesting$leaderboard
-
-# Retrieve the best forecast results
-USgas_backtesting$leadForecast$mean
-
-# Retrieve the final forecast of the ets model
-USgas_backtesting$Forecast_Final$ets$mean
-
-# Retrieve the ets forecast during the first period of testing
-USgas_backtesting$period_1$ets$forecast$mean
-
-# Get the final plot of the models performance and the selected forecasting model
-USgas_backtesting$summary_plot
 }
 }

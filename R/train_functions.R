@@ -49,17 +49,22 @@
 #' @examples
 #' \dontrun{
 #' data(USgas)
-#' USgas_backtesting <- ts_backtesting(USgas, periods = 6, window_size = 24, h = 60, error = "RMSE")
+#' USgas_backtesting <- ts_backtesting(USgas, 
+#'                                     periods = 6, 
+#'                                     window_size = 24, 
+#'                                     h = 60, 
+#'                                     error = "RMSE")
 #' 
 #' # Selecting a specific models (auto.arima, ets and nnetar)
-#' USgas_backtesting <- ts_backtesting(USgas, models = "aen", periods = 6, window_size = 24, h = 60)
-#' 
-#' # Using some of the models arguments 
-#'  USgas_backtesting <- ts_backtesting(USgas, models = "aen", periods = 6, window_size = 24, h = 60, error = "MAPE"
-#'  a.arg = list(stepwise = FALSE), n.arg = list(P =2 , p = 12, repeats = 50))
-#' 
+#' USgas_backtesting <- ts_backtesting(USgas, 
+#'                                     models = "aen", 
+#'                                     periods = 6, 
+#'                                     window_size = 24, 
+#'                                     h = 60)
+#'  
 #' # Retrieve the models leaderboard
 #' USgas_backtesting$leaderboard
+#' 
 #'
 #' # Retrieve the best forecast results
 #' USgas_backtesting$leadForecast$mean
@@ -72,9 +77,7 @@
 #' 
 #' # Get the final plot of the models performance and the selected forecasting model
 #' USgas_backtesting$summary_plot
-#' }
 
-# the ts_evaluate function ####
 
 ts_backtesting <- function(ts.obj, 
                         models = "abehntw", 
@@ -95,7 +98,7 @@ ts_backtesting <- function(ts.obj,
 `%>%` <- magrittr::`%>%` 
   
 a <- model_list <- model_char <- color_ramp <- forecast_list <- obj.name <- NULL
-
+variable <- value <- avgMAPE <- avgRMSE <- NULL
 obj.name <- base::deparse(base::substitute(ts.obj))
 
 
