@@ -46,7 +46,7 @@ ts_seasonal <- function(ts.obj,
   
   `%>%` <- magrittr::`%>%`
   df <- freq <- obj.name <- brewer_palettes <- viridis_palettes <- palette_type <- NULL
-  n_colors <- color_list_normal <- NULL
+  n_colors <- color_list_normal <- main <- NULL
   diff_mean <- col_class <- date_col <-  numeric_col <- NULL
   obj.name <- base::deparse(base::substitute(ts.obj))
   
@@ -475,6 +475,7 @@ ts_heatmap <- function(ts.obj, last = NULL, wday = TRUE, color = "Blues", title 
   `%>%` <- magrittr::`%>%`
   df <- df1 <- df2 <- freq <- obj.name <- NULL
   diff_mean <- col_class <- date_col <-  numeric_col <- NULL
+  main <- minor <- wday1 <- week <- y <- NULL
   obj.name <- base::deparse(base::substitute(ts.obj))
   
   
@@ -960,7 +961,7 @@ ts_ma <- function(ts.obj,
   `%>%` <- magrittr::`%>%`
   
   obj.name <- ts_merged <- ts_obj <- ts_temp <- ts_ma <- c <- p <-  p_m <- ma_order <-  NULL
-  output <- titles <- NULL
+  output <- titles <- dobule <- NULL
   left_flag <- right_flag <- k_flag <- FALSE
   obj.name <- base::deparse(base::substitute(ts.obj))
   
@@ -1391,7 +1392,10 @@ ts_ma <- function(ts.obj,
 #' 
 ts_quantile <- function(ts.obj, upper = 0.75, lower = 0.25, period = NULL, n = 1, title = NULL, Xtitle = NULL, Ytitle = NULL){
   
+  `%>%` <- magrittr::`%>%`
+  
   freq <- quantiles <- palette <- obj.name <- NULL 
+  category <- name <- maxcolors <- to <- data <- NULL
   obj.name <- base::deparse(base::substitute(ts.obj))
   
   # Error handling
