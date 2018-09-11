@@ -87,8 +87,21 @@ USgas_backtesting <- ts_backtesting(USgas,
                                     periods = 6, 
                                     window_size = 24, 
                                     h = 60)
-
+ 
 # Retrieve the models leaderboard
 USgas_backtesting$leaderboard
+
+
+# Retrieve the best forecast results
+USgas_backtesting$leadForecast$mean
+
+# Retrieve the final forecast of the ets model
+USgas_backtesting$Forecast_Final$ets$mean
+
+# Retrieve the ets forecast during the first period of testing
+USgas_backtesting$period_1$ets$forecast$mean
+
+# Get the final plot of the models performance and the selected forecasting model
+USgas_backtesting$summary_plot
 }
 }

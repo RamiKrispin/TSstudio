@@ -77,7 +77,7 @@
 #' 
 #' # Get the final plot of the models performance and the selected forecasting model
 #' USgas_backtesting$summary_plot
-
+#' }
 
 ts_backtesting <- function(ts.obj, 
                         models = "abehntw", 
