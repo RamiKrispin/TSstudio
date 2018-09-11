@@ -171,6 +171,7 @@ ts_reshape <- function(ts.obj,
   
   `%>%` <- magrittr::`%>%`
   df <- df_table <- freq <-  freq_name <- df_temp <- NULL
+  year <- epiweek <- NULL
   
   obj.name <- base::deparse(base::substitute(ts.obj))
   # ---- ts_reshape error handling ----
