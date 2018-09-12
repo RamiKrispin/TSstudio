@@ -69,7 +69,7 @@ ts_seasonal(USgas, type = "box")
 ```
 
 
-Alternatively, setting the type = `all`, print the three options above together in one plot:
+Alternatively, setting the `type = all`, print the three options above together in one plot:
 
 ```{r fig.height=5, fig.width= 10, message=FALSE, warning=FALSE}
 ts_seasonal(USgas, type = "all")
