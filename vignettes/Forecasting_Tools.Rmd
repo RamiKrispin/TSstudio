@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 options(list(menu.graphics = FALSE, scipen=99, digits= 3))
 ```
 
-The TSstudio package provides a several utility tools for the forecasting workflow, including backtesting function for training, testing and visualize multiple forecasting models for time series data. 
+The **TSstudio** package provides a several utility tools for the forecasting workflow, including backtesting function for training, testing and visualize multiple forecasting models for time series data. 
 
 ```{r}
 # install.packages("TSstudio")
@@ -22,7 +22,7 @@ library(TSstudio)
 packageVersion("TSstudio")
 ```
 
-In the following examples, we will utilize tools from the TSstudio package along with forecasting models from the [forecast](https://cran.r-project.org/web/packages/forecast/index.html), [forecastHybrid](https://cran.r-project.org/web/packages/forecastHybrid/index.html) and [bsts](https://cran.r-project.org/web/packages/bsts/index.html) packages to forecast the monthly natural gas consumption in the US. The input data, the USgas dataset, is the historical monthly consumption of natural gas in the US since January 2000 in Billion Cubic Feet. This dataset is available in the TSstudio, and was sourced from the U.S. Bureau of Transportation Statistics, Natural Gas Consumption [NATURALGAS], retrieved from FRED, Federal Reserve Bank of St. Louis; https://fred.stlouisfed.org/series/NATURALGAS.
+In the following examples, we will utilize tools from the TSstudio package along with forecasting models from the [forecast](https://cran.r-project.org/web/packages/forecast/index.html), [forecastHybrid](https://cran.r-project.org/web/packages/forecastHybrid/index.html) and [bsts](https://cran.r-project.org/web/packages/bsts/index.html) packages to forecast the monthly natural gas consumption in the US. The input data, the **USgas** dataset, is the historical monthly consumption of natural gas in the US since January 2000 in Billion Cubic Feet. This dataset is available in the **TSstudio**, and was sourced from the U.S. Bureau of Transportation Statistics, Natural Gas Consumption [NATURALGAS], retrieved from FRED, Federal Reserve Bank of St. Louis; https://fred.stlouisfed.org/series/NATURALGAS.
 
 ```{r fig.height=5, fig.width=10}
 # Loading the data
@@ -39,7 +39,7 @@ ts_plot(USgas,
 
 #### Creating training and testing partition
 
-The ts_split function, as the name implies, split time series data into a training and testing partition in chronological order without losing the attributes of the original object. For instance, setting the sample.out argument below to 12 will leave the last 12 observations of the USgas dataset for testing and the rest for training:    
+The `ts_split` function, as the name implies, split time series data into a training and testing partition in chronological order without losing the attributes of the original object. For instance, setting the `sample.out` argument below to 12 will leave the last 12 observations of the USgas dataset for testing and the rest for training:    
 
 ```{r}
 USgas_splits <- ts_split(ts.obj = USgas, sample.out = 12)
@@ -52,7 +52,7 @@ ts_info(test)
 
 #### Visualizing the model performance and forecast output
 
-The test_forecast function visualizes the fitted and forecasted values vs. the actuals (or the training and testing partitions). The hover tool provides information about the MAPE and RMSE results on the training and testing partition, utilizing the accuracy function from the forecast package:
+The `test_forecast` function visualizes the fitted and forecasted values vs. the actuals (or the training and testing partitions). The hover tool provides information about the MAPE and RMSE results on the training and testing partition, utilizing the accuracy function from the forecast package:
 
 ```{r fig.height=5, fig.width=10}
 library(forecast)
@@ -66,7 +66,7 @@ fc1 <- forecast(md1, h = h)
 test_forecast(actual = USgas, forecast.obj = fc1, test = test)
 ```
 
-The plot_forecast function plot forecast objects from the forecast, forecastHybrid and bsts packages:
+The `plot_forecast` function plot forecast objects from the **forecast**, **forecastHybrid** and **bsts** packages:
 
 ```{r fig.height=5, fig.width=10}
 md2 <- auto.arima(USgas)
@@ -77,7 +77,7 @@ plot_forecast(fc2)
 
 #### Residuals analysis
 
-The check_res function returns three plots of the residuals (fitted vs. actual), their correlation (ACF plot) and distribution (a histogram):
+The `check_res` function returns three plots of the residuals (fitted vs. actual), their correlation (ACF plot) and distribution (a histogram):
 
 ```{r fig.height=5, fig.width=10}
 check_res(md2)
@@ -85,7 +85,7 @@ check_res(md2)
 
 ### Backtesting
 
-Last but not least, one of the significant updates in the current release (version 0.1.2) is the ts_backtesting function for forecasting with backtesting technique. Generally, the backtesting is a multi-step process that includes the following steps:
+Last but not least, one of the significant updates in the current release (version 0.1.2) is the `ts_backtesting` function for forecasting with backtesting technique. Generally, the backtesting is a multi-step process that includes the following steps:
 
 1. Subset a series with N observations for the first n observations:
  [Y1, Y2,..., Yn-1, Yn], where n < N
@@ -96,7 +96,7 @@ Last but not least, one of the significant updates in the current release (versi
 5. Repeat steps 2-4 until you exhausted the number of observations in the series for training and testing
 6. Evaluate the overall performance of the model in the different subsets
 
-The ts_backtesting function is a fully customized backtesting following the steps mentioned above. It supports 7 different forecasting models or approaches:
+The `ts_backtesting` function is a fully customized backtesting following the steps mentioned above. It supports 7 different forecasting models or approaches:
 
 1. auto.arima (forecast package)
 2. Bayesian Structural Time Series model (bsts package)
@@ -108,11 +108,11 @@ The ts_backtesting function is a fully customized backtesting following the step
 
 Key arguments:
 
-* models - set the models to be used in the backtesting, by default it used all the available models
-* periods - defines the number of subsets to used in the backtesting process
-* error - set the error metric to evaluate the models' performance (either MAPE or RMSE)
-* window_size - set the length of the testing partition on the backtesting
-* h - set the horizon of the final forecast
+* `models` - set the models to be used in the backtesting, by default it used all the available models
+* `periods` - defines the number of subsets to used in the backtesting process
+* `error` - set the error metric to evaluate the models' performance (either MAPE or RMSE)
+* `window_size` - set the length of the testing partition on the backtesting
+* `h` - set the horizon of the final forecast
 
 The example below demonstrates the use of the backtesting to forecast consumption on natural gas in the next five years. With the use of six training periods with a testing partition of a year (12 months), using all the available models:
 
@@ -126,7 +126,7 @@ USgas_backtesting <- ts_backtesting(ts.obj = USgas,
                                     plot = FALSE)
 ```
 
-The output of the ts_backtesting function contains detailed information about the model performance on each of the testing periods. That includes a summary plot with the error results of each model on the testing partitions and as well a plot of the best model (by the error criteria) forecast output:
+The output of the `ts_backtesting` function contains detailed information about the model performance on each of the testing periods. That includes a summary plot with the error results of each model on the testing partitions and as well a plot of the best model (by the error criteria) forecast output:
 
 ```{r, fig.height=10, fig.width=10}
 USgas_backtesting$summary_plot
@@ -139,7 +139,7 @@ USgas_backtesting$leaderboard
 ```
 
 
-You can notice from the summary plot that the auto.arima model is the most accurate and stable model among the group of tested models on all the six testing periods, and therefore it will make sense to select this model to forecast the future values of the gas consumption.
+You can notice from the summary plot that the `auto.arima` model is the most accurate and stable model among the group of tested models on all the six testing periods, and therefore it will make sense to select this model to forecast the future values of the gas consumption.
 
 In addition, you can retrieve any of the other trained models or the final forecasts:
 
