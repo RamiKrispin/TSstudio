@@ -143,7 +143,7 @@ You can notice from the summary plot that the `auto.arima` model is the most acc
 
 In addition, you can retrieve any of the other trained models or the final forecasts:
 
-```{r, fig.height=10, fig.width=10}
+```{r, fig.height=5, fig.width=10}
 plot_forecast(USgas_backtesting$Forecast_Final$nnetar)
 plot_forecast(USgas_backtesting$Forecast_Final$bsts)
 plot_forecast(USgas_backtesting$Forecast_Final$hybrid)
