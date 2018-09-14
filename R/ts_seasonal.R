@@ -954,7 +954,7 @@ ts_ma <- function(ts.obj,
                   n_left = NULL,
                   n_right = NULL,
                   double = NULL, 
-                  plot = TRUE, show_legend = FALSE,
+                  plot = TRUE, show_legend = TRUE,
                   multiple = FALSE, separate = TRUE, margin = 0.03,
                   title = NULL, Xtitle = NULL, Ytitle = NULL){
   
@@ -1080,8 +1080,18 @@ ts_ma <- function(ts.obj,
     } else if(base::length(n) > 8){
       warning("The 'n' parameter is restricted up to 8 inputs (integers), only the first 8 values will be used")
       n <- n[1:8]
-    } else if(base::max(n) * 2 + 1 > base::length(ts.obj)){
-      stop("The length of the series is too short to apply the moving average with the given 'n' parameter")
+    } else{ 
+      if(stats::is.ts(ts.obj) | xts::is.xts(ts.obj) | zoo::is.zoo(ts.obj)){
+        if(base::max(n) * 2 + 1 > base::as.data.frame(ts.obj) %>% base::nrow()){
+          stop("The length of the series is too short to apply the moving average with the given 'n' parameter")
+        }
+      } else if(base::is.data.frame(ts.obj) | 
+                dplyr::is.tbl(ts.obj) | 
+                data.table::is.data.table(ts.obj)){
+        if(base::max(n) * 2 + 1 > base::nrow(ts.obj)){
+          stop("The length of the series is too short to apply the moving average with the given 'n' parameter")
+        }
+      }
     }
   }
   
