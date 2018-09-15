@@ -5,7 +5,7 @@
 \title{Moving Average Method for Time Series Data}
 \usage{
 ts_ma(ts.obj, n = c(3, 6, 9), n_left = NULL, n_right = NULL,
-  double = NULL, plot = TRUE, show_legend = FALSE, multiple = FALSE,
+  double = NULL, plot = TRUE, show_legend = TRUE, multiple = FALSE,
   separate = TRUE, margin = 0.03, title = NULL, Xtitle = NULL,
   Ytitle = NULL)
 }

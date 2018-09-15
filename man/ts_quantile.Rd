@@ -33,5 +33,7 @@ A quantile plot of time series data, allows the user to display a quantile plot 
 }
 \examples{
 
+data(Michigan_CS)
+ts_quantile(Michigan_CS)
 
 }
