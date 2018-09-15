@@ -1124,12 +1124,12 @@ ts_ma <- function(ts.obj,
       
       ts_left <- ts_right <- ts_intersect <- ma_order <-  NULL
       if(!base::is.null(n_left)){
-        ts_left <- xts:::lag.xts(ts.obj, k = c(1:n_left))
+        ts_left <- stats::lag(ts.obj, k = c(1:n_left))
         ma_order <- n_left
       }
       
       if(!base::is.null(n_right)){
-          ts_right <- xts:::lag.xts(ts.obj, k = c((-1):(-n_right)))
+          ts_right <- stats::lag(ts.obj, k = c((-1):(-n_right)))
         if(!base::is.null(n_left)){
           ma_order <- ma_order + n_right
           ts.merged <- xts::merge.xts(ts_left, ts.obj, ts_right)
@@ -1147,12 +1147,12 @@ ts_ma <- function(ts.obj,
       
       ts_left <- ts_right <- ts_intersect <- ma_order <- NULL
       if(!base::is.null(n_left)){
-        ts_left <- zoo:::lag.zoo(ts.obj, k = c((-1):(-n_left)))
+        ts_left <- stats::lag(ts.obj, k = c((-1):(-n_left)))
         ma_order <- n_left
       }
       
       if(!base::is.null(n_right)){
-          ts_right <- zoo:::lag.zoo(ts.obj, k = c(1:n_right))
+          ts_right <- stats::lag(ts.obj, k = c(1:n_right))
         if(!base::is.null(n_left)){
           ma_order <- ma_order + n_right
           ts.merged <- zoo::merge.zoo(ts_left, ts.obj, ts_right)
@@ -1177,9 +1177,6 @@ ts_ma <- function(ts.obj,
   # Creating a list  
   output <- list()
   titles <- list()
-  
-  
-  
   if(!base::is.null(n)){
     for(i in n){
       ts_ma1 <- ma_title <- ma_order <- NULL
