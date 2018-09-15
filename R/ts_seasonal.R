@@ -1099,27 +1099,52 @@ ts_ma <- function(ts.obj,
   
   # Setting function to calculate moving average
   ma_fun <- function(ts.obj, n_left, n_right){
-    
-    ts_left <- ts_right <- ts_intersect <- ma_order <-  NULL
-    if(!base::is.null(n_left)){
-      for(i in 1:n_left){
-        ts_left <- stats::ts.intersect(stats::lag(ts.obj, k = -i), ts_left)
-      }
-      ma_order <- n_left
-    }
-    
-    if(!base::is.null(n_right)){
-      for(i in 1:n_right){
-        ts_right <- stats::ts.intersect(stats::lag(ts.obj, k =  i), ts_right)
-      }
+    if(stats::is.ts(ts.obj)){
+      ts_left <- ts_right <- ts_intersect <- ma_order <-  NULL
       if(!base::is.null(n_left)){
-        ma_order <- ma_order + n_right
-      } else {
-        ma_order <- n_right
+        for(i in 1:n_left){
+          ts_left <- stats::ts.intersect(stats::lag(ts.obj, k = -i), ts_left)
+        }
+        ma_order <- n_left
       }
+      
+      if(!base::is.null(n_right)){
+        for(i in 1:n_right){
+          ts_right <- stats::ts.intersect(stats::lag(ts.obj, k =  i), ts_right)
+        }
+        if(!base::is.null(n_left)){
+          ma_order <- ma_order + n_right
+        } else {
+          ma_order <- n_right
+        }
+      }
+      ma_order <- ma_order + 1
+      ts_intersect <- TSstudio::ts_sum(stats::ts.intersect(ts_left, ts.obj, ts_right)) / (ma_order)
+    } else if(xts::is.xts(ts.obj) | zoo::is.zoo(ts.obj)){
+      
+      ts_left <- ts_right <- ts_intersect <- ma_order <-  NULL
+      if(!base::is.null(n_left)){
+        ts_left <- xts:::lag.xts(ts.obj, k = c(1:n_left))
+        ma_order <- n_left
+      }
+      
+      if(!base::is.null(n_right)){
+        for(i in 1:n_right){
+          ts_right <- xts:::lag.xts(ts.obj, k = c((-1):(-n_right)))
+        }
+        if(!base::is.null(n_left)){
+          ma_order <- ma_order + n_right
+        } else {
+          ma_order <- n_right
+        }
+      }
+      ma_order <- ma_order + 1
+      ts.merged <- xts::merge.xts(ts_left, ts.obj, ts_right)
+      ts.merged$total <- base::rowSums(ts.merged) / (ma_order)
+      ts_intersect <- ts.merged$total
     }
-    ma_order <- ma_order + 1
-    ts_intersect <- TSstudio::ts_sum(stats::ts.intersect(ts_left, ts.obj, ts_right)) / (ma_order)
+    
+    
     return(ts_intersect)
   }
   
