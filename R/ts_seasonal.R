@@ -1129,17 +1129,18 @@ ts_ma <- function(ts.obj,
       }
       
       if(!base::is.null(n_right)){
-        for(i in 1:n_right){
           ts_right <- xts:::lag.xts(ts.obj, k = c((-1):(-n_right)))
-        }
         if(!base::is.null(n_left)){
           ma_order <- ma_order + n_right
+          ts.merged <- xts::merge.xts(ts_left, ts.obj, ts_right)
         } else {
           ma_order <- n_right
+          ts.merged <- xts::merge.xts(ts.obj, ts_right)
         }
+      } else if(!base::is.null(n_left)){
+        ts.merged <- xts::merge.xts(ts_left, ts.obj)
       }
       ma_order <- ma_order + 1
-      ts.merged <- xts::merge.xts(ts_left, ts.obj, ts_right)
       ts.merged$total <- base::rowSums(ts.merged) / (ma_order)
       ts_intersect <- ts.merged$total
     }else if(zoo::is.zoo(ts.obj)){
@@ -1151,9 +1152,7 @@ ts_ma <- function(ts.obj,
       }
       
       if(!base::is.null(n_right)){
-        for(i in 1:n_right){
           ts_right <- zoo:::lag.zoo(ts.obj, k = c(1:n_right))
-        }
         if(!base::is.null(n_left)){
           ma_order <- ma_order + n_right
           ts.merged <- zoo::merge.zoo(ts_left, ts.obj, ts_right)
