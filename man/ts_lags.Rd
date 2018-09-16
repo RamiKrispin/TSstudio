@@ -4,17 +4,13 @@
 \alias{ts_lags}
 \title{Time Series Lag Visualization}
 \usage{
-ts_lags(ts.obj, lag.max = 12, Xtitle = FALSE, Ytitle = TRUE,
-  margin = 0.02, Xshare = TRUE, Yshare = TRUE, n_row = 3)
+ts_lags(ts.obj, lags = 1:12, margin = 0.02, Xshare = TRUE,
+  Yshare = TRUE, n_plots = 3)
 }
 \arguments{
-\item{ts.obj}{A univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)}
+\item{ts.obj}{A univariate time series object of a class "ts", "zoo" or "xts"}
 
-\item{lag.max}{An integer, number of lags to plot}
-
-\item{Xtitle}{Plotly parameter, should x-axis titles be retained?}
-
-\item{Ytitle}{Plotly parameter, should y-axis titles be retained?}
+\item{lags}{An integer, set the lags range, by default will plot the first 12 lags}
 
 \item{margin}{Plotly parameter, either a single value or four values (all between 0 and 1). 
 If four values are provided, the first is used as the left margin, 
@@ -26,7 +22,7 @@ If a single value is provided, it will be used as all four margins.}
 
 \item{Yshare}{Plotly parameter, should the y-axis be shared amongst the subplots?}
 
-\item{n_row}{An integer, define the number of plots per row}
+\item{n_plots}{An integer, define the number of plots per row}
 }
 \description{
 Visualization of series with its lags, 
@@ -35,5 +31,12 @@ can be used to identify a correlation between the series and it lags
 \examples{
 data(USgas)
 
+# Plot the first 12 lags (default)
 ts_lags(USgas) 
+
+# Plot the seasonal lags for the first 4 years (hence, lag 12, 24, 36, 48)
+ts_lags(USgas, lags = c(12, 24, 36, 48))
+
+# Setting the margin between the plot
+ts_lags(USgas, lags = c(12, 24, 36, 48), margin = 0.01)
 }
