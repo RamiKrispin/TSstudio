@@ -966,10 +966,17 @@ ts_ma <- function(ts.obj,
   obj.name <- base::deparse(base::substitute(ts.obj))
   
   # Error Handling  
-  if (stats::is.ts(ts.obj)) {
-    if (stats::is.mts(ts.obj)) {
-      warning("The 'ts.obj' has multiple columns, only the first column will be plot")
-      ts.obj <- ts.obj[, 1]
+  if(stats::is.ts(ts.obj)){
+    if(stats::is.mts(ts.obj)){
+      ts.obj <- ts.obj[,1]
+      warning("The input object is a 'mts' class, by defualt will use only the first series as an input")
+    }
+  } else if(xts::is.xts(ts.obj) | zoo::is.zoo(ts.obj)){
+    if(!base::is.null(base::ncol(ts.obj))){
+      if(base::ncol(ts.obj) > 1){
+        ts.obj <- ts.obj[,1]
+        warning("The input object is a multiple time series object, by defualt will use only the first series as an input")
+      }
     }
   }
   
