@@ -93,7 +93,7 @@ ts_lags <- function(ts.obj, lags = 1:12, margin = 0.02,
     df <- base::data.frame(time = zoo::index(ts.obj), y = base::as.numeric(ts.obj)) %>%
       dplyr::arrange(time)
   } else {
-    stop("The input object is not valid (must be 'ts', 'xts', or 'zoo'")
+    stop("The input object is not valid (must be 'ts', 'xts', or 'zoo')")
   }
   
   
@@ -118,7 +118,7 @@ ts_lags <- function(ts.obj, lags = 1:12, margin = 0.02,
   p <- plotly::subplot(p_list, nrows = ceiling(length(p_list) / n_plots), 
                        margin = margin, 
                        shareX = Xshare, shareY = Yshare) %>%
-    plotly::layout(title = paste("Series (Y) vs. Lags (X)", sep = " ")) %>%
+    plotly::layout(title = paste(obj.name, "- Series (Y axis) vs. Lags (X axis)", sep = " ")) %>%
     plotly::hide_legend()
   
   
