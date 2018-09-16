@@ -213,10 +213,22 @@ The `ts_lag`, as the name implies, create a lag plot of time series data current
 ts_lags(USgas)
 ```
 
-By default, it plots the last 12 lags, however the namber of lag can be modify with the `lag.max` argument:
+By default, it plots the first 12 lags, however the namber of lag can be modify with the `lags` argument, for example setting this argument to 1:24 will plot the first 24 lags:
 
 ```{r fig.height=10, fig.width= 10, message=FALSE, warning=FALSE}
-ts_lags(USgas, lag.max = 24)
+ts_lags(USgas, lags = 1:24)
+```
+
+Alternatively, you can plot only the seasonal lags (e.g., for monthly series the 12, 24, 36, and so on and so forth):
+
+```{r fig.height= 5, fig.width= 10, message=FALSE, warning=FALSE}
+ts_lags(USgas, lags = c(12, 24, 36, 48))
+```
+
+In addition, you can modify the margin between the plots with the `margin` argument:
+
+```{r fig.height= 5, fig.width= 10, message=FALSE, warning=FALSE}
+ts_lags(USgas, lags = c(12, 24, 36, 48), margin = 0.04)
 ```
 
 The `ts_acf` and `ts_pacf` are wrappers for the **stats** package `acf` and `pacf` functions, providing a colorful and interactive version for those functions:
