@@ -49,17 +49,6 @@ ts_lags <- function(ts.obj, lags = 1:12, margin = 0.02,
     margin <- 0.2
   }
   
-  if(!is.logical(Xtitle)){
-    warning("The 'Xtitle' parameter is not valid, please use only boolean operators.",
-            " Using the defualt setting setting (Xtitle = FALSE")
-    Xtitle <- FALSE
-  }
-  
-  if(!is.logical(Ytitle)){
-    warning("The 'Ytitle' parameter is not valid, please use only boolean operators.",
-            " Using the defualt setting setting (Ytitle = TRUE")
-    Ytitle <- TRUE
-  }
   
   if(!is.logical(Xshare)){
     warning("The 'Xshare' parameter is not valid, please use only boolean operators.",
