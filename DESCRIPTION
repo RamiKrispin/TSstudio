@@ -27,11 +27,12 @@ Imports:
   xts (>= 0.10-1),
   zoo (>= 1.8-0)
 Suggests:
-    knitr,
-    rmarkdown,
     devtools,
-    quantmod,
     DT,
-    UKgrid
+    knitr,
+    quantmod,
+    rmarkdown,
+    UKgrid,
+    webshot
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
