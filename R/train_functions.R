@@ -209,9 +209,7 @@ if("b" %in% model_char){
   
   # Check if the bsts arguments are valid
   if(is.null(b.arg)){
-    warning("The 'b.arg' value is not valid, using default setting")
-    
-    b.arg <-  list(linear_trend = TRUE,
+     b.arg <-  list(linear_trend = TRUE,
                    seasonal = TRUE,
                    niter = 1000,
                    ping = 100,
