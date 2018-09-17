@@ -1,7 +1,7 @@
 ---
 title: "Seasonal Analysis with the TSstudio Package"
 author: "Rami Krispin (@Rami_Krispin)"
-date: "`r Sys.Date()`"
+date: "2018-09-17"
 output: html_document
 vignette: >
   %\VignetteEngine{knitr::knitr}
