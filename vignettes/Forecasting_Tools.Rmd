@@ -22,7 +22,7 @@ library(TSstudio)
 packageVersion("TSstudio")
 ```
 
-In the following examples, we will utilize tools from the TSstudio package along with forecasting models from the [forecast](https://cran.r-project.org/web/packages/forecast/index.html), [forecastHybrid](https://cran.r-project.org/web/packages/forecastHybrid/index.html) and [bsts](https://cran.r-project.org/web/packages/bsts/index.html) packages to forecast the monthly natural gas consumption in the US. The input data, the **USgas** dataset, is the historical monthly consumption of natural gas in the US since January 2000 in Billion Cubic Feet. This dataset is available in the **TSstudio**, and was sourced from the U.S. Bureau of Transportation Statistics, Natural Gas Consumption [NATURALGAS], retrieved from FRED, Federal Reserve Bank of St. Louis; https://fred.stlouisfed.org/series/NATURALGAS.
+In the following examples, we will utilize tools from the TSstudio package along with forecasting models from the [forecast](https://cran.r-project.org/web/packages/forecast/index.html), [forecastHybrid](https://cran.r-project.org/web/packages/forecastHybrid/index.html) and [bsts](https://cran.r-project.org/web/packages/bsts/index.html) packages to forecast the monthly natural gas consumption in the US. The input data, the **USgas** dataset, is the historical monthly consumption of natural gas in the US since January 2000 in Billion Cubic Feet. This dataset is available in the **TSstudio**, and was sourced from the U.S. Bureau of Transportation Statistics, Natural Gas Consumption [NATURALGAS](https://fred.stlouisfed.org/series/NATURALGAS), retrieved from FRED, Federal Reserve Bank of St. Louis.
 
 ```{r fig.height=5, fig.width=10}
 # Loading the data
