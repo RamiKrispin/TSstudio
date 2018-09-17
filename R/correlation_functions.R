@@ -27,7 +27,7 @@
 ts_lags <- function(ts.obj, lags = 1:12, margin = 0.02, 
                     Xshare = TRUE, Yshare = TRUE, n_plots = 3){
   `%>%` <- magrittr::`%>%`
-  df <- df_wide <- p <- obj.name <- lag <- lag_plots <- NULL
+  df <- df_wide <- p <- obj.name <- lag <- lag_plots <- time <- NULL
   
   obj.name <- base::deparse(base::substitute(ts.obj))
   # --------------Error handling --------------
