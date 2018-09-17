@@ -2,4 +2,4 @@
 ^\.Rproj\.user$
 ^cran-comments\.md$
 ^README.Rmd$
-^data-raw\.R$
+^data-raw$
