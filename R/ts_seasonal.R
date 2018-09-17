@@ -923,7 +923,7 @@ ts_surface <- function(ts.obj) {
 #' (otherwise it is a normal two-sided moving averages function)
 #' 
 #' @examples
-#' 
+#' \dontrun{
 #' # A one-side moving average order of 7
 #' USgas_MA7 <- ts_ma(USgas, n_left = 6, n = NULL)
 #' 
@@ -947,6 +947,7 @@ ts_surface <- function(ts.obj) {
 #' double = 2, multiple = TRUE,
 #' title = "US Monthly Total Vehicle Sales - MA", 
 #' Ytitle = "Thousand of Units")
+#' }
 
 
 ts_ma <- function(ts.obj, 
