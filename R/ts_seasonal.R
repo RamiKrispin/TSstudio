@@ -1452,9 +1452,32 @@ ts_ma <- function(ts.obj,
 #' @description A quantile plot of time series data, allows the user to display a quantile plot of a series by a subset period
 #' @examples
 #' 
-#' data(Michigan_CS)
-#' ts_quantile(Michigan_CS)
+#' \dontrun{
 #' 
+#' # Loading the UKgrid package to pull a multie seasonality data
+#' require(UKgrid)
+#' 
+#' UKgrid_half_hour <- extract_grid(type = "xts", aggregate = NULL)
+#' 
+#' # Plotting the quantile of the UKgrid dataset
+#' # No period subset
+#' ts_quantile(UKgrid_half_hour, 
+#' period = NULL, 
+#' title = "The UK National Grid Net Demand for Electricity - Quantile Plot")
+#'  
+#' # Plotting the quantile of the UKgrid dataset
+#' # Using a weekday subset
+#' ts_quantile(UKgrid_half_hour, 
+#' period = "weekdays",
+#' title = "The UK National Grid Net Demand for Electricity - by Weekdays")
+#' 
+#' # Spacing the plots by setting the 
+#' # number of rows of the plot to 2
+#' ts_quantile(UKgrid_half_hour, 
+#' period = "weekdays",
+#' title = "The UK National Grid Net Demand for Electricity - by Weekdays",
+#' n = 2)
+#' }
 ts_quantile <- function(ts.obj, upper = 0.75, lower = 0.25, period = NULL, n = 1, title = NULL, Xtitle = NULL, Ytitle = NULL){
   
   `%>%` <- magrittr::`%>%`
