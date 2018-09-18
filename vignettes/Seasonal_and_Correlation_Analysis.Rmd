@@ -114,7 +114,7 @@ ts_heatmap(USgas, color = "Reds")
 One of the main improvement in the current version is the ability to handle daily and weekly frequencies in addition to the monthly and quarterly. By default, daily data (whenever it has "Date" index) will appear in a format of weekday by year. For example, we will plot the daily demand for electricity in the UK (available in the **UKgrid** package):
 
 ```{r fig.height=10, fig.width= 10, message=FALSE, warning=FALSE}
-#install_github("RamiKrispin/UKgrid")
+#install.packages("UKgrid")
 library(UKgrid)
 
 UKgrid_daily <- extract_grid(type = "tbl", aggregate = "daily")
