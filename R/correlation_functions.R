@@ -104,11 +104,11 @@ ts_lags <- function(ts.obj, lags = 1:12, margin = 0.02,
       )
   })
   
-  p <- plotly::subplot(p_list, nrows = ceiling(length(p_list) / n_plots), 
+  p <- base::suppressWarnings(plotly::subplot(p_list, nrows = ceiling(length(p_list) / n_plots), 
                        margin = margin, 
                        shareX = Xshare, shareY = Yshare) %>%
     plotly::layout(title = paste(obj.name, "- Series (Y axis) vs. Lags (X axis)", sep = " ")) %>%
-    plotly::hide_legend()
+    plotly::hide_legend())
   
   
   
