@@ -4,7 +4,7 @@ author: "Rami Krispin (@Rami_Krispin)"
 date: "2018-09-17"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Vignette Title}
   %\usepackage[UTF-8]{inputenc}
 ---
