@@ -436,28 +436,28 @@ if((i -s + 1) >= 1){
 p <- p1 <- p2 <- p3 <- p4 <- p5 <- p6 <-NULL
 
 
-p <-   plotly::plot_ly(x = stats::time(train), y = base::as.numeric(train), mode = "lines", name = "Training", type = "scatter", line = list(color = "#00526d")) %>%
+p <-   base::suppressWarnings(plotly::plot_ly(x = stats::time(train), y = base::as.numeric(train), mode = "lines", name = "Training", type = "scatter", line = list(color = "#00526d")) %>%
   plotly::add_lines(x = stats::time(test), y = base::as.numeric(test), line = list(color = "green", width = 4, dash = "dash"), name = "Testing") %>% 
   plotly::layout(xaxis = list(range = c(base::min(stats::time(ts.obj)), base::max(stats::time(ts.obj)))), 
-                 title = base::paste(obj.name, " Backtesting - Error Distribution by Period/Model", sep = ""), annotations = a) 
+                 title = base::paste(obj.name, " Backtesting - Error Distribution by Period/Model", sep = ""), annotations = a)) 
 
-p1 <- plotly::plot_ly(data = MAPE_df) 
+p1 <- base::suppressWarnings(plotly::plot_ly(data = MAPE_df)) 
 
 for(r1 in 2:ncol(MAPE_df)){
-  p1 <- p1 %>% plotly::add_lines(x = MAPE_df[, 1], 
+  p1 <- base::suppressWarnings(p1 %>% plotly::add_lines(x = MAPE_df[, 1], 
                                  y = MAPE_df[, r1], 
                                  name = names(MAPE_df)[r1], 
-                                 line = list(color = color_ramp[(r1 -1)]))
+                                 line = list(color = color_ramp[(r1 -1)])))
 }
   
 
-p1 <- p1 %>% plotly::layout(xaxis = list(tickvals = MAPE_df[, 1], ticktext = MAPE_df[, 1],
-                                         range = c(min(MAPE_df$Period), max(MAPE_df$Period))))
+p1 <- base::suppressWarnings(p1 %>% plotly::layout(xaxis = list(tickvals = MAPE_df[, 1], ticktext = MAPE_df[, 1],
+                                         range = c(min(MAPE_df$Period), max(MAPE_df$Period)))))
 
-p2 <- plotly::plot_ly(data = MAPE_df)
+p2 <- base::suppressWarnings(plotly::plot_ly(data = MAPE_df))
 
 for(r2 in 2:base::ncol(MAPE_df)){
- p2 <- p2 %>% plotly::add_trace(y = MAPE_df[, r2], 
+ p2 <- base::suppressWarnings(p2 %>% plotly::add_trace(y = MAPE_df[, r2], 
                     type = "box", 
                     boxpoints = "all", 
                     jitter = 0.3,
@@ -466,32 +466,32 @@ for(r2 in 2:base::ncol(MAPE_df)){
                     marker = list(color = color_ramp[(r2 -1)]),
                     line = list(color = color_ramp[(r2 -1)]),
                     showlegend=F
-                    )
+                    ))
 }
 
-p1 <- p1 %>% plotly::layout(title = "Error by Period",
+p1 <- base::suppressWarnings(p1 %>% plotly::layout(title = "Error by Period",
                             yaxis = list(title = "MAPE"),
-                            xaxis = list(title = "Period", tickvals = MAPE_df[, 1], ticktext = MAPE_df[, 1]))
-p2 <- p2 %>% plotly::layout(title = "Error Distribution by Model",
-                            yaxis = list(title = "MAPE"))
-p3 <- plotly::subplot(p1, p2, nrows = 2, titleY = TRUE, titleX = TRUE, margin = 0.06)
+                            xaxis = list(title = "Period", tickvals = MAPE_df[, 1], ticktext = MAPE_df[, 1])))
+p2 <- base::suppressWarnings(p2 %>% plotly::layout(title = "Error Distribution by Model",
+                            yaxis = list(title = "MAPE")))
+p3 <- base::suppressWarnings(plotly::subplot(p1, p2, nrows = 2, titleY = TRUE, titleX = TRUE, margin = 0.06))
 
-p4 <- plotly::plot_ly(data = RMSE_df) 
+p4 <- base::suppressWarnings(plotly::plot_ly(data = RMSE_df)) 
 
 for(r1 in 2:ncol(RMSE_df)){
-  p4 <- p4 %>% plotly::add_lines(x = RMSE_df[, 1], 
+  p4 <- base::suppressWarnings(p4 %>% plotly::add_lines(x = RMSE_df[, 1], 
                                  y = RMSE_df[, r1], 
                                  name = names(RMSE_df)[r1], 
-                                 line = list(color = color_ramp[(r1 -1)]))
+                                 line = list(color = color_ramp[(r1 -1)])))
 }
 
-p4 <- p4 %>% plotly::layout(xaxis = list(tickvals = RMSE_df[, 1], ticktext = RMSE_df[, 1],
-                                         range = c(min(RMSE_df$Period), max(RMSE_df$Period))))
+p4 <- base::suppressWarnings(p4 %>% plotly::layout(xaxis = list(tickvals = RMSE_df[, 1], ticktext = RMSE_df[, 1],
+                                         range = c(min(RMSE_df$Period), max(RMSE_df$Period)))))
 
-p5 <- plotly::plot_ly(data = RMSE_df)
+p5 <- base::suppressWarnings(plotly::plot_ly(data = RMSE_df))
 
 for(r2 in 2:base::ncol(RMSE_df)){
-  p5 <- p5 %>% plotly::add_trace(y = RMSE_df[, r2], 
+  p5 <- base::suppressWarnings(p5 %>% plotly::add_trace(y = RMSE_df[, r2], 
                                  type = "box", 
                                  boxpoints = "all", 
                                  jitter = 0.3,
@@ -500,24 +500,24 @@ for(r2 in 2:base::ncol(RMSE_df)){
                                  marker = list(color = color_ramp[(r2 -1)]),
                                  line = list(color = color_ramp[(r2 -1)]),
                                  showlegend=F
-  )
+  ))
 }
 
-p4 <- p4 %>% plotly::layout(title = "Error by Period",
+p4 <- base::suppressWarnings(p4 %>% plotly::layout(title = "Error by Period",
                             yaxis = list(title = "RMSE"),
-                            xaxis = list(title = "Period", tickvals = RMSE_df[, 1], ticktext = RMSE_df[, 1]))
-p5 <- p5 %>% plotly::layout(title = "Error Distribution by Model",
-                            yaxis = list(title = "RMSE"))
-p6 <- plotly::subplot(p4, p5, nrows = 2, titleY = TRUE, titleX = TRUE, margin = 0.1)
+                            xaxis = list(title = "Period", tickvals = RMSE_df[, 1], ticktext = RMSE_df[, 1])))
+p5 <- base::suppressWarnings(p5 %>% plotly::layout(title = "Error Distribution by Model",
+                            yaxis = list(title = "RMSE")))
+p6 <- base::suppressWarnings(plotly::subplot(p4, p5, nrows = 2, titleY = TRUE, titleX = TRUE, margin = 0.1))
 
 if(error == "MAPE" & plot & periods > 1){
 
-  p7 <- plotly::subplot(plotly::subplot(p1, p2, nrows = 1, titleY = TRUE, shareY = TRUE, margin = 0.02, titleX = TRUE), 
-                        p, nrows = 2, margin = 0.08, titleY = TRUE)
+  p7 <- base::suppressWarnings(plotly::subplot(plotly::subplot(p1, p2, nrows = 1, titleY = TRUE, shareY = TRUE, margin = 0.02, titleX = TRUE), 
+                        p, nrows = 2, margin = 0.08, titleY = TRUE))
   print(p7)
 } else if(error == "RMSE" & plot & periods > 1){
-  p7 <- plotly::subplot(plotly::subplot(p4, p5, nrows = 1, titleY = TRUE, shareY = TRUE, margin = 0.02, titleX = TRUE), 
-                        p, nrows = 2, margin = 0.08, titleY = TRUE)
+  p7 <- base::suppressWarnings(plotly::subplot(plotly::subplot(p4, p5, nrows = 1, titleY = TRUE, shareY = TRUE, margin = 0.02, titleX = TRUE), 
+                        p, nrows = 2, margin = 0.08, titleY = TRUE))
   print(p7)
 }
 }
@@ -579,11 +579,11 @@ if(error == "MAPE"){
       showarrow = FALSE
     )
     
-    final_forecast_plot <- TSstudio::plot_forecast(modelOutput$leadForecast) %>% 
+    final_forecast_plot <- base::suppressWarnings(TSstudio::plot_forecast(modelOutput$leadForecast) %>% 
       plotly::layout(annotations = forecast_final_plot_arg, 
-                     title = base::paste(obj.name, " Backtesting - Error Distribution by Period/Model", sep = "")) 
-    final_plot <- plotly::subplot(plotly::subplot(p1, p2, nrows = 1, titleY = TRUE, shareY = TRUE, margin = 0.02, titleX = TRUE), 
-                                  final_forecast_plot, nrows = 2, margin = 0.1, titleY = TRUE)
+                     title = base::paste(obj.name, " Backtesting - Error Distribution by Period/Model", sep = "")))
+    final_plot <- base::suppressWarnings(plotly::subplot(plotly::subplot(p1, p2, nrows = 1, titleY = TRUE, shareY = TRUE, margin = 0.02, titleX = TRUE), 
+                                  final_forecast_plot, nrows = 2, margin = 0.1, titleY = TRUE))
     
   }
 } else if(error == "RMSE"){
@@ -602,10 +602,10 @@ if(error == "MAPE"){
       y = 1,
       showarrow = FALSE
     )
-    final_forecast_plot <- TSstudio::plot_forecast(modelOutput$leadForecast) %>% 
-      plotly::layout(annotations = forecast_final_plot_arg)
-    final_plot <- plotly::subplot(plotly::subplot(p4, p5,  nrows = 1, titleY = TRUE, shareY = TRUE, margin = 0.02, titleX = TRUE), 
-                                  final_forecast_plot, nrows = 2, margin = 0.1, titleY = TRUE)
+    final_forecast_plot <- base::suppressWarnings(TSstudio::plot_forecast(modelOutput$leadForecast) %>% 
+      plotly::layout(annotations = forecast_final_plot_arg))
+    final_plot <- base::suppressWarnings(plotly::subplot(plotly::subplot(p4, p5,  nrows = 1, titleY = TRUE, shareY = TRUE, margin = 0.02, titleX = TRUE), 
+                                  final_forecast_plot, nrows = 2, margin = 0.1, titleY = TRUE))
 
   }
 }
