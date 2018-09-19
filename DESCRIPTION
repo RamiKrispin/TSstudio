@@ -32,7 +32,6 @@ Suggests:
     knitr,
     quantmod,
     rmarkdown,
-    UKgrid,
-    webshot
+    UKgrid
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
