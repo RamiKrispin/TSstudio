@@ -12,6 +12,8 @@ vignette: >
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 options(list(menu.graphics = FALSE, scipen=99, digits= 3))
+options("getSymbols.warning4.0"=FALSE)
+options("getSymbols.yahoo.warning"=FALSE)
 ```
 
 The `ts_plot` is a versatile function for interactive plotting of time series objects. It is based on the [plotly](https://plot.ly/r/) engine and supports multiple time series objects such as `ts`, `mts`, `zoo`, `xts` and as well the data frame family (`data.frame`, `data.table`, and `tbl`).
