@@ -2,10 +2,10 @@
 title: "Seasonal Analysis with the TSstudio Package"
 author: "Rami Krispin (@Rami_Krispin)"
 date: "2018-09-17"
-output: html_document
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEngine{knitr::knitr}
-  %\VignetteIndexEntry{Seasonal Analysis with the TSstudio Package}
+  %\VignetteIndexEntry{Vignette Title}
   %\usepackage[UTF-8]{inputenc}
 ---
 
