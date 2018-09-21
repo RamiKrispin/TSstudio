@@ -2,37 +2,7 @@
 TSstudio
 ========
 
-The TSstudio package provides a set of interactive visualization tools for time series analysis and forecasting.
-
-Overview
---------
-
-The TSstudio package provides a set of tools for time series analysis, supporting “ts”, “mts”, “zoo”, and “xts” objects. It includes interactive visualizations tools based on the [plotly](https://plot.ly/r/) package for descriptive time series analysis. In addition for the visualization tools, the package provides a set of utility functions for preprocessing time series objects.
-
-All the visualization tools in the package, support multiple time series objects (“ts”, “mts”, “zoo”, “xts” and model output from the forecast package) without the need of any data transformation. They include the following plots:
-
-1.  Visualization of time series objects (ts\_plot)
-2.  Seasonality plots (ts\_seasonal)
-3.  Heatmap, surface and polar plots (ts\_heatmap, ts\_surface, ts\_polar)
-4.  Lags and correlation plots (ts\_lags, ts\_acf, ts\_pacf)
-5.  Decompose plot (ts\_decompose)
-6.  Residual plot (check\_res)
-7.  Forecast performance (test\_forecast)
-
-Besides the visualization functions, there are set of utility functions:
-
-1.  ts\_split - for splitting time series object to training and testing partitions
-2.  ts\_reshape - transforming time series objects to year/cycle unit data frame format
-3.  xts\_to\_ts and zoo\_to\_ts - functions for transforming xts or zoo objects to ts format
-
-Note: most of the current functions support only monthly and quarterly frequencies, the plan is to expend the ability to lower frequencies such as daily and hourly in the next release
-
-Examples
---------
-
-A detailed examples of the package's key functions is available [here](https://cran.r-project.org/web/packages/TSstudio/vignettes/TSstudio_Intro.html).
-
-![The TSstudio package](https://github.com/RamiKrispin/TSstudio/blob/master/vignettes/gif/TSstudio.gif)
+The **TSstudio** package provides a set of functions for time series analysis. That includes interactive data visualization tools based on the [plotly](https://CRAN.R-project.org/package=plotly) package engine, supporting multiple time series objects such as `ts`, `xts`, and `zoo`. In addition, the package provides a set of utility functions for preprocessing time series data, and as well backtesting applications for forecasting models from the [forecast](https://CRAN.R-project.org/package=forecast), [forecastHybrid](https://CRAN.R-project.org/package=forecastHybrid) and [bsts](https://CRAN.R-project.org/package=bsts) packages. 
 
 Installation
 ------------
@@ -48,4 +18,51 @@ or install the development version from [Github](https://github.com/RamiKrispin/
 ``` r
 # install.packages("devtools")
 devtools::install_github("RamiKrispin/TSstudio")
+```
+
+
+Usage
+-----
+``` r
+library(TSstudio)
+data(USgas)
+
+# Ploting time series object
+ts_plot(USgas)
+
+# Seasonal plot
+ts_seasonal(USgas, type = "all")
+
+# Lags plot
+ts_lags(USgas, lags = 1:12)
+
+# Seasonal lags plot
+ts_lags(USgas, lags = c(12, 24, 36, 48))
+
+# Forecasting applications
+# Setting training and testing partitions
+USgas_s <- ts_split(ts.obj = USgas, sample.out = 12)
+train <- USgas_s$train
+test <- USgas_s$test
+
+# Forecasting with auto.arima
+library(forecast)
+md <- auto.arima(train)
+fc <- forecast(md, h = 12)
+
+# Plotting actual vs. fitted and forecasted
+test_forecast(actual = USgas, forecast.obj = fc, test = test)
+
+# Plotting the forecast 
+plot_forecast(fc)
+
+# Forecasting with backtesting 
+USgas_backtesting <- ts_backtesting(USgas, 
+                                    models = "abehntw", 
+                                    periodes = 6, 
+                                    error = "RMSE", 
+                                    window_size = 12, 
+                                    h = 12)
+
+
 ```
