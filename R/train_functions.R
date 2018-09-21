@@ -586,6 +586,8 @@ if(error == "MAPE"){
                                   final_forecast_plot, nrows = 2, margin = 0.1, titleY = TRUE))
     
   }
+  leaderboard <- leaderboard %>% dplyr::arrange(avgMAPE) %>% as.data.frame()
+  modelOutput$leaderboard <- leaderboard
 } else if(error == "RMSE"){
   leaderboard <- leaderboard %>% dplyr::arrange(avgRMSE)
   eval(parse(text = paste("modelOutput$leadForecast <- modelOutput$Forecast_Final$", leaderboard$Model_Name[1], sep = ""))) 
@@ -608,7 +610,10 @@ if(error == "MAPE"){
                                   final_forecast_plot, nrows = 2, margin = 0.1, titleY = TRUE))
 
   }
+  leaderboard <- leaderboard %>% dplyr::arrange(avgRMSE) %>% as.data.frame()
+  modelOutput$leaderboard <- leaderboard
 }
+
 
 modelOutput$summary_plot <- final_plot
 if(plot){
