@@ -21,9 +21,9 @@ library(TSstudio)
 packageVersion("TSstudio")
 ```
 
-In the following examples, we will utilize tools from the TSstudio package along with forecasting models from the [forecast](https://cran.r-project.org/web/packages/forecast/index.html), [forecastHybrid](https://cran.r-project.org/web/packages/forecastHybrid/index.html) and [bsts](https://cran.r-project.org/web/packages/bsts/index.html) packages to forecast the monthly natural gas consumption in the US. The input data, the **USgas** dataset, is the historical monthly consumption of natural gas in the US since January 2000 in Billion Cubic Feet. This dataset is available in the **TSstudio**, and was sourced from the U.S. Bureau of Transportation Statistics, Natural Gas Consumption [NATURALGAS](https://fred.stlouisfed.org/series/NATURALGAS), retrieved from FRED, Federal Reserve Bank of St. Louis.
+In the following examples, we will utilize tools from the TSstudio package along with forecasting models from the [forecast](https://CRAN.R-project.org/package=forecast), [forecastHybrid]( https://CRAN.R-project.org/package=forecastHybrid) and [bsts]( https://CRAN.R-project.org/package=bsts) packages to forecast the monthly natural gas consumption in the US. The input data, the **USgas** dataset, is the historical monthly consumption of natural gas in the US since January 2000 in Billion Cubic Feet. This dataset is available in the **TSstudio**, and was sourced from the U.S. Bureau of Transportation Statistics, Natural Gas Consumption [NATURALGAS](https://fred.stlouisfed.org/series/NATURALGAS), retrieved from FRED, Federal Reserve Bank of St. Louis.
 
-```{r fig.height=5, fig.width=10}
+```{r fig.height=4, fig.width=7}
 # Loading the data
 data("USgas", package = "TSstudio")
 
@@ -53,7 +53,7 @@ ts_info(test)
 
 The `test_forecast` function visualizes the fitted and forecasted values vs. the actuals (or the training and testing partitions). The hover tool provides information about the MAPE and RMSE results on the training and testing partition, utilizing the accuracy function from the forecast package:
 
-```{r fig.height=5, fig.width=10}
+```{r fig.height=4, fig.width=7}
 library(forecast)
 
 # Setting the forecasting horizon to the length of the testing partition
@@ -67,7 +67,7 @@ test_forecast(actual = USgas, forecast.obj = fc1, test = test)
 
 The `plot_forecast` function plot forecast objects from the **forecast**, **forecastHybrid** and **bsts** packages:
 
-```{r fig.height=5, fig.width=10}
+```{r fig.height=4, fig.width=7}
 md2 <- auto.arima(USgas)
 fc2 <- forecast(md2, h = 60)
 
@@ -78,7 +78,7 @@ plot_forecast(fc2)
 
 The `check_res` function returns three plots of the residuals (fitted vs. actual), their correlation (ACF plot) and distribution (a histogram):
 
-```{r fig.height=5, fig.width=10}
+```{r fig.height=4, fig.width=7}
 check_res(md2)
 ```
 
@@ -115,9 +115,9 @@ Key arguments:
 
 The example below demonstrates the use of the backtesting to forecast consumption on natural gas in the next five years. With the use of six training periods with a testing partition of a year (12 months), using all the available models:
 
-```{r message=FALSE, warning=FALSE, fig.height=5, fig.width=10}
+```{r message=FALSE, warning=FALSE, fig.height=4, fig.width=7}
 USgas_backtesting <- ts_backtesting(ts.obj = USgas,
-                                    models = "abehntw",
+                                    models = "aentw",
                                     periods = 6,
                                     error = "MAPE",
                                     window_size = 12,
@@ -127,7 +127,7 @@ USgas_backtesting <- ts_backtesting(ts.obj = USgas,
 
 The output of the `ts_backtesting` function contains detailed information about the model performance on each of the testing periods. That includes a summary plot with the error results of each model on the testing partitions and as well a plot of the best model (by the error criteria) forecast output:
 
-```{r, fig.height=10, fig.width=10}
+```{r, fig.height=6, fig.width=7}
 USgas_backtesting$summary_plot
 ```
 
@@ -142,10 +142,10 @@ You can notice from the summary plot that the `auto.arima` model is the most acc
 
 In addition, you can retrieve any of the other trained models or the final forecasts:
 
-```{r, fig.height=5, fig.width=10}
+```{r, fig.height=4, fig.width=7}
 plot_forecast(USgas_backtesting$Forecast_Final$nnetar)
-plot_forecast(USgas_backtesting$Forecast_Final$bsts)
-plot_forecast(USgas_backtesting$Forecast_Final$hybrid)
+plot_forecast(USgas_backtesting$Forecast_Final$auto.arima)
+plot_forecast(USgas_backtesting$Forecast_Final$tbats)
 ```
 
 
