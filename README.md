@@ -39,6 +39,9 @@ ts_lags(USgas, lags = 1:12)
 # Seasonal lags plot
 ts_lags(USgas, lags = c(12, 24, 36, 48))
 
+# Heatmap plot
+ts_heatmap(USgas)
+
 # Forecasting applications
 # Setting training and testing partitions
 USgas_s <- ts_split(ts.obj = USgas, sample.out = 12)
@@ -59,7 +62,7 @@ plot_forecast(fc)
 # Forecasting with backtesting 
 USgas_backtesting <- ts_backtesting(USgas, 
                                     models = "abehntw", 
-                                    periodes = 6, 
+                                    periods = 6, 
                                     error = "RMSE", 
                                     window_size = 12, 
                                     h = 12)
