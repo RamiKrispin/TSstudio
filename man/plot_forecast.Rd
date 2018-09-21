@@ -26,6 +26,7 @@ Visualization functions for forecast package forecasting objects
 \examples{
 data(USgas)
 library(forecast)
-fit <- forecast(ets(USgas), h = 60)
-plot_forecast(fit)
+fit <- ets(USgas)
+fc<- forecast(fit, h = 60)
+plot_forecast(fc)
 }

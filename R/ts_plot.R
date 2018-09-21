@@ -296,8 +296,9 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
 #' @examples
 #' data(USgas)
 #' library(forecast)
-#' fit <- forecast(ets(USgas), h = 60)
-#' plot_forecast(fit)
+#' fit <- ets(USgas)
+#' fc<- forecast(fit, h = 60)
+#' plot_forecast(fc)
 
 plot_forecast <- function(forecast_obj,
                           title = NULL,
