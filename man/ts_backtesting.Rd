@@ -38,32 +38,19 @@ ts_backtesting(ts.obj, models = "abehntw", periods = 6, error = "MAPE",
 
 \item{plot}{Logical, if TRUE desplay a plot with the backtesting progress}
 
-\item{a.arg}{List, an optional arguments to pass to the auto.arima function}
+\item{a.arg}{List, an optional arguments to pass to the \code{\link[forecast]{auto.arima}} function}
 
-\item{b.arg}{List, an optional arguments to pass to the bsts function, optional arguments:
-linear_trend = c(TRUE, FALSE), use linear trend if set to TRUE (default)
+\item{b.arg}{List, an optional arguments to pass to the \code{\link[bsts]{bsts}} function}
 
-seasonal = c(TRUE, FALSE), add seasonal component if set to TRUE (default)
+\item{e.arg}{List, an optional argument to pass to the \code{\link[forecast]{ets}} function}
 
-niter, set the number of Markov chain Monte Carlo, default set to 1000
+\item{h.arg}{List, an optional argument to pass to the \code{\link[forecastHybrid]{hybridModel}} function}
 
-ping, A scalar giving the desired frequency of status messages, default set to 100 (niter/10)
+\item{n.arg}{List, an optional argument to pass to the \code{\link[forecast]{nnetar}} function}
 
-family = c("gaussian", "logit", "poisson", "student"),
- The model family for the observation equation, default set to "gaussian
- 
-seed, An integer to use as the random seed for the underlying C++ code of the model, default set to 1234
-#'}
+\item{t.arg}{List, an optional arguments to pass to the \code{\link[forecast]{tbats}} function}
 
-\item{e.arg}{List, an optional argument to pass to the ets function}
-
-\item{h.arg}{List, an optional argument to pass to the HoltWinter function}
-
-\item{n.arg}{List, an optional argument to pass to the nnetar function}
-
-\item{t.arg}{List, an optional arguments to pass to the tbats function}
-
-\item{w.arg}{List, an optional arguments to pass to the Holtwinters function}
+\item{w.arg}{List, an optional arguments to pass to the \code{\link[stats]{HoltWinters}} function}
 
 \item{parallel}{Logical, if TRUE use parallel option when applicable (auto.arima, hybridModel)}
 }

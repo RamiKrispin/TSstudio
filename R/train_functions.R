@@ -22,26 +22,13 @@
 #' @param window_size An integer, the size of the backtesting window
 #' @param h Integer, the horizon of the selected forecasting model
 #' @param plot Logical, if TRUE desplay a plot with the backtesting progress
-#' @param a.arg List, an optional arguments to pass to the auto.arima function
-#' @param b.arg List, an optional arguments to pass to the bsts function, optional arguments:
-#' linear_trend = c(TRUE, FALSE), use linear trend if set to TRUE (default)
-#' 
-#' seasonal = c(TRUE, FALSE), add seasonal component if set to TRUE (default)
-#' 
-#' niter, set the number of Markov chain Monte Carlo, default set to 1000
-#' 
-#' ping, A scalar giving the desired frequency of status messages, default set to 100 (niter/10)
-#' 
-#' family = c("gaussian", "logit", "poisson", "student"),
-#'  The model family for the observation equation, default set to "gaussian
-#'  
-#' seed, An integer to use as the random seed for the underlying C++ code of the model, default set to 1234
-#' #'   
-#' @param e.arg List, an optional argument to pass to the ets function
-#' @param h.arg List, an optional argument to pass to the HoltWinter function
-#' @param n.arg List, an optional argument to pass to the nnetar function
-#' @param t.arg List, an optional arguments to pass to the tbats function
-#' @param w.arg List, an optional arguments to pass to the Holtwinters function
+#' @param a.arg List, an optional arguments to pass to the \code{\link[forecast]{auto.arima}} function
+#' @param b.arg List, an optional arguments to pass to the \code{\link[bsts]{bsts}} function 
+#' @param e.arg List, an optional argument to pass to the \code{\link[forecast]{ets}} function
+#' @param h.arg List, an optional argument to pass to the \code{\link[forecastHybrid]{hybridModel}} function
+#' @param n.arg List, an optional argument to pass to the \code{\link[forecast]{nnetar}} function
+#' @param t.arg List, an optional arguments to pass to the \code{\link[forecast]{tbats}} function
+#' @param w.arg List, an optional arguments to pass to the \code{\link[stats]{HoltWinters}} function
 #' @param parallel Logical, if TRUE use parallel option when applicable (auto.arima, hybridModel)
 #' @description Performance evaluation function for forecasting models, by training and testing the performance
 #' of each model over a sequence of periods to identify the performance of a model over time  
