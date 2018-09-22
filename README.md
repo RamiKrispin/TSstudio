@@ -29,19 +29,29 @@ data(USgas)
 
 # Ploting time series object
 ts_plot(USgas)
-
+```
+![](./vignettes/gif/USgas_plot.png) 
+``` r
 # Seasonal plot
 ts_seasonal(USgas, type = "all")
-
+```
+![](./vignettes/gif/USgas_seasonal.png)
+``` r
 # Lags plot
 ts_lags(USgas, lags = 1:12)
-
+```
+![](./vignettes/gif/USgas_lags.png)
+``` r
 # Seasonal lags plot
 ts_lags(USgas, lags = c(12, 24, 36, 48))
-
+```
+![](./vignettes/gif/USgas_lags2.png)
+``` r
 # Heatmap plot
 ts_heatmap(USgas)
-
+```
+![](./vignettes/gif/USgas_heatmap.png)
+``` r
 # Forecasting applications
 # Setting training and testing partitions
 USgas_s <- ts_split(ts.obj = USgas, sample.out = 12)
@@ -55,10 +65,14 @@ fc <- forecast(md, h = 12)
 
 # Plotting actual vs. fitted and forecasted
 test_forecast(actual = USgas, forecast.obj = fc, test = test)
-
+```
+![](./vignettes/gif/USgas_test_f.png)
+``` r
 # Plotting the forecast 
 plot_forecast(fc)
-
+```
+![](./vignettes/gif/USgas_forecast.png)
+``` r
 # Forecasting with backtesting 
 USgas_backtesting <- ts_backtesting(USgas, 
                                     models = "abehntw", 
@@ -69,3 +83,5 @@ USgas_backtesting <- ts_backtesting(USgas,
 
 
 ```
+
+![](./vignettes/gif/USgas_backtesting.png)
