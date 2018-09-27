@@ -199,7 +199,7 @@ if("b" %in% model_char){
      b.arg <-  list(linear_trend = TRUE,
                    seasonal = TRUE,
                    niter = 1000,
-                   ping = 100,
+                   ping = 0,
                    family = "gaussian",
                    seed=1234)
   } else{
