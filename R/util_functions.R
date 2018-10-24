@@ -621,9 +621,30 @@ ts_to_prophet <- function(ts.obj, start = NULL){
   
   if(xts::is.xts(ts.obj) | zoo::is.zoo(ts.obj)){
     if(!base::is.null(start) && lubridate::is.Date(start)){
-      
+      if(xts::periodicity(ts.obj)$scale == "yearly"){
+        df <- base::data.frame(ds = base::seq.Date(from = start, 
+                                                   by = "year", 
+                                                   length.out = base::length(ts.obj)), 
+                               y = base::as.numeric(ts.obj))
+      }
     } else {
+      if(lubridate::is.Date(zoo::index(x))){
+        start <- zoo::index(ts.obj)[1]
+      } else if(class(zoo::index(ts.obj)) == "yearmon"){
+        start <- paste(base::substr(zoo::index(ts.obj)[1], 5, 8), 
+                       substr(zoo::index(ts.obj)[1], 1, 3) %>% match(month.abb), 
+                       "01", sep = "-") %>% base::as.Date()
+      } else if(class(zoo::index(ts.obj)) == "yearqtr") {
+        start <- zoo::index(ts.obj[1]) %>% zoo::as.Date.yearqtr()
+      }
       
+      
+      if(xts::periodicity(ts.obj)$scale == "yearly"){
+        if()
+        start <- 
+        df <- base::data.frame(ds = base::seq.Date(from = start, by = "year", length.out = base::length(ts.obj)), 
+                               y = base::as.numeric(ts.obj))
+      }
     }
     if(xts::periodicity(ts.obj)$scale == "daily")
     
