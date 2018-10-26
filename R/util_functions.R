@@ -620,15 +620,7 @@ ts_info <- function(ts.obj){
 ts_to_prophet <- function(ts.obj, start = NULL){
   
   if(xts::is.xts(ts.obj) | zoo::is.zoo(ts.obj)){
-    if(!base::is.null(start) && lubridate::is.Date(start)){
-      if(xts::periodicity(ts.obj)$scale == "yearly"){
-        df <- base::data.frame(ds = base::seq.Date(from = start, 
-                                                   by = "year", 
-                                                   length.out = base::length(ts.obj)), 
-                               y = base::as.numeric(ts.obj))
-      }
-    } else {
-      
+    if(base::is.null(start) || !lubridate::is.Date(start)){
       # Setting the start date
       if(lubridate::is.Date(zoo::index(ts.obj))){
         start <- zoo::index(ts.obj)[1]
@@ -641,7 +633,7 @@ ts_to_prophet <- function(ts.obj, start = NULL){
       } else {
         stop("The index type is invalid, supporting only Date, yearmon and yearqtr objects")
       }
-      
+    } 
       # Checking the frequency of the series
       if(xts::periodicity(ts.obj)$scale == "yearly"){
         df <- base::data.frame(ds = base::seq.Date(from = start, 
@@ -650,7 +642,7 @@ ts_to_prophet <- function(ts.obj, start = NULL){
                                y = base::as.numeric(ts.obj))
       } else if(xts::periodicity(ts.obj)$scale == "quarterly"){
         df <- base::data.frame(ds = base::seq.Date(from = start, 
-                                                   by = "month", 
+                                                   by = "quarter", 
                                                    length.out = base::length(ts.obj)), 
                                y = base::as.numeric(ts.obj))
       } else if(xts::periodicity(ts.obj)$scale == "monthly"){
@@ -658,10 +650,20 @@ ts_to_prophet <- function(ts.obj, start = NULL){
                                                    by = "month", 
                                                    length.out = base::length(ts.obj)), 
                                y = base::as.numeric(ts.obj))
+      } else if(xts::periodicity(ts.obj)$scale == "weekly"){
+        df <- base::data.frame(ds = base::seq.Date(from = start, 
+                                                   by = "weekly", 
+                                                   length.out = base::length(ts.obj)), 
+                               y = base::as.numeric(ts.obj))
+      } else if(xts::periodicity(ts.obj)$scale == "daily"){
+        df <- base::data.frame(ds = base::seq.Date(from = start, 
+                                                   by = "day", 
+                                                   length.out = base::length(ts.obj)), 
+                               y = base::as.numeric(ts.obj))
+      } else {
+        stop("The frequency type is invalid")
       }
-    }
-    if(xts::periodicity(ts.obj)$scale == "daily")
-    
+    # If time series object
   } else if(stats::is.ts(ts.obj)){
   
   if(!base::is.null(start) && lubridate::is.Date(start)){
