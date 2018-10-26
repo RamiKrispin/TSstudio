@@ -652,7 +652,7 @@ ts_to_prophet <- function(ts.obj, start = NULL){
                                y = base::as.numeric(ts.obj))
       } else if(xts::periodicity(ts.obj)$scale == "weekly"){
         df <- base::data.frame(ds = base::seq.Date(from = start, 
-                                                   by = "weekly", 
+                                                   by = "week", 
                                                    length.out = base::length(ts.obj)), 
                                y = base::as.numeric(ts.obj))
       } else if(xts::periodicity(ts.obj)$scale == "daily"){
