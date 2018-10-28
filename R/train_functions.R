@@ -379,7 +379,16 @@ ts_backtesting <- function(ts.obj,
     md_hybrid <- fc_hybrid <- NULL
     h.arg$parallel <- parallel
     md_hybrid <- base::do.call(forecastHybrid::hybridModel, c(list(ts.obj), h.arg))
-    fc_hybrid <- forecast::forecast(md_hybrid, h = h)
+    
+    
+    if("xreg" %in% names(h.arg$a.args) ||
+       "xreg" %in% names(h.arg$n.args) ||
+       "xreg" %in% names(h.arg$s.args)){
+      fc_hybrid <- forecast::forecast(md_hybrid, h = h, xreg = base::as.data.frame(xreg.h))
+    } else{
+      fc_hybrid <- forecast::forecast(md_hybrid, h = h)
+    }
+    
     modelOutput$Models_Final$hybrid <- md_hybrid
     modelOutput$Forecast_Final$hybrid <- fc_hybrid
   }
@@ -506,8 +515,34 @@ ts_backtesting <- function(ts.obj,
     
     if("h" %in% model_char){
       md <- fc <- NULL
-      md <- base::do.call(forecastHybrid::hybridModel, c(list(train), h.arg))
-      fc <- forecast::forecast(md, h = window_size)
+      
+      if("xreg" %in% names(h.arg$a.args) ||
+         "xreg" %in% names(h.arg$n.args) ||
+         "xreg" %in% names(h.arg$s.args)){
+        h.arg.xreg <- h.test <-  NULL
+        h.arg.xreg <- h.arg
+        if("xreg" %in% names(h.arg$a.args)){
+          h.arg.xreg$a.args$xreg <- xreg.hybrid.arima[1:length(train),]
+          h.test <- xreg.hybrid.arima[(length(train) + 1):(length(train) + window_size),]
+        }
+        
+        if("xreg" %in% names(h.arg$n.args)){
+          h.arg.xreg$n.args$xreg <- xreg.hybrid.nnetar[1:length(train),]
+          h.test <- xreg.hybrid.nnetar[(length(train) + 1):(length(train) + window_size),]
+        }
+        
+        if("xreg" %in% names(h.arg$s.args)){
+          h.arg.xreg$s.args$xreg <- xreg.hybrid.stlm[1:length(train),]
+          h.test <- xreg.hybrid.stlm[(length(train) + 1):(length(train) + window_size),]
+        }
+        
+        md <- base::do.call(forecastHybrid::hybridModel, c(list(train), h.arg.xreg))
+        fc <- forecast::forecast(md, h = window_size, xreg = base::as.data.frame(h.test))
+      } else {
+        md <- base::do.call(forecastHybrid::hybridModel, c(list(train), h.arg))
+        fc <- forecast::forecast(md, h = window_size)
+      }
+      
       eval(parse(text = paste("modelOutput$", period_name, "$hybrid <- list(model = md, forecast = fc)", sep = "")))
       MAPE_df$hybrid[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[10], 2)
       RMSE_df$hybrid[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4], 2)
