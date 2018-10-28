@@ -103,9 +103,11 @@ ts_backtesting <- function(ts.obj,
   # Error handling
   # Check if xreg argument is valid
   if(!base::is.null(xreg.h)){
-    if(!"xreg" %in% names(a.arg) & 
+    if(!"xreg" %in% names(a.arg) &
+       !"xreg" %in% names(n.arg) &
        !"xreg" %in% names(h.arg$a.args) &
-       !"xreg" %in% names(h.arg$n.args)){
+       !"xreg" %in% names(h.arg$n.args) &
+       !"xreg" %in% names(h.arg$s.args)){
       warning("There is no 'xreg' argument in any of the models arguments,", 
               "'xreg.h' will be ignored")
     } else {
@@ -121,6 +123,38 @@ ts_backtesting <- function(ts.obj,
     xreg.arima <- a.arg$xreg
     if(base::nrow(xreg.arima) != base::length(ts.obj)){
       stop("The length of the 'xreg' in the 'a.arg' argument is not equal to the series length")
+    }
+  }  
+  
+  if("xreg" %in% names(n.arg)){
+    xreg.nnetar <- NULL
+    xreg.nnetar <- n.arg$xreg
+    if(base::nrow(xreg.nnetar) != base::length(ts.obj)){
+      stop("The length of the 'xreg' in the 'n.arg' argument is not equal to the series length")
+    }
+  }  
+  
+  if("xreg" %in% names(h.arg$a.args)){
+    xreg.hybrid.arima <- NULL
+    xreg.hybrid.arima <- h.arg$a.args$xreg
+    if(base::nrow(xreg.hybrid.arima) != base::length(ts.obj)){
+      stop("The length of the 'xreg' of the auto.arima model in the 'h.arg' argument is not equal to the series length")
+    }
+  }  
+  
+  if("xreg" %in% names(h.arg$n.args)){
+    xreg.hybrid.nnetar <- NULL
+    xreg.hybrid.nnetar <- h.arg$n.args$xreg
+    if(base::nrow(xreg.hybrid.nnetar) != base::length(ts.obj)){
+      stop("The length of the 'xreg' of the nnetar model in the 'h.arg' argument is not equal to the series length")
+    }
+  }  
+  
+  if("xreg" %in% names(h.arg$s.args)){
+    xreg.hybrid.stlm <- NULL
+    xreg.hybrid.stlm <- h.arg$s.args$xreg
+    if(base::nrow(xreg.hybrid.stlm) != base::length(ts.obj)){
+      stop("The length of the 'xreg' of the stlm model in the 'h.arg' argument is not equal to the series length")
     }
   }  
   
@@ -179,10 +213,11 @@ ts_backtesting <- function(ts.obj,
     md_auto.arima <- fc_auto.arima <- NULL
     a.arg$parallel <- parallel
     md_auto.arima <- base::do.call(forecast::auto.arima, c(list(ts.obj), a.arg))
-    if(base::is.null(xreg.h)){
-      fc_auto.arima <- forecast::forecast(md_auto.arima, h = h)
-    } else{
+    
+    if("xreg" %in% base::names(a.arg)){
       fc_auto.arima <- forecast::forecast(md_auto.arima, h = h, xreg = xreg.h)
+    } else{
+      fc_auto.arima <- forecast::forecast(md_auto.arima, h = h)
     }
     
     modelOutput$Models_Final$auto.arima <- md_auto.arima
@@ -212,7 +247,11 @@ ts_backtesting <- function(ts.obj,
     model_list <- c(model_list, "nnetar")
     md_nnetar <- fc_nnetar <- NULL
     md_nnetar <- base::do.call(forecast::nnetar, c(list(ts.obj), n.arg))
-    fc_nnetar <- forecast::forecast(md_nnetar, h = h)
+    if("xreg" %in% base::names(n.arg)){
+      fc_nnetar <- forecast::forecast(md_nnetar, h = h, xreg = xreg.h)
+    } else{
+      fc_nnetar <- forecast::forecast(md_nnetar, h = h)
+    }
     modelOutput$Models_Final$nnetar <- md_nnetar
     modelOutput$Forecast_Final$nnetar <- fc_nnetar
   }
@@ -411,8 +450,19 @@ ts_backtesting <- function(ts.obj,
     
     if("n" %in% model_char){
       md <- fc <- NULL
-      md <- base::do.call(forecast::nnetar, c(list(train), n.arg))
-      fc <- forecast::forecast(md, h = window_size)
+      if("xreg" %in% names(n.arg)){
+        n.xreg.train <- xreg.arima[1:length(train),]
+        n.xreg.test <- xreg.arima[(length(train) + 1):(length(train) + window_size),]
+        n.arg.xreg <- n.arg
+        n.arg.xreg$xreg <- n.xreg.train
+        md <- base::do.call(forecast::nnetar, c(list(train), n.arg.xreg))
+        fc <- forecast::forecast(md, h = window_size, xreg = n.xreg.test)
+      } else {
+        md <- base::do.call(forecast::nnetar, c(list(train), n.arg))
+        fc <- forecast::forecast(md, h = window_size)
+      }
+      
+      
       MAPE_df$nnetar[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[10],2)
       RMSE_df$nnetar[i - s + 1] <-  base::round(forecast::accuracy(fc, test)[4],2)
       eval(parse(text = paste("modelOutput$", period_name, "$nnetar <- list(model = md, forecast = fc)", sep = "")))
