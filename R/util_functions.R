@@ -618,7 +618,7 @@ ts_info <- function(ts.obj){
 #' 
 
 ts_to_prophet <- function(ts.obj, start = NULL){
-  
+  `%>%` <- magrittr::`%>%`  
   if(xts::is.xts(ts.obj) | zoo::is.zoo(ts.obj)){
     if(base::is.null(start) || !lubridate::is.Date(start)){
       # Setting the start date
