@@ -7,7 +7,7 @@
 ts_backtesting(ts.obj, models = "abehntw", periods = 6, error = "MAPE",
   window_size = 3, h = 3, plot = TRUE, a.arg = NULL, b.arg = NULL,
   e.arg = NULL, h.arg = NULL, n.arg = NULL, t.arg = NULL,
-  w.arg = NULL, parallel = FALSE)
+  w.arg = NULL, xreg.h = NULL, parallel = FALSE)
 }
 \arguments{
 \item{ts.obj}{A univariate time series object of a class "ts"}
@@ -51,6 +51,10 @@ ts_backtesting(ts.obj, models = "abehntw", periods = 6, error = "MAPE",
 \item{t.arg}{List, an optional arguments to pass to the \code{\link[forecast]{tbats}} function}
 
 \item{w.arg}{List, an optional arguments to pass to the \code{\link[stats]{HoltWinters}} function}
+
+\item{xreg.h}{A data.frame or matrix, optional argument, 
+set the futuer values external regressors in case using the 
+'xreg' argument in one of the models (auto.arima, nnetar, hybrid)}
 
 \item{parallel}{Logical, if TRUE use parallel option when applicable (auto.arima, hybridModel)}
 }
