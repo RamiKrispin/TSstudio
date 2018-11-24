@@ -4,11 +4,12 @@
 #' @param lags An integer, set the lags range, by default will plot the first 12 lags
 #' @param Xshare Plotly parameter, should the x-axis be shared amongst the subplots?
 #' @param Yshare Plotly parameter, should the y-axis be shared amongst the subplots?
-#' @param margin Plotly parameter, either a single value or four values (all between 0 and 1). 
-#' If four values are provided, the first is used as the left margin, 
-#' the second is used as the right margin, the third is used as the top margin, 
-#' and the fourth is used as the bottom margin. 
-#' If a single value is provided, it will be used as all four margins.
+#' @param margin Plotly parameter, either a single value or four values (all between 0 and 1).  
+#' If four values provided, the first will be used as the left margin, 
+#' the second will be used as the right margin, 
+#' the third will be used as the top margin, 
+#' and the fourth will be used as the bottom margin. 
+#' If a single value provided, it will be used as all four margins.
 #' @param n_plots An integer, define the number of plots per row
 #' @description Visualization of series with its lags, 
 #' can be used to identify a correlation between the series and it lags
@@ -528,17 +529,19 @@ ts_decompose <- function(ts.obj, type = "additive", showline = TRUE){
 #' @export
 #' @param x A univariate time series object of a class "ts"
 #' @param y A univariate time series object of a class "ts"
-#' @param lags An integer, set the lags range, by default will plot the first 12 lags
+#' @param lags An integer, set the lags range, 
+#' by default will plot the two series along with the first 12 lags  
 #' @param Xshare Plotly parameter, should the x-axis be shared amongst the subplots?
 #' @param Yshare Plotly parameter, should the y-axis be shared amongst the subplots?
-#' @param margin Plotly parameter, either a single value or four values (all between 0 and 1). 
-#' If four values are provided, the first is used as the left margin, 
-#' the second is used as the right margin, the third is used as the top margin, 
-#' and the fourth is used as the bottom margin. 
-#' If a single value is provided, it will be used as all four margins.
+#' @param margin Plotly parameter, either a single value or four values (all between 0 and 1).  
+#' If four values provided, the first will be used as the left margin, 
+#' the second will be used as the right margin, 
+#' the third will be used as the top margin, 
+#' and the fourth will be used as the bottom margin. 
+#' If a single value provided, it will be used as all four margins.
 #' @param n_plots An integer, define the number of plots per row
-#' @description Visualization of series with its lags, 
-#' can be used to identify a correlation between the series and it lags
+#' @description Visualize the series y against the series x lags (according to the setting of the lags argument) 
+#' and return the corresponding cross-correlation value for each lag
 #' @examples
 #' data(USgas)
 #' 
@@ -553,7 +556,10 @@ ts_decompose <- function(ts.obj, type = "additive", showline = TRUE){
 #' 
 
 
-ccf_plot <- function(x, y, lags = 0:12, margin = 0.02){
+ccf_plot <- function(x, y, 
+                     lags = 0:12, 
+                     margin = 0.02,
+                     n_plots = 3){
   x.name <- y.name <- x_sub <- y_sub <- c <- ccf_df <- z <- ts_inter <- lags_plot <- NULL
   
   `%>%` <- magrittr::`%>%`
@@ -624,7 +630,7 @@ ccf_plot <- function(x, y, lags = 0:12, margin = 0.02){
   })
   
   lags_plot <- plotly::subplot(output, 
-                               nrows = base::length(lags) %/% 3, 
+                               nrows = base::length(lags) %/% n_plots, 
                                margin = margin, 
                                shareX = TRUE, 
                                shareY = TRUE) %>% 
