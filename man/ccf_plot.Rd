@@ -38,15 +38,16 @@ Visualize the series y against the series x lags (according to the setting of th
 and return the corresponding cross-correlation value for each lag
 }
 \examples{
-data(USgas)
 
-# Plot the first 12 lags (default)
-ts_lags(USgas) 
+data("USUnRate")
+data("USVSales")
 
-# Plot the seasonal lags for the first 4 years (hence, lag 12, 24, 36, 48)
-ts_lags(USgas, lags = c(12, 24, 36, 48))
+ccf_plot(x = USVSales, y = USUnRate)
 
-# Setting the margin between the plot
-ts_lags(USgas, lags = c(12, 24, 36, 48), margin = 0.01)
+#Plotting the first 6 lead and lags of the USVSales with the USUnRate
+ccf_plot(x = USVSales, y = USUnRate, lags = -6:6)
 
+# Setting the plot margin and number of plots in each raw
+ccf_plot(x = USVSales, y = USUnRate, lags = c(0, 6, 12, 24), 
+margin = 0.01,  n_plots = 2)
 }
