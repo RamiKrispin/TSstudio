@@ -1,3 +1,14 @@
+## Version 0.1.3 is now available on CRAN
+* ts_to_prophet function for converting ts objects ("ts", "zoo" and "xts" class) to prophet object
+* ccf_plot function for plotting corss correlation lags between two time series
+* Fixed error in the ts_backtesting function - supprting xreg option
+
+## Version 0.1.2 is now available on CRAN
+New functions:
+* ts_backtesting -  a horce race of multiple forecasting models with backtestin
+* ts_quantile - time series quantile plot for time series data
+* ts_seasonal - supports multiple inputs and new color palattes 
+
 ## Version 0.1.1 is now available on CRAN
 What's new:
 * New options for the seasonality plot
