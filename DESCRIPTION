@@ -31,7 +31,6 @@ Suggests:
     DT,
     knitr,
     quantmod,
-    rmarkdown,
-    UKgrid
+    rmarkdown
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
