@@ -330,7 +330,7 @@ plot_forecast <- function(forecast_obj,
 
   if(!base::is.null(title)){
     if(!base::is.character(title)){
-      warning("The value of the 'Xtitle' is not valid")
+      warning("The value of the 'title' argument is not valid")
       title <- ""
     } 
   } else {
