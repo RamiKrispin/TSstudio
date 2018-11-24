@@ -540,8 +540,10 @@ ts_decompose <- function(ts.obj, type = "additive", showline = TRUE){
 #' and the fourth will be used as the bottom margin. 
 #' If a single value provided, it will be used as all four margins.
 #' @param n_plots An integer, define the number of plots per row
+#' @param title A character, optional, set the plot title 
 #' @description Visualize the series y against the series x lags (according to the setting of the lags argument) 
 #' and return the corresponding cross-correlation value for each lag
+#' @return Plot
 #' @examples
 #' data(USgas)
 #' 
@@ -561,13 +563,44 @@ ccf_plot <- function(x, y,
                      margin = 0.02,
                      n_plots = 3,
                      Xshare = TRUE, 
-                     Yshare = TRUE){
+                     Yshare = TRUE,
+                     title = NULL){
   x.name <- y.name <- x_sub <- y_sub <- c <- ccf_df <- z <- ts_inter <- lags_plot <- NULL
   
   `%>%` <- magrittr::`%>%`
   x.name <- base::deparse(base::substitute(x))
   y.name <- base::deparse(base::substitute(y))
   # --------------Error handling --------------
+  if(!base::is.null(title)){
+    if(!base::is.character(title)){
+      warning("The value of the 'title' is not valid, using default")
+      title <- base::paste(y.name, 
+                           "(Y axis) vs. the Lags of", 
+                           x.name,
+                           sep = " ")
+    } 
+  } else {
+    title <- base::paste(y.name, 
+                         "(Y axis) vs. the Lags of", 
+                         x.name,
+                         sep = " ")
+  }
+  
+  if(!is.numeric(margin)){
+    warning("The 'margin' parameter is not valid, using the defualt setting (margin = 0.2)")
+    margin <- 0.2
+  }
+  
+  if(!is.logical(Xshare)){
+    warning("The 'Xshare' parameter is not valid, please use only boolean operators.",
+            " Using the defualt setting setting (Xshare = TRUE")
+    Xshare <- TRUE
+  }
+  if(!is.logical(Yshare)){
+    warning("The 'Yshare' parameter is not valid, please use only boolean operators.",
+            " Using the defualt setting setting (Yshare = TRUE")
+    Yshare <- TRUE
+  }
   
   if(!base::is.numeric(lags)){
     stop("The value of the 'lags' argument is not valid")
@@ -632,10 +665,11 @@ ccf_plot <- function(x, y,
   })
   
   lags_plot <- plotly::subplot(output, 
-                               nrows = base::length(lags) %/% n_plots, 
+                               nrows = base::length(output) %/% n_plots, 
                                margin = margin, 
                                shareX = Xshare, 
                                shareY = Yshare) %>% 
+    plotly::layout(title = title) %>%
     plotly::hide_legend()
   
   return(lags_plot)
