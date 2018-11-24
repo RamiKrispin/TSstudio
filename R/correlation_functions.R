@@ -639,7 +639,7 @@ ccf_plot <- function(x, y,
                            type = "scatter",
                            mode = "markers")
     } else {
-      ts_inter <- ts.intersect(y_sub, stats::lag(x_sub, -i)) %>% as.data.frame()
+      ts_inter <- stats::ts.intersect(y_sub, stats::lag(x_sub, -i)) %>% as.data.frame()
       base::colnames(ts_inter) <- c("y_sub", "x_sub_lag")
       
       p <- plotly::plot_ly(x = ts_inter$x_sub_lag, 
