@@ -559,7 +559,9 @@ ts_decompose <- function(ts.obj, type = "additive", showline = TRUE){
 ccf_plot <- function(x, y, 
                      lags = 0:12, 
                      margin = 0.02,
-                     n_plots = 3){
+                     n_plots = 3,
+                     Xshare = TRUE, 
+                     Yshare = TRUE){
   x.name <- y.name <- x_sub <- y_sub <- c <- ccf_df <- z <- ts_inter <- lags_plot <- NULL
   
   `%>%` <- magrittr::`%>%`
@@ -632,8 +634,8 @@ ccf_plot <- function(x, y,
   lags_plot <- plotly::subplot(output, 
                                nrows = base::length(lags) %/% n_plots, 
                                margin = margin, 
-                               shareX = TRUE, 
-                               shareY = TRUE) %>% 
+                               shareX = Xshare, 
+                               shareY = Yshare) %>% 
     plotly::hide_legend()
   
   return(lags_plot)
