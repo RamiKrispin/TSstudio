@@ -12,11 +12,12 @@ ts_lags(ts.obj, lags = 1:12, margin = 0.02, Xshare = TRUE,
 
 \item{lags}{An integer, set the lags range, by default will plot the first 12 lags}
 
-\item{margin}{Plotly parameter, either a single value or four values (all between 0 and 1). 
-If four values are provided, the first is used as the left margin, 
-the second is used as the right margin, the third is used as the top margin, 
-and the fourth is used as the bottom margin. 
-If a single value is provided, it will be used as all four margins.}
+\item{margin}{Plotly parameter, either a single value or four values (all between 0 and 1).
+If four values provided, the first will be used as the left margin, 
+the second will be used as the right margin, 
+the third will be used as the top margin, 
+and the fourth will be used as the bottom margin. 
+If a single value provided, it will be used as all four margins.}
 
 \item{Xshare}{Plotly parameter, should the x-axis be shared amongst the subplots?}
 
