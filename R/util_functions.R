@@ -480,7 +480,7 @@ ts_reshape <- function(ts.obj,
 }
 
 
-#' Summation of Multiple Time Series Object
+#' Summation of Multiple Time Series Objects
 #' @export
 #' @param mts.obj A multivariate time series object of a class "mts"
 #' @description A row sum function for multiple time series object ("mts"), return the

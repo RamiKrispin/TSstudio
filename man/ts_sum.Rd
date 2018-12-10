@@ -2,7 +2,7 @@
 % Please edit documentation in R/util_functions.R
 \name{ts_sum}
 \alias{ts_sum}
-\title{Summation of Multiple Time Series Object}
+\title{Summation of Multiple Time Series Objects}
 \usage{
 ts_sum(mts.obj)
 }
