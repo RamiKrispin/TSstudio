@@ -42,7 +42,7 @@ ts_seasonal <- function(ts.obj,
                         Xgrid = TRUE, 
                         last = NULL,
                         palette = "Set1",
-                        palette_normal = "Spectral") {
+                        palette_normal = "viridis") {
   
   `%>%` <- magrittr::`%>%`
   df <- freq <- obj.name <- brewer_palettes <- viridis_palettes <- palette_type <- NULL
