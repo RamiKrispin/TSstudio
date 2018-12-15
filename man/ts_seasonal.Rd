@@ -6,7 +6,7 @@
 \usage{
 ts_seasonal(ts.obj, type = "normal", title = NULL, Ygrid = TRUE,
   Xgrid = TRUE, last = NULL, palette = "Set1",
-  palette_normal = "Spectral")
+  palette_normal = "viridis")
 }
 \arguments{
 \item{ts.obj}{Input object, either a univariate time series object of a class "ts", "zoo", "xts", or a data frame object of a class
