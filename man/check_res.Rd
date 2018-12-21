@@ -17,14 +17,12 @@ That includes a time series plot of the residuals, and the plots of the
 autocorrelation function (acf) and histogram of the residuals
 }
 \examples{
-\dontrun{
 library(forecast)
 data(USgas)
 
 # Create a model
-fit <- auto.arima(USgas, lambda = BoxCox.lambda(train))
+fit <- auto.arima(USgas)
 
 # Check the residuals of the model
 check_res(fit)
-}
 }
