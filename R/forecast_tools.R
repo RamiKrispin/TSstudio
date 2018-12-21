@@ -205,7 +205,6 @@ res_hist <- function(forecast.obj){
 #' That includes a time series plot of the residuals, and the plots of the  
 #' autocorrelation function (acf) and histogram of the residuals
 #' @examples
-#' \dontrun{
 #' library(forecast)
 #' data(USgas)
 #'
@@ -214,7 +213,6 @@ res_hist <- function(forecast.obj){
 #' 
 #' # Check the residuals of the model
 #' check_res(fit)
-#'}
 
 check_res <- function(ts.model, lag.max = 36){
   `%>%` <- magrittr::`%>%`
