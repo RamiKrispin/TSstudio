@@ -2,6 +2,7 @@
 
 export(ccf_plot)
 export(check_res)
+export(forecast_sim)
 export(plot_forecast)
 export(res_hist)
 export(test_forecast)
