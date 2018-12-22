@@ -351,14 +351,14 @@ forecast_sim <- function(model, h, n, sim_color = "blue", opacity = 0.05, plot =
                                  name = paste("Sim", i, sep = " "))
   }
   s1 <- s %>% dplyr::bind_rows() %>% dplyr::group_by(x) %>%
-    dplyr::summarise(p50 = median(y))
+    dplyr::summarise(p50 = stats::median(y))
   p <- p %>% plotly::add_lines(x = s1$x, y = s1$p50, 
                                
                                line = list(color = "#00526d", 
                                            dash = "dash", 
                                            width = 3), name = "Median") 
   
-  p <- p %>% plotly::add_lines(x = time(model$x), 
+  p <- p %>% plotly::add_lines(x = stats::time(model$x), 
                                y = model$x, 
                                line = list(color = "#00526d"), 
                                name = "Actual")
