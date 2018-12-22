@@ -275,13 +275,33 @@ check_res <- function(ts.model, lag.max = 36){
 }
 
 
+#' Forecasting simulation  
+#' @export 
+#' @param model A forecasting model supporting \code{\link[forecast]{Arima}}, \code{\link[forecast]{auto.arima}}, 
+#' \code{\link[forecast]{ets}}, and \code{\link[forecast]{nnetar}} models from the **forecast** package
+#' @param h An integer, defines the forecast horizon
+#' @param n An integer, set the number of iterations of the simulation
+#' @param sim_color Set the color of the simulation paths lines
+#' @param opacity Set the opacity level of the simulation path lines
+#' @param plot Logical, if TRUE will desplay the output plot
+#' @description Creating different forecast paths for forecast objects (when applicable), 
+#' by utilizing the underline model distribution with the \code{\link[stats]{simulate}} function
+#' @examples
+#' library(forecast)
+#' data(USgas)
+#'
+#' # Create a model
+#' fit <- auto.arima(USgas)
+#' 
+#' # Simulate 100 possible forecast path, with horizon of 60 months
+#' forecast_sim(model = fit, h = 60, n = 100)
 
-forecast_sim <- function(model, h, n, sim_color = "blue", opacity = 0.05, seed = NULL){
+forecast_sim <- function(model, h, n, sim_color = "blue", opacity = 0.05, plot = TRUE){
   
   # Setting variables
   s <- s1 <- sim_output <- p <- output <- NULL
   
-  # Error handling
+  #Error handling
   if(!any(class(model) %in% c("ARIMA", "ets", "nnetar"))){
     stop("The model argument is not valid")
   }
@@ -294,12 +314,6 @@ forecast_sim <- function(model, h, n, sim_color = "blue", opacity = 0.05, seed =
     stop("The value of the 'n' argument is not valid")
   }
   
-  if(!base::is.null(seed)){
-    if(!base::is.numeric(seed)){
-      stop("The value of the 'seed' argument is not valid")
-    }
-  }
-  
   if(!is.numeric(h)){
     stop("The value of the 'h' argument is not valid")
   } else if(h %% 1 != 0){
@@ -310,7 +324,7 @@ forecast_sim <- function(model, h, n, sim_color = "blue", opacity = 0.05, seed =
   
   s <- lapply(1:n, function(i){
     sim <- sim_df <- NULL
-    sim <- stats::simulate(model,nsim = h, seed = seed)
+    sim <- stats::simulate(model,nsim = h)
     sim_df <- base::data.frame(x = base::as.numeric(stats::time(sim)), 
                                y = base::as.numeric(sim))
     sim_df$n <- base::paste0("sim_", i)
