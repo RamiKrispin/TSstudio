@@ -286,6 +286,7 @@ check_res <- function(ts.model, lag.max = 36){
 #' @param plot Logical, if TRUE will desplay the output plot
 #' @description Creating different forecast paths for forecast objects (when applicable), 
 #' by utilizing the underline model distribution with the \code{\link[stats]{simulate}} function
+#' @return The baseline series, the simulated values and a plot
 #' @examples
 #' library(forecast)
 #' data(USgas)
@@ -322,6 +323,11 @@ forecast_sim <- function(model, h, n, sim_color = "blue", opacity = 0.05, plot =
     stop("The value of the 'h' argument is not valid")
   }
   
+  if(!base::is.logical(plot)){
+    warning("The value of the 'plot' parameter is invalid, using default option TRUE")
+    plot <- TRUE
+  }
+  
   s <- lapply(1:n, function(i){
     sim <- sim_df <- NULL
     sim <- stats::simulate(model,nsim = h)
@@ -356,7 +362,9 @@ forecast_sim <- function(model, h, n, sim_color = "blue", opacity = 0.05, plot =
                                y = model$x, 
                                line = list(color = "#00526d"), 
                                name = "Actual")
+  if(plot){
   print(p)
+  }
   
   output <- list()
   output$plot <- p
