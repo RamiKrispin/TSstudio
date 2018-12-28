@@ -739,3 +739,216 @@ ts_backtesting <- function(ts.obj,
   return(modelOutput)
 }
 
+
+#'  Evaluation Function for Forecasting Models
+#' @export ts_grid
+#' @param ts.obj A univariate time series object of a class "ts"
+#' @param model 
+
+ts_grid <- function(ts.obj, 
+                    model, 
+                    periods,
+                    window_length = NULL, 
+                    window_space,
+                    window_test,
+                    hyper_params,
+                    search_criteria, 
+                    parallel = TRUE,
+                    n.cores = "auto"){
+  
+  # Error handling
+  if(!stats::is.ts(ts.obj)){
+    stop("The input object is not 'ts' object")
+  } else if(stats::is.mts(ts.obj)){
+    stop("The input object is 'mts' object, please use 'ts'")
+  }
+  
+  if(!base::is.logical(parallel)){
+    warning("The 'parallel' argument is not a boolean operator, setting it to TRUE")
+    parallel <- TRUE
+  }
+  
+  if(n.cores != "auto"){
+    if(!base::is.numeric(n.cores)){
+      warning("The value of the 'n.cores' argument is not valid,", 
+              " setting it to 'auto' mode")
+      n.cores <- "auto"
+    } else if(base::is.numeric(n.cores) && 
+              (n.cores %% 1 != 0 || n.cores < 1)){
+      warning("The value of the 'n.cores' argument is not valid,", 
+              " setting it to 'auto' mode")
+      n.cores <- "auto"
+    } else{
+      if(future::availableCores() < n.cores){
+        warning("The value of the 'n.cores' argument is not valid,", 
+                "(the requested number of cores are greater than available)",
+                ", setting it to 'auto' mode")
+        n.cores <- "auto"
+      }
+    }
+  }
+  
+  if(n.cores == "auto"){
+    n.cores <- base::as.numeric( future::availableCores() - 1)
+  }
+  if(!model %in% c("HoltWinters")){
+    stop("The 'model' argument is not valid")
+  }
+  
+  # Set the backtesting partitions
+  s <- length(ts.obj) - window_space * (periods - 1) # the length of the first partition
+  e <- length(ts.obj)  # the end of the backtesting partition
+  w_end <- seq(from = s, by = window_space, to = e) # Set the cutting points for the backtesting partions
+  
+  if(!base::is.null(window_length)){
+    w_start <- w_end - window_test - window_length + 1
+  } else {
+    w_start <- base::rep(1, base::length(w_end))
+  }
+  
+  
+  if(model == "HoltWinters"){
+    hw_par <- c("alpha", "beta", "gamma")
+    if(!base::all(base::names(hyper_params) %in% hw_par)){
+      stop("The 'hyper_params' argument is invalid")
+    }
+    if("alpha" %in% base::names(hyper_params)){
+      if(base::any(which(hyper_params$alpha < 0)) || 
+         base::any(which(hyper_params$alpha > 1))){
+        stop("The value of the 'alpha' parameter is out of range,",
+             " cannot exceed 1 or be less or equal to 0")
+      } else if(any(which(hyper_params$alpha == 0))){
+        hyper_params$alpha[base::which(hyper_params$alpha == 0)] <- 1e-5
+        warning("The value of the 'alpha' parameter cannot be equal to 0",
+                " replacing 0 with 1e-5")
+      }
+      alpha <- NULL
+      alpha <- hyper_params$alpha
+      
+    } else {
+      alpha <- NULL
+    }
+    
+    if("beta" %in% base::names(hyper_params)){
+      if(base::any(which(hyper_params$beta < 0)) || 
+         base::any(which(hyper_params$beta > 1))){
+        stop("The value of the 'beta' parameter is out of range,",
+             " cannot exceed 1 or be less or equal to 0")
+      } else if(any(which(hyper_params$beta == 0))){
+        hyper_params$beta[base::which(hyper_params$beta == 0)] <- 1e-5
+        warning("The value of the 'beta' parameter cannot be equal to 0",
+                " replacing 0 with 1e-5")
+      }
+      beta <- NULL
+      beta <- hyper_params$beta
+      
+    } else {
+      beta <- NULL
+    }
+    
+    if("gamma" %in% base::names(hyper_params)){
+      if(base::any(which(hyper_params$gamma < 0)) || 
+         base::any(which(hyper_params$gamma > 1))){
+        stop("The value of the 'gamma' parameter is out of range,",
+             " cannot exceed 1 or be less or equal to 0")
+      } else if(any(which(hyper_params$gamma == 0))){
+        hyper_params$alpha[base::which(hyper_params$gamma == 0)] <- 1e-5
+        warning("The value of the 'gamma' parameter cannot be equal to 0",
+                " replacing 0 with 1e-5")
+      }
+      gamma <- NULL
+      gamma <- hyper_params$gamma
+      
+    } else {
+      gamma <- NULL
+    }
+    
+    grid_df <- base::eval(
+      base::parse(text = base::paste("base::expand.grid(", 
+                                     base::paste(base::names(hyper_params), 
+                                                 collapse = ", "),
+                                     ")", 
+                                     sep = "")))
+    base::names(grid_df) <- c(base::names(hyper_params))
+    
+    grid_model <- base::paste("stats::HoltWinters(x = train", sep = "")
+    for(i in hw_par){
+      if(i %in% base::names(grid_df)){
+        grid_model <- base::paste(grid_model, ", ", i, " = search_df$", i, "[i]", 
+                                  sep = "" )
+      } else {
+        grid_model <- base::paste(grid_model, ", ", i, " = NULL", sep = "")
+      }
+    }
+    grid_model <- base::paste(grid_model, ")", sep = "")
+  }
+  
+  
+  
+  
+  grid_output <- NULL
+  if(!parallel){
+    grid_output <- base::lapply(1:periods, function(n){
+      ts_sub <- train <- test <- search_df <- NULL
+      
+      search_df <- grid_df
+      search_df$period <- n
+      search_df$mape <- NA
+      ts_sub <- stats::window(ts.obj, 
+                              start = stats::time(ts.obj)[w_start[n]], 
+                              end = stats::time(ts.obj)[w_end[n]])
+      partition <- TSstudio::ts_split(ts_sub, sample.out = window_test)
+      train <- partition$train
+      test <- partition$test
+      
+      for(i in 1:nrow(search_df)){
+        md <- fc <- NULL
+        md <- base::eval(base::parse(text = grid_model))
+        fc <- forecast::forecast(md, h = window_test)
+        search_df$mape[i] <- forecast::accuracy(fc, test)[10]
+      }
+      
+      return(search_df)
+    }) %>% 
+      dplyr::bind_rows() %>%
+      tidyr::spread(key = period, value = mape)
+  } else if(parallel){
+    future::plan(future::multiprocess) 
+    start_time <- Sys.time()
+    grid_output <- future.apply::future_lapply(1:periods, function(n){
+      ts_sub <- train <- test <- search_df <- NULL
+      
+      search_df <- grid_df
+      search_df$period <- n
+      search_df$mape <- NA
+      ts_sub <- stats::window(ts.obj, 
+                              start = stats::time(ts.obj)[w_start[n]], 
+                              end = stats::time(ts.obj)[w_end[n]])
+      partition <- TSstudio::ts_split(ts_sub, sample.out = window_test)
+      train <- partition$train
+      test <- partition$test
+      
+      for(i in 1:nrow(search_df)){
+        md <- fc <- NULL
+        md <- base::eval(base::parse(text = grid_model))
+        fc <- forecast::forecast(md, h = window_test)
+        search_df$mape[i] <- forecast::accuracy(fc, test)[10]
+      }
+      
+      return(search_df)
+    }) %>% 
+      dplyr::bind_rows() %>%
+      tidyr::spread(key = period, value = mape)
+  }
+  
+  col_mean <- base::which(!base::names(grid_output)  %in% base::names(hyper_params) )
+  grid_output$mean <- base::rowMeans(grid_output[, col_mean])
+  grid_output <- grid_output %>% dplyr::arrange(mean)
+  
+  
+  final_output <- list(grid_df = grid_output,
+                       alpha = grid_output$alpha[1],
+                       beta = grid_output$beta[1],
+                       gamma = grid_output$gamma[1])
+  return(grid_output)
+}
