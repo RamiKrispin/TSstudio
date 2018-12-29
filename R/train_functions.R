@@ -963,5 +963,6 @@ ts_grid <- function(ts.obj,
                        alpha = grid_output$alpha[1],
                        beta = grid_output$beta[1],
                        gamma = grid_output$gamma[1])
+  base::class(grid_output) <- "ts_grid" 
   return(grid_output)
 }
