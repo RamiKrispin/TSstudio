@@ -736,6 +736,7 @@ ts_backtesting <- function(ts.obj,
     print(final_plot)
   }
   print(leaderboard)
+  class(modelOutput) <- "ts_backtest"
   return(modelOutput)
 }
 
