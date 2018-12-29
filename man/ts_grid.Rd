@@ -2,7 +2,7 @@
 % Please edit documentation in R/train_functions.R
 \name{ts_grid}
 \alias{ts_grid}
-\title{Tuning Time Series Models Parameters with Grid Search}
+\title{Tuning Time Series Forecasting Models Parameters with Grid Search}
 \usage{
 ts_grid(ts.obj, model, periods, window_length = NULL, window_space,
   window_test, hyper_params, search_criteria, parallel = TRUE,
@@ -20,8 +20,12 @@ If set to `NULL` (default) will use an expending window starting the from the fi
  otherwise will use a sliding window.
  @param window_space An integer, set the space length between each of the backtesting training partition 
  @param window_test An integer, set the length of the backtesting testing partition
- @param hyper_params A list, defines the tuning parameters and their values}
+ @param hyper_params A list, defines the tuning parameters and their range
+ @param search_criteria A list, set the search criteria such as the type of grid search ("cartesian" or "random"), 
+ model limitation, etc.
+ @param parallel Logical, if TRUE use multiple cores in parallel
+ @param n.cores Set the number of cores to use if the parallel argument is set to TRUE}
 }
 \description{
-Tuning time series models with grid serach and backtesting approach.
+Tuning time series models with grid serach approach using backtesting method.
 }
