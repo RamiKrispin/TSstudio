@@ -770,6 +770,9 @@ ts_grid <- function(ts.obj,
                     parallel = TRUE,
                     n.cores = "auto"){
   
+  `%>%` <- magrittr::`%>%` 
+  
+  
   # Error handling
   if(!stats::is.ts(ts.obj)){
     stop("The input object is not 'ts' object")
