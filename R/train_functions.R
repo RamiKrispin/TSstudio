@@ -740,8 +740,8 @@ ts_backtesting <- function(ts.obj,
 }
 
 
-#' Tuning Time Series Models Parameters with Grid Search 
-#' @description Tuning time series models with grid serach and backtesting approach.
+#' Tuning Time Series Forecasting Models Parameters with Grid Search 
+#' @description Tuning time series models with grid serach approach using backtesting method.
 #' @export ts_grid
 #' @param ts.obj A univariate time series object of a class "ts"
 #' @param model A string, defines the model
@@ -751,7 +751,11 @@ ts_backtesting <- function(ts.obj,
 #'  otherwise will use a sliding window.
 #'  @param window_space An integer, set the space length between each of the backtesting training partition 
 #'  @param window_test An integer, set the length of the backtesting testing partition
-#'  @param hyper_params A list, defines the tuning parameters and their values
+#'  @param hyper_params A list, defines the tuning parameters and their range
+#'  @param search_criteria A list, set the search criteria such as the type of grid search ("cartesian" or "random"), 
+#'  model limitation, etc.
+#'  @param parallel Logical, if TRUE use multiple cores in parallel
+#'  @param n.cores Set the number of cores to use if the parallel argument is set to TRUE
 
 ts_grid <- function(ts.obj, 
                     model, 
