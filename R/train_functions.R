@@ -740,10 +740,18 @@ ts_backtesting <- function(ts.obj,
 }
 
 
-#'  Evaluation Function for Forecasting Models
+#' Tuning Time Series Models Parameters with Grid Search 
+#' @description Tuning time series models with grid serach and backtesting approach.
 #' @export ts_grid
 #' @param ts.obj A univariate time series object of a class "ts"
-#' @param model 
+#' @param model A string, defines the model
+#' @param periods A string, set the number backtesting periods
+#' @param window_length An integer, defines the length of the backtesting training window.
+#' If set to `NULL` (default) will use an expending window starting the from the first observation,
+#'  otherwise will use a sliding window.
+#'  @param window_space An integer, set the space length between each of the backtesting training partition 
+#'  @param window_test An integer, set the length of the backtesting testing partition
+#'  @param hyper_params A list, defines the tuning parameters and their values
 
 ts_grid <- function(ts.obj, 
                     model, 
