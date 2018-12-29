@@ -17,6 +17,8 @@ Imports:
   dplyr(>= 0.7.5),
   forecast (>= 8.2),
   forecastHybrid(>= 2.0.10),
+  future(>= 1.10.0),
+  future.apply(>= 1.0.1),
   lubridate (>= 1.6.0),
   magrittr (>= 1.5),
   plotly (>= 4.7.1),
