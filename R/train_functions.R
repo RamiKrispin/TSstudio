@@ -808,6 +808,10 @@ ts_grid <- function(ts.obj,
     stop("The 'model' argument is not valid")
   }
   
+  # set the number of cores with future
+  
+  
+  
   # Set the backtesting partitions
   s <- length(ts.obj) - window_space * (periods - 1) # the length of the first partition
   e <- length(ts.obj)  # the end of the backtesting partition
@@ -958,7 +962,8 @@ ts_grid <- function(ts.obj,
   grid_output$mean <- base::rowMeans(grid_output[, col_mean])
   grid_output <- grid_output %>% dplyr::arrange(mean)
   
-  
+  # Need to update 
+  # parameters should be align with the hyper par
   final_output <- list(grid_df = grid_output,
                        alpha = grid_output$alpha[1],
                        beta = grid_output$beta[1],
