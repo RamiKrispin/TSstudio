@@ -756,7 +756,8 @@ ts_backtesting <- function(ts.obj,
 #'  @param search_criteria A list, set the search criteria such as the type of grid search ("cartesian" or "random"), 
 #'  model limitation, etc.
 #'  @param parallel Logical, if TRUE use multiple cores in parallel
-#'  @param n.cores Set the number of cores to use if the parallel argument is set to TRUE
+#'  @param n.cores Set the number of cores to use if the parallel argument is set to TRUE. 
+#'  If set to "auto" (default), will use all available cores in the system minus 1
 
 ts_grid <- function(ts.obj, 
                     model, 
@@ -802,15 +803,11 @@ ts_grid <- function(ts.obj,
   }
   
   if(n.cores == "auto"){
-    n.cores <- base::as.numeric( future::availableCores() - 1)
+    n.cores <- base::as.numeric(future::availableCores() - 1)
   }
   if(!model %in% c("HoltWinters")){
     stop("The 'model' argument is not valid")
   }
-  
-  # set the number of cores with future
-  
-  
   
   # Set the backtesting partitions
   s <- length(ts.obj) - window_space * (periods - 1) # the length of the first partition
@@ -930,7 +927,7 @@ ts_grid <- function(ts.obj,
       dplyr::bind_rows() %>%
       tidyr::spread(key = period, value = mape)
   } else if(parallel){
-    future::plan(future::multiprocess) 
+    future::plan(future::multiprocess, workers = n.cores)  
     start_time <- Sys.time()
     grid_output <- future.apply::future_lapply(1:periods, function(n){
       ts_sub <- train <- test <- search_df <- NULL
@@ -962,12 +959,12 @@ ts_grid <- function(ts.obj,
   grid_output$mean <- base::rowMeans(grid_output[, col_mean])
   grid_output <- grid_output %>% dplyr::arrange(mean)
   
-  # Need to update 
-  # parameters should be align with the hyper par
-  final_output <- list(grid_df = grid_output,
-                       alpha = grid_output$alpha[1],
-                       beta = grid_output$beta[1],
-                       gamma = grid_output$gamma[1])
+  final_output <- list(grid_df = grid_output)
+  
+  for(i in base::names(hyper_params)){
+    final_output[[i]] <- grid_output[1, i]
+  }
+  
   base::class(grid_output) <- "ts_grid" 
   return(grid_output)
 }
