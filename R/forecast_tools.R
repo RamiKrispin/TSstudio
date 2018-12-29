@@ -297,8 +297,13 @@ check_res <- function(ts.model, lag.max = 36){
 #' # Simulate 100 possible forecast path, with horizon of 60 months
 #' forecast_sim(model = fit, h = 60, n = 100)
 
-forecast_sim <- function(model, h, n, sim_color = "blue", opacity = 0.05, plot = TRUE){
-  
+forecast_sim <- function(model, 
+                         h, 
+                         n, 
+                         sim_color = "blue", 
+                         opacity = 0.05, 
+                         plot = TRUE){
+  `%>%` <- magrittr::`%>%`
   # Setting variables
   s <- s1 <- sim_output <- p <- output <- NULL
   
