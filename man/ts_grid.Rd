@@ -2,7 +2,7 @@
 % Please edit documentation in R/train_functions.R
 \name{ts_grid}
 \alias{ts_grid}
-\title{Evaluation Function for Forecasting Models}
+\title{Tuning Time Series Models Parameters with Grid Search}
 \usage{
 ts_grid(ts.obj, model, periods, window_length = NULL, window_space,
   window_test, hyper_params, search_criteria, parallel = TRUE,
@@ -12,7 +12,16 @@ ts_grid(ts.obj, model, periods, window_length = NULL, window_space,
 \item{ts.obj}{A univariate time series object of a class "ts"}
 
 \item{model}{A string, defines the model}
+
+\item{periods}{A string, set the number backtesting periods}
+
+\item{window_length}{An integer, defines the length of the backtesting training window.
+If set to `NULL` (default) will use an expending window starting the from the first observation,
+ otherwise will use a sliding window.
+ @param window_space An integer, set the space length between each of the backtesting training partition 
+ @param window_test An integer, set the length of the backtesting testing partition
+ @param hyper_params A list, defines the tuning parameters and their values}
 }
 \description{
-Evaluation Function for Forecasting Models
+Tuning time series models with grid serach and backtesting approach.
 }
