@@ -969,6 +969,6 @@ ts_grid <- function(ts.obj,
     final_output[[i]] <- grid_output[1, i]
   }
   
-  base::class(grid_output) <- "ts_grid" 
-  return(grid_output)
+  base::class(final_output) <- "ts_grid" 
+  return(final_output)
 }
