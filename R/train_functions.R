@@ -767,7 +767,9 @@ ts_grid <- function(ts.obj,
                     window_space,
                     window_test,
                     hyper_params,
-                    search_criteria, 
+                    search_criteria = list(mode = "normal", 
+                                           num.models = NULL,
+                                           time = NULL), 
                     parallel = TRUE,
                     n.cores = "auto"){
   
@@ -781,6 +783,30 @@ ts_grid <- function(ts.obj,
     stop("The input object is 'mts' object, please use 'ts'")
   }
   
+  if(!base::all(base::names(search_criteria) %in% c("mode", "num.models", "time"))){
+    stop("The 'search_criteria' argument is not valid, please set the mode, num.models and time components")
+  } else {
+      if(!base::any(search_criteria$mode %in% c("normal", "random"))){
+        warning("The 'mode' argument of the search criteria is not valid, ",
+                "setting it to 'normal' mode (default)")
+        search_criteria$mode <- "normal"
+      }
+    if(!base::is.null(search_criteria$n.models)){
+    if(!base::is.numeric(search_criteria$n.models)){
+      stop("The 'n.models' argument of the search criteria is not valid")
+    } else if(search_criteria$n.models %% 1 != 0 || search_criteria$n.models < 1){
+      stop("The 'n.models' argument of the search criteria is not valid, please use only positive integers")
+    }
+    }
+    
+    if(!base::is.null(search_criteria$time)){
+      if(!base::is.numeric(search_criteria$time)){
+        stop("The 'n.models' argument of the search criteria is not valid")
+      } else if(search_criteria$time < 1){
+        stop("The 'n.models' argument of the search criteria is not valid, please use only positive numbers")
+      }
+      }
+  }
   if(!base::is.logical(parallel)){
     warning("The 'parallel' argument is not a boolean operator, setting it to TRUE")
     parallel <- TRUE
@@ -968,6 +994,16 @@ ts_grid <- function(ts.obj,
   for(i in base::names(hyper_params)){
     final_output[[i]] <- grid_output[1, i]
   }
+  final_output[["parameters"]] <- list(series = ts.obj, 
+                                       model = model, 
+                                       periods = periods,
+                                       window_length = window_length, 
+                                       window_space = window_space,
+                                       window_test = window_test,
+                                       hyper_params = hyper_params,
+                                       search_criteria = search_criteria, 
+                                       parallel = parallel,
+                                       n.cores = n.cores)
   
   base::class(final_output) <- "ts_grid" 
   return(final_output)
