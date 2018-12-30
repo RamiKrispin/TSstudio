@@ -752,8 +752,6 @@ ts_backtesting <- function(ts.obj,
 #' @param window_space An integer, set the space length between each of the backtesting training partition 
 #' @param window_test An integer, set the length of the backtesting testing partition
 #' @param hyper_params A list, defines the tuning parameters and their range
-#' @param search_criteria A list, set the search criteria such as the type of grid search ("cartesian" or "random"), 
-#'  model limitation, etc.
 #' @param parallel Logical, if TRUE use multiple cores in parallel
 #' @param n.cores Set the number of cores to use if the parallel argument is set to TRUE. 
 #' @description Tuning time series models with grid serach approach using backtesting method.
@@ -767,15 +765,13 @@ ts_grid <- function(ts.obj,
                     window_space,
                     window_test,
                     hyper_params,
-                    search_criteria = list(mode = "normal", 
-                                           num.models = NULL,
-                                           time = NULL), 
                     parallel = TRUE,
                     n.cores = "auto"){
   
+  mape <- period <- start_time <-  NULL
+  
   `%>%` <- magrittr::`%>%` 
   
-  mape <- period <- NULL
   # Error handling
   if(!stats::is.ts(ts.obj)){
     stop("The input object is not 'ts' object")
@@ -783,30 +779,7 @@ ts_grid <- function(ts.obj,
     stop("The input object is 'mts' object, please use 'ts'")
   }
   
-  if(!base::all(base::names(search_criteria) %in% c("mode", "num.models", "time"))){
-    stop("The 'search_criteria' argument is not valid, please set the mode, num.models and time components")
-  } else {
-      if(!base::any(search_criteria$mode %in% c("normal", "random"))){
-        warning("The 'mode' argument of the search criteria is not valid, ",
-                "setting it to 'normal' mode (default)")
-        search_criteria$mode <- "normal"
-      }
-    if(!base::is.null(search_criteria$n.models)){
-    if(!base::is.numeric(search_criteria$n.models)){
-      stop("The 'n.models' argument of the search criteria is not valid")
-    } else if(search_criteria$n.models %% 1 != 0 || search_criteria$n.models < 1){
-      stop("The 'n.models' argument of the search criteria is not valid, please use only positive integers")
-    }
-    }
-    
-    if(!base::is.null(search_criteria$time)){
-      if(!base::is.numeric(search_criteria$time)){
-        stop("The 'n.models' argument of the search criteria is not valid")
-      } else if(search_criteria$time < 1){
-        stop("The 'n.models' argument of the search criteria is not valid, please use only positive numbers")
-      }
-      }
-  }
+  
   if(!base::is.logical(parallel)){
     warning("The 'parallel' argument is not a boolean operator, setting it to TRUE")
     parallel <- TRUE
@@ -835,7 +808,10 @@ ts_grid <- function(ts.obj,
   if(n.cores == "auto"){
     n.cores <- base::as.numeric(future::availableCores() - 1)
   }
-  if(!model %in% c("HoltWinters")){
+  
+  if(!base::exists("model")){
+    stop("The 'model' argument is missing")
+  } else if(!model %in% c("HoltWinters")){
     stop("The 'model' argument is not valid")
   }
   
@@ -926,9 +902,7 @@ ts_grid <- function(ts.obj,
     }
     grid_model <- base::paste(grid_model, ")", sep = "")
   }
-  
-  
-  
+
   
   grid_output <- NULL
   if(!parallel){
