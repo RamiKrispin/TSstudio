@@ -24,9 +24,10 @@ If set to `NULL` (default) will use an expending window starting the from the fi
  @param search_criteria A list, set the search criteria such as the type of grid search ("cartesian" or "random"), 
  model limitation, etc.
  @param parallel Logical, if TRUE use multiple cores in parallel
- @param n.cores Set the number of cores to use if the parallel argument is set to TRUE. 
- If set to "auto" (default), will use all available cores in the system minus 1}
+ @param n.cores Set the number of cores to use if the parallel argument is set to TRUE.}
 }
 \description{
 Tuning time series models with grid serach approach using backtesting method.
+ If set to "auto" (default), will use all available cores in the system minus 1
+ @return A list
 }
