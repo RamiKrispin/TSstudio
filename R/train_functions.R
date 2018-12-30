@@ -742,8 +742,8 @@ ts_backtesting <- function(ts.obj,
 
 
 #' Tuning Time Series Forecasting Models Parameters with Grid Search 
-#' @description Tuning time series models with grid serach approach using backtesting method.
 #' @export ts_grid
+#' @description Tuning time series models with grid serach approach using backtesting method.
 #' @param ts.obj A univariate time series object of a class "ts"
 #' @param model A string, defines the model
 #' @param periods A string, set the number backtesting periods

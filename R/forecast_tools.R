@@ -297,13 +297,12 @@ check_res <- function(ts.model, lag.max = 36){
 #' # Simulate 100 possible forecast path, with horizon of 60 months
 #' forecast_sim(model = fit, h = 60, n = 100)
 
-forecast_sim <- function(model, 
-                         h, 
-                         n, 
-                         sim_color = "blue", 
-                         opacity = 0.05, 
-                         plot = TRUE){
+forecast_sim <- function(model,h,n, sim_color = "blue", opacity = 0.05, plot = TRUE){
+  
   `%>%` <- magrittr::`%>%`
+  x <- y <- NULL
+  
+  
   # Setting variables
   s <- s1 <- sim_output <- p <- output <- NULL
   
@@ -334,7 +333,8 @@ forecast_sim <- function(model,
   }
   
   s <- lapply(1:n, function(i){
-    sim <- sim_df <- NULL
+    sim <- sim_df <- x <- y <- NULL
+    
     sim <- stats::simulate(model,nsim = h)
     sim_df <- base::data.frame(x = base::as.numeric(stats::time(sim)), 
                                y = base::as.numeric(sim))
@@ -344,7 +344,7 @@ forecast_sim <- function(model,
   sim_output <- s %>% dplyr::bind_rows() %>% 
     tidyr::spread(key = n, value = y) %>% 
     dplyr::select(-x) %>% 
-    ts(start = stats::start(stats::simulate(model,nsim = 1)), 
+    stats::ts(start = stats::start(stats::simulate(model,nsim = 1)), 
        frequency = stats::frequency(stats::simulate(model,nsim = 1))) 
   
   p <- plotly::plot_ly()
