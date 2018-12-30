@@ -772,7 +772,7 @@ ts_grid <- function(ts.obj,
   
   `%>%` <- magrittr::`%>%` 
   
-  
+  mape <- period <- NULL
   # Error handling
   if(!stats::is.ts(ts.obj)){
     stop("The input object is not 'ts' object")
