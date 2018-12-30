@@ -747,15 +747,15 @@ ts_backtesting <- function(ts.obj,
 #' @param model A string, defines the model
 #' @param periods A string, set the number backtesting periods
 #' @param window_length An integer, defines the length of the backtesting training window.
-#' If set to `NULL` (default) will use an expending window starting the from the first observation,
+#' If set to NULL (default) will use an expending window starting the from the first observation,
 #'  otherwise will use a sliding window.
-#'  @param window_space An integer, set the space length between each of the backtesting training partition 
-#'  @param window_test An integer, set the length of the backtesting testing partition
-#'  @param hyper_params A list, defines the tuning parameters and their range
-#'  @param search_criteria A list, set the search criteria such as the type of grid search ("cartesian" or "random"), 
+#' @param window_space An integer, set the space length between each of the backtesting training partition 
+#' @param window_test An integer, set the length of the backtesting testing partition
+#' @param hyper_params A list, defines the tuning parameters and their range
+#' @param search_criteria A list, set the search criteria such as the type of grid search ("cartesian" or "random"), 
 #'  model limitation, etc.
-#'  @param parallel Logical, if TRUE use multiple cores in parallel
-#'  @param n.cores Set the number of cores to use if the parallel argument is set to TRUE. 
+#' @param parallel Logical, if TRUE use multiple cores in parallel
+#' @param n.cores Set the number of cores to use if the parallel argument is set to TRUE. 
 #' @description Tuning time series models with grid serach approach using backtesting method.
 #'  If set to "auto" (default), will use all available cores in the system minus 1
 #'  @return A list
