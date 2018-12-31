@@ -975,7 +975,6 @@ ts_grid <- function(ts.obj,
                                        window_space = window_space,
                                        window_test = window_test,
                                        hyper_params = hyper_params,
-                                       search_criteria = search_criteria, 
                                        parallel = parallel,
                                        n.cores = n.cores)
   
