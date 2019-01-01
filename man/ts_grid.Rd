@@ -31,13 +31,15 @@ If set to NULL (default) will use an expending window starting the from the firs
 
 \item{n.cores}{Set the number of cores to use if the parallel argument is set to TRUE.}
 }
+\value{
+A list
+}
 \description{
 Tuning time series models with grid serach approach using backtesting method.
  If set to "auto" (default), will use all available cores in the system minus 1
- @return A list
- 
- @examples 
- \dontrun{
+}
+\examples{
+\dontrun{
  data(USgas)
  
  # Starting with a shallow search (sequence between 0 and 1 with jumps of 0.1)
@@ -92,5 +94,5 @@ Tuning time series models with grid serach approach using backtesting method.
  
  plot_forecast(fc)
 
- }
+}  
 }

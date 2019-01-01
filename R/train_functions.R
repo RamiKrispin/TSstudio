@@ -757,10 +757,9 @@ ts_backtesting <- function(ts.obj,
 #' @param n.cores Set the number of cores to use if the parallel argument is set to TRUE. 
 #' @description Tuning time series models with grid serach approach using backtesting method.
 #'  If set to "auto" (default), will use all available cores in the system minus 1
-#'  @return A list
-#'  
-#'  @examples 
-#'  \dontrun{
+#' @return A list
+#' @examples 
+#' \dontrun{
 #'  data(USgas)
 #'  
 #'  # Starting with a shallow search (sequence between 0 and 1 with jumps of 0.1)
@@ -815,8 +814,9 @@ ts_backtesting <- function(ts.obj,
 #'  
 #'  plot_forecast(fc)
 #' 
-#'  } 
-#'  
+#' }  
+  
+
 ts_grid <- function(ts.obj, 
                    model,
                    optim = "MAPE",
