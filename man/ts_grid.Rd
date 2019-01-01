@@ -13,6 +13,8 @@ ts_grid(ts.obj, model, optim = "MAPE", periods, window_length = NULL,
 
 \item{model}{A string, defines the model}
 
+\item{optim}{A string, set the optimization method - c("MAPE", "RMSE")}
+
 \item{periods}{A string, set the number backtesting periods}
 
 \item{window_length}{An integer, defines the length of the backtesting training window.
