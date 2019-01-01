@@ -760,7 +760,7 @@ ts_backtesting <- function(ts.obj,
 #'  @return A list
 #'  
 #'  @examples 
-#'  #' \dontrun{
+#'  \dontrun{
 #'  data(USgas)
 #'  
 #'  # Starting with a shallow search (sequence between 0 and 1 with jumps of 0.1)
@@ -1054,3 +1054,177 @@ ts_grid <- function(ts.obj,
   return(final_output)
 }
 
+#' Visualizing Grid Search Results
+#' @export plot_grid
+#' @param grid.obj A ts_grid output object
+#' @param top An integer, set the number of hyper-parameters combinations to visualize 
+#' (ordered by accuracy). If set to NULL (default), will plot the top 100 combinations
+#' @param type The plot type, either "3D" for 3D plot or 
+#' "parcoords" for parallel coordinates plot
+#' @param highlight A proportion between 0 (excluding) and 1, 
+#' set the number of hyper-parameters combinations to highlight 
+#' (by accuracy), if the **type** argument is set to "parcoords" 
+#' @param colors A list of **plotly** arguments for the color scale setting: 
+#' **showscale** display the color scale if set to TRUE. 
+#' **reversescale** reverse the color scale if set to TRUE 
+#' **colorscale** set the color scale of the plot, possible palettes are
+#' Greys, YlGnBu,  Greens , YlOrRd,
+#' Bluered, RdBu, Reds, Blues, Picnic,
+#' Rainbow, Portland, Jet, Hot, Blackbody,
+#' Earth, Electric, Viridis, Cividis
+
+
+
+plot_grid <- function(grid.obj, 
+                      top = NULL, 
+                      highlight = 0.1, 
+                      type = "parcoords", 
+                      colors = list(showscale = TRUE,
+                                    reversescale = FALSE,
+                                    colorscale = "Jet")){
+  
+  # Setting the pipe operator
+  `%>%` <- magrittr::`%>%`
+  
+  # Setting variables
+  color_option <- p <- NULL
+  
+  # List of optional color scale
+  color_option <- c("Greys","YlGnBu", "Greens", "YlOrRd",
+                    "Bluered", "RdBu", "Reds", "Blues", "Picnic",
+                    "Rainbow", "Portland", "Jet", "Hot", "Blackbody",
+                    "Earth", "Electric", "Viridis", "Cividis")
+  
+  
+  # Error handling
+  if(class(grid.obj) != "ts_grid"){
+    stop("The input object is not a 'ts_grid' class")
+  }
+  
+  if(!base::is.list(colors)){
+    warning("The 'colors' argument is not valid, using default option")
+    colors = base::list(showscale = TRUE,
+                        reversescale = FALSE,
+                        colorscale = "Jet")
+  } else if(!all(base::names(colors) %in% c("showscale", "reversescale", "colorscale"))){
+    warning("The 'colors' argument is not valid, using default option")
+    colors = base::list(showscale = TRUE,
+                        reversescale = FALSE,
+                        colorscale = "Jet")
+  } 
+  
+  if(!base::is.logical(colors$showscale)){
+    warning("The 'showscale' parameter of the 'colors' argument is not logical, using default option (TRUE)")
+    colors$showscale <- TRUE
+  }
+  
+  if(!base::is.logical(colors$reversescale)){
+    warning("The 'reversescale' parameter of the 'colors' argument is not logical, using default option (FALSE)")
+    colors$reversescale <- FALSE
+  }
+  
+  if(!base::is.character(colors$colorscale) || 
+     base::length(colors$colorscale) != 1 || 
+     !colors$colorscale %in% color_option){
+    warning("The 'colorscale' parameter of the 'colors' argument is not logical, using default option (Jet)")
+  }
+  
+  
+  if(type != "parcoords" && type != "3D"){
+    warning("The value of the 'type' argument is not valid, using default option (parcoords)")
+    type <- "parcoords"
+  }
+  
+  if(!base::is.null(top)){
+    if(!base::is.numeric(top) || top %% 1 != 0){
+      warning("The value of the 'top' argument is not valid, using default option (top 100 models)")
+      top <- ifelse(base::nrow(grid.obj$grid_df) > 100, 100, base::nrow(grid.obj$grid_df))
+    }
+    if(top > base::nrow(grid.obj$grid_df)){
+      warning("The value of the 'top' argument exceeding the number of models, using default option (top 100 models)")
+      top <- ifelse(base::nrow(grid.obj$grid_df) > 100, 100, base::nrow(grid.obj$grid_df))
+    }
+  } else { 
+    top <- ifelse(base::nrow(grid.obj$grid_df) > 100, 100, base::nrow(grid.obj$grid_df))
+  }
+  
+  if(!base::is.numeric(highlight) || highlight <= 0 || highlight > 1){
+    warning("The value of the 'highlight' argument is not valid, using default (0.1)")
+    highlight <- 0.1
+  }
+  
+  if(type == "parcoords"){
+    
+    if(grid.obj$parameters$model == "HoltWinters"){
+      if(base::length(base::names(grid.obj$parameters$hyper_params)) < 2){
+        stop("Cannot create a parallel coordinates plot for a single hyper parameter")
+      }
+      hw_dim <- NULL
+      hw_dim <- base::list()
+      
+      for(i in base::seq_along(base::names(grid.obj$parameters$hyper_params))){
+        hw_dim[[i]] <-  base::eval(base::parse(text = base::paste("list(range = c(0,1),
+                                                                  constraintrange = c(min(grid.obj$grid_df[1:", base::ceiling(top * highlight), ", i]),
+                                                                  max(grid.obj$grid_df[1:", base::ceiling(top * highlight), ",i])),
+                                                                  label = '", base::names(grid.obj$parameters$hyper_params)[i],"', values = ~", 
+                                                                  base::names(grid.obj$parameters$hyper_params)[i],
+                                                                  ")",
+                                                                  sep = "")
+        ))
+      }
+      
+      p <- grid.obj$grid_df[1:top,] %>%
+        plotly::plot_ly(type = 'parcoords',
+                        line = list(color = ~ mean,
+                                    colorscale = colors$colorscale,
+                                    showscale = colors$showscale,
+                                    reversescale = colors$reversescale,
+                                    cmin = base::min(grid.obj$grid_df$mean),
+                                    cmax = base::max(grid.obj$grid_df$mean[1:top]),
+                                    colorbar=list(
+                                      title= base::paste("Avg.", grid.obj$parameters$optim, sep = " ")
+                                    )),
+                        dimensions = hw_dim
+        ) %>% plotly::layout(title = base::paste(grid.obj$parameters$model, 
+                                                 " Parameters Grid Search Results (Avg. ",
+                                                 grid.obj$parameters$optim,
+                                                 ") for Top ", 
+                                                 top, 
+                                                 " Models", sep = ""),
+                             xaxis = list(title = base::paste("Testing Over", grid.obj$parameters$periods, "Periods", sep = " ")))
+      
+      
+    }
+  }else if(type == "3D"){
+    if(grid.obj$parameters$model == "HoltWinters"){
+      if(base::length(base::names(grid.obj$parameters$hyper_params)) == 3){
+        p <- plotly::plot_ly(data = grid.obj$grid_df[1:top,],
+                             type="scatter3d",
+                             mode = "markers",
+                             x = ~ alpha, 
+                             y = ~ beta, 
+                             z = ~ gamma, 
+                             marker = list(color = ~ mean, 
+                                           colorscale = colors$colorscale,
+                                           showscale = colors$showscale,
+                                           reversescale = colors$reversescale,
+                                           colorbar=list(
+                                             title= base::paste("Avg.", grid.obj$parameters$optim, sep = " ")
+                                           ))) %>% 
+          plotly::layout(title = base::paste(grid.obj$parameters$model, 
+                                             " Parameters Grid Search Results (Avg. ",
+                                             grid.obj$parameters$optim,
+                                             ") for Top ", 
+                                             top, 
+                                             " Models", sep = ""),
+                         xaxis = list(title = base::paste("Testing Over", grid.obj$parameters$periods, "Periods", sep = " ")))
+      } else if(base::length(base::names(grid.obj$parameters$hyper_params)) == 2){
+        
+      } else if(base::length(base::names(grid.obj$parameters$hyper_params)) <= 1){
+        stop("Cannot create a 3D plot for a single hyper parameter")
+      }
+    }
+  }
+  
+  return(p)
+}
