@@ -1264,8 +1264,8 @@ plot_grid <- function(grid.obj,
                                              top,
                                              "Models",
                                              sep = " "),
-                         xaxis = list(title = p_names[1]),
-                         yaxis = list(title = p_names[2]))
+                         xaxis = list(title = par_names[1]),
+                         yaxis = list(title = par_names[2]))
       } else if(base::length(par_names) <= 1){
         stop("Cannot create a 3D plot for a single hyper parameter")
       }
