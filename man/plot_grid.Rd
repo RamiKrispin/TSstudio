@@ -18,7 +18,9 @@ set the number of hyper-parameters combinations to highlight
 (by accuracy), if the type argument is set to "parcoords"}
 
 \item{type}{The plot type, either "3D" for 3D plot or 
-"parcoords" for parallel coordinates plot}
+"parcoords" for parallel coordinates plot. 
+Note: the 3D plot option is applicable whenever there are three tuning parameters, 
+otherwise will use a 2D plot for two tuning parameters.}
 
 \item{colors}{A list of plotly arguments for the color scale setting: 
 
