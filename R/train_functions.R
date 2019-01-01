@@ -1060,7 +1060,9 @@ ts_grid <- function(ts.obj,
 #' @param top An integer, set the number of hyper-parameters combinations to visualize 
 #' (ordered by accuracy). If set to NULL (default), will plot the top 100 combinations
 #' @param type The plot type, either "3D" for 3D plot or 
-#' "parcoords" for parallel coordinates plot
+#' "parcoords" for parallel coordinates plot. 
+#' Note: the 3D plot option is applicable whenever there are three tuning parameters, 
+#' otherwise will use a 2D plot for two tuning parameters. 
 #' @param highlight A proportion between 0 (excluding) and 1, 
 #' set the number of hyper-parameters combinations to highlight 
 #' (by accuracy), if the type argument is set to "parcoords" 
@@ -1090,7 +1092,7 @@ plot_grid <- function(grid.obj,
   `%>%` <- magrittr::`%>%`
   
   # Setting variables
-  color_option <- p <- par_names <- NULL
+  color_option <- p <- par_names <- sizeref <- NULL
   
   # List of optional color scale
   color_option <- c("Greys","YlGnBu", "Greens", "YlOrRd",
@@ -1232,12 +1234,22 @@ plot_grid <- function(grid.obj,
                          xaxis = list(title = base::paste("Testing Over", grid.obj$parameters$periods, "Periods", sep = " ")))
       } else if(base::length(par_names) == 2){
         warning("Cannot create a 3D plot for two hyper parameters")
-        p <- plotly::plot_ly(x = grid.obj$grid_df[1:top, p_names[1]],
-                             y = grid.obj$grid_df[1:top, p_names[2]],
+        # Scaling the bubbles size
+        sizeref <- 2.0 * max(grid.obj$grid_df$mean[1:top]) / (20**2)
+        
+        p <- plotly::plot_ly(x = grid.obj$grid_df[1:top, par_names[1]],
+                             y = grid.obj$grid_df[1:top, par_names[2]],
                              type = "scatter",
-                             mode = "markers", 
+                             mode = "markers",
+                             hoverinfo = 'text',
+                             text = paste(base::paste("Avg.", grid.obj$parameters$optim, sep = " "),
+                                          ": ", base::round(grid.obj$grid_df[1:top, "mean"], 2), 
+                                          "<br>", par_names[1],": ", grid.obj$grid_df[1:top, par_names[1]],
+                                          "<br>", par_names[2],": ", grid.obj$grid_df[1:top, par_names[2]],
+                                          sep = ""),
                              marker = list(color = grid.obj$grid_df[1:top, "mean"],
                                            size = grid.obj$grid_df[1:top, "mean"],
+                                           sizemode = 'area', sizeref = sizeref,
                                            colorscale = colors$colorscale,
                                            showscale = colors$showscale,
                                            reversescale = colors$reversescale,
