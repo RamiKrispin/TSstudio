@@ -35,4 +35,62 @@ If set to NULL (default) will use an expending window starting the from the firs
 Tuning time series models with grid serach approach using backtesting method.
  If set to "auto" (default), will use all available cores in the system minus 1
  @return A list
+ 
+ @examples 
+ #' \dontrun{
+ data(USgas)
+ 
+ # Starting with a shallow search (sequence between 0 and 1 with jumps of 0.1)
+ # To speed up the process, will set the parallel option to TRUE 
+ # to run the search in parallel using 8 cores
+ 
+ hw_grid_shallow <- ts_grid(ts.obj = USgas,
+                            periods = 6,
+                            model = "HoltWinters",
+                            optim = "MAPE",
+                            window_space = 6,
+                            window_test = 12,
+                            hyper_params = list(alpha = seq(0.01, 1,0.1),
+                                                beta =  seq(0.01, 1,0.1),
+                                                gamma = seq(0.01, 1,0.1)),
+                            parallel = TRUE,
+                            n.cores = 8)
+ 
+ 
+ # Use the parameter range of the top 20 models 
+ # to set a narrow but more agressive search
+ 
+ a_min <- min(hw_grid_shallow$grid_df$alpha[1:20])
+ a_max <- max(hw_grid_shallow$grid_df$alpha[1:20])
+ 
+ b_min <- min(hw_grid_shallow$grid_df$beta[1:20])
+ b_max <- max(hw_grid_shallow$grid_df$beta[1:20])
+ 
+ g_min <- min(hw_grid_shallow$grid_df$gamma[1:20])
+ g_max <- max(hw_grid_shallow$grid_df$gamma[1:20])
+ 
+ hw_grid_second <- ts_grid(ts.obj = USgas,
+                           periods = 6,
+                           model = "HoltWinters",
+                           optim = "MAPE",
+                           window_space = 6,
+                           window_test = 12,
+                           hyper_params = list(alpha = seq(a_min, a_max,0.05),
+                                               beta =  seq(b_min, b_max,0.05),
+                                               gamma = seq(g_min, g_max,0.05)),
+                           parallel = TRUE,
+                           n.cores = 8)
+ 
+ md <- HoltWinters(USgas, 
+                   alpha = hw_grid_second$alpha,
+                   beta = hw_grid_second$beta,
+                   gamma = hw_grid_second$gamma)
+ 
+ library(forecast)
+ 
+ fc <- forecast(md, h = 60)
+ 
+ plot_forecast(fc)
+
+ }
 }
