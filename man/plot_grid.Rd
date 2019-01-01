@@ -15,15 +15,18 @@ plot_grid(grid.obj, top = NULL, highlight = 0.1, type = "parcoords",
 
 \item{highlight}{A proportion between 0 (excluding) and 1, 
 set the number of hyper-parameters combinations to highlight 
-(by accuracy), if the **type** argument is set to "parcoords"}
+(by accuracy), if the type argument is set to "parcoords"}
 
 \item{type}{The plot type, either "3D" for 3D plot or 
 "parcoords" for parallel coordinates plot}
 
-\item{colors}{A list of **plotly** arguments for the color scale setting: 
-**showscale** display the color scale if set to TRUE. 
-**reversescale** reverse the color scale if set to TRUE 
-**colorscale** set the color scale of the plot, possible palettes are
+\item{colors}{A list of plotly arguments for the color scale setting: 
+
+showscale -  display the color scale if set to TRUE. 
+
+reversescale - reverse the color scale if set to TRUE 
+
+colorscale set the color scale of the plot, possible palettes are:
 Greys, YlGnBu,  Greens , YlOrRd,
 Bluered, RdBu, Reds, Blues, Picnic,
 Rainbow, Portland, Jet, Hot, Blackbody,

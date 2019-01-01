@@ -1063,11 +1063,14 @@ ts_grid <- function(ts.obj,
 #' "parcoords" for parallel coordinates plot
 #' @param highlight A proportion between 0 (excluding) and 1, 
 #' set the number of hyper-parameters combinations to highlight 
-#' (by accuracy), if the **type** argument is set to "parcoords" 
-#' @param colors A list of **plotly** arguments for the color scale setting: 
-#' **showscale** display the color scale if set to TRUE. 
-#' **reversescale** reverse the color scale if set to TRUE 
-#' **colorscale** set the color scale of the plot, possible palettes are
+#' (by accuracy), if the type argument is set to "parcoords" 
+#' @param colors A list of plotly arguments for the color scale setting: 
+#' 
+#' showscale -  display the color scale if set to TRUE. 
+#' 
+#' reversescale - reverse the color scale if set to TRUE 
+#' 
+#' colorscale set the color scale of the plot, possible palettes are:
 #' Greys, YlGnBu,  Greens , YlOrRd,
 #' Bluered, RdBu, Reds, Blues, Picnic,
 #' Rainbow, Portland, Jet, Hot, Blackbody,
