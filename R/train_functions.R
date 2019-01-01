@@ -1090,7 +1090,7 @@ plot_grid <- function(grid.obj,
   `%>%` <- magrittr::`%>%`
   
   # Setting variables
-  color_option <- p <- NULL
+  color_option <- p <- par_names <- NULL
   
   # List of optional color scale
   color_option <- c("Greys","YlGnBu", "Greens", "YlOrRd",
@@ -1156,21 +1156,23 @@ plot_grid <- function(grid.obj,
     highlight <- 0.1
   }
   
+  par_names <- base::names(grid.obj$parameters$hyper_params) 
+  
   if(type == "parcoords"){
     
     if(grid.obj$parameters$model == "HoltWinters"){
-      if(base::length(base::names(grid.obj$parameters$hyper_params)) < 2){
+      if(base::length(par_names) < 2){
         stop("Cannot create a parallel coordinates plot for a single hyper parameter")
       }
       hw_dim <- NULL
       hw_dim <- base::list()
       
-      for(i in base::seq_along(base::names(grid.obj$parameters$hyper_params))){
+      for(i in base::seq_along(par_names)){
         hw_dim[[i]] <-  base::eval(base::parse(text = base::paste("list(range = c(0,1),
                                                                   constraintrange = c(min(grid.obj$grid_df[1:", base::ceiling(top * highlight), ", i]),
                                                                   max(grid.obj$grid_df[1:", base::ceiling(top * highlight), ",i])),
-                                                                  label = '", base::names(grid.obj$parameters$hyper_params)[i],"', values = ~", 
-                                                                  base::names(grid.obj$parameters$hyper_params)[i],
+                                                                  label = '", par_names[i],"', values = ~", 
+                                                                  par_names[i],
                                                                   ")",
                                                                   sep = "")
         ))
@@ -1200,13 +1202,20 @@ plot_grid <- function(grid.obj,
     }
   }else if(type == "3D"){
     if(grid.obj$parameters$model == "HoltWinters"){
-      if(base::length(base::names(grid.obj$parameters$hyper_params)) == 3){
+      if(base::length(par_names) == 3){
         p <- plotly::plot_ly(data = grid.obj$grid_df[1:top,],
                              type="scatter3d",
                              mode = "markers",
                              x = ~ alpha, 
                              y = ~ beta, 
-                             z = ~ gamma, 
+                             z = ~ gamma,
+                             hoverinfo = 'text',
+                             text = paste(base::paste("Avg.", grid.obj$parameters$optim, sep = " "),
+                                          ": ", base::round(grid.obj$grid_df[1:top, "mean"], 2), 
+                                          "<br>", par_names[1],": ", grid.obj$grid_df[1:top, par_names[1]],
+                                          "<br>", par_names[2],": ", grid.obj$grid_df[1:top, par_names[2]],
+                                          "<br>", par_names[3],": ", grid.obj$grid_df[1:top, par_names[3]],
+                                          sep = ""),
                              marker = list(color = ~ mean, 
                                            colorscale = colors$colorscale,
                                            showscale = colors$showscale,
@@ -1221,7 +1230,7 @@ plot_grid <- function(grid.obj,
                                              top, 
                                              " Models", sep = ""),
                          xaxis = list(title = base::paste("Testing Over", grid.obj$parameters$periods, "Periods", sep = " ")))
-      } else if(base::length(base::names(grid.obj$parameters$hyper_params)) == 2){
+      } else if(base::length(par_names) == 2){
         warning("Cannot create a 3D plot for two hyper parameters")
         p <- plotly::plot_ly(x = grid.obj$grid_df[1:top, p_names[1]],
                              y = grid.obj$grid_df[1:top, p_names[2]],
@@ -1245,7 +1254,7 @@ plot_grid <- function(grid.obj,
                                              sep = " "),
                          xaxis = list(title = p_names[1]),
                          yaxis = list(title = p_names[2]))
-      } else if(base::length(base::names(grid.obj$parameters$hyper_params)) <= 1){
+      } else if(base::length(par_names) <= 1){
         stop("Cannot create a 3D plot for a single hyper parameter")
       }
     }
