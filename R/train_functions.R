@@ -959,7 +959,11 @@ ts_grid <- function(ts.obj,
         md <- fc <- NULL
         md <- base::eval(base::parse(text = grid_model))
         fc <- forecast::forecast(md, h = window_test)
-        search_df$error[i] <- forecast::accuracy(fc, test)[10]
+        if(optim == "MAPE"){
+          search_df$error[i] <- forecast::accuracy(fc, test)[10]
+        } else if(optim == "RMSE"){
+          search_df$error[i] <- forecast::accuracy(fc, test)[4]
+        }
       }
       
       return(search_df)
