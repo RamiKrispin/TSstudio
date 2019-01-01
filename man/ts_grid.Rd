@@ -4,8 +4,8 @@
 \alias{ts_grid}
 \title{Tuning Time Series Forecasting Models Parameters with Grid Search}
 \usage{
-ts_grid(ts.obj, model, periods, window_length = NULL, window_space,
-  window_test, hyper_params, search_criteria, parallel = TRUE,
+ts_grid(ts.obj, model, optim = "MAPE", periods, window_length = NULL,
+  window_space, window_test, hyper_params, parallel = TRUE,
   n.cores = "auto")
 }
 \arguments{
@@ -24,9 +24,6 @@ If set to NULL (default) will use an expending window starting the from the firs
 \item{window_test}{An integer, set the length of the backtesting testing partition}
 
 \item{hyper_params}{A list, defines the tuning parameters and their range}
-
-\item{search_criteria}{A list, set the search criteria such as the type of grid search ("cartesian" or "random"), 
-model limitation, etc.}
 
 \item{parallel}{Logical, if TRUE use multiple cores in parallel}
 
