@@ -37,7 +37,7 @@ Tuning time series models with grid serach approach using backtesting method.
  @return A list
  
  @examples 
- #' \dontrun{
+ \dontrun{
  data(USgas)
  
  # Starting with a shallow search (sequence between 0 and 1 with jumps of 0.1)
