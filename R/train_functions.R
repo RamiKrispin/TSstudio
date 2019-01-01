@@ -759,7 +759,8 @@ ts_backtesting <- function(ts.obj,
 #'  @return A list
 
 ts_grid <- function(ts.obj, 
-                    model, 
+                    model,
+                    optim = "MAPE",
                     periods,
                     window_length = NULL, 
                     window_space,
@@ -768,7 +769,7 @@ ts_grid <- function(ts.obj,
                     parallel = TRUE,
                     n.cores = "auto"){
   
-  mape <- period <- start_time <-  NULL
+  error <- period <- start_time <-  NULL
   
   `%>%` <- magrittr::`%>%` 
   
@@ -779,7 +780,10 @@ ts_grid <- function(ts.obj,
     stop("The input object is 'mts' object, please use 'ts'")
   }
   
-  
+  if(!optim %in% c("MAPE", "RMSE") || base::length(optim) != 1){
+    warning("The value of the optim argument is not valid, using default option (MAPE)")
+    optim <- "MAPE"
+  }
   if(!base::is.logical(parallel)){
     warning("The 'parallel' argument is not a boolean operator, setting it to TRUE")
     parallel <- TRUE
@@ -911,7 +915,7 @@ ts_grid <- function(ts.obj,
       
       search_df <- grid_df
       search_df$period <- n
-      search_df$mape <- NA
+      search_df$error <- NA
       ts_sub <- stats::window(ts.obj, 
                               start = stats::time(ts.obj)[w_start[n]], 
                               end = stats::time(ts.obj)[w_end[n]])
@@ -923,13 +927,17 @@ ts_grid <- function(ts.obj,
         md <- fc <- NULL
         md <- base::eval(base::parse(text = grid_model))
         fc <- forecast::forecast(md, h = window_test)
-        search_df$mape[i] <- forecast::accuracy(fc, test)[10]
+        if(optim == "MAPE"){
+        search_df$error[i] <- forecast::accuracy(fc, test)[10]
+        } else if(optim == "RMSE"){
+          search_df$error[i] <- forecast::accuracy(fc, test)[4]
+        }
       }
       
       return(search_df)
     }) %>% 
       dplyr::bind_rows() %>%
-      tidyr::spread(key = period, value = mape)
+      tidyr::spread(key = period, value = error)
   } else if(parallel){
     future::plan(future::multiprocess, workers = n.cores)  
     start_time <- Sys.time()
@@ -938,7 +946,7 @@ ts_grid <- function(ts.obj,
       
       search_df <- grid_df
       search_df$period <- n
-      search_df$mape <- NA
+      search_df$error <- NA
       ts_sub <- stats::window(ts.obj, 
                               start = stats::time(ts.obj)[w_start[n]], 
                               end = stats::time(ts.obj)[w_end[n]])
@@ -950,13 +958,13 @@ ts_grid <- function(ts.obj,
         md <- fc <- NULL
         md <- base::eval(base::parse(text = grid_model))
         fc <- forecast::forecast(md, h = window_test)
-        search_df$mape[i] <- forecast::accuracy(fc, test)[10]
+        search_df$error[i] <- forecast::accuracy(fc, test)[10]
       }
       
       return(search_df)
     }) %>% 
       dplyr::bind_rows() %>%
-      tidyr::spread(key = period, value = mape)
+      tidyr::spread(key = period, value = error)
   }
   
   col_mean <- base::which(!base::names(grid_output)  %in% base::names(hyper_params) )
@@ -969,7 +977,8 @@ ts_grid <- function(ts.obj,
     final_output[[i]] <- grid_output[1, i]
   }
   final_output[["parameters"]] <- list(series = ts.obj, 
-                                       model = model, 
+                                       model = model,
+                                       optim = optim,
                                        periods = periods,
                                        window_length = window_length, 
                                        window_space = window_space,
