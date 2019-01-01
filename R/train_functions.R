@@ -1222,7 +1222,29 @@ plot_grid <- function(grid.obj,
                                              " Models", sep = ""),
                          xaxis = list(title = base::paste("Testing Over", grid.obj$parameters$periods, "Periods", sep = " ")))
       } else if(base::length(base::names(grid.obj$parameters$hyper_params)) == 2){
-        
+        warning("Cannot create a 3D plot for two hyper parameters")
+        p <- plotly::plot_ly(x = grid.obj$grid_df[1:top, p_names[1]],
+                             y = grid.obj$grid_df[1:top, p_names[2]],
+                             type = "scatter",
+                             mode = "markers", 
+                             marker = list(color = grid.obj$grid_df[1:top, "mean"],
+                                           size = grid.obj$grid_df[1:top, "mean"],
+                                           colorscale = colors$colorscale,
+                                           showscale = colors$showscale,
+                                           reversescale = colors$reversescale,
+                                           colorbar=list(
+                                             title= base::paste("Avg.", grid.obj$parameters$optim, sep = " ")
+                                           ))
+        ) %>%
+          plotly::layout(title = base::paste(grid.obj$parameters$model, 
+                                             "Parameters Grid Search Results (Avg.",
+                                             base::paste(grid.obj$parameters$optim, ")", sep = ""), 
+                                             "for Top", 
+                                             top,
+                                             "Models",
+                                             sep = " "),
+                         xaxis = list(title = p_names[1]),
+                         yaxis = list(title = p_names[2]))
       } else if(base::length(base::names(grid.obj$parameters$hyper_params)) <= 1){
         stop("Cannot create a 3D plot for a single hyper parameter")
       }
