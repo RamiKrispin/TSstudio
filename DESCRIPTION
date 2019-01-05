@@ -22,6 +22,7 @@ Imports:
   lubridate (>= 1.6.0),
   magrittr (>= 1.5),
   plotly (>= 4.7.1),
+  purrr(>= 0.2.5),
   RColorBrewer(>= 1.1-2),
   reshape2 (>= 1.4.2),
   scales(>= 1.0.0),
