@@ -118,6 +118,7 @@ test_forecast <- function(actual, forecast.obj,
                       name = "Fitted", 
                       type = "scatter", 
                       line = list(color = "red"),
+                      marker = list(color = "red"),
                       hoverinfo = ifelse(hover, "text", "y"),
                       text = text_fit
     ) %>% 
