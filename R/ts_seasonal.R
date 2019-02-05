@@ -326,7 +326,8 @@ ts_seasonal <- function(ts.obj,
     c <- 1
     for(i in minor){
       p_box <- p_box %>% plotly::add_trace(data = df %>% dplyr::filter(minor == i), y = ~ y,  type = "box", 
-                                           line = list(color = colors_list[c]), 
+                                           line = list(color = colors_list[c]),
+                                           marker = list(color = colors_list[c]),
                                            boxpoints = "all",
                                            jitter = 0.3,
                                            pointpos = -1.8, 
