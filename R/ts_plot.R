@@ -242,6 +242,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
                     plotly::plot_ly(data = df, x = ~ date, y = ~y, 
                             mode = "lines+markers", 
                             type = 'scatter',
+                            marker = list(color = color),
                             line = list(width = width, dash = dash, color = color)
                     )
                   },
