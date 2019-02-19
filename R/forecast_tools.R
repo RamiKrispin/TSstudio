@@ -108,7 +108,9 @@ test_forecast <- function(actual, forecast.obj,
                       mode = "lines+markers", 
                       name = "Actual", 
                       type = "scatter",
-                      hoverinfo = "y"
+                      hoverinfo = "y",
+                      line = list(color = "#00526d"),
+                      marker = list(color = "#00526d")
     ) %>% 
     plotly::add_trace(x = time_actual, 
                       y = c(forecast.obj$fitted, 
@@ -131,7 +133,9 @@ test_forecast <- function(actual, forecast.obj,
                       name = "Forecasted", 
                       type = "scatter",
                       hoverinfo = ifelse(hover, "text", "y"),
-                      text = text_forecast
+                      text = text_forecast,
+                      marker = list(color = "green"),
+                      line = list(color = "green")
     ) %>% 
     plotly::layout(title = base::paste(obj.name, " - Actual vs Forecasted and Fitted", sep = ""), 
                    xaxis = list(title = forecast.obj$method, showgrid = Xgrid), 
