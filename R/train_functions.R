@@ -828,7 +828,7 @@ ts_grid <- function(ts.obj,
                    parallel = TRUE,
                    n.cores = "auto"){
   
-  error <- period <- start_time <-  NULL
+  error <- period <- start_time <- NULL
   
   `%>%` <- magrittr::`%>%` 
   
@@ -891,68 +891,99 @@ ts_grid <- function(ts.obj,
   
   
   if(model == "HoltWinters"){
+    hw_par <- hyper_input <- hyper_null <- hyper_false <- NULL
     hw_par <- c("alpha", "beta", "gamma")
     if(!base::all(base::names(hyper_params) %in% hw_par)){
       stop("The 'hyper_params' argument is invalid")
     }
+    
     if("alpha" %in% base::names(hyper_params)){
-      if(base::any(which(hyper_params$alpha < 0)) || 
-         base::any(which(hyper_params$alpha > 1))){
+      alpha <- NULL
+      if(is.null(hyper_params$alpha)){
+        hyper_null <- c(hyper_null, "alpha")
+      } else if(base::is.logical(hyper_params$alpha)){
+        stop("The value of the 'alpha' argument cannot be only numeric")
+      } else { 
+        if(base::any(which(hyper_params$alpha < 0)) || 
+                base::any(which(hyper_params$alpha > 1))){
         stop("The value of the 'alpha' parameter is out of range,",
              " cannot exceed 1 or be less or equal to 0")
-      } else if(any(which(hyper_params$alpha == 0))){
+      } 
+        if(any(which(hyper_params$alpha == 0))){
         hyper_params$alpha[base::which(hyper_params$alpha == 0)] <- 1e-5
         warning("The value of the 'alpha' parameter cannot be equal to 0",
                 " replacing 0 with 1e-5")
+        }
+        
+        alpha <- hyper_params$alpha
+        hyper_input <- c(hyper_input, "alpha")
       }
-      alpha <- NULL
-      alpha <- hyper_params$alpha
-      
-    } else {
-      alpha <- NULL
     }
     
     if("beta" %in% base::names(hyper_params)){
-      if(base::any(which(hyper_params$beta < 0)) || 
-         base::any(which(hyper_params$beta > 1))){
-        stop("The value of the 'beta' parameter is out of range,",
-             " cannot exceed 1 or be less or equal to 0")
-      } else if(any(which(hyper_params$beta == 0))){
-        hyper_params$beta[base::which(hyper_params$beta == 0)] <- 1e-5
-        warning("The value of the 'beta' parameter cannot be equal to 0",
-                " replacing 0 with 1e-5")
+      beta <- NULL
+      if(is.null(hyper_params$beta)){
+        hyper_null <- c(hyper_null, "beta")
+      } else if(base::is.logical(hyper_params$beta) && 
+                !base::isTRUE(hyper_params$beta)){
+        beta <- FALSE
+        hyper_false <- c(hyper_false, "beta")
+      } else { 
+        if(base::any(which(hyper_params$beta < 0)) || 
+           base::any(which(hyper_params$beta > 1))){
+          stop("The value of the 'beta' parameter is out of range,",
+               " cannot exceed 1 or be less or equal to 0")
+        } 
+        if(any(which(hyper_params$beta == 0))){
+          hyper_params$beta[base::which(hyper_params$beta == 0)] <- 1e-5
+          warning("The value of the 'beta' parameter cannot be equal to 0",
+                  " replacing 0 with 1e-5")
+        }
+        
+        beta <- hyper_params$beta
+        hyper_input <- c(hyper_input, "beta")
       }
-      beta <- NULL
-      beta <- hyper_params$beta
-      
-    } else {
-      beta <- NULL
     }
     
     if("gamma" %in% base::names(hyper_params)){
-      if(base::any(which(hyper_params$gamma < 0)) || 
-         base::any(which(hyper_params$gamma > 1))){
-        stop("The value of the 'gamma' parameter is out of range,",
-             " cannot exceed 1 or be less or equal to 0")
-      } else if(any(which(hyper_params$gamma == 0))){
-        hyper_params$alpha[base::which(hyper_params$gamma == 0)] <- 1e-5
-        warning("The value of the 'gamma' parameter cannot be equal to 0",
-                " replacing 0 with 1e-5")
+      gamma <- NULL
+      if(is.null(hyper_params$gamma)){
+        hyper_null <- c(hyper_null, "gamma")
+      } else if(base::is.logical(hyper_params$gamma) && 
+                !base::isTRUE(hyper_params$gamma)){
+        gamma <- FALSE
+        hyper_false <- c(hyper_flase, "beta")
+      } else { 
+        if(base::any(which(hyper_params$gamma < 0)) || 
+           base::any(which(hyper_params$gamma > 1))){
+          stop("The value of the 'gamma' parameter is out of range,",
+               " cannot exceed 1 or be less or equal to 0")
+        } 
+        if(any(which(hyper_params$gamma == 0))){
+          hyper_params$gamma[base::which(hyper_params$gamma == 0)] <- 1e-5
+          warning("The value of the 'gamma' parameter cannot be equal to 0",
+                  " replacing 0 with 1e-5")
+        }
+        
+        gamma <- hyper_params$gamma
+        hyper_input <- c(hyper_input, "gamma")
       }
-      gamma <- NULL
-      gamma <- hyper_params$gamma
-      
-    } else {
-      gamma <- NULL
     }
+    
+    
     
     grid_df <- base::eval(
       base::parse(text = base::paste("base::expand.grid(", 
-                                     base::paste(base::names(hyper_params), 
-                                                 collapse = ", "),
+                                     base::paste(hyper_input, collapse = ", "),
                                      ")", 
                                      sep = "")))
-    base::names(grid_df) <- c(base::names(hyper_params))
+    base::names(grid_df) <- hyper_input
+    
+   if(!base::is.null(hyper_false)){
+     for(f in hyper_false){
+       grid_df[f] <- FALSE
+     }
+   }
     
     grid_model <- base::paste("stats::HoltWinters(x = train", sep = "")
     for(i in hw_par){
@@ -1159,6 +1190,14 @@ plot_grid <- function(grid.obj,
   }
   
   par_names <- base::names(grid.obj$parameters$hyper_params) 
+  
+  for(i in par_names){
+    if(base::is.null(grid.obj$parameters$hyper_params[[i]]) ||
+        grid.obj$parameters$hyper_params[[i]] == FALSE){
+      par_names <- par_names[-which(par_names == i)]
+    }
+  }
+  
   
   if(type == "parcoords"){
     
