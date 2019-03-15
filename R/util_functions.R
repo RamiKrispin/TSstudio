@@ -550,7 +550,7 @@ ts_info <- function(ts.obj){
     info$frequency <- stats::frequency(ts.obj)
     info$start <- base::paste(stats::start(ts.obj), collapse = " ")
     info$end <- base::paste(stats::end(ts.obj), collapse = " ")
-    info$length <- base::length(ts.obj)
+    info$length <- base::dim(ts.obj)[1]
     info$var <- base::paste(dim(ts.obj)[2], "variables", sep = " ")
   } else if(xts::is.xts(ts.obj)){
     info$name <- obj.name
