@@ -359,7 +359,7 @@ plot_forecast <- function(forecast_obj,
  if(forecast::is.forecast(forecast_obj)){ 
    p <- NULL
   p <- plotly::plot_ly() %>%
-    plotly::add_lines(x = stats::time(forecast_obj$x), y = forecast_obj$x,
+    plotly::add_lines(x = stats::time(forecast_obj$x) + stats::deltat(forecast_obj$x), y = forecast_obj$x,
                        name = "Observed",
                        mode = "lines", 
                        type = 'scatter',
@@ -372,7 +372,7 @@ plot_forecast <- function(forecast_obj,
     # bug fix for if forecast has only one level
     lvls <- if(is.null(dim(forecast_obj$upper))) 1 else dim(forecast_obj$upper)[2]
     for(i in 1:lvls){
-      p <- p %>% plotly::add_ribbons(x = stats::time(forecast_obj$mean), 
+      p <- p %>% plotly::add_ribbons(x = stats::time(forecast_obj$mean) + stats::deltat(forecast_obj$mean), 
                                      ymin = if(lvls > 1) forecast_obj$lower[, i] else forecast_obj$lower, 
                                      ymax = if(lvls > 1) forecast_obj$upper[, i] else forecast_obj$upper,
                                      color = I(base::paste("gray", base::as.numeric(sub("%", "", (forecast_obj$level[i]))) - 5*i, sep = "")),
@@ -384,7 +384,7 @@ plot_forecast <- function(forecast_obj,
   }
   
   p <- p %>%
-    plotly::add_lines(x = stats::time(forecast_obj$mean), y = forecast_obj$mean, 
+    plotly::add_lines(x = stats::time(forecast_obj$mean) + stats::deltat(forecast_obj$mean), y = forecast_obj$mean, 
                       name = "Forecasted",
                       line = list(width = width, color = color, dash = "dash")
     ) %>%
