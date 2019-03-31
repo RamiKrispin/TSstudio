@@ -320,7 +320,7 @@ ts_seasonal <- function(ts.obj,
   }
   
   if(type == "box" | type == "all"){
-    minor <- base::unique(df$minor)
+    minor <- base::levels(df$minor)
     p_box <- plotly::plot_ly()
     c <- NULL
     c <- 1
