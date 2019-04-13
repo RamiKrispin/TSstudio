@@ -85,3 +85,18 @@ USgas_backtesting <- ts_backtesting(USgas,
 ```
 
 ![](./vignettes/gif/USgas_backtesting.png)
+
+
+``` r
+hw_grid <- ts_grid(USgas, 
+                   model = "HoltWinters",
+                   periods = 6,
+                   window_space = 6,
+                   window_test = 12,
+                   hyper_params = list(alpha = seq(0,1,0.1),
+                                       beta = seq(0,1,0.1),
+                                       gamma = seq(0,1,0.1)))
+                                       
+plot_grid(hw_grid, type = "3D")
+```
+![](./vignettes/gif/hw_grid.png)
