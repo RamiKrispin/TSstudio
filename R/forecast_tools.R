@@ -281,7 +281,7 @@ check_res <- function(ts.model, lag.max = 36){
 
 
 #' Forecasting simulation  
-#' @export 
+#' @export forecast_sim
 #' @param model A forecasting model supporting \code{\link[forecast]{Arima}}, \code{\link[forecast]{auto.arima}}, 
 #' \code{\link[forecast]{ets}}, and \code{\link[forecast]{nnetar}} models from the **forecast** package
 #' @param h An integer, defines the forecast horizon
