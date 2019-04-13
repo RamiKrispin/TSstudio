@@ -1,3 +1,14 @@
+## Version 0.1.4 is now available on CRAN
+New functions
+* forecast_sim - creating different forecast paths for forecast objects (when applicable), by utilizing the underline model distribution with the simulate function
+* ts_grid - tuning time series models with grid search approach using backtesting method. Currently, support only the Holt-Winters model
+* plot_grid - plotting the output of the ts_grid function
+
+Fix errors
+* ts_plot, test_forecast - avoid default setting of the plot_ly function, and set explicitly the plot setting (e.g., color, line mode, etc.). This allows using the function with the plotly subplot function 
+* ts_seasonal - define the order of the frequency units of the box plot option
+plot_forecast - fixing a gap between the forecast values and the time (x-axis) values 
+
 ## Version 0.1.3 is now available on CRAN
 * ts_to_prophet function for converting ts objects ("ts", "zoo" and "xts" class) to prophet object
 * ccf_plot function for plotting corss correlation lags between two time series
