@@ -37,7 +37,6 @@ Plotting a univariate time series data with the `ts_plot` function is straightfo
 data("USgas")
 
 ts_info(USgas)
-
 ```
 
 ```{r}
