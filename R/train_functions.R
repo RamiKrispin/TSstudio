@@ -952,7 +952,7 @@ ts_grid <- function(ts.obj,
       } else if(base::is.logical(hyper_params$gamma) && 
                 !base::isTRUE(hyper_params$gamma)){
         gamma <- FALSE
-        hyper_false <- c(hyper_flase, "beta")
+        hyper_false <- c(hyper_false, "beta")
       } else { 
         if(base::any(which(hyper_params$gamma < 0)) || 
            base::any(which(hyper_params$gamma > 1))){
