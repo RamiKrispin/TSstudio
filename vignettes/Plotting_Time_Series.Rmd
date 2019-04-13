@@ -1,7 +1,7 @@
 ---
 title: "Plotting Time Series Data"
 author: "Rami Krispin (@Rami_Krispin)"
-date: "2018-09-17"
+date: "2019-04-13"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
@@ -10,7 +10,8 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,
+                      fig.width=8, fig.height=5)
 options(list(menu.graphics = FALSE, scipen=99, digits= 3))
 options("getSymbols.warning4.0"=FALSE)
 options("getSymbols.yahoo.warning"=FALSE)
@@ -39,7 +40,7 @@ ts_info(USgas)
 
 ```
 
-```{r fig.height=5, fig.width=10}
+```{r}
 ts_plot(USgas)
 ```
 
@@ -47,7 +48,7 @@ ts_plot(USgas)
 
 By default, the function will set the input object name as the plot title and leave the X and Y axises empty. It is possible to label the axises and set a different title:
 
-```{r fig.height=5, fig.width=10}
+```{r}
 # Setting the plot titles
 ts_plot(USgas,
         title = "US Natural Gas Consumption",
@@ -67,7 +68,7 @@ The `line.mode` argument is equivalent to the `mode` argument of the `plot_ly` f
 
 The `dash` argument allows modifying the line to dashed or dotted by setting the argument to `dash` or `dot` respectively.  The line width, by default, set to 2 and can be modified with the `width` argument:
 
-```{r fig.height=5, fig.width=10}
+```{r}
 ts_plot(USgas,
         title = "US Natural Gas Consumption",
         Xtitle = "Year",
@@ -79,7 +80,7 @@ ts_plot(USgas,
 
 In addition, we can add grid lines for the Y and X axises and slider by setting the `Xgrid`, `Ygrid` and slider arguments to TRUE:
 
-```{r fig.height=5, fig.width=10}
+```{r }
 ts_plot(USgas,
         title = "US Natural Gas Consumption",
         Xtitle = "Year",
@@ -95,7 +96,7 @@ ts_plot(USgas,
 #### Ploting a multiple time series object
 
 The `ts_plot` can handle multiple time series objects such as `mts`, `xts`, `zoo` and data frame family objects. The example below demonstrates the plot options for a multiple time series object with the closing prices of **Apple**, **Facebook**, **Google** and **Microsoft** stocks over time:
-```{r fig.height=5, fig.width=10, message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE}
 library(TSstudio)
 library(xts)
 library(zoo)
@@ -116,7 +117,7 @@ ts_info(closing)
 
 The `type` argument defines whatever to plot all the series in a single plot (`single` option) or plot each series separately (`multiple` option):
 
-```{r fig.height=5, fig.width=10}
+```{r }
 # Plot each series in a sepreate (default option)
 ts_plot(closing,
         title = "Top Technology Companies Stocks Prices Since 2013", 
@@ -140,7 +141,50 @@ data(US_indicators)
 str(US_indicators)
 ```
 
-```{r fig.height=5, fig.width=10}
+```{r}
 ts_plot(US_indicators)
 ```
+
+#### Plotting a forecast object
+
+The TSstudio package provides a set of visualizing applications for the forecasting process. Starting with visualizating the fitted and forecasted values vs. the actuals with the `test_forecast` function. In the example below, we will use the `ts_split` function to split the USgas dataset into a training and testing partitions, leaving the last 12 months as testing:
+
+```{r message=FALSE, warning=FALSE}
+USgas_partition <- ts_split(ts.obj = USgas, sample.out = 12)
+
+train <- USgas_partition$train
+test <- USgas_partition$test
+
+library(forecast)
+
+md1 <- auto.arima(train)
+fc1 <- forecast(md1, h = 12)
+
+test_forecast(actual = USgas, forecast.obj = fc1, test = test)
+```
+
+You can hover over the plot to review the MAPE and RMSE of the model over the training and testing partitions.
+
+
+In addition, the `plot_forecast` function visualize any `forecast` object from the **forecast** package or `bsts` forecast object from the **bsts** package:
+
+```{r}
+md2 <- auto.arima(USgas)
+fc2 <- forecast(md2, h = 60)
+
+plot_forecast(fc2)
+```
+
+
+An alternative approach for the plot_forecast function, which provides a traditional forecast plot with confidence intervals, is to perform forecasting simulation based on the model distribution (using the simulate function) and plot it. The forecast_sim function provides this functionality. Let's take the md2, the auto.arima forecasting model, and simulate 200 forecasting path with the horizon of 60 months:
+
+```{r}
+md2_sim <- forecast_sim(model = md2, n = 200, h = 60)
+
+md2_sim$plot
+```
+
+
+
+
 
