@@ -293,7 +293,7 @@ check_res <- function(ts.model, lag.max = 36){
 #' by utilizing the underline model distribution with the \code{\link[stats]{simulate}} function
 #' @return The baseline series, the simulated values and a plot
 #' @examples
-#' 
+#'  \dontrun{
 #' library(forecast)
 #' data(USgas)
 #'
@@ -302,6 +302,7 @@ check_res <- function(ts.model, lag.max = 36){
 #' 
 #' # Simulate 100 possible forecast path, with horizon of 60 months
 #' forecast_sim(model = fit, h = 60, n = 100)
+#' }
 
 forecast_sim <- function(model,h,n, sim_color = "blue", opacity = 0.05, plot = TRUE){
   
