@@ -28,6 +28,7 @@ Creating different forecast paths for forecast objects (when applicable),
 by utilizing the underline model distribution with the \code{\link[stats]{simulate}} function
 }
 \examples{
+
 library(forecast)
 data(USgas)
 

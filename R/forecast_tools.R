@@ -293,6 +293,7 @@ check_res <- function(ts.model, lag.max = 36){
 #' by utilizing the underline model distribution with the \code{\link[stats]{simulate}} function
 #' @return The baseline series, the simulated values and a plot
 #' @examples
+#' 
 #' library(forecast)
 #' data(USgas)
 #'
@@ -312,7 +313,7 @@ forecast_sim <- function(model,h,n, sim_color = "blue", opacity = 0.05, plot = T
   s <- s1 <- sim_output <- p <- output <- NULL
   
   #Error handling
-  if(!any(class(model) %in% c("ARIMA", "ets", "nnetar"))){
+  if(!any(class(model) %in% c("ARIMA", "ets", "nnetar", "Arima"))){
     stop("The model argument is not valid")
   }
   
