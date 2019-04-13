@@ -28,7 +28,7 @@ Creating different forecast paths for forecast objects (when applicable),
 by utilizing the underline model distribution with the \code{\link[stats]{simulate}} function
 }
 \examples{
-
+ \dontrun{
 library(forecast)
 data(USgas)
 
@@ -37,4 +37,5 @@ fit <- auto.arima(USgas)
 
 # Simulate 100 possible forecast path, with horizon of 60 months
 forecast_sim(model = fit, h = 60, n = 100)
+}
 }
