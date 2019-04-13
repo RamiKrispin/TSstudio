@@ -35,7 +35,7 @@ If set to NULL (default) will use an expending window starting the from the firs
 A list
 }
 \description{
-Tuning time series models with grid serach approach using backtesting method.
+Tuning time series models with grid search approach using backtesting method.
  If set to "auto" (default), will use all available cores in the system minus 1
 }
 \examples{
