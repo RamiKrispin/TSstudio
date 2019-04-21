@@ -1,7 +1,7 @@
 Package: TSstudio
 Type: Package
 Title: Functions for Time Series Analysis and Forecasting
-Version: 0.1.4
+Version: 0.1.4.9000
 Author: Rami Krispin
 Maintainer: Rami Krispin <rami.krispin@gmail.com>
 Description: Provides a set of tools for descriptive and predictive analysis of time series data. That includes functions for interactive visualization of time series objects and as well utility functions for automation time series forecasting.
