@@ -5,7 +5,8 @@
 \title{Visualizing Grid Search Results}
 \usage{
 plot_grid(grid.obj, top = NULL, highlight = 0.1, type = "parcoords",
-  colors = list(showscale = TRUE, reversescale = FALSE, colorscale = "Jet"))
+  colors = list(showscale = TRUE, reversescale = FALSE, colorscale =
+  "Jet"))
 }
 \arguments{
 \item{grid.obj}{A ts_grid output object}

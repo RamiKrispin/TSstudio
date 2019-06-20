@@ -4,8 +4,8 @@
 \alias{plot_forecast}
 \title{Plotting Forecast Object}
 \usage{
-plot_forecast(forecast_obj, title = NULL, Xtitle = NULL, Ytitle = NULL,
-  color = NULL, width = 2)
+plot_forecast(forecast_obj, title = NULL, Xtitle = NULL,
+  Ytitle = NULL, color = NULL, width = 2)
 }
 \arguments{
 \item{forecast_obj}{A forecast object from the forecast, forecastHybrid, or bsts packages}

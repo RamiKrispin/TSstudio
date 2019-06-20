@@ -4,8 +4,8 @@
 \alias{ts_quantile}
 \title{Quantile Plot for Time Series}
 \usage{
-ts_quantile(ts.obj, upper = 0.75, lower = 0.25, period = NULL, n = 1,
-  title = NULL, Xtitle = NULL, Ytitle = NULL)
+ts_quantile(ts.obj, upper = 0.75, lower = 0.25, period = NULL,
+  n = 1, title = NULL, Xtitle = NULL, Ytitle = NULL)
 }
 \arguments{
 \item{ts.obj}{A univariate time series object of a class "zoo", "xts", or data frame family ("data.frame", "data.table", "tbl")}

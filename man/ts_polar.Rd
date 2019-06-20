@@ -4,8 +4,8 @@
 \alias{ts_polar}
 \title{Polor Plot for Time Series Object}
 \usage{
-ts_polar(ts.obj, title = NULL, width = 600, height = 600, left = 25,
-  right = 25, top = 25, bottom = 25)
+ts_polar(ts.obj, title = NULL, width = 600, height = 600,
+  left = 25, right = 25, top = 25, bottom = 25)
 }
 \arguments{
 \item{ts.obj}{A univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)}

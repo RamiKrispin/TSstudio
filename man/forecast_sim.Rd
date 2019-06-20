@@ -4,7 +4,8 @@
 \alias{forecast_sim}
 \title{Forecasting simulation}
 \usage{
-forecast_sim(model, h, n, sim_color = "blue", opacity = 0.05, plot = TRUE)
+forecast_sim(model, h, n, sim_color = "blue", opacity = 0.05,
+  plot = TRUE)
 }
 \arguments{
 \item{model}{A forecasting model supporting \code{\link[forecast]{Arima}}, \code{\link[forecast]{auto.arima}}, 

@@ -4,8 +4,8 @@
 \alias{ccf_plot}
 \title{Time Series Cross Correlation Lags Visualization}
 \usage{
-ccf_plot(x, y, lags = 0:12, margin = 0.02, n_plots = 3, Xshare = TRUE,
-  Yshare = TRUE, title = NULL)
+ccf_plot(x, y, lags = 0:12, margin = 0.02, n_plots = 3,
+  Xshare = TRUE, Yshare = TRUE, title = NULL)
 }
 \arguments{
 \item{x}{A univariate time series object of a class "ts"}

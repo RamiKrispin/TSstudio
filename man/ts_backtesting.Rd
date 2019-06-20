@@ -4,10 +4,11 @@
 \alias{ts_backtesting}
 \title{Evaluation Function for Forecasting Models}
 \usage{
-ts_backtesting(ts.obj, models = "abehntw", periods = 6, error = "MAPE",
-  window_size = 3, h = 3, plot = TRUE, a.arg = NULL, b.arg = NULL,
-  e.arg = NULL, h.arg = NULL, n.arg = NULL, t.arg = NULL,
-  w.arg = NULL, xreg.h = NULL, parallel = FALSE)
+ts_backtesting(ts.obj, models = "abehntw", periods = 6,
+  error = "MAPE", window_size = 3, h = 3, plot = TRUE,
+  a.arg = NULL, b.arg = NULL, e.arg = NULL, h.arg = NULL,
+  n.arg = NULL, t.arg = NULL, w.arg = NULL, xreg.h = NULL,
+  parallel = FALSE)
 }
 \arguments{
 \item{ts.obj}{A univariate time series object of a class "ts"}

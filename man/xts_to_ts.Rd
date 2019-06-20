@@ -4,19 +4,28 @@
 \alias{xts_to_ts}
 \title{Converting 'xts' object to 'ts' object}
 \usage{
-xts_to_ts(xts.obj)
+xts_to_ts(xts.obj, frequency = NULL, start = NULL)
 }
 \arguments{
-\item{xts.obj}{a univariate 'xts' object}
+\item{xts.obj}{A univariate 'xts' object}
+
+\item{frequency}{A character, optional, if not NULL (default) set the frequency of the series}
+
+\item{start}{A Date or POSIXct/lt object, optional, can be used to set the starting date or time of the series}
 }
 \description{
 Converting 'xts' object to 'ts' object
 }
 \examples{
 
-data("Michigan_CS", package = "TSstudio")
+data(Michigan_CS)
 class(Michigan_CS)
 ts_plot(Michigan_CS)
 Michigan_CS_ts <- xts_to_ts(Michigan_CS)
 ts_plot(Michigan_CS_ts)
+
+
+# Defining the frequency and starting date of the series
+Michigan_CS_ts1 <- xts_to_ts(Michigan_CS, start = as.Date("1980-01-01"), frequency = 12 )
+ts_plot(Michigan_CS_ts1)
 }
