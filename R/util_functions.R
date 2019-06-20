@@ -1,24 +1,47 @@
 #'  Converting 'xts' object to 'ts' object
 #' @export
 #' @description Converting 'xts' object to 'ts' object
-#' @param xts.obj a univariate 'xts' object
+#' @param xts.obj A univariate 'xts' object
+#' @param frequency A character, optional, if not NULL (default) set the frequency of the series
+#' @param start A Date or POSIXct/lt object, optional, can be used to set the starting date or time of the series
 #' @examples
 #' 
-#' data("Michigan_CS", package = "TSstudio")
+#' data(Michigan_CS)
 #' class(Michigan_CS)
 #' ts_plot(Michigan_CS)
 #' Michigan_CS_ts <- xts_to_ts(Michigan_CS)
 #' ts_plot(Michigan_CS_ts)
+#' 
+#' 
+#' # Defining the frequency and starting date of the series
+#' Michigan_CS_ts1 <- xts_to_ts(Michigan_CS, start = as.Date("1980-01-01"), frequency = 12 )
+#' ts_plot(Michigan_CS_ts1)
 
 
-xts_to_ts <- function(xts.obj){
+xts_to_ts <- function(xts.obj, 
+                      frequency = NULL,
+                      start = NULL){
+  
+  
+  # Error handling
+  if(!base::is.null(frequency)){
+    if(!base::is.numeric(frequency) || frequency <= 0){
+      stop("The value of the 'frequency' argument is not valid, please use only positive numeric values")
+    }
+  }
+  if(!base::is.null(start)){
+    if(!base::class(start) %in% c("Date","POSIXct", "POSIXlt" ,"yearmon", "yearqtr")){
+      stop("The value of the 'start' argument is not valid, please use either Date or POSIXct/lt classes")
+    }
+  }
+  
   if(!xts::is.xts(xts.obj)){
     if(zoo::is.zoo(xts.obj)){
       warning("The class of the series is not 'xts' but 'zoo'")
     } else {
       stop("The object is not a valid 'xts' object")
     }
-      
+    
   }
   
   if (xts::is.xts(xts.obj) | zoo::is.zoo(xts.obj)) {
@@ -29,10 +52,185 @@ xts_to_ts <- function(xts.obj){
       }
     }
   }
+  
+  
+  if(base::is.null(frequency)){
+    if(xts::periodicity(xts.obj)$label == "year"){
+      frequency <- 1
+    } else if(xts::periodicity(xts.obj)$label == "quarter"){
+      frequency <- 4
+    } else if(xts::periodicity(xts.obj)$label == "month"){
+      frequency <- 12
+    } else if(xts::periodicity(xts.obj)$label == "week"){
+      frequency <- 52
+    } else if(xts::periodicity(xts.obj)$label == "day"){
+      frequency <- 365
+      warning("By default for daily series set the frequency to 365, in case wish to set to 7, please use the 'frequency' argument")
+    } else if(xts::periodicity(xts.obj)$label == "hour"){
+      frequency <- 24 
+      warning("By default for hourly series set the frequency to 24, in case wish to set a different frequency, please use the 'frequency' argument")
+    } else if(xts::periodicity(xts.obj)$label == "minute"){
+      frequency <- 60 * 24 / xts::periodicity(xts.obj)$frequency 
+      warning("By default for a series with time intervals units of minitues, setting the frequency to number of events per day.",
+              " For example, for series with half-hour intervals (or 30 minutes), setting the frequency as 48 (or 60 * 24 / 30).", 
+              " In case wish to set a different frequency, please use the 'frequency' argument")
+    }
+  }
+  
+  
+  if(frequency == 1){
+    if(base::is.null(start)){
+      if(base::any(xts::indexClass(xts.obj) %in% c("Date", "POSIXct", "POSIXlt", "POSIXt"))){
+        start <- NULL
+        start <- lubridate::year(base::min(zoo::index(xts.obj)))
+      } else{
+        warning("Cannot obtain the index class, setting the starting point of the ts object as 1")
+        start <- 1
+      }
+    }
+  } else if(frequency == 4){
+    if(base::is.null(start)){
+      if(base::any(xts::indexClass(xts.obj) %in% c("Date", "POSIXct", "POSIXlt", "POSIXt", "yearqtr"))){
+        start <- NULL
+        start <- c(lubridate::year(base::min(zoo::index(xts.obj))), lubridate::quarter(base::min(zoo::index(xts.obj))))
+      } else{
+        warning("Cannot obtain the index class, setting the starting point of the ts object as c(1,1)")
+        start <- c(1, 1)
+      }
+    } else{
+      start <- c(lubridate::year(start), lubridate::quarter(start))
+    }
+  } else if(frequency == 12){
+    if(base::is.null(start)){
+      if(base::any(xts::indexClass(xts.obj) %in% c("Date", "POSIXct", "POSIXlt", "POSIXt", "yearmon"))){
+        start <- NULL
+        start <- c(lubridate::year(base::min(zoo::index(xts.obj))), lubridate::month(base::min(zoo::index(xts.obj))))
+      } else{
+        warning("Cannot obtain the index class, setting the starting point of the ts object as c(1,1)")
+        start <- c(1, 1)
+      }
+    } else{
+      start <- c(lubridate::year(start), lubridate::month(start))
+    }
+  } else if(base::round(frequency) == 52){
+    if(base::is.null(start)){
+      if(base::any(xts::indexClass(xts.obj) %in% c("Date", "POSIXct", "POSIXlt", "POSIXt"))){
+        start <- NULL
+        start <- c(lubridate::year(base::min(zoo::index(xts.obj))), lubridate::week(base::min(zoo::index(xts.obj))))
+      } else{
+        warning("Cannot obtain the index class, setting the starting point of the ts object as c(1,1)")
+        start <- c(1, 1)
+      }
+    } else{
+      start <- c(lubridate::year(start), lubridate::week(start))
+    }
+  } else if(base::round(frequency) == 365){
+    if(base::is.null(start)){
+      if(base::any(xts::indexClass(xts.obj) %in% c("Date", "POSIXct", "POSIXlt", "POSIXt"))){
+        start <- NULL
+        start <- c(lubridate::year(base::min(zoo::index(xts.obj))), lubridate::yday(base::min(zoo::index(xts.obj))))
+      } else{
+        warning("Cannot obtain the index class, setting the starting point of the ts object as c(1,1)")
+        start <- c(1, 1)
+      }
+    } else{
+      start <- c(lubridate::year(start), lubridate::yday(start))
+    }
+  } else if(frequency == 7){
+    if(base::is.null(start)){
+      if(base::any(xts::indexClass(xts.obj) %in% c("Date", "POSIXct", "POSIXlt", "POSIXt"))){
+        start <- NULL
+        start <- c(lubridate::wday(base::min(zoo::index(xts.obj))))
+      } else{
+        warning("Cannot obtain the index class, setting the starting point of the ts object as c(1,1)")
+        start <- c(1, 1)
+      }
+    } else{
+      start <- c(1, lubridate::wday(start))
+    }
+  } else if(frequency == 24){
+    if(base::is.null(start)){
+      if(base::any(xts::indexClass(xts.obj) %in% c("POSIXct", "POSIXlt", "POSIXt"))){
+        start <- NULL
+        start <- c(lubridate::hour(base::min(zoo::index(xts.obj))) + 1)
+      } else{
+        warning("Cannot obtain the index class, setting the starting point of the ts object as c(1, 1)")
+        start <- c(1, 1)
+      }
+    } else{
+      start <- c(1, 1 + lubridate::hour(start))
+    }
+  } else if(frequency == 48){
+    if(base::is.null(start)){
+      if(base::any(xts::indexClass(xts.obj) %in% c( "POSIXct", "POSIXlt", "POSIXt"))){
+        start <- NULL
+        start <- c(1, (lubridate::hour(base::min(zoo::index(xts.obj))) * 2 + lubridate::minute(base::min(zoo::index(xts.obj)))) +  1)
+      } else{
+        warning("Cannot obtain the index class, setting the starting point of the ts object as c(1,1)")
+        start <- c(1, 1)
+      }
+    } else{
+      start <- c(1, (lubridate::hour(start) * 2 + lubridate::minute(start)) + 1)
+    }
+  } else if(frequency == 24 * 365){
+    if(base::is.null(start)){
+      if(base::any(xts::indexClass(xts.obj) %in% c("POSIXct", "POSIXlt", "POSIXt"))){
+        start <- NULL
+        start <- c(1, ((lubridate::yday(base::min(zoo::index(xts.obj))) -1) * 24 + 
+                         lubridate::hour(base::min(zoo::index(xts.obj))) + 1))
+      } else{
+        warning("Cannot obtain the index class, setting the starting point of the ts object as c(1,1)")
+        start <- c(1, 1)
+      }
+    } else{
+      start <- c(1, 1 + (lubridate::hour(start) * 60 + lubridate::minute(start)) / 30)
+    }
+  } else if(frequency == 1440){
+    if(base::is.null(start)){
+      if(base::any(xts::indexClass(xts.obj) %in% c("POSIXct", "POSIXlt", "POSIXt"))){
+        start <- NULL
+        start <- c(1, (lubridate::hour(base::min(zoo::index(xts.obj))) ) * 60 + lubridate::minute(base::min(zoo::index(xts.obj))) + 1)
+      } else{
+        warning("Cannot obtain the index class, setting the starting point of the ts object as c(1,1)")
+        start <- c(1, 1)
+      }
+    } else{
+      start <- c(1, (lubridate::hour(start) * 60 + lubridate::minute(start)) +  1)
+    }
+  } else if(frequency == 288){
+    if(base::is.null(start)){
+      if(base::any(xts::indexClass(xts.obj) %in% c("POSIXct", "POSIXlt", "POSIXt"))){
+        start <- NULL
+        start <- c(1, (lubridate::hour(base::min(zoo::index(xts.obj))) ) * 12 + lubridate::minute(base::min(zoo::index(xts.obj))) + 1)
+      } else{
+        warning("Cannot obtain the index class, setting the starting point of the ts object as c(1,1)")
+        start <- c(1, 1)
+      }
+    } else{
+      start <- c(1, (lubridate::hour(start) * 12 + lubridate::minute(start)) +  1)
+    }
+  } else if(frequency == 96){
+    if(base::is.null(start)){
+      if(base::any(xts::indexClass(xts.obj) %in% c("POSIXct", "POSIXlt", "POSIXt"))){
+        start <- NULL
+        start <- c(1, (lubridate::hour(base::min(zoo::index(xts.obj))) ) * 4 + lubridate::minute(base::min(zoo::index(xts.obj))) + 1)
+      } else{
+        warning("Cannot obtain the index class, setting the starting point of the ts object as c(1,1)")
+        start <- c(1, 1)
+      }
+    } else{
+      start <- c(1, (lubridate::hour(start) * 4 + lubridate::minute(start)) +  1)
+    }
+  }  else {
+    stop("The function does not support the input frequency, please open an issue on https://github.com/RamiKrispin/TSstudio/issues for adding support for new types of frequencies")
+  }
+  
+  
+  
   ts.obj <- NULL
-  ts.obj <- stats::as.ts(xts.obj, 
-                         start = utils::head(zoo::index(xts.obj), 1), 
-                         end = utils::tail(zoo::index(xts.obj), 1))
+  ts.obj <- stats::ts(xts.obj[,1], 
+                      start = start, 
+                      frequency = frequency)
   return(ts.obj)
 }
 
