@@ -37,3 +37,5 @@ Suggests:
     rmarkdown
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
+URL: https://github.com/RamiKrispin/TSstudio
+BugReports: https://github.com/RamiKrispin/TSstudio/issues
