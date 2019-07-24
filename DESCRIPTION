@@ -28,7 +28,7 @@ Imports:
   reshape2 (>= 1.4.2),
   scales(>= 1.0.0),
   tidyr(>= 0.8.1),
-  tsibble(>= 0.8.2)
+  tsibble(>= 0.8.2),
   viridis (>= 0.5.1),
   xts (>= 0.10-1),
   zoo (>= 1.8-0)
