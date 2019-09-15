@@ -7,7 +7,7 @@
 ts_split(ts.obj, sample.out = NULL)
 }
 \arguments{
-\item{ts.obj}{A univariate time series object of a class "ts"}
+\item{ts.obj}{A univariate time series object of a class "ts" or "tsibble"}
 
 \item{sample.out}{An integer, set the number of periods of the testing or sample out partition, defualt set for 
 30 percent of the lenght of the series}
