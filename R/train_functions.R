@@ -1390,36 +1390,41 @@ train_model <- function(input,
     stop("Error on the 'train_method' argument: the 'train_arg' argument is missing")
   }
   
+  
+  # check all the backtesting arguments
+  if(!"partitions" %in% base::names(train_method$train_arg)){
+    stop("Error on the 'train_method' argument: the number of partitions of the backtesting was not defined")
+  }
+  
+  # Checking the testing partition 
+  if(!"sample.out" %in% base::names(train_method$train_arg)){
+    stop("Error on the 'train_method' argument: the testing partition length of the backtesting was not defined")
+  }
+  
+  # Checking the space argument
+  if(!"space" %in% base::names(train_method$train_arg)){
+    stop("Error on the 'train_method' argument: the space between each partition of the backtesting was not defined")
+  }
+  
   if(train_method$method == "backtesting"){
-    # check all the backtesting arguments
-    if(!"partitions" %in% base::names(train_method$train_arg)){
-      stop("Error on the 'train_method' argument: the number of partitions of the backtesting was not defined")
-    }
     
-    # Checking the testing partition 
-    if(!"sample.out" %in% base::names(train_method$train_arg)){
-      stop("Error on the 'train_method' argument: the testing partition length of the backtesting was not defined")
-    }
+    w <-  seq(from = input_length - train_method$train_arg$space * (train_method$train_arg$partitions - 1), 
+              by = train_method$train_arg$space, 
+              length.out = train_method$train_arg$partitions)
     
-    # Checking the space argument
-    if(!"space" %in% base::names(train_method$train_arg)){
-      stop("Error on the 'train_method' argument: the space between each partition of the backtesting was not defined")
-    }
     
+    if(min(w) < input_freq * 2){
+      stop("Error on the 'train_method' argument: the length of the first partition is not sufficient to train a model",
+           " (must leave at least two full cycles for the sample in partition)")
+    }
     
     # If not using sample.in, will define the start point as 1
     if(!"sample.in" %in% base::names(train_method$train_arg) ||
        ("sample.in" %in% base::names(train_method$train_arg) && 
         base::is.null(train_method$train_arg$sample.in))){
       s1 <- s2 <- 1
-      w <-  seq(from = input_length - train_method$train_arg$space * (train_method$train_arg$partitions - 1), 
-                by = train_method$train_arg$space, 
-                length.out = train_method$train_arg$partitions)
       
-      if(min(w) < input_freq * 2){
-        stop("Error on the 'train_method' argument: the length of the first partition is not sufficient to train a model",
-             " (must leave at least two full cycles for the sample in partition)")
-      }
+      
       
       # If defining the sample.in -> check that the argument is valid
     } else if("sample.in" %in% base::names(train_method$train_arg)){
@@ -1431,19 +1436,14 @@ train_model <- function(input,
       } else if( train_method$train_arg$sample.in < input_freq * 2){
         stop("Error on the 'train_method' argument: the training partition length (sample in) must have at least two cycles")
       }
+      s1 <- w - train_method$train_arg$sample.out - train_method$train_arg$sample.in + 1
+      s2 <- input_length - train_method$train_arg$sample.in + 1
+      
     }
     
-    w <-  seq(from = input_length - train_method$train_arg$space * (train_method$train_arg$partitions - 1), 
-              by = train_method$train_arg$space, 
-              length.out = train_method$train_arg$partitions)
     
-    if(min(w) < input_freq * 2){
-      stop("Error on the 'train_method' argument: the length of the first partition is not sufficient to train a model",
-           " (must leave at least two full cycles for the sample in partition)")
-    }
     
-    s1 <- w - train_method$train_arg$sample.out - train_method$train_arg$sample.in + 1
-    s2 <- input_length - train_method$train_arg$sample.in + 1
+    
     
   } else if(train_method$method == "sample.out"){
     
