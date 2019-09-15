@@ -1314,9 +1314,23 @@ plot_grid <- function(grid.obj,
   return(p)
 }
 
+#' Training, Testing, and Evaluating Multiple Time Series Forecasting Models
+#' @export train_model 
+#' @description Method for train test and compare multiple time series models using either one partition (i.e., sample out) 
+#' or multipe partitions (backtesting)
+#' @param input A univariate time series object (ts class)
+#' @param methods A list defines a set of models to train and forecast. 
+#' The list should include the model id, the model type, and the model arguments (please see 'details' for the structure of the argument). 
+#' Possible models:
+#' 
+#' \code{\link[stats]{arima}} - model from the stats package 
+#' 
+#' \code{\link[forecast]{auto.arima}} - model from the forecast package
+#' 
+#' \code{\link[forecast]{ets}} - model from the forecast package
+#' 
 
-
-forecastTrain <- function(input,
+train_model <- function(input,
                           methods,
                           train_method,
                           horizon,
