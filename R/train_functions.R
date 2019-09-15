@@ -1485,15 +1485,30 @@ forecastTrain <- function(input,
           if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
             arg <- methods[[grid_df$model_id[i]]]$method_arg
           }
-          md <- do.call(forecast::nnetar,c(base::list(ts.obj), arg))
+          md <- do.call(forecast::nnetar,c(base::list(train), arg))
         } 
         
         
         if(grid_df$methods_selected[i] == "tslm"){
-          if(base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
+          if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
             arg <- methods[[grid_df$model_id[i]]]$method_arg
+            if(!"formula" %in% base::names(arg)){
+              stop("Error on the 'train_method' argument: cannot run 'tslm' model without the 'formula' argument")
+            } else{
+              f <-  base::Reduce(base::paste, base::deparse(arg$formula))
+              tilde <- base::regexpr("~", f) %>% base::as.numeric()
+              if(tilde == -1){
+                stop("Error on the 'train_method' argument: cannot run 'tslm' model without the 'formula' argument")
+              } else {
+                arg$formula <- base::paste("train", base::substr(f, tilde + 1, base::nchar(f)), sep = "~")
+              }
+              md <-  do.call(forecast::tslm,c(base::list(train), arg))
+              
+            }
+          } else {
+            stop("Error on the 'train_method' argument: cannot run 'tslm' model without the function's arguments")
           }
-          md <- do.call(forecast::ets,c(base::list(train), arg))
+          
         } 
         
         
@@ -1539,8 +1554,23 @@ forecastTrain <- function(input,
         if(grid_df$methods_selected[i] == "tslm"){
           if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
             arg <- methods[[grid_df$model_id[i]]]$method_arg
+            if(!"formula" %in% base::names(arg)){
+              stop("Error on the 'train_method' argument: cannot run 'tslm' model without the 'formula' argument")
+            } else{
+              f <-  base::Reduce(base::paste, base::deparse(arg$formula))
+              tilde <- base::regexpr("~", f) %>% base::as.numeric()
+              if(tilde == -1){
+                stop("Error on the 'train_method' argument: cannot run 'tslm' model without the 'formula' argument")
+              } else {
+                arg$formula <- base::paste("ts.obj", base::substr(f, tilde + 1, base::nchar(f)), sep = "~")
+              }
+              md <-  do.call(forecast::tslm,c(base::list(ts.obj), arg))
+              
+            }
+          } else {
+            stop("Error on the 'train_method' argument: cannot run 'tslm' model without the function's arguments")
           }
-          md <- do.call(forecast::ets,c(base::list(ts.obj), arg))
+          
         } 
       }
       
