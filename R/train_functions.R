@@ -1329,6 +1329,18 @@ plot_grid <- function(grid.obj,
 #' 
 #' \code{\link[forecast]{ets}} - model from the forecast package
 #' 
+#'  \code{\link[stats]{HoltWinters}} - model from the stats package 
+#' 
+#' \code{\link[forecast]{nnetar}} - model from the forecast package
+#'
+#' \code{\link[forecast]{tslm}} - model from the forecast package
+#' 
+#' @param train_method A list, defines the train approach, either using a single testing partition (sample out) 
+#' or use multiple testing partitions (backtesting). The list should include the training method argument, (please see 'details' for the structure of the argument)
+#' @param horizon An integer, defines the forecast horizon
+#' @param xreg Optional, a list with two vectors (e.g., data.frame or matrix) of external regressors, 
+#' one vector corresponding to the input series and second to the forecast itself 
+#' (e.g., must have the same length as the input and forecast horizon, respectively)
 
 train_model <- function(input,
                           methods,
@@ -1525,7 +1537,7 @@ train_model <- function(input,
           
         } 
         
-        
+
       } else if(grid_df$type[i] == "forecast"){
         
         if(grid_df$methods_selected[i] == "arima"){
@@ -1586,6 +1598,8 @@ train_model <- function(input,
           }
           
         } 
+        
+        
       }
       
       
