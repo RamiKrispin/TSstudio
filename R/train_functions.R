@@ -1487,8 +1487,6 @@ train_model <- function(input,
   }
   
   # Checking the xreg argument
-  
-  if(train_method$method == "sample.out"){
     grid_df <- base::expand.grid(models_df$model_id, s1, train_method$train_arg$sample.out, stringsAsFactors = FALSE) %>% 
       stats::setNames(c("model_id", "start", "horizon")) %>% 
       dplyr::left_join(models_df, by = c("model_id"))  %>%
@@ -1649,17 +1647,48 @@ train_model <- function(input,
                        type = grid_df$type[i],
                        model_id = grid_df$model_id[i],
                        method = grid_df$methods_selected[i],
-                       horizon = grid_df$horizon[i]),
-                     partition = grid_df$partition[i])
+                       horizon = grid_df$horizon[i],
+                     partition = grid_df$partition[i]))
       
       
       return(output)
       
     })
-    
+   
     
     t <- base::which(fc_output %>% purrr::map("parameters") %>% purrr::map_chr("type") == "train")
+    p1 <- fc_output[t]  %>% purrr::map("parameters") %>% purrr::map_chr("partition") %>% base::unique()
+    
+    training <- lapply(base::seq_along(p1), function(i1){
+      l <- NULL
+      l <- base::which(fc_output[t] %>% purrr::map("parameters") %>% purrr::map_chr("partition") == p[i1])
+      md_id <- fc_output[l] %>% purrr::map("parameters") %>% purrr::map_chr("model_id") 
+      partition_output <- lapply(l, function(i2){
+        x <- fc_output[[i2]]
+        y <- base::list()
+        y[[x$parameters$model_id]] <- list(model = x$model, forecast = x$forecast, parameters = x$parameters)
+      }) %>% stats::setNames(md_id)
+    }) %>% stats::setNames(p1)
+    
     f <- base::which(fc_output %>% purrr::map("parameters") %>% purrr::map_chr("type") == "forecast")
+    p2 <- fc_output[f]  %>% purrr::map("parameters") %>% purrr::map_chr("partition") %>% base::unique()
+    
+    forecast <- lapply(base::seq_along(p2), function(i1){
+      l <- NULL
+      l <- base::which(fc_output[t] %>% purrr::map("parameters") %>% purrr::map_chr("partition") == p[i1])
+      md_id <- fc_output[l] %>% purrr::map("parameters") %>% purrr::map_chr("model_id") 
+      partition_output <- lapply(l, function(i2){
+        x <- fc_output[[i2]]
+        y <- base::list()
+        y[[x$parameters$model_id]] <- list(model = x$model, forecast = x$forecast, parameters = x$parameters)
+      }) %>% stats::setNames(md_id)
+    }) %>% stats::setNames(p2)
+    
+    f <- base::which(fc_output %>% purrr::map("parameters") %>% purrr::map_chr("type") == "forecast")
+    
+    train_list <- fc_output[t]
+    
+    
     
     output <-   base::list(
       train = base::lapply(seq_along(t), function(i){
@@ -1683,9 +1712,7 @@ train_model <- function(input,
       }) %>%  stats::setNames(c(fc_output[f] %>% purrr::map("parameters") %>% purrr::map_chr("model_id"))))
     
     
-  } else if(train_method$method == "backtesting"){
-    
-  }
+  
   
   return(output)
   
