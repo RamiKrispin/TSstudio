@@ -1348,7 +1348,7 @@ train_model <- function(input,
                         horizon,
                         xreg = NULL){
   
-  method_list <- input_freq <- input_length <- w <- s1 <- s2 <-  grid_df <- models_df <- NULL
+  method_list <- input_freq <- input_length <- w <- s1 <- s2 <-  grid_df <- models_df <- w_range <- NULL
   method_list <- list("arima", "auto.arima", "ets", "HoltWinters", "nnetar", "tslm")
   
   
@@ -1441,7 +1441,11 @@ train_model <- function(input,
       
     }
     
-    
+    w_range <- base::data.frame(start = c(s1, s2), 
+                                end = c(w, input_length), 
+                                type = c(base::rep("train", base::length(s1)), "forecast"),
+                                partition = c(base::paste0("partition_", 1:base::length(s1), sep = ""), "final_partition"),
+                                stringsAsFactors = FALSE)
     
     
     
@@ -1470,6 +1474,11 @@ train_model <- function(input,
     
     w <- input_length
     
+    w_range <- base::data.frame(start = c(s1, s2), 
+                                end = c(w, input_length), 
+                                type = c(base::rep("train", base::length(s1)), "forecast"),
+                                partition = c(base::paste0("partition_", 1:base::length(s1), sep = ""), "final_partition"),
+                                stringsAsFactors = FALSE)
   }
   
   # Checking the horizon argument
@@ -1480,15 +1489,16 @@ train_model <- function(input,
   # Checking the xreg argument
   
   if(train_method$method == "sample.out"){
-    grid_df <- base::expand.grid(models_df$model_id, s1, w, train_method$train_arg$sample.out, stringsAsFactors = FALSE) %>% 
-      stats::setNames(c("model_id", "start", "end", "horizon")) %>% 
+    grid_df <- base::expand.grid(models_df$model_id, s1, train_method$train_arg$sample.out, stringsAsFactors = FALSE) %>% 
+      stats::setNames(c("model_id", "start", "horizon")) %>% 
       dplyr::left_join(models_df, by = c("model_id"))  %>%
       dplyr::mutate(type = "train") %>% dplyr::bind_rows(
-        base::expand.grid(models_df$model_id, s2, input_length, horizon, stringsAsFactors = FALSE) %>% 
-          stats::setNames(c("model_id", "start", "end", "horizon")) %>% 
+        base::expand.grid(models_df$model_id, s2, horizon, stringsAsFactors = FALSE) %>% 
+          stats::setNames(c("model_id", "start", "horizon")) %>% 
           dplyr::left_join(models_df, by = c("model_id")) %>%
           dplyr::mutate(type = "forecast")
-      )
+      ) %>%
+      dplyr::left_join(w_range, by = c("start", "type"))
     
     
     fc_output <-  lapply(base::seq_along(grid_df$model_id), function(i){
@@ -1639,7 +1649,8 @@ train_model <- function(input,
                        type = grid_df$type[i],
                        model_id = grid_df$model_id[i],
                        method = grid_df$methods_selected[i],
-                       horizon = grid_df$horizon[i]))
+                       horizon = grid_df$horizon[i]),
+                     partition = grid_df$partition[i])
       
       
       return(output)
