@@ -1707,12 +1707,49 @@ train_model <- function(input,
   }) %>% stats::setNames(p2)
   
   
-  
+  error <- lapply(models_df$model_id, function(m){
+
+    f <- training[p1] %>% purrr::map(m) %>% purrr::map("forecast") %>% purrr::map("mean") 
+    p <- f %>% base::names()
+    a <- training[p1] %>% purrr::map("test") 
+    u <- training[p1] %>% purrr::map(m) %>% purrr::map("forecast") %>% purrr::map("upper")
+    l <- training[p1] %>% purrr::map(m) %>% purrr::map("forecast") %>% purrr::map("lower")
+    level <- training[p1] %>% purrr::map(m) %>% purrr::map("forecast") %>% purrr::map("level")
+    
+    
+    error_df <- lapply(base::seq_along(p),function(n){
+      df <-  coverage_df <-  NULL
+      
+      if(base::is.null(base::colnames(u[[p[n]]]))){
+        base::colnames(u[[p[n]]]) <- base::paste0(level[[p[n]]], "%")
+        base::colnames(l[[p[n]]]) <- base::paste0(level[[p[n]]], "%")
+      }
+      
+      coverage_df <- lapply(base::colnames(u[[p[n]]]), function(i){
+        df <-  base::data.frame(coverage = base::sum(ifelse(u[[p[n]]][, i] >=  a[[p[n]]] & l[[p[n]]][, i] <=  a[[p[n]]], 1, 0)) / base::length(u[[p[n]]][, i]))
+        return(df)
+      }) %>% dplyr::bind_rows() %>% 
+        base::t() %>% 
+        base::as.data.frame() %>% 
+        stats::setNames(base::paste0("coverage", base::colnames(u[[p[n]]])))
+      
+      
+      df <- base::cbind(base::data.frame(partition = n,
+                                         mape = base::mean(base::abs(f[[p[n]]] - a[[p[n]]]) / a[[p[n]]]),
+                                         rmse = (base::mean((a[[p[n]]] - f[[p[n]]]) ^ 2)) ^ 0.5), 
+                        coverage_df)
+      
+      return(df)
+    }) %>% dplyr::bind_rows()
+    
+    return(error_df)
+  }) %>% stats::setNames(models_df$model_id)
   
   
   output <-   base::list(train = training,
                          forecast = forecast$final_partition,
                          input = input,
+                         performance = error,
                          parameters = list(methods = methods,
                                            train_method = train_method,
                                            horizon = horizon,
