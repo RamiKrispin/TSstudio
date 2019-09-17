@@ -1763,11 +1763,17 @@ train_model <- function(input,
    dplyr::left_join(models_df %>% 
                       dplyr::select(model_id, model = methods_selected), 
                     by = "model_id") %>%
-   dplyr::select(model_id, model, dplyr::everything())
+   dplyr::select(model_id, model, dplyr::everything()) 
  
  base::names(leaderboard) <- c("model_id", 
                            "model", 
                            base::paste0("avg_", base::names(leaderboard)[3:base::ncol(leaderboard)]))
+ 
+ if(error == "MAPE"){
+   leaderboard <- leaderboard %>% dplyr::arrange(avg_mape)
+ } else if(error == "RMSE"){
+   leaderboard <- leaderboard %>% dplyr::arrange(avg_rmse)
+ }
  
   
   output <-   base::list(train = training,
