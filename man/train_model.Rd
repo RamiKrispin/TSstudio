@@ -4,7 +4,8 @@
 \alias{train_model}
 \title{Training, Testing, and Evaluating Multiple Time Series Forecasting Models}
 \usage{
-train_model(input, methods, train_method, horizon, xreg = NULL)
+train_model(input, methods, train_method, horizon, error = "MAPE",
+  xreg = NULL)
 }
 \arguments{
 \item{input}{A univariate time series object (ts class)}
@@ -17,7 +18,24 @@ Possible models:
 
 \code{\link[forecast]{auto.arima}} - model from the forecast package
 
-\code{\link[forecast]{ets}} - model from the forecast package}
+\code{\link[forecast]{ets}} - model from the forecast package
+
+ \code{\link[stats]{HoltWinters}} - model from the stats package 
+
+\code{\link[forecast]{nnetar}} - model from the forecast package
+
+\code{\link[forecast]{tslm}} - model from the forecast package}
+
+\item{train_method}{A list, defines the train approach, either using a single testing partition (sample out) 
+or use multiple testing partitions (backtesting). The list should include the training method argument, (please see 'details' for the structure of the argument)}
+
+\item{horizon}{An integer, defines the forecast horizon}
+
+\item{error}{A character, defines the error metrics to be used to sort the models leaderboard. Possible metric - "MAPE" or "RMSE}
+
+\item{xreg}{Optional, a list with two vectors (e.g., data.frame or matrix) of external regressors, 
+one vector corresponding to the input series and second to the forecast itself 
+(e.g., must have the same length as the input and forecast horizon, respectively)}
 }
 \description{
 Method for train test and compare multiple time series models using either one partition (i.e., sample out) 
