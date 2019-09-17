@@ -1747,15 +1747,24 @@ train_model <- function(input,
     return(error_df)
   }) %>% stats::setNames(models_df$model_id)
   
- summary <- error %>% dplyr::bind_rows() %>% 
+ leaderboard <- error %>% dplyr::bind_rows() %>% 
    dplyr::group_by(model_id) %>%
-   dplyr::summarise_all(~mean(.)) %>% dplyr::select(-partition)
+   dplyr::summarise_all(~mean(.)) %>% dplyr::select(-partition) %>%
+   dplyr::left_join(models_df %>% 
+                      dplyr::select(model_id, model = methods_selected), 
+                    by = "model_id") %>%
+   dplyr::select(model_id, model, dplyr::everything())
+ 
+ base::names(summary) <- c("model_id", 
+                           "model", 
+                           base::paste0("avg_", base::names(summary)[3:base::nrow(summary)]))
+ 
   
   output <-   base::list(train = training,
                          forecast = forecast$final_partition,
                          input = input,
                          performance = error,
-                         summary = summary,
+                         leaderboard  = leaderboard,
                          parameters = list(methods = methods,
                                            train_method = train_method,
                                            horizon = horizon,
