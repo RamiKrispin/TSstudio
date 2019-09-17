@@ -1755,9 +1755,9 @@ train_model <- function(input,
                     by = "model_id") %>%
    dplyr::select(model_id, model, dplyr::everything())
  
- base::names(summary) <- c("model_id", 
+ base::names(leaderboard) <- c("model_id", 
                            "model", 
-                           base::paste0("avg_", base::names(summary)[3:base::nrow(summary)]))
+                           base::paste0("avg_", base::names(leaderboard)[3:base::ncol(leaderboard)]))
  
   
   output <-   base::list(train = training,
