@@ -815,18 +815,18 @@ ts_backtesting <- function(ts.obj,
 #'  plot_forecast(fc)
 #' 
 #' }  
-  
+
 
 ts_grid <- function(ts.obj, 
-                   model,
-                   optim = "MAPE",
-                   periods,
-                   window_length = NULL, 
-                   window_space,
-                   window_test,
-                   hyper_params,
-                   parallel = TRUE,
-                   n.cores = "auto"){
+                    model,
+                    optim = "MAPE",
+                    periods,
+                    window_length = NULL, 
+                    window_space,
+                    window_test,
+                    hyper_params,
+                    parallel = TRUE,
+                    n.cores = "auto"){
   
   error <- period <- start_time <- NULL
   
@@ -905,14 +905,14 @@ ts_grid <- function(ts.obj,
         stop("The value of the 'alpha' argument cannot be only numeric")
       } else { 
         if(base::any(which(hyper_params$alpha < 0)) || 
-                base::any(which(hyper_params$alpha > 1))){
-        stop("The value of the 'alpha' parameter is out of range,",
-             " cannot exceed 1 or be less or equal to 0")
-      } 
+           base::any(which(hyper_params$alpha > 1))){
+          stop("The value of the 'alpha' parameter is out of range,",
+               " cannot exceed 1 or be less or equal to 0")
+        } 
         if(any(which(hyper_params$alpha == 0))){
-        hyper_params$alpha[base::which(hyper_params$alpha == 0)] <- 1e-5
-        warning("The value of the 'alpha' parameter cannot be equal to 0",
-                " replacing 0 with 1e-5")
+          hyper_params$alpha[base::which(hyper_params$alpha == 0)] <- 1e-5
+          warning("The value of the 'alpha' parameter cannot be equal to 0",
+                  " replacing 0 with 1e-5")
         }
         
         alpha <- hyper_params$alpha
@@ -979,11 +979,11 @@ ts_grid <- function(ts.obj,
                                      sep = "")))
     base::names(grid_df) <- hyper_input
     
-   if(!base::is.null(hyper_false)){
-     for(f in hyper_false){
-       grid_df[f] <- FALSE
-     }
-   }
+    if(!base::is.null(hyper_false)){
+      for(f in hyper_false){
+        grid_df[f] <- FALSE
+      }
+    }
     
     grid_model <- base::paste("stats::HoltWinters(x = train", sep = "")
     for(i in hw_par){
@@ -996,7 +996,7 @@ ts_grid <- function(ts.obj,
     }
     grid_model <- base::paste(grid_model, ")", sep = "")
   }
-
+  
   
   grid_output <- NULL
   if(!parallel){
@@ -1018,7 +1018,7 @@ ts_grid <- function(ts.obj,
         md <- base::eval(base::parse(text = grid_model))
         fc <- forecast::forecast(md, h = window_test)
         if(optim == "MAPE"){
-        search_df$error[i] <- forecast::accuracy(fc, test)[10]
+          search_df$error[i] <- forecast::accuracy(fc, test)[10]
         } else if(optim == "RMSE"){
           search_df$error[i] <- forecast::accuracy(fc, test)[4]
         }
@@ -1193,7 +1193,7 @@ plot_grid <- function(grid.obj,
   
   for(i in par_names){
     if(base::is.null(grid.obj$parameters$hyper_params[[i]]) ||
-        grid.obj$parameters$hyper_params[[i]] == FALSE){
+       grid.obj$parameters$hyper_params[[i]] == FALSE){
       par_names <- par_names[-which(par_names == i)]
     }
   }
@@ -1487,231 +1487,238 @@ train_model <- function(input,
   }
   
   # Checking the xreg argument
-    grid_df <- base::expand.grid(models_df$model_id, s1, train_method$train_arg$sample.out, stringsAsFactors = FALSE) %>% 
-      stats::setNames(c("model_id", "start", "horizon")) %>% 
-      dplyr::left_join(models_df, by = c("model_id"))  %>%
-      dplyr::mutate(type = "train") %>% dplyr::bind_rows(
-        base::expand.grid(models_df$model_id, s2, horizon, stringsAsFactors = FALSE) %>% 
-          stats::setNames(c("model_id", "start", "horizon")) %>% 
-          dplyr::left_join(models_df, by = c("model_id")) %>%
-          dplyr::mutate(type = "forecast")
-      ) %>%
-      dplyr::left_join(w_range, by = c("start", "type"))
+  grid_df <- base::expand.grid(models_df$model_id, s1, train_method$train_arg$sample.out, stringsAsFactors = FALSE) %>% 
+    stats::setNames(c("model_id", "start", "horizon")) %>% 
+    dplyr::left_join(models_df, by = c("model_id"))  %>%
+    dplyr::mutate(type = "train") %>% dplyr::bind_rows(
+      base::expand.grid(models_df$model_id, s2, horizon, stringsAsFactors = FALSE) %>% 
+        stats::setNames(c("model_id", "start", "horizon")) %>% 
+        dplyr::left_join(models_df, by = c("model_id")) %>%
+        dplyr::mutate(type = "forecast")
+    ) %>%
+    dplyr::left_join(w_range, by = c("start", "type"))
+  
+  
+  fc_output <-  lapply(base::seq_along(grid_df$model_id), function(i){
     
+    ts.obj <- train <- test <- md <- fc <- arg <- NULL
     
-    fc_output <-  lapply(base::seq_along(grid_df$model_id), function(i){
+    ts.obj <- stats::window(input, 
+                            start = stats::time(input)[grid_df$start[i]], 
+                            end = stats::time(input)[grid_df$end[i]])
+    
+    if(grid_df$type[i] == "train"){
       
-      ts.obj <- train <- test <- md <- fc <- arg <- NULL
+      ts_partitions <- TSstudio::ts_split(ts.obj = ts.obj, sample.out = train_method$train_arg$sample.out)
       
-      ts.obj <- stats::window(input, 
-                              start = stats::time(input)[grid_df$start[i]], 
-                              end = stats::time(input)[grid_df$end[i]])
+      train <- ts_partitions$train
+      test <- ts_partitions$test
       
-      if(grid_df$type[i] == "train"){
-        
-        ts_partitions <- TSstudio::ts_split(ts.obj = ts.obj, sample.out = train_method$train_arg$sample.out)
-        
-        train <- ts_partitions$train
-        test <- ts_partitions$test
-        
-        if(grid_df$methods_selected[i] == "arima"){
-          if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
-            arg <- methods[[grid_df$model_id[i]]]$method_arg
-          }
-          md <- do.call(stats::arima,c(base::list(train), arg))
+      if(grid_df$methods_selected[i] == "arima"){
+        if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
+          arg <- methods[[grid_df$model_id[i]]]$method_arg
         }
-        
-        if(grid_df$methods_selected[i] == "HoltWinters"){
-          if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
-            arg <- methods[[grid_df$model_id[i]]]$method_arg
-          }
-          md <- do.call(stats::HoltWinters,c(base::list(train), arg))
+        md <- do.call(stats::arima,c(base::list(train), arg))
+      }
+      
+      if(grid_df$methods_selected[i] == "HoltWinters"){
+        if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
+          arg <- methods[[grid_df$model_id[i]]]$method_arg
         }
-        
-        if(grid_df$methods_selected[i] == "auto.arima"){
-          if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
-            arg <- methods[[grid_df$model_id[i]]]$method_arg
-          }
-          md <- do.call(forecast::auto.arima,c(base::list(train), arg))
+        md <- do.call(stats::HoltWinters,c(base::list(train), arg))
+      }
+      
+      if(grid_df$methods_selected[i] == "auto.arima"){
+        if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
+          arg <- methods[[grid_df$model_id[i]]]$method_arg
         }
-        
-        
-        if(grid_df$methods_selected[i] == "ets"){
-          if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
-            arg <- methods[[grid_df$model_id[i]]]$method_arg
-          }
-          md <- do.call(forecast::ets,c(base::list(train), arg))
-        } 
-        
-        
-        if(grid_df$methods_selected[i] == "nnetar"){
-          if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
-            arg <- methods[[grid_df$model_id[i]]]$method_arg
-          }
-          md <- do.call(forecast::nnetar,c(base::list(train), arg))
-        } 
-        
-        
-        if(grid_df$methods_selected[i] == "tslm"){
-          if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
-            arg <- methods[[grid_df$model_id[i]]]$method_arg
-            if(!"formula" %in% base::names(arg)){
-              stop("Error on the 'train_method' argument: cannot run 'tslm' model without the 'formula' argument")
-            } else{
-              f <-  base::Reduce(base::paste, base::deparse(arg$formula))
-              tilde <- base::regexpr("~", f) %>% base::as.numeric()
-              if(tilde == -1){
-                stop("Error on the 'train_method' argument: cannot run 'tslm' model without the 'formula' argument")
-              } else {
-                arg$formula <- base::paste("train", base::substr(f, tilde + 1, base::nchar(f)), sep = "~")
-              }
-              md <-  do.call(forecast::tslm,c(base::list(train), arg))
-              
-            }
-          } else {
-            stop("Error on the 'train_method' argument: cannot run 'tslm' model without the function's arguments")
-          }
-          
-        } 
-        
-        
-      } else if(grid_df$type[i] == "forecast"){
-        
-        if(grid_df$methods_selected[i] == "arima"){
-          if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
-            arg <- methods[[grid_df$model_id[i]]]$method_arg
-          }
-          md <- do.call(stats::arima,c(base::list(ts.obj), arg))
-        }
-        
-        
-        if(grid_df$methods_selected[i] == "HoltWinters"){
-          if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
-            arg <- methods[[grid_df$model_id[i]]]$method_arg
-          }
-          md <- do.call(stats::HoltWinters,c(base::list(ts.obj), arg))
-        }
-        
-        if(grid_df$methods_selected[i] == "auto.arima"){
-          if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
-            arg <- methods[[grid_df$model_id[i]]]$method_arg
-          }
-          md <- do.call(forecast::auto.arima,c(base::list(ts.obj), arg))
-        }
-        
-        
-        if(grid_df$methods_selected[i] == "ets"){
-          if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
-            arg <- methods[[grid_df$model_id[i]]]$method_arg
-          }
-          md <- do.call(forecast::ets,c(base::list(ts.obj), arg))
-        } 
-        
-        if(grid_df$methods_selected[i] == "nnetar"){
-          if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
-            arg <- methods[[grid_df$model_id[i]]]$method_arg
-          }
-          md <- do.call(forecast::nnetar,c(base::list(ts.obj), arg))
-        } 
-        
-        if(grid_df$methods_selected[i] == "tslm"){
-          if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
-            arg <- methods[[grid_df$model_id[i]]]$method_arg
-            if(!"formula" %in% base::names(arg)){
-              stop("Error on the 'train_method' argument: cannot run 'tslm' model without the 'formula' argument")
-            } else{
-              f <-  base::Reduce(base::paste, base::deparse(arg$formula))
-              tilde <- base::regexpr("~", f) %>% base::as.numeric()
-              if(tilde == -1){
-                stop("Error on the 'train_method' argument: cannot run 'tslm' model without the 'formula' argument")
-              } else {
-                arg$formula <- base::paste("ts.obj", base::substr(f, tilde + 1, base::nchar(f)), sep = "~")
-              }
-              md <-  do.call(forecast::tslm,c(base::list(ts.obj), arg))
-              
-            }
-          } else {
-            stop("Error on the 'train_method' argument: cannot run 'tslm' model without the function's arguments")
-          }
-          
-        } 
-        
-        
+        md <- do.call(forecast::auto.arima,c(base::list(train), arg))
       }
       
       
-      fc <- forecast::forecast(md, h = grid_df$horizon[i])
-      output <- list(model = md, 
-                     forecast = fc, 
-                     parameters = base::list(
-                       type = grid_df$type[i],
-                       model_id = grid_df$model_id[i],
-                       method = grid_df$methods_selected[i],
-                       horizon = grid_df$horizon[i],
+      if(grid_df$methods_selected[i] == "ets"){
+        if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
+          arg <- methods[[grid_df$model_id[i]]]$method_arg
+        }
+        md <- do.call(forecast::ets,c(base::list(train), arg))
+      } 
+      
+      
+      if(grid_df$methods_selected[i] == "nnetar"){
+        if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
+          arg <- methods[[grid_df$model_id[i]]]$method_arg
+        }
+        md <- do.call(forecast::nnetar,c(base::list(train), arg))
+      } 
+      
+      
+      if(grid_df$methods_selected[i] == "tslm"){
+        if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
+          arg <- methods[[grid_df$model_id[i]]]$method_arg
+          if(!"formula" %in% base::names(arg)){
+            stop("Error on the 'train_method' argument: cannot run 'tslm' model without the 'formula' argument")
+          } else{
+            f <-  base::Reduce(base::paste, base::deparse(arg$formula))
+            tilde <- base::regexpr("~", f) %>% base::as.numeric()
+            if(tilde == -1){
+              stop("Error on the 'train_method' argument: cannot run 'tslm' model without the 'formula' argument")
+            } else {
+              arg$formula <- base::paste("train", base::substr(f, tilde + 1, base::nchar(f)), sep = "~")
+            }
+            md <-  do.call(forecast::tslm,c(base::list(train), arg))
+            
+          }
+        } else {
+          stop("Error on the 'train_method' argument: cannot run 'tslm' model without the function's arguments")
+        }
+        
+      } 
+      
+      
+    } else if(grid_df$type[i] == "forecast"){
+      
+      if(grid_df$methods_selected[i] == "arima"){
+        if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
+          arg <- methods[[grid_df$model_id[i]]]$method_arg
+        }
+        md <- do.call(stats::arima,c(base::list(ts.obj), arg))
+      }
+      
+      
+      if(grid_df$methods_selected[i] == "HoltWinters"){
+        if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
+          arg <- methods[[grid_df$model_id[i]]]$method_arg
+        }
+        md <- do.call(stats::HoltWinters,c(base::list(ts.obj), arg))
+      }
+      
+      if(grid_df$methods_selected[i] == "auto.arima"){
+        if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
+          arg <- methods[[grid_df$model_id[i]]]$method_arg
+        }
+        md <- do.call(forecast::auto.arima,c(base::list(ts.obj), arg))
+      }
+      
+      
+      if(grid_df$methods_selected[i] == "ets"){
+        if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
+          arg <- methods[[grid_df$model_id[i]]]$method_arg
+        }
+        md <- do.call(forecast::ets,c(base::list(ts.obj), arg))
+      } 
+      
+      if(grid_df$methods_selected[i] == "nnetar"){
+        if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
+          arg <- methods[[grid_df$model_id[i]]]$method_arg
+        }
+        md <- do.call(forecast::nnetar,c(base::list(ts.obj), arg))
+      } 
+      
+      if(grid_df$methods_selected[i] == "tslm"){
+        if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
+          arg <- methods[[grid_df$model_id[i]]]$method_arg
+          if(!"formula" %in% base::names(arg)){
+            stop("Error on the 'train_method' argument: cannot run 'tslm' model without the 'formula' argument")
+          } else{
+            f <-  base::Reduce(base::paste, base::deparse(arg$formula))
+            tilde <- base::regexpr("~", f) %>% base::as.numeric()
+            if(tilde == -1){
+              stop("Error on the 'train_method' argument: cannot run 'tslm' model without the 'formula' argument")
+            } else {
+              arg$formula <- base::paste("ts.obj", base::substr(f, tilde + 1, base::nchar(f)), sep = "~")
+            }
+            md <-  do.call(forecast::tslm,c(base::list(ts.obj), arg))
+            
+          }
+        } else {
+          stop("Error on the 'train_method' argument: cannot run 'tslm' model without the function's arguments")
+        }
+        
+      } 
+      
+      
+    }
+    
+    
+    fc <- forecast::forecast(md, h = grid_df$horizon[i])
+    output <- list(model = md, 
+                   forecast = fc, 
+                   parameters = base::list(
+                     type = grid_df$type[i],
+                     model_id = grid_df$model_id[i],
+                     method = grid_df$methods_selected[i],
+                     horizon = grid_df$horizon[i],
                      partition = grid_df$partition[i]))
-      
-      
-      return(output)
-      
-    })
-   
-    
-    t <- base::which(fc_output %>% purrr::map("parameters") %>% purrr::map_chr("type") == "train")
-    p1 <- fc_output[t]  %>% purrr::map("parameters") %>% purrr::map_chr("partition") %>% base::unique()
-    
-    training <- lapply(base::seq_along(p1), function(i1){
-      l <- NULL
-      l <- base::which(fc_output[t] %>% purrr::map("parameters") %>% purrr::map_chr("partition") == p[i1])
-      md_id <- fc_output[l] %>% purrr::map("parameters") %>% purrr::map_chr("model_id") 
-      partition_output <- lapply(l, function(i2){
-        x <- fc_output[[i2]]
-        y <- base::list()
-        y[[x$parameters$model_id]] <- list(model = x$model, forecast = x$forecast, parameters = x$parameters)
-      }) %>% stats::setNames(md_id)
-    }) %>% stats::setNames(p1)
-    
-    f <- base::which(fc_output %>% purrr::map("parameters") %>% purrr::map_chr("type") == "forecast")
-    p2 <- fc_output[f]  %>% purrr::map("parameters") %>% purrr::map_chr("partition") %>% base::unique()
-    
-    forecast <- lapply(base::seq_along(p2), function(i1){
-      l <- NULL
-      l <- base::which(fc_output[t] %>% purrr::map("parameters") %>% purrr::map_chr("partition") == p[i1])
-      md_id <- fc_output[l] %>% purrr::map("parameters") %>% purrr::map_chr("model_id") 
-      partition_output <- lapply(l, function(i2){
-        x <- fc_output[[i2]]
-        y <- base::list()
-        y[[x$parameters$model_id]] <- list(model = x$model, forecast = x$forecast, parameters = x$parameters)
-      }) %>% stats::setNames(md_id)
-    }) %>% stats::setNames(p2)
-    
-    f <- base::which(fc_output %>% purrr::map("parameters") %>% purrr::map_chr("type") == "forecast")
-    
-    train_list <- fc_output[t]
     
     
+    return(output)
     
-    output <-   base::list(
-      train = base::lapply(seq_along(t), function(i){
-        x <- fc_output[[t[i]]]
-        
-        y <- base::list()
-        
-        y[[x$parameters$model_id]] <- list(model = x$model, forecast = x$forecast, parameters = x$parameters)
-        
-      }) %>%  stats::setNames(c(fc_output[t] %>% purrr::map("parameters") %>% purrr::map_chr("model_id"))),
-      
-      
-      forecast = base::lapply(seq_along(f), function(i){
-        
-        x <- fc_output[[f[i]]]
-        
-        y <- base::list()
-        
-        y[[x$parameters$model_id]] <- base::list(model = x$model, forecast = x$forecast, parameters = x$parameters)
-        
-      }) %>%  stats::setNames(c(fc_output[f] %>% purrr::map("parameters") %>% purrr::map_chr("model_id"))))
+  })
+  
+  input_window <- grid_df %>% dplyr::select(start, end, horizon, partition) %>% dplyr::distinct()
+  
+  t <- base::which(fc_output %>% purrr::map("parameters") %>% purrr::map_chr("type") == "train")
+  p1 <- fc_output[t]  %>% purrr::map("parameters") %>% purrr::map_chr("partition") %>% base::unique()
+  
+  training <- lapply(base::seq_along(p1), function(i1){
+    l <- NULL
+    l <- base::which(fc_output[t] %>% purrr::map("parameters") %>% purrr::map_chr("partition") == p1[i1])
+    md_id <- fc_output[l] %>% purrr::map("parameters") %>% purrr::map_chr("model_id") 
     
     
+    ts.obj <- ts_partitions <- train <- test <- NULL
+    ts.obj <- stats::window(input, 
+                            start = stats::time(input)[input_window$start[which(input_window$partition == p1[i1])]],
+                            end = stats::time(input)[input_window$end[which(input_window$partition == p1[i1])]])
+    
+    ts_partitions <- TSstudio::ts_split(ts.obj = ts.obj, sample.out = input_window$horizon[which(input_window$partition == p1[i1])])
+    partition_output <- lapply(l, function(i2){
+      x <- fc_output[[i2]]
+      y <- base::list()
+      y[[x$parameters$model_id]] <- list(model = x$model, forecast = x$forecast, parameters = x$parameters)
+    }) %>% stats::setNames(md_id)
+    partition_output$train <- ts_partitions$train
+    partition_output$test <- ts_partitions$test
+    
+    return(partition_output)
+  }) %>% stats::setNames(p1)
+  
+  f <- base::which(fc_output %>% purrr::map("parameters") %>% purrr::map_chr("type") == "forecast")
+  p2 <- fc_output[f]  %>% purrr::map("parameters") %>% purrr::map_chr("partition") %>% base::unique()
+  
+  forecast <- lapply(base::seq_along(p2), function(i1){
+    l <- NULL
+    l <- base::which(fc_output[f] %>% purrr::map("parameters") %>% purrr::map_chr("partition") == p2[i1])
+    md_id <- fc_output[l] %>% purrr::map("parameters") %>% purrr::map_chr("model_id") 
+    partition_output <- lapply(l, function(i2){
+      x <- fc_output[[i2]]
+      y <- base::list()
+      y[[x$parameters$model_id]] <- list(model = x$model, forecast = x$forecast, parameters = x$parameters)
+    }) %>% stats::setNames(md_id)
+    
+    
+    ts.obj <- NULL
+    ts.obj <- stats::window(input, 
+                            start = stats::time(input)[input_window$start[which(input_window$partition == p2[i1])]],
+                            end = stats::time(input)[input_window$end[which(input_window$partition == p2[i1])]])
+    
+    partition_output$train <- ts.obj
+    return(partition_output)
+  }) %>% stats::setNames(p2)
+  
+  
+  
+  
+  
+  output <-   base::list(train = training,
+                         forecast = forecast$final_partition,
+                         input = input,
+                         parameters = list(methods = methods,
+                                           train_method = train_method,
+                                           horizon = horizon,
+                                           xreg = xreg))
+  
+  
   
   
   return(output)
