@@ -10,9 +10,9 @@ train_model(input, methods, train_method, horizon, error = "MAPE",
 \arguments{
 \item{input}{A univariate time series object (ts class)}
 
-\item{methods}{A list defines a set of models to train and forecast. 
-The list should include the model id, the model type, and the model arguments (please see 'details' for the structure of the argument). 
-Possible models:
+\item{methods}{A list, defines the models to use for training and forecasting the series. 
+The list must include a sub list with the model type, and the model's arguments (when applicable) and notes about the model. 
+The sub-list name will be used as the model ID. Possible models:
 
 \code{\link[stats]{arima}} - model from the stats package 
 
@@ -24,7 +24,7 @@ Possible models:
 
 \code{\link[forecast]{nnetar}} - model from the forecast package
 
-\code{\link[forecast]{tslm}} - model from the forecast package}
+\code{\link[forecast]{tslm}} - model from the forecast package (note that the 'tslm' model must have the formula argument in the 'method_arg' argument)}
 
 \item{train_method}{A list, defines the train approach, either using a single testing partition (sample out) 
 or use multiple testing partitions (backtesting). The list should include the training method argument, (please see 'details' for the structure of the argument)}
