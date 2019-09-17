@@ -1735,8 +1735,10 @@ train_model <- function(input,
       
       
       df <- base::cbind(base::data.frame(partition = n,
+                                         model_id = m,
                                          mape = base::mean(base::abs(f[[p[n]]] - a[[p[n]]]) / a[[p[n]]]),
-                                         rmse = (base::mean((a[[p[n]]] - f[[p[n]]]) ^ 2)) ^ 0.5), 
+                                         rmse = (base::mean((a[[p[n]]] - f[[p[n]]]) ^ 2)) ^ 0.5,
+                                         stringsAsFactors = FALSE), 
                         coverage_df)
       
       return(df)
@@ -1745,11 +1747,15 @@ train_model <- function(input,
     return(error_df)
   }) %>% stats::setNames(models_df$model_id)
   
+ summary <- error %>% dplyr::bind_rows() %>% 
+   dplyr::group_by(model_id) %>%
+   dplyr::summarise_all(~mean(.)) %>% dplyr::select(-partition)
   
   output <-   base::list(train = training,
                          forecast = forecast$final_partition,
                          input = input,
                          performance = error,
+                         summary = summary,
                          parameters = list(methods = methods,
                                            train_method = train_method,
                                            horizon = horizon,
