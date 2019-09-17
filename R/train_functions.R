@@ -1350,7 +1350,11 @@ train_model <- function(input,
                         error = "MAPE",
                         xreg = NULL){
   
-  method_list <- input_freq <- input_length <- w <- s1 <- s2 <-  grid_df <- models_df <- w_range <- NULL
+  # Setting the pipe operator
+  `%>%` <- magrittr::`%>%`
+  
+  method_list <- input_freq <- input_length <- w <- s1 <- s2 <-  grid_df <- models_df <- w_range <-  NULL
+  methods_selected <- model_id <- start <- end <- partition <- model <- avg_mape <- avg_rmse <- NULL
   method_list <- list("arima", "auto.arima", "ets", "HoltWinters", "nnetar", "tslm")
   
   
@@ -1386,7 +1390,7 @@ train_model <- function(input,
                                 methods_selected  = base::as.character(methods %>% purrr::map_chr(~.x[["method"]])), 
                                 stringsAsFactors = FALSE)
   
-  if(!base::all(methods_selected %in% methods_list)){
+  if(!base::all(models_df$methods_selected %in% method_list)){
     stop("Error on the 'methods' argument: at least one of the models methods is not valid")
   }
   
