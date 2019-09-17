@@ -1341,11 +1341,13 @@ plot_grid <- function(grid.obj,
 #' @param xreg Optional, a list with two vectors (e.g., data.frame or matrix) of external regressors, 
 #' one vector corresponding to the input series and second to the forecast itself 
 #' (e.g., must have the same length as the input and forecast horizon, respectively)
+#' @param error A character, defines the error metrics to be used to sort the models leaderboard. Possible metric - "MAPE" or "RMSE
 
 train_model <- function(input,
                         methods,
                         train_method,
                         horizon,
+                        error = "MAPE",
                         xreg = NULL){
   
   method_list <- input_freq <- input_length <- w <- s1 <- s2 <-  grid_df <- models_df <- w_range <- NULL
@@ -1353,6 +1355,14 @@ train_model <- function(input,
   
   
   ### Error Handling
+  # Check the error argument
+ if(base::is.null(error) || !base::is.character(error) || base::length(error) !=1){
+   stop("Error on the 'error' argument: the input is not valid, please use either 'RMSE' or 'MAPE'")
+ } else if( error != "MAPE" && error != "RMSE"){
+   stop("Error on the 'error' argument: the input is not valid, please use either 'RMSE' or 'MAPE'")
+ }
+  
+  
   # Checking the input argument
   if(!stats::is.ts(input)){
     stop("The input argument is not a valid 'ts' object")
