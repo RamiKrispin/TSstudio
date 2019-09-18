@@ -45,6 +45,13 @@ ts_seasonal <- function(ts.obj,
                         palette_normal = "viridis") {
   
   `%>%` <- magrittr::`%>%`
+  
+  hex_to_rgb <- function(hex){
+    rgb <- base::paste0(as.numeric(grDevices::col2rgb(hex) %>% base::t()), collapse = ",")
+    return(rgb)
+  }
+  
+  
   df <- freq <- obj.name <- brewer_palettes <- viridis_palettes <- palette_type <- NULL
   n_colors <- color_list_normal <- main <- NULL
   diff_mean <- col_class <- date_col <-  numeric_col <- NULL
@@ -310,10 +317,20 @@ ts_seasonal <- function(ts.obj,
   if(type == "cycle" | type == "all"){
     df_t <- NULL
     df_t <- base::suppressMessages(df %>% reshape2::dcast(main ~ minor))
+    
+    showlegend <- legendgroup <- NULL
+    showlegend <- TRUE
+    legendgroup <- ifelse(type == "all", "all", NULL)
+    
+    
     p_cycle <- plotly::plot_ly()
     for(i in 2:ncol(df_t)){
       p_cycle <- p_cycle %>% 
-        plotly::add_lines(x = df_t[, 1], y = df_t[, i], name = colnames(df_t)[i], line = list(color = colors_list[i - 1]))
+        plotly::add_lines(x = df_t[, 1], y = df_t[, i], 
+                          name = colnames(df_t)[i], 
+                          line = list(color = colors_list[i - 1]), 
+                          showlegend = showlegend,
+                          legendgroup = legendgroup)
     }
     
     p_cycle <- p_cycle %>% plotly::layout(yaxis = list(title = "By Frequency Unit"))
@@ -321,17 +338,23 @@ ts_seasonal <- function(ts.obj,
   
   if(type == "box" | type == "all"){
     minor <- base::levels(df$minor)
+    showlegend <- legendgroup <- NULL
+    showlegend <- ifelse(type == "all", FALSE, TRUE)
+    legendgroup <- ifelse(type == "all", "all", "box")
     p_box <- plotly::plot_ly()
     c <- NULL
     c <- 1
     for(i in minor){
-      p_box <- p_box %>% plotly::add_trace(data = df %>% dplyr::filter(minor == i), y = ~ y,  type = "box", 
+      p_box <- p_box %>% plotly::add_trace(data = df %>% dplyr::filter(minor == i), y = ~ y,  type = "box",
+                                           fillcolor = base::paste("rgba(", hex_to_rgb(colors_list[c]), ", 0.5)", sep = ""),
                                            line = list(color = colors_list[c]),
                                            marker = list(color = colors_list[c]),
                                            boxpoints = "all",
                                            jitter = 0.3,
                                            pointpos = -1.8, 
-                                           name = i)
+                                           name = i,
+                                           showlegend = showlegend,
+                                           legendgroup = legendgroup)
       c <- c + 1
     }
     p_box <- p_box %>% plotly::layout(yaxis = list(title = "By Frequency Unit"))
