@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plotting Forecast Object — plot_forecast • TSstudio</title>
+<title>Training, Testing, and Evaluating Multiple Time Series Forecasting Models — train_model • TSstudio</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,10 @@
 
 
 
-<meta property="og:title" content="Plotting Forecast Object — plot_forecast" />
+<meta property="og:title" content="Training, Testing, and Evaluating Multiple Time Series Forecasting Models — train_model" />
 
-<meta property="og:description" content="Visualization functions for forecast package forecasting objects" />
+<meta property="og:description" content="Method for train test and compare multiple time series models using either one partition (i.e., sample out) 
+or multipe partitions (backtesting)" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -114,64 +115,68 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plotting Forecast Object</h1>
-    <small class="dont-index">Source: <a href='https://github.com/RamiKrispin/TSstudio/blob/master/R/ts_plot.R'><code>R/ts_plot.R</code></a></small>
-    <div class="hidden name"><code>plot_forecast.Rd</code></div>
+    <h1>Training, Testing, and Evaluating Multiple Time Series Forecasting Models</h1>
+    <small class="dont-index">Source: <a href='https://github.com/RamiKrispin/TSstudio/blob/master/R/train_functions.R'><code>R/train_functions.R</code></a></small>
+    <div class="hidden name"><code>train_model.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Visualization functions for forecast package forecasting objects</p>
+    <p>Method for train test and compare multiple time series models using either one partition (i.e., sample out) 
+or multipe partitions (backtesting)</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>plot_forecast</span>(<span class='no'>forecast_obj</span>, <span class='kw'>title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>Xtitle</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>Ytitle</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>color</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>2</span>)</pre>
+    <pre class="usage"><span class='fu'>train_model</span>(<span class='no'>input</span>, <span class='no'>methods</span>, <span class='no'>train_method</span>, <span class='no'>horizon</span>, <span class='kw'>error</span> <span class='kw'>=</span> <span class='st'>"MAPE"</span>,
+  <span class='kw'>xreg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>forecast_obj</th>
-      <td><p>A forecast object from the forecast, forecastHybrid, or bsts packages</p></td>
+      <th>input</th>
+      <td><p>A univariate time series object (ts class)</p></td>
     </tr>
     <tr>
-      <th>title</th>
-      <td><p>A character, a plot title, optional</p></td>
+      <th>methods</th>
+      <td><p>A list, defines the models to use for training and forecasting the series. 
+The list must include a sub list with the model type, and the model's arguments (when applicable) and notes about the model. 
+The sub-list name will be used as the model ID. Possible models:</p>
+<p><code><a href='https://www.rdocumentation.org/packages/stats/topics/arima'>arima</a></code> - model from the stats package</p>
+<p><code><a href='https://www.rdocumentation.org/packages/forecast/topics/auto.arima'>auto.arima</a></code> - model from the forecast package</p>
+<p><code><a href='https://www.rdocumentation.org/packages/forecast/topics/ets'>ets</a></code> - model from the forecast package</p>
+<p><code><a href='https://www.rdocumentation.org/packages/stats/topics/HoltWinters'>HoltWinters</a></code> - model from the stats package</p>
+<p><code><a href='https://www.rdocumentation.org/packages/forecast/topics/nnetar'>nnetar</a></code> - model from the forecast package</p>
+<p><code><a href='https://www.rdocumentation.org/packages/forecast/topics/tslm'>tslm</a></code> - model from the forecast package (note that the 'tslm' model must have the formula argument in the 'method_arg' argument)</p></td>
     </tr>
     <tr>
-      <th>Xtitle</th>
-      <td><p>Set the X axis title, default set to NULL</p></td>
+      <th>train_method</th>
+      <td><p>A list, defines the train approach, either using a single testing partition (sample out) 
+or use multiple testing partitions (backtesting). The list should include the training method argument, (please see 'details' for the structure of the argument)</p></td>
     </tr>
     <tr>
-      <th>Ytitle</th>
-      <td><p>Set the Y axis title, default set to NULL</p></td>
+      <th>horizon</th>
+      <td><p>An integer, defines the forecast horizon</p></td>
     </tr>
     <tr>
-      <th>color</th>
-      <td><p>A character, the plot, support both name and expression</p></td>
+      <th>error</th>
+      <td><p>A character, defines the error metrics to be used to sort the models leaderboard. Possible metric - "MAPE" or "RMSE</p></td>
     </tr>
     <tr>
-      <th>width</th>
-      <td><p>An Integer, define the plot width, default is set to 2</p></td>
+      <th>xreg</th>
+      <td><p>Optional, a list with two vectors (e.g., data.frame or matrix) of external regressors, 
+one vector corresponding to the input series and second to the forecast itself 
+(e.g., must have the same length as the input and forecast horizon, respectively)</p></td>
     </tr>
     </table>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='no'>USgas</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>forecast</span>)
-<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/forecast/topics/ets'>ets</a></span>(<span class='no'>USgas</span>)
-<span class='no'>fc</span><span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/forecast/topics/forecast'>forecast</a></span>(<span class='no'>fit</span>, <span class='kw'>h</span> <span class='kw'>=</span> <span class='fl'>60</span>)
-<span class='fu'>plot_forecast</span>(<span class='no'>fc</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-            
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+                </ul>
 
   </div>
 </div>
