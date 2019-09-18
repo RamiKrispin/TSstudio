@@ -340,11 +340,14 @@ ts_seasonal <- function(ts.obj,
     minor <- base::levels(df$minor)
     showlegend <- legendgroup <- NULL
     showlegend <- ifelse(type == "all", FALSE, TRUE)
-    legendgroup <- ifelse(type == "all", "all", "box")
+    
     p_box <- plotly::plot_ly()
     c <- NULL
     c <- 1
     for(i in minor){
+      legendgroup <- ifelse(type == "all", 
+                            base::paste("all", i, sep = "_"),  
+                            base::paste("box", i, sep = "_"))
       p_box <- p_box %>% plotly::add_trace(data = df %>% dplyr::filter(minor == i), y = ~ y,  type = "box",
                                            fillcolor = base::paste("rgba(", hex_to_rgb(colors_list[c]), ", 0.5)", sep = ""),
                                            line = list(color = colors_list[c]),
