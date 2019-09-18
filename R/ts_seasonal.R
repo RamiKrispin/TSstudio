@@ -320,11 +320,14 @@ ts_seasonal <- function(ts.obj,
     
     showlegend <- legendgroup <- NULL
     showlegend <- TRUE
-    legendgroup <- ifelse(type == "all", "all", NULL)
+    
     
     
     p_cycle <- plotly::plot_ly()
     for(i in 2:ncol(df_t)){
+      legendgroup <- ifelse(type == "all", 
+                            base::paste("all", colnames(df_t)[i], sep = "_"),  
+                            base::paste("cycle", colnames(df_t)[i], sep = "_"))
       p_cycle <- p_cycle %>% 
         plotly::add_lines(x = df_t[, 1], y = df_t[, i], 
                           name = colnames(df_t)[i], 
