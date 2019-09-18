@@ -39,19 +39,19 @@ ts_backtesting(ts.obj, models = "abehntw", periods = 6,
 
 \item{plot}{Logical, if TRUE desplay a plot with the backtesting progress}
 
-\item{a.arg}{List, an optional arguments to pass to the \code{\link[forecast]{auto.arima}} function}
+\item{a.arg}{A list, an optional arguments to pass to the \code{\link[forecast]{auto.arima}} function}
 
-\item{b.arg}{List, an optional arguments to pass to the \code{\link[bsts]{bsts}} function}
+\item{b.arg}{A list, an optional arguments to pass to the \code{\link[bsts]{bsts}} function}
 
-\item{e.arg}{List, an optional argument to pass to the \code{\link[forecast]{ets}} function}
+\item{e.arg}{A list, an optional argument to pass to the \code{\link[forecast]{ets}} function}
 
-\item{h.arg}{List, an optional argument to pass to the \code{\link[forecastHybrid]{hybridModel}} function}
+\item{h.arg}{A list, an optional argument to pass to the \code{\link[forecastHybrid]{hybridModel}} function}
 
-\item{n.arg}{List, an optional argument to pass to the \code{\link[forecast]{nnetar}} function}
+\item{n.arg}{A list, an optional argument to pass to the \code{\link[forecast]{nnetar}} function}
 
-\item{t.arg}{List, an optional arguments to pass to the \code{\link[forecast]{tbats}} function}
+\item{t.arg}{A list, an optional arguments to pass to the \code{\link[forecast]{tbats}} function}
 
-\item{w.arg}{List, an optional arguments to pass to the \code{\link[stats]{HoltWinters}} function}
+\item{w.arg}{A list, an optional arguments to pass to the \code{\link[stats]{HoltWinters}} function}
 
 \item{xreg.h}{A data.frame or matrix, optional argument, 
 set the futuer values external regressors in case using the 

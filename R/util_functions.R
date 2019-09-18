@@ -282,7 +282,7 @@ zoo_to_ts <- function(zoo.obj){
 
 #'  Split Time Series Object for Training and Testing Partitions 
 #' @export
-#' @param ts.obj A univariate time series object of a class "ts"
+#' @param ts.obj A univariate time series object of a class "ts" or "tsibble"
 #' @param sample.out An integer, set the number of periods of the testing or sample out partition, defualt set for 
 #' 30 percent of the lenght of the series
 #' @description Split a time series object into training and testing partitions
@@ -309,12 +309,17 @@ zoo_to_ts <- function(zoo.obj){
 
 ts_split <- function(ts.obj, sample.out = NULL){
   
-  if (!stats::is.ts(ts.obj)) {
-    stop("The 'ts.obj' is not a valid 'ts' object")
+  if (!stats::is.ts(ts.obj) && !tsibble::is.tsibble(ts.obj)) {
+    stop("The 'ts.obj' is not a valid 'ts' or 'tsibble' object")
   }
   
   l <- train <- test <- split <- NULL
+  if(stats::is.ts(ts.obj)){
   l <- base::length(ts.obj)
+  } else if(tsibble::is.tsibble(ts.obj)){
+  l <- base::nrow(ts.obj)  
+  }
+  
   
   if(base::is.null(sample.out)){
     h <- base::round(l * 0.3)
@@ -328,7 +333,7 @@ ts_split <- function(ts.obj, sample.out = NULL){
   } else {
     h <- sample.out
   }
-  
+  if(stats::is.ts(ts.obj)){
   split <- base::list(
     train <- stats::window(ts.obj, 
                            start = stats::time(ts.obj)[1], 
@@ -336,7 +341,10 @@ ts_split <- function(ts.obj, sample.out = NULL){
     test <- stats::window(ts.obj, 
                           start = stats::time(ts.obj)[base::length(stats::time(ts.obj)) - h + 1], 
                           end = stats::time(ts.obj)[base::length(stats::time(ts.obj))])
-  )
+  )} else if(tsibble::is.tsibble(ts.obj)){
+    split <- base::list(train = ts.obj[1:(base::nrow(ts.obj) - h),],
+                        test = ts.obj[(base::nrow(ts.obj) - h + 1):base::nrow(ts.obj), ])
+  }
   base::names(split) <- c("train", "test")
   return(split)
 }
