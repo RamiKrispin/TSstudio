@@ -1984,7 +1984,9 @@ create_model <- function(){
   return(model_base)
 }
 
-
+#' @export
+#' @rdname create_model
+#' 
 add_input <- function(model.obj, input){
   `%>%` <- magrittr::`%>%`
   # Error handling 
@@ -2012,4 +2014,55 @@ add_input <- function(model.obj, input){
   }
   
   return(model.obj)
+}
+
+
+#' @export
+#' @rdname create_model
+#' 
+add_methods <- function(model.obj, methods){
+  `%>%` <- magrittr::`%>%`
+  method_list <- models_df <- NULL
+  method_list <- list("arima", "auto.arima", "ets", "HoltWinters", "nnetar", "tslm")
+  # Error handling 
+  # Checking the model.obj class
+  if(base::class(model.obj) != "train_model"){
+    stop("The 'model.obj' is not valid 'train_model' object")
+  }
+  
+  # Validating the methods object
+  if(!base::is.list(methods)){
+    stop("Error on the 'methods' argument: the argument is not a list")
+  } else if(base::is.null(base::names(methods))){
+    stop("Error on the 'methods' argument: could not find the models IDs")
+  } else if(base::any("NULL" %in% base::as.character(methods %>% purrr::map(~.x[["method"]])))){
+    stop("Error on the 'methods' argument: at least one of the methods is missing the 'method' argument")
+  } 
+  
+  if(!base::all(base::as.character(methods %>% purrr::map_chr(~.x[["method"]])) %in% method_list)){
+    stop("Error on the 'methods' argument: at least one of the models methods is not valid")
+  }
+  
+  # Adding the metods to the model.obj object
+  if(("methods" %in% base::names(model.obj) && base::is.null(model.obj$methods))|| !"methods" %in% base::names(model.obj)){
+    model.obj$methods <- methods
+    # In case the object has existing methods
+  } else if("methods" %in% base::names(model.obj) && !base::is.null(model.obj$methods)) {
+    # Validating that object is not exist already
+    for(i in base::names(methods)){
+      if(i %in% base::names(model.obj$methods)){
+        q <- base::readline(base::paste("The", i, "method already exists in the model object, do you wish to overwrite it? yes/no ", sep = " ")) %>% base::tolower()
+        if(q == "y" || q == "yes"){
+          model.obj$methods[[i]] <- methods[[i]]
+        } else{
+          warning(base::paste("Method", i, "were not added", sep = " "))
+        } 
+      } else {
+        model.obj$methods[[i]] <- methods[[i]]
+      }
+    }
+    
+  }
+  return(model.obj)
+  
 }
