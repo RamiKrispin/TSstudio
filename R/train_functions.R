@@ -2158,3 +2158,30 @@ add_train_method <- function(model.obj, train_method){
   
 }
 
+#' @export
+#' @rdname create_model
+#' 
+add_horizon <- function(model.obj, horizon){
+  `%>%` <- magrittr::`%>%`
+  
+  # Error handling 
+  # Checking the model.obj class
+  if(base::class(model.obj) != "train_model"){
+    stop("The 'model.obj' is not valid 'train_model' object")
+  }
+  
+  if(!"horizon" %in% base::names(model.obj) || base::is.null(model.obj$horizon)){
+    model.obj$horizon <- horizon
+  } else if(!base::is.null(model.obj$horizon)){
+    q <- base::readline(base::paste("The model object already has horizon, do you wish to overwrite it? yes/no ", sep = " ")) %>% base::tolower()
+    if(q == "y" || q == "yes"){
+      model.obj$horizon <- horizon
+    } else{
+      warning("The model horizon did not change")
+    }  
+  }
+  
+  return(model.obj)
+}
+
+

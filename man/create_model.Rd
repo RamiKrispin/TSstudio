@@ -6,6 +6,7 @@
 \alias{add_methods}
 \alias{remove_methods}
 \alias{add_train_method}
+\alias{add_horizon}
 \title{Build the Components of the \code{\link[TSstudio]{train_model}} Function}
 \usage{
 create_model()
@@ -17,6 +18,8 @@ add_methods(model.obj, methods)
 remove_methods(model.obj, method_ids)
 
 add_train_method(model.obj, train_method)
+
+add_horizon(model.obj, horizon)
 }
 \arguments{
 \item{model.obj}{The train_model skeleton, created by the create_model 
