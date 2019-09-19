@@ -2,9 +2,45 @@
 % Please edit documentation in R/train_functions.R
 \name{create_model}
 \alias{create_model}
+\alias{add_input}
 \title{Build the Components of the \code{\link[TSstudio]{train_model}} Function}
 \usage{
 create_model()
+
+add_input(model.obj, input)
+}
+\arguments{
+\item{model.obj}{The train_model skeleton, created by the create_model 
+function or edited by add_input, add_methods, remove_methods, add_train_method or add_horizon}
+
+\item{input}{A univariate time series object (ts class)}
+
+\item{methods}{A list, defines the models to use for training and forecasting the series. 
+The list must include a sub list with the model type, and the model's arguments (when applicable) and notes about the model. 
+The sub-list name will be used as the model ID. Possible models:
+
+\code{\link[stats]{arima}} - model from the stats package 
+
+\code{\link[forecast]{auto.arima}} - model from the forecast package
+
+\code{\link[forecast]{ets}} - model from the forecast package
+
+ \code{\link[stats]{HoltWinters}} - model from the stats package 
+
+\code{\link[forecast]{nnetar}} - model from the forecast package
+
+\code{\link[forecast]{tslm}} - model from the forecast package (note that the 'tslm' model must have the formula argument in the 'method_arg' argument)}
+
+\item{train_method}{A list, defines the train approach, either using a single testing partition (sample out) 
+or use multiple testing partitions (backtesting). The list should include the training method argument, (please see 'details' for the structure of the argument)}
+
+\item{horizon}{An integer, defines the forecast horizon}
+
+\item{xreg}{Optional, a list with two vectors (e.g., data.frame or matrix) of external regressors, 
+one vector corresponding to the input series and second to the forecast itself 
+(e.g., must have the same length as the input and forecast horizon, respectively)}
+
+\item{error}{A character, defines the error metrics to be used to sort the models leaderboard. Possible metric - "MAPE" or "RMSE"}
 }
 \description{
 Add, edit, or remove the components of the  \code{\link[TSstudio]{train_model}} function
