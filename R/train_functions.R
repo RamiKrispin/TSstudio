@@ -1946,7 +1946,33 @@ train_model <- function(input,
 #' Build the Components of the \code{\link[TSstudio]{train_model}} Function 
 #' @description  Add, edit, or remove the components of the  \code{\link[TSstudio]{train_model}} function
 #' @export
+#' @param model.obj The train_model skeleton, created by the create_model 
+#' function or edited by add_input, add_methods, remove_methods, add_train_method or add_horizon
+#' @param input A univariate time series object (ts class)
+#' @param methods A list, defines the models to use for training and forecasting the series. 
+#' The list must include a sub list with the model type, and the model's arguments (when applicable) and notes about the model. 
+#' The sub-list name will be used as the model ID. Possible models:
 #' 
+#' \code{\link[stats]{arima}} - model from the stats package 
+#' 
+#' \code{\link[forecast]{auto.arima}} - model from the forecast package
+#' 
+#' \code{\link[forecast]{ets}} - model from the forecast package
+#' 
+#'  \code{\link[stats]{HoltWinters}} - model from the stats package 
+#' 
+#' \code{\link[forecast]{nnetar}} - model from the forecast package
+#'
+#' \code{\link[forecast]{tslm}} - model from the forecast package (note that the 'tslm' model must have the formula argument in the 'method_arg' argument)
+#' 
+#' @param train_method A list, defines the train approach, either using a single testing partition (sample out) 
+#' or use multiple testing partitions (backtesting). The list should include the training method argument, (please see 'details' for the structure of the argument)
+#' @param horizon An integer, defines the forecast horizon
+#' @param xreg Optional, a list with two vectors (e.g., data.frame or matrix) of external regressors, 
+#' one vector corresponding to the input series and second to the forecast itself 
+#' (e.g., must have the same length as the input and forecast horizon, respectively)
+#' @param error A character, defines the error metrics to be used to sort the models leaderboard. Possible metric - "MAPE" or "RMSE"
+
 
 
 create_model <- function(){
@@ -1956,4 +1982,34 @@ create_model <- function(){
                           horizon = NULL)
   class(model_base) <- "train_model"
   return(model_base)
+}
+
+
+add_input <- function(model.obj, input){
+  `%>%` <- magrittr::`%>%`
+  # Error handling 
+  # Checking the input object
+  if(!stats::is.ts(input)){
+    stop("The input argument is not a valid 'ts' object")
+  } else if(stats::is.mts(input)){
+    stop("Cannot use multiple time series object as input")
+  }
+  
+  # Checking the model.obj 
+  if(base::class(model.obj) != "train_model"){
+    stop("The 'model.obj' is not valid 'train_model' object")
+  } else if("input" %in% base::names(model.obj) && base::is.null(model.obj$input)){
+    model.obj$input <- input
+  } else if("input" %in% base::names(model.obj) && !base::is.null(model.obj$input)){
+    q <- base::readline("The 'model.obj' already has input object, do you want to overwrite it? yes/no ") %>% base::tolower()
+    if(q == "y" || q == "yes"){
+      model.obj$input <- input
+    } else if( q == "n" || q == "no"){
+      warning("The 'input' was not added to the model object")
+    } else {
+      stop("Invalid input...")
+    }
+  }
+  
+  return(model.obj)
 }
