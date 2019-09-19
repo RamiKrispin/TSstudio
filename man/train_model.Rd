@@ -41,9 +41,6 @@ one vector corresponding to the input series and second to the forecast itself
 Method for train test and compare multiple time series models using either one partition (i.e., sample out) 
 or multipe partitions (backtesting)
 }
-\details{
-TO DO...
-}
 \examples{
 
 # Defining the models and their arguments
