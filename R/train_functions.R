@@ -1342,7 +1342,6 @@ plot_grid <- function(grid.obj,
 #' one vector corresponding to the input series and second to the forecast itself 
 #' (e.g., must have the same length as the input and forecast horizon, respectively)
 #' @param error A character, defines the error metrics to be used to sort the models leaderboard. Possible metric - "MAPE" or "RMSE"
-#' @details  TO DO...
 #' @examples 
 #' 
 #' # Defining the models and their arguments
@@ -1922,4 +1921,19 @@ train_model <- function(input,
   return(output)
   
   
+}
+
+#' Build the \code{\link[TSstudio]{train_model}} Function Components
+#' 
+#' @export
+#' 
+
+
+create_model <- function(){
+  model_base <-base::list(input = NULL,
+                          methods = NULL,
+                          train_method = NULL,
+                          horizon = NULL)
+  class(model_base) <- "train_model"
+  return(model_base)
 }
