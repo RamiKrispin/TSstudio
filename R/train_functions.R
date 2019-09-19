@@ -2023,6 +2023,11 @@ train_model <- function(input,
 #'                                       train_arg = list(partitions = 6, 
 #'                                                        sample.out = 12, 
 #'                                                        space = 3)))
+#'                                                        
+#'                                                        
+#' # Set the forecast horizon
+#' md <- add_horizon(model.obj = md, horizon = 12)
+#'                                                         
 #' ### Alternatively, can use the magrittr to pipe the process                                                       
 #' library(magrittr)
 #' 
@@ -2032,7 +2037,9 @@ train_model <- function(input,
 #'       add_train_method(train_method = list(method = "backtesting", 
 #'                                            train_arg = list(partitions = 6, 
 #'                                                        sample.out = 12, 
-#'                                                        space = 3)))
+#'                                                        space = 3))) %>%
+#'        add_horizon(horizon = 12)
+#'        
 #' # Run the model
 #' fc <- md %>% build_model                                                        
 #' 
