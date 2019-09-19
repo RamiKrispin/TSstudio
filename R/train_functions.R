@@ -2016,15 +2016,27 @@ train_model <- function(input,
 #' md <- add_methods(model.obj = md, methods = methods2)
 #' 
 #' # Remove methods
-#' md <- remove_methods(model.obj = md, method_ids = c("ets2", "auto.arima"))  
+#' md <- remove_methods(model.obj = md, method_ids = c("ets2", "auto_arima"))  
 #'   
 #' # Add train method
 #' md <- add_train_method(model.obj = md, train_method = list(method = "backtesting", 
 #'                                       train_arg = list(partitions = 6, 
 #'                                                        sample.out = 12, 
 #'                                                        space = 3)))
-#'                                                        
-#'                                                        
+#' ### Alternatively, can use the magrittr to pipe the process                                                       
+#' library(magrittr)
+#' 
+#' md <- create_model() %>%
+#'       add_input(input = USgas) %>%
+#'       add_methods(methods = methods) %>%
+#'       add_train_method(train_method = list(method = "backtesting", 
+#'                                            train_arg = list(partitions = 6, 
+#'                                                        sample.out = 12, 
+#'                                                        space = 3)))
+#' # Run the model
+#' fc <- md %>% build_model                                                        
+#' 
+
 
 
 
@@ -2134,8 +2146,8 @@ remove_methods <- function(model.obj, method_ids){
   }
   
   # Checking the method_ids argument
-  if(!is.character(methods_ids)){
-    stop("The 'methods_ids' argument is not valid input")
+  if(!is.character(method_ids)){
+    stop("The 'method_ids' argument is not valid input")
   }
   
   
