@@ -2,10 +2,10 @@
 % Please edit documentation in R/train_functions.R
 \name{create_model}
 \alias{create_model}
-\title{Build the \code{\link[TSstudio]{train_model}} Function Components}
+\title{Build the Components of the \code{\link[TSstudio]{train_model}} Function}
 \usage{
 create_model()
 }
 \description{
-Build the \code{\link[TSstudio]{train_model}} Function Components
+Add, edit, or remove the components of the  \code{\link[TSstudio]{train_model}} function
 }

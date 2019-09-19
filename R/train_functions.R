@@ -1943,8 +1943,8 @@ train_model <- function(input,
   
 }
 
-#' Build the \code{\link[TSstudio]{train_model}} Function Components
-#' 
+#' Build the Components of the \code{\link[TSstudio]{train_model}} Function 
+#' @description  Add, edit, or remove the components of the  \code{\link[TSstudio]{train_model}} function
 #' @export
 #' 
 
