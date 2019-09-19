@@ -1355,6 +1355,7 @@ train_model <- function(input,
   
   method_list <- input_freq <- input_length <- w <- s1 <- s2 <-  grid_df <- models_df <- w_range <-  NULL
   methods_selected <- model_id <- start <- end <- partition <- model <- avg_mape <- avg_rmse <- NULL
+  # Whenever updating, need to update the add_method function as well
   method_list <- list("arima", "auto.arima", "ets", "HoltWinters", "nnetar", "tslm")
   
   
@@ -1384,10 +1385,15 @@ train_model <- function(input,
   
   if(!base::is.list(methods)){
     stop("Error on the 'methods' argument: the argument is not a list")
+  } else if(base::is.null(base::names(methods))){
+    stop("Error on the 'methods' argument: could not find the models IDs")
+  } else if(base::any("NULL" %in% base::as.character(methods %>% purrr::map(~.x[["method"]])))){
+    stop("Error on the 'methods' argument: at least one of the methods is missing the 'method' argument")
   }
   
   models_df <- base::data.frame(model_id = base::names(methods),
-                                methods_selected  = base::as.character(methods %>% purrr::map_chr(~.x[["method"]])), 
+                                methods_selected  = base::as.character(methods %>% purrr::map_chr(~.x[["method"]])),
+                                notes = base::as.character(methods %>% purrr::map(~.x[["notes"]])),
                                 stringsAsFactors = FALSE)
   
   if(!base::all(models_df$methods_selected %in% method_list)){
@@ -1438,6 +1444,7 @@ train_model <- function(input,
         base::is.null(train_method$train_arg$sample.in))){
       s1 <- s2 <- 1
       
+     
       
       
       # If defining the sample.in -> check that the argument is valid
@@ -1455,10 +1462,10 @@ train_model <- function(input,
       
     }
     
-    w_range <- base::data.frame(start = c(s1, s2), 
+    w_range <- base::data.frame(start = c(base::rep(s1, base::length(w)), s2), 
                                 end = c(w, input_length), 
-                                type = c(base::rep("train", base::length(s1)), "forecast"),
-                                partition = c(base::paste0("partition_", 1:base::length(s1), sep = ""), "final_partition"),
+                                type = c(base::rep("train", base::length(w)), "forecast"),
+                                partition = c(base::paste0("partition_", 1:base::length(w), sep = ""), "final_partition"),
                                 stringsAsFactors = FALSE)
     
     
@@ -1861,13 +1868,14 @@ train_model <- function(input,
     dplyr::group_by(model_id) %>%
     dplyr::summarise_all(~mean(.)) %>% dplyr::select(-partition) %>%
     dplyr::left_join(models_df %>% 
-                       dplyr::select(model_id, model = methods_selected), 
+                       dplyr::select(model_id, model = methods_selected, notes), 
                      by = "model_id") %>%
-    dplyr::select(model_id, model, dplyr::everything()) 
+    dplyr::select(model_id, model, notes, dplyr::everything()) 
   
   base::names(leaderboard) <- c("model_id", 
                                 "model", 
-                                base::paste0("avg_", base::names(leaderboard)[3:base::ncol(leaderboard)]))
+                                "notes",
+                                base::paste0("avg_", base::names(leaderboard)[4:base::ncol(leaderboard)]))
   
   if(error == "MAPE"){
     leaderboard <- leaderboard %>% dplyr::arrange(avg_mape)
@@ -1887,7 +1895,7 @@ train_model <- function(input,
                                            xreg = xreg))
   
   
-  
+  print(leaderboard)
   class(output) <- "train_model"
   return(output)
   
