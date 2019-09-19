@@ -1411,22 +1411,22 @@ train_model <- function(input,
   }
   
   
-  # check all the backtesting arguments
-  if(!"partitions" %in% base::names(train_method$train_arg)){
-    stop("Error on the 'train_method' argument: the number of partitions of the backtesting was not defined")
-  }
-  
-  # Checking the testing partition 
-  if(!"sample.out" %in% base::names(train_method$train_arg)){
-    stop("Error on the 'train_method' argument: the testing partition length of the backtesting was not defined")
-  }
-  
-  # Checking the space argument
-  if(!"space" %in% base::names(train_method$train_arg)){
-    stop("Error on the 'train_method' argument: the space between each partition of the backtesting was not defined")
-  }
-  
   if(train_method$method == "backtesting"){
+    # check all the backtesting arguments
+    if(!"partitions" %in% base::names(train_method$train_arg)){
+      stop("Error on the 'train_method' argument: the number of partitions of the backtesting was not defined")
+    }
+    
+    # Checking the testing partition 
+    if(!"sample.out" %in% base::names(train_method$train_arg)){
+      stop("Error on the 'train_method' argument: the testing partition length of the backtesting was not defined")
+    }
+    
+    # Checking the space argument
+    if(!"space" %in% base::names(train_method$train_arg)){
+      stop("Error on the 'train_method' argument: the space between each partition of the backtesting was not defined")
+    }
+    
     
     w <-  seq(from = input_length - train_method$train_arg$space * (train_method$train_arg$partitions - 1), 
               by = train_method$train_arg$space, 
