@@ -1374,8 +1374,10 @@ train_model <- function(input,
   # Setting the pipe operator
   `%>%` <- magrittr::`%>%`
   
-  method_list <- input_freq <- input_length <- w <- s1 <- s2 <-  grid_df <- models_df <- w_range <-  NULL
-  methods_selected <- model_id <- start <- end <- partition <- model <- avg_mape <- avg_rmse <- NULL
+  method_list <- input_freq <- input_length <- w <- s1 <- s2 <- NULL
+  grid_df <- models_df <- w_range <-  notes <- NULL
+  methods_selected <- model_id <- start <- end <- partition <- NULL
+  model <- avg_mape <- avg_rmse <- NULL
   # Whenever updating, need to update the add_method function as well
   method_list <- list("arima", "auto.arima", "ets", "HoltWinters", "nnetar", "tslm")
   
