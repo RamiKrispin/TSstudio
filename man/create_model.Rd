@@ -3,11 +3,14 @@
 \name{create_model}
 \alias{create_model}
 \alias{add_input}
+\alias{add_methods}
 \title{Build the Components of the \code{\link[TSstudio]{train_model}} Function}
 \usage{
 create_model()
 
 add_input(model.obj, input)
+
+add_methods(model.obj, methods)
 }
 \arguments{
 \item{model.obj}{The train_model skeleton, created by the create_model 
