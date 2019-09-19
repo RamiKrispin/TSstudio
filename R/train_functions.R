@@ -1345,19 +1345,35 @@ plot_grid <- function(grid.obj,
 #' @examples 
 #' 
 #' # Defining the models and their arguments
-#' methods <- list(ets1 = list(method = "ets", method_arg = list(opt.crit = "lik"), notes = "ETS model with opt.crit = lik"),
-#'                 ets2 = list(method = "ets", method_arg = list(opt.crit = "amse"), notes = "ETS model with opt.crit = amse"),
-#'                 arima1 = list(method = "arima", method_arg = list(order = c(1,1,1), seasonal = list(order = c(1,0,1))), notes = "SARIMA(1,1,1)(1,0,1)"),
-#'                 arima2 = list(method = "arima", method_arg = list(order = c(2,1,2), seasonal = list(order = c(1,1,1))), notes = "SARIMA(2,1,2)(1,1,1)"),
-#'                 auto_arima = list(method = "auto.arima", method_arg = NULL, notes = "auto.arima model"),
-#'                 hw = list(method = "HoltWinters", method_arg = NULL, notes = "HoltWinters Model"),
-#'                 tslm = list(method = "tslm", method_arg = list(formula = input ~ trend + season), notes = "tslm model with trend and seasonal components"))
+#' methods <- list(ets1 = list(method = "ets", 
+#'                             method_arg = list(opt.crit = "lik"), 
+#'                             notes = "ETS model with opt.crit = lik"),
+#'                 ets2 = list(method = "ets", 
+#'                             method_arg = list(opt.crit = "amse"), 
+#'                             notes = "ETS model with opt.crit = amse"),
+#'                 arima1 = list(method = "arima", 
+#'                               method_arg = list(order = c(1,1,1), seasonal = list(order = c(1,0,1))), 
+#'                               notes = "SARIMA(1,1,1)(1,0,1)"),
+#'                 arima2 = list(method = "arima", 
+#'                               method_arg = list(order = c(2,1,2), seasonal = list(order = c(1,1,1))), 
+#'                               notes = "SARIMA(2,1,2)(1,1,1)"),
+#'                 auto_arima = list(method = "auto.arima", 
+#'                                   method_arg = NULL, 
+#'                                   notes = "auto.arima model"),
+#'                 hw = list(method = "HoltWinters", 
+#'                           method_arg = NULL, 
+#'                           notes = "HoltWinters Model"),
+#'                 tslm = list(method = "tslm", 
+#'                             method_arg = list(formula = input ~ trend + season), 
+#'                             notes = "tslm model with trend and seasonal components"))
 #' 
 #' # Training the models with backtesting
-#' md <- train_model(input = USgas,
+#' md1 <- train_model(input = USgas,
 #'                   methods = methods,
 #'                   train_method = list(method = "backtesting", 
-#'                                       train_arg = list(partitions = 6, sample.out = 12, space = 3)),
+#'                                       train_arg = list(partitions = 6, 
+#'                                                        sample.out = 12, 
+#'                                                        space = 3)),
 #'                   horizon = 12,
 #'                   error = "MAPE")
 #'                   
