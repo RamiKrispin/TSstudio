@@ -2,7 +2,7 @@
 % Please edit documentation in R/train_functions.R
 \name{train_model}
 \alias{train_model}
-\title{Training, Testing, and Evaluating Multiple Time Series Forecasting Models}
+\title{Train, Test, Evaluate, and Forecast Multiple Time Series Forecasting Models}
 \usage{
 train_model(input, methods, train_method, horizon, error = "MAPE",
   xreg = NULL)
