@@ -5,6 +5,7 @@
 \alias{add_input}
 \alias{add_methods}
 \alias{remove_methods}
+\alias{add_train_method}
 \title{Build the Components of the \code{\link[TSstudio]{train_model}} Function}
 \usage{
 create_model()
@@ -14,6 +15,8 @@ add_input(model.obj, input)
 add_methods(model.obj, methods)
 
 remove_methods(model.obj, method_ids)
+
+add_train_method(model.obj, train_method)
 }
 \arguments{
 \item{model.obj}{The train_model skeleton, created by the create_model 

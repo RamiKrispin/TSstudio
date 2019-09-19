@@ -2,6 +2,7 @@
 
 export(add_input)
 export(add_methods)
+export(add_train_method)
 export(ccf_plot)
 export(check_res)
 export(create_model)

@@ -2100,3 +2100,61 @@ remove_methods <- function(model.obj, method_ids){
   
   return(model.obj)
 }
+
+#' @export
+#' @rdname create_model
+#' 
+add_train_method <- function(model.obj, train_method){
+  `%>%` <- magrittr::`%>%`
+  
+  # Error handling 
+  # Checking the model.obj class
+  if(base::class(model.obj) != "train_model"){
+    stop("The 'model.obj' is not valid 'train_model' object")
+  }
+  
+  # Checking the train argument
+  if(!base::is.list(train_method)){
+    stop("Error on the 'train_method' argument: the argument is not a list")
+  } else if(!"method" %in% base::names(train_method)){
+    stop("Error on the 'train_method' argument: the 'method' argument is missing")
+  } else if(!"train_arg" %in% base::names(train_method)){
+    stop("Error on the 'train_method' argument: the 'train_arg' argument is missing")
+  }
+  
+  if(train_method$method == "backtesting"){
+    # check all the backtesting arguments
+    if(!"partitions" %in% base::names(train_method$train_arg)){
+      stop("Error on the 'train_method' argument: the number of partitions of the backtesting was not defined")
+    }
+    
+    # Checking the testing partition 
+    if(!"sample.out" %in% base::names(train_method$train_arg)){
+      stop("Error on the 'train_method' argument: the testing partition length of the backtesting was not defined")
+    }
+    
+    # Checking the space argument
+    if(!"space" %in% base::names(train_method$train_arg)){
+      stop("Error on the 'train_method' argument: the space between each partition of the backtesting was not defined")
+    }
+  } else if(train_method$method == "sample.out"){
+    if(!"sample.out" %in% base::names(train_method$train_arg)){
+      stop("Error on the 'train_method' argument: the length of the sample out was not defined") 
+    }
+  }
+  
+  # Adding the train object
+  if(!"train_method" %in% base::names(model.obj) || base::is.null(model.obj$train_method)){
+    model.obj$train_method <- train_method
+  } else if(!base::is.null(model.obj$train_method)){
+    q <- base::readline(base::paste("The model object already has train method, do you wish to overwrite it? yes/no ", sep = " ")) %>% base::tolower()
+    if(q == "y" || q == "yes"){
+      model.obj$methods[[i]] <- methods[[i]]
+    } else{
+      warning("Did not update the train method")
+    } 
+  }
+  return(model.obj)
+  
+}
+
