@@ -2066,3 +2066,37 @@ add_methods <- function(model.obj, methods){
   return(model.obj)
   
 }
+
+
+#' @export
+#' @rdname create_model
+#' 
+remove_methods <- function(model.obj, method_ids){
+  `%>%` <- magrittr::`%>%`
+  
+  # Error handling 
+  # Checking the model.obj class
+  if(base::class(model.obj) != "train_model"){
+    stop("The 'model.obj' is not valid 'train_model' object")
+  }
+  
+  # Checking the method_ids argument
+  if(!is.character(methods_ids)){
+    stop("The 'methods_ids' argument is not valid input")
+  }
+  
+  
+  if(!"methods" %in% base::names(model.obj) || base::is.null(model.obj$methods)){
+    stop("The input model object does not have any available method")
+  } 
+  
+  for(i in method_ids){
+    if(i %in% base::names(model.obj$methods)){
+      model.obj$methods[[i]] <- NULL
+    } else {
+      warning(base::paste("The", i, "does not exist on the model object"))
+    }
+  }
+  
+  return(model.obj)
+}
