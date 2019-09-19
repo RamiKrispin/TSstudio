@@ -2184,4 +2184,41 @@ add_horizon <- function(model.obj, horizon){
   return(model.obj)
 }
 
-
+#' @export
+#' @rdname create_model
+#' 
+build_model <- function(model.obj){
+  `%>%` <- magrittr::`%>%`
+  
+  # Error handling 
+  # Checking the model.obj class
+  if(base::class(model.obj) != "train_model"){
+    stop("The 'model.obj' is not valid 'train_model' object")
+  }
+  
+  if(!"horizon" %in% base::names(model.obj) || base::is.null(model.obj$horizon)){
+    stop("Cannot build a model, the 'horizon' argument is missing")
+  }
+  
+  if(!"methods" %in% base::names(model.obj) || base::is.null(model.obj$methods)){
+    stop("Cannot build a model, the 'methods' argument is missing")
+  }
+  
+  if(!"train_method" %in% base::names(model.obj) || base::is.null(model.obj$train_method)){
+    stop("Cannot build a model, the 'train_method' argument is missing")
+  }
+  
+  if(!"input" %in% base::names(model.obj) || base::is.null(model.obj$input)){
+    stop("Cannot build a model, the 'input' argument is missing")
+  }
+  
+  
+  output <- NULL
+  
+  output <- TSstudio::train_model(input = model.obj$input,
+                                  methods = model.obj$methods,
+                                  train_method = model.obj$train_method,
+                                  horizon = model.obj$horizon)
+  
+  return(output)
+}
