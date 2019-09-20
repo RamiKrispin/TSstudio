@@ -26,7 +26,20 @@ The sub-list name will be used as the model ID. Possible models:
 
 \code{\link[forecast]{tslm}} - model from the forecast package (note that the 'tslm' model must have the formula argument in the 'method_arg' argument)}
 
-\item{train_method}{A list, defines the train approach, either using a single testing partition (sample out) 
+\item{train_method}{A list, defines the backtesting parameters:
+
+partitions - an integer, set the number of training and testing partitions to be used in the backtesting process, 
+where when partition is set to 1 it is a simple holdout training approach
+ 
+space - an integer, defines the length of the backtesting window expansion
+ 
+sample.in - an integer, optional, defines the length of the training partitions, and therefore the backtesting window structure. 
+By default, it set to NULL and therefore, the backtesting using expending window. 
+Otherwise, when the sample.in defined, the window structure is sliding
+ 
+sample.in - an integer, optional, defines the length of the training partitions, and therefore the type of the backtesting window. 
+By default, is set to NULL, which implay that the backtesting is using an expending window. Otherwise, when defining the size of the training partition, th
+defines the train approach, either using a single testing partition (sample out) 
 or use multiple testing partitions (backtesting). The list should include the training method argument, (please see 'details' for the structure of the argument)}
 
 \item{horizon}{An integer, defines the forecast horizon}
@@ -69,12 +82,11 @@ methods <- list(ets1 = list(method = "ets",
                             notes = "tslm model with trend and seasonal components"))
 
 # Training the models with backtesting
-md1 <- train_model(input = USgas,
+md <- train_model(input = USgas,
                   methods = methods,
-                  train_method = list(method = "backtesting", 
-                                      train_arg = list(partitions = 6, 
-                                                       sample.out = 12, 
-                                                       space = 3)),
+                  train_method = list(partitions = 6, 
+                                      sample.out = 12, 
+                                      space = 3),
                   horizon = 12,
                   error = "MAPE")
                   
