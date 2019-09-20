@@ -1994,10 +1994,9 @@ train_model <- function(input,
 #' md <- remove_methods(model.obj = md, method_ids = c("ets2", "auto_arima"))  
 #'   
 #' # Add train method
-#' md <- add_train_method(model.obj = md, train_method = list(method = "backtesting", 
-#'                                       train_arg = list(partitions = 6, 
+#' md <- add_train_method(model.obj = md, train_method = list(partitions = 6, 
 #'                                                        sample.out = 12, 
-#'                                                        space = 3)))
+#'                                                        space = 3))
 #'                                                        
 #'                                                        
 #' # Set the forecast horizon
@@ -2009,10 +2008,9 @@ train_model <- function(input,
 #' md <- create_model() %>%
 #'       add_input(input = USgas) %>%
 #'       add_methods(methods = methods) %>%
-#'       add_train_method(train_method = list(method = "backtesting", 
-#'                                            train_arg = list(partitions = 6, 
-#'                                                        sample.out = 12, 
-#'                                                        space = 3))) %>%
+#'       add_train_method(train_method = list(partitions = 6, 
+#'                                            sample.out = 12, 
+#'                                            space = 3)) %>%
 #'        add_horizon(horizon = 12)
 #'        
 #' # Run the model
