@@ -1365,9 +1365,9 @@ plot_grid <- function(grid.obj,
 #'                             method_arg = list(opt.crit = "amse"), 
 #'                             notes = "ETS model with opt.crit = amse"),
 #'                 arima1 = list(method = "arima", 
-#'                               method_arg = list(order = c(1,1,1), 
+#'                               method_arg = list(order = c(2,1,1), 
 #'                                                 seasonal = list(order = c(1,0,1))), 
-#'                               notes = "SARIMA(1,1,1)(1,0,1)"),
+#'                               notes = "SARIMA(2,1,1)(1,0,1)"),
 #'                 arima2 = list(method = "arima", 
 #'                               method_arg = list(order = c(2,1,2), 
 #'                                                 seasonal = list(order = c(1,1,1))), 
@@ -1493,7 +1493,11 @@ train_model <- function(input,
      ("sample.in" %in% base::names(train_method) && 
       base::is.null(train_method$sample.in))){
     s1 <- s2 <- 1
-    
+    w_range <- base::data.frame(start = c(base::rep(s1, base::length(w)), s2), 
+                                end = c(w, input_length), 
+                                type = c(base::rep("train", base::length(w)), "forecast"),
+                                partition = c(base::paste0("partition_", 1:base::length(w), sep = ""), "final_partition"),
+                                stringsAsFactors = FALSE)
     # If defining the sample.in -> check that the argument is valid
   } else if("sample.in" %in% base::names(train_method)){
     # If defining the sample.in -> check that the argument is valid
@@ -1506,14 +1510,14 @@ train_model <- function(input,
     }
     s1 <- w - train_method$sample.out - train_method$sample.in + 1
     s2 <- input_length - train_method$sample.in + 1
-    
+    w_range <- base::data.frame(start = c(s1, s2), 
+                                end = c(w, input_length), 
+                                type = c(base::rep("train", base::length(w)), "forecast"),
+                                partition = c(base::paste0("partition_", 1:base::length(w), sep = ""), "final_partition"),
+                                stringsAsFactors = FALSE)
   }
   
-  w_range <- base::data.frame(start = c(base::rep(s1, base::length(w)), s2), 
-                              end = c(w, input_length), 
-                              type = c(base::rep("train", base::length(w)), "forecast"),
-                              partition = c(base::paste0("partition_", 1:base::length(w), sep = ""), "final_partition"),
-                              stringsAsFactors = FALSE)
+  
   
   # Checking the horizon argument
   if(horizon %% 1 != 0 || !base::is.numeric(horizon) || horizon <=0){
