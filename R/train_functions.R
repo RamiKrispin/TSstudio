@@ -2289,7 +2289,7 @@ set_error <- function(model.obj, error){
   } else if("error" %in% base::names(model.obj) && !base::is.null(model.obj$error)){
     q <- base::readline(base::paste("The model object already has 'error' argument, do you wish to overwrite it? (yes) ", sep = " ")) %>% base::tolower()
     if(q == "y" || q == "yes" || q == ""){
-      model.obj$horizon <- horizon
+      model.obj$error <- error
     } else{
       warning("No change had made on the model 'error' argument")
     }  
@@ -2297,4 +2297,46 @@ set_error <- function(model.obj, error){
   
   return(model.obj)
   
+}
+
+
+#' @export
+#' @rdname create_model
+#' 
+
+add_xreg <- function(model.obj, xreg){
+  `%>%` <- magrittr::`%>%`
+  
+  # Error handling 
+  # Checking the model.obj class
+  if(base::class(model.obj) != "train_model"){
+    stop("The 'model.obj' is not valid 'train_model' object")
+  }
+  
+  
+  # Checking the xreg argument
+  if(!base::is.null(xreg)){
+    if(!all(c("train", "forecast") %in% base::names(xreg))){
+      stop("Error on the 'xreg' argument: the 'xreg' list is not valid, please make sure setting the correspinding regressor",
+           " inputs for the 'input' argument (train) and for the forecast horizon (forecast)")
+    } else if(base::names(xreg$train) != base::names(xreg$forecast)){
+      stop("Error on the 'xreg' argument: the regressors names in the train and forecast inputs are not aligned")
+    } else if(base::nrow(xreg$train) != base::length(input)){
+      stop("Error on the 'xreg' argument: the length of the xreg train input is not aligned with the length of the input series")
+    } else if(base::nrow(xreg$forecast) != horizon){
+      stop("Error on the 'xreg' argument: the length of the xreg forecast input is not aligned with the forecast horizon")
+    }
+  }
+  if(!"xreg" %in% base::names(model.obj) ||
+     ("xreg" %in% base::names(model.obj) && base::is.null(model.obj$xreg))){
+    model.obj$xreg <- xreg
+  } else if("xreg" %in% base::names(model.obj) && !base::is.null(model.obj$xreg)){
+    q <- base::readline(base::paste("The model object already has 'xreg' argument, do you wish to overwrite it? (yes) ", sep = " ")) %>% base::tolower()
+    if(q == "y" || q == "yes" || q == ""){
+      model.obj$xreg <- xreg
+    } else{
+      warning("No change had made on the model 'xreg' argument")
+    }  
+  }
+  return(model.obj)
 }

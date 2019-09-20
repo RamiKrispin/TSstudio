@@ -9,6 +9,7 @@
 \alias{add_horizon}
 \alias{build_model}
 \alias{set_error}
+\alias{add_xreg}
 \title{Build the Components of the \code{\link[TSstudio]{train_model}} Function}
 \usage{
 create_model()
@@ -26,6 +27,8 @@ add_horizon(model.obj, horizon)
 build_model(model.obj)
 
 set_error(model.obj, error)
+
+add_xreg(model.obj, xreg)
 }
 \arguments{
 \item{model.obj}{The train_model skeleton, created by the create_model 
