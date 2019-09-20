@@ -1335,7 +1335,20 @@ plot_grid <- function(grid.obj,
 #'
 #' \code{\link[forecast]{tslm}} - model from the forecast package (note that the 'tslm' model must have the formula argument in the 'method_arg' argument)
 #' 
-#' @param train_method A list, defines the train approach, either using a single testing partition (sample out) 
+#' @param train_method A list, defines the backtesting parameters:
+#' 
+#' partitions - an integer, set the number of training and testing partitions to be used in the backtesting process, 
+#' where when partition is set to 1 it is a simple holdout training approach
+#'  
+#' space - an integer, defines the length of the backtesting window expansion
+#'  
+#' sample.in - an integer, optional, defines the length of the training partitions, and therefore the backtesting window structure. 
+#' By default, it set to NULL and therefore, the backtesting using expending window. 
+#' Otherwise, when the sample.in defined, the window structure is sliding
+#'  
+#' sample.in - an integer, optional, defines the length of the training partitions, and therefore the type of the backtesting window. 
+#'By default, is set to NULL, which implay that the backtesting is using an expending window. Otherwise, when defining the size of the training partition, th
+#' defines the train approach, either using a single testing partition (sample out) 
 #' or use multiple testing partitions (backtesting). The list should include the training method argument, (please see 'details' for the structure of the argument)
 #' @param horizon An integer, defines the forecast horizon
 #' @param xreg Optional, a list with two vectors (e.g., data.frame or matrix) of external regressors, 
@@ -1370,12 +1383,11 @@ plot_grid <- function(grid.obj,
 #'                             notes = "tslm model with trend and seasonal components"))
 #' 
 #' # Training the models with backtesting
-#' md1 <- train_model(input = USgas,
+#' md <- train_model(input = USgas,
 #'                   methods = methods,
-#'                   train_method = list(method = "backtesting", 
-#'                                       train_arg = list(partitions = 6, 
-#'                                                        sample.out = 12, 
-#'                                                        space = 3)),
+#'                   train_method = list(partitions = 6, 
+#'                                       sample.out = 12, 
+#'                                       space = 3),
 #'                   horizon = 12,
 #'                   error = "MAPE")
 #'                   
@@ -1445,103 +1457,63 @@ train_model <- function(input,
   
   if(!base::is.list(train_method)){
     stop("Error on the 'train_method' argument: the argument is not a list")
-  } else if(!"method" %in% base::names(train_method)){
-    stop("Error on the 'train_method' argument: the 'method' argument is missing")
-  } else if(!"train_arg" %in% base::names(train_method)){
-    stop("Error on the 'train_method' argument: the 'train_arg' argument is missing")
-  }
+  } else if(!"partitions" %in% base::names(train_method)){
+    stop("Error on the 'train_method' argument: the 'partition' argument is missing")
+  } else if(!"space" %in% base::names(train_method)){
+    stop("Error on the 'train_method' argument: the 'space' argument is missing")
+  } else if(!"sample.out" %in% base::names(train_method)){
+    stop("Error on the 'train_method' argument: the 'sample.out' argument is missing")
+  } else if(!base::is.numeric(train_method$sample.out) || 
+            train_method$sample.out < 1 ||
+            train_method$sample.out %% 1 != 0){
+    stop("Error on the 'train_method' argument: the 'sample.out' argument is not valide, please use a positive integer")
+  } else if(!base::is.numeric(train_method$partitions) || 
+            train_method$partitions < 1 ||
+            train_method$partitions %% 1 != 0){
+    stop("Error on the 'train_method' argument:  the 'partitions' argument is not valide, please use a positive integer")
+  } else if(!base::is.numeric(train_method$space) || 
+            train_method$space < 1 ||
+            train_method$space %% 1 != 0){
+    stop("Error on the 'train_method' argument:  the 'space' argument is not valide, please use a positive integer")
+  } 
   
   
-  if(train_method$method == "backtesting"){
-    # check all the backtesting arguments
-    if(!"partitions" %in% base::names(train_method$train_arg)){
-      stop("Error on the 'train_method' argument: the number of partitions of the backtesting was not defined")
-    }
-    
-    # Checking the testing partition 
-    if(!"sample.out" %in% base::names(train_method$train_arg)){
-      stop("Error on the 'train_method' argument: the testing partition length of the backtesting was not defined")
-    }
-    
-    # Checking the space argument
-    if(!"space" %in% base::names(train_method$train_arg)){
-      stop("Error on the 'train_method' argument: the space between each partition of the backtesting was not defined")
-    }
-    
-    
-    w <-  seq(from = input_length - train_method$train_arg$space * (train_method$train_arg$partitions - 1), 
-              by = train_method$train_arg$space, 
-              length.out = train_method$train_arg$partitions)
-    
-    
-    if(min(w) < input_freq * 2){
-      stop("Error on the 'train_method' argument: the length of the first partition is not sufficient to train a model",
-           " (must leave at least two full cycles for the sample in partition)")
-    }
-    
-    # If not using sample.in, will define the start point as 1
-    if(!"sample.in" %in% base::names(train_method$train_arg) ||
-       ("sample.in" %in% base::names(train_method$train_arg) && 
-        base::is.null(train_method$train_arg$sample.in))){
-      s1 <- s2 <- 1
-      
-     
-      
-      
-      # If defining the sample.in -> check that the argument is valid
-    } else if("sample.in" %in% base::names(train_method$train_arg)){
-      # If defining the sample.in -> check that the argument is valid
-      if(!base::is.numeric(train_method$train_arg$sample.in) || 
-         train_method$train_arg$sample.in < 1 ||
-         train_method$train_arg$sample.in %% 1 != 0){
-        stop("Error on the 'train_method' argument: the training partition length (sample in) of the backtesting was not valid. Please use a positive integer")
-      } else if( train_method$train_arg$sample.in < input_freq * 2){
-        stop("Error on the 'train_method' argument: the training partition length (sample in) must have at least two cycles")
-      }
-      s1 <- w - train_method$train_arg$sample.out - train_method$train_arg$sample.in + 1
-      s2 <- input_length - train_method$train_arg$sample.in + 1
-      
-    }
-    
-    w_range <- base::data.frame(start = c(base::rep(s1, base::length(w)), s2), 
-                                end = c(w, input_length), 
-                                type = c(base::rep("train", base::length(w)), "forecast"),
-                                partition = c(base::paste0("partition_", 1:base::length(w), sep = ""), "final_partition"),
-                                stringsAsFactors = FALSE)
-    
-    
-    
-  } else if(train_method$method == "sample.out"){
-    
-    
-    if(!"sample.out" %in% base::names(train_method$train_arg)){
-      stop("Error on the 'train_method' argument: the length of the sample out was not defined") 
-    } else if(input_length - train_method$train_arg$sample.out < input_freq * 2) {
-      stop("Error on the 'train_method' argument: the length of the sample out is too long, not enough data to train a model",
-           " (must leave at least two full cycles for the sample in partition)")
-    } else if(train_method$train_arg$sample.out %% 1 != 0){
-      stop("Error on the 'train_method' argument: the 'sample.out' argument is not valid positive integer")
-    } else if("sample.in" %in% base::names(train_method$train_arg) && !base::is.null(train_method$train_arg$sample.in)){
-      if(train_method$train_arg$sample.in %% 1 != 0 || !base::is.numeric(train_method$train_arg$sample.in) || train_method$train_arg$sample.in <= 0){
-        stop("Error on the 'train_method' argument: the 'sample.in' argument is not valid positive integer")
-      } else if(input_length - train_method$train_arg$sample.in - train_method$train_arg$sample.out < 0){
-        stop("Error on the 'train_method' argument: the length of the sample.in and sample.out arguments cannot exceed the length of the input series")
-      }
-      
-      s1 <- input_length - train_method$train_arg$sample.out - train_method$train_arg$sample.in + 1
-      s2 <- input_length - train_method$train_arg$sample.in + 1
-    } else {
-      s1 <- s2 <- 1
-    }
-    
-    w <- input_length
-    
-    w_range <- base::data.frame(start = c(s1, s2), 
-                                end = c(w, input_length), 
-                                type = c(base::rep("train", base::length(s1)), "forecast"),
-                                partition = c(base::paste0("partition_", 1:base::length(s1), sep = ""), "final_partition"),
-                                stringsAsFactors = FALSE)
+  w <-  seq(from = input_length - train_method$space * (train_method$partitions - 1), 
+            by = train_method$space, 
+            length.out = train_method$partitions)
+  
+  
+  if(min(w) < input_freq * 2){
+    stop("Error on the 'train_method' argument: the length of the first partition is not sufficient to train a model",
+         " (must leave at least two full cycles for the sample in partition)")
   }
+  
+  # If not using sample.in, will define the start point as 1
+  if(!"sample.in" %in% base::names(train_method) ||
+     ("sample.in" %in% base::names(train_method) && 
+      base::is.null(train_method$sample.in))){
+    s1 <- s2 <- 1
+    
+    # If defining the sample.in -> check that the argument is valid
+  } else if("sample.in" %in% base::names(train_method)){
+    # If defining the sample.in -> check that the argument is valid
+    if(!base::is.numeric(train_method$sample.in) || 
+       train_method$sample.in < 1 ||
+       train_method$sample.in %% 1 != 0){
+      stop("Error on the 'train_method' argument: the training partition length (sample in) of the backtesting is not valid. Please use a positive integer")
+    } else if( train_method$sample.in < input_freq * 2){
+      stop("Error on the 'train_method' argument: the training partition length (sample in) must have at least two cycles")
+    }
+    s1 <- w - train_method$sample.out - train_method$sample.in + 1
+    s2 <- input_length - train_method$sample.in + 1
+    
+  }
+  
+  w_range <- base::data.frame(start = c(base::rep(s1, base::length(w)), s2), 
+                              end = c(w, input_length), 
+                              type = c(base::rep("train", base::length(w)), "forecast"),
+                              partition = c(base::paste0("partition_", 1:base::length(w), sep = ""), "final_partition"),
+                              stringsAsFactors = FALSE)
   
   # Checking the horizon argument
   if(horizon %% 1 != 0 || !base::is.numeric(horizon) || horizon <=0){
@@ -1563,7 +1535,7 @@ train_model <- function(input,
   }
   
   # Creating grid of all the modeling combinations
-  grid_df <- base::expand.grid(models_df$model_id, s1, train_method$train_arg$sample.out, stringsAsFactors = FALSE) %>% 
+  grid_df <- base::expand.grid(models_df$model_id, s1, train_method$sample.out, stringsAsFactors = FALSE) %>% 
     stats::setNames(c("model_id", "start", "horizon")) %>% 
     dplyr::left_join(models_df, by = c("model_id"))  %>%
     dplyr::mutate(type = "train") %>% dplyr::bind_rows(
@@ -1589,7 +1561,7 @@ train_model <- function(input,
         xreg_train <- xreg$train[grid_df$start[i]:grid_df$end[i],]
         xreg_test <- xreg$train[(grid_df$end[i] + 1):(grid_df$end[i] + grid_df$horizon[i]) ,]
       }
-      ts_partitions <- TSstudio::ts_split(ts.obj = ts.obj, sample.out = train_method$train_arg$sample.out)
+      ts_partitions <- TSstudio::ts_split(ts.obj = ts.obj, sample.out = train_method$sample.out)
       
       train <- ts_partitions$train
       test <- ts_partitions$test
@@ -1940,7 +1912,6 @@ train_model <- function(input,
   class(output) <- "train_model"
   return(output)
   
-  
 }
 
 #' Build the Components of the \code{\link[TSstudio]{train_model}} Function 
@@ -2196,21 +2167,21 @@ add_train_method <- function(model.obj, train_method){
   
   if(train_method$method == "backtesting"){
     # check all the backtesting arguments
-    if(!"partitions" %in% base::names(train_method$train_arg)){
+    if(!"partitions" %in% base::names(train_method)){
       stop("Error on the 'train_method' argument: the number of partitions of the backtesting was not defined")
     }
     
     # Checking the testing partition 
-    if(!"sample.out" %in% base::names(train_method$train_arg)){
+    if(!"sample.out" %in% base::names(train_method)){
       stop("Error on the 'train_method' argument: the testing partition length of the backtesting was not defined")
     }
     
     # Checking the space argument
-    if(!"space" %in% base::names(train_method$train_arg)){
+    if(!"space" %in% base::names(train_method)){
       stop("Error on the 'train_method' argument: the space between each partition of the backtesting was not defined")
     }
   } else if(train_method$method == "sample.out"){
-    if(!"sample.out" %in% base::names(train_method$train_arg)){
+    if(!"sample.out" %in% base::names(train_method)){
       stop("Error on the 'train_method' argument: the length of the sample out was not defined") 
     }
   }
