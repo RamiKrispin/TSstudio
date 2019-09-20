@@ -2218,7 +2218,7 @@ add_horizon <- function(model.obj, horizon){
     if(q == "y" || q == "yes"){
       model.obj$horizon <- horizon
     } else{
-      warning("The model horizon did not change")
+      warning("No change had made on the model 'horizon' argument")
     }  
   }
   
@@ -2262,4 +2262,39 @@ build_model <- function(model.obj){
                                   horizon = model.obj$horizon)
   
   return(output)
+}
+
+#' @export
+#' @rdname create_model
+#' 
+set_error <- function(model.obj, error){
+  `%>%` <- magrittr::`%>%`
+  
+  # Error handling 
+  # Checking the model.obj class
+  if(base::class(model.obj) != "train_model"){
+    stop("The 'model.obj' is not valid 'train_model' object")
+  }
+  
+  # Check the error argument
+  if(base::is.null(error) || !base::is.character(error) || base::length(error) !=1){
+    stop("Error on the 'error' argument: the input is not valid, please use either 'RMSE' or 'MAPE'")
+  } else if( error != "MAPE" && error != "RMSE"){
+    stop("Error on the 'error' argument: the input is not valid, please use either 'RMSE' or 'MAPE'")
+  }
+  
+  if(!"error" %in% base::names(model.obj) ||
+     ("error" %in% base::names(model.obj) && base::is.null(model.obj$error))){
+    model.obj$error <- error
+  } else if("error" %in% base::names(model.obj) && !base::is.null(model.obj$error)){
+    q <- base::readline(base::paste("The model object already has 'error' argument, do you wish to overwrite it? (yes) ", sep = " ")) %>% base::tolower()
+    if(q == "y" || q == "yes" || q == ""){
+      model.obj$horizon <- horizon
+    } else{
+      warning("No change had made on the model 'error' argument")
+    }  
+  }
+  
+  return(model.obj)
+  
 }

@@ -8,6 +8,7 @@
 \alias{add_train_method}
 \alias{add_horizon}
 \alias{build_model}
+\alias{set_error}
 \title{Build the Components of the \code{\link[TSstudio]{train_model}} Function}
 \usage{
 create_model()
@@ -23,6 +24,8 @@ add_train_method(model.obj, train_method)
 add_horizon(model.obj, horizon)
 
 build_model(model.obj)
+
+set_error(model.obj, error)
 }
 \arguments{
 \item{model.obj}{The train_model skeleton, created by the create_model 
@@ -51,11 +54,11 @@ or use multiple testing partitions (backtesting). The list should include the tr
 
 \item{horizon}{An integer, defines the forecast horizon}
 
+\item{error}{A character, defines the error metrics to be used to sort the models leaderboard. Possible metric - "MAPE" or "RMSE"}
+
 \item{xreg}{Optional, a list with two vectors (e.g., data.frame or matrix) of external regressors, 
 one vector corresponding to the input series and second to the forecast itself 
 (e.g., must have the same length as the input and forecast horizon, respectively)}
-
-\item{error}{A character, defines the error metrics to be used to sort the models leaderboard. Possible metric - "MAPE" or "RMSE"}
 }
 \description{
 Add, edit, or remove the components of the  \code{\link[TSstudio]{train_model}} function
