@@ -57,28 +57,27 @@ or multipe partitions (backtesting)
 \examples{
 
 # Defining the models and their arguments
-methods <- list(ets1 = list(method = "ets", 
-                            method_arg = list(opt.crit = "lik"), 
+methods <- list(ets1 = list(method = "ets",
+                            method_arg = list(opt.crit = "lik"),
                             notes = "ETS model with opt.crit = lik"),
-                ets2 = list(method = "ets", 
-                            method_arg = list(opt.crit = "amse"), 
+                ets2 = list(method = "ets",
+                            method_arg = list(opt.crit = "amse"),
                             notes = "ETS model with opt.crit = amse"),
-                arima1 = list(method = "arima", 
-                              method_arg = list(order = c(2,1,1), 
-                                                seasonal = list(order = c(1,0,1))), 
-                              notes = "SARIMA(2,1,1)(1,0,1)"),
-                arima2 = list(method = "arima", 
-                              method_arg = list(order = c(2,1,2), 
-                                                seasonal = list(order = c(1,1,1))), 
+                arima1 = list(method = "arima",
+                              method_arg = list(order = c(2,1,0)),
+                              notes = "ARIMA(2,1,0)"),
+                arima2 = list(method = "arima",
+                              method_arg = list(order = c(2,1,2),
+                                                seasonal = list(order = c(1,1,1))),
                               notes = "SARIMA(2,1,2)(1,1,1)"),
-                auto_arima = list(method = "auto.arima", 
-                                  method_arg = NULL, 
+                auto_arima = list(method = "auto.arima",
+                                  method_arg = NULL,
                                   notes = "auto.arima model"),
-                hw = list(method = "HoltWinters", 
-                          method_arg = NULL, 
+                hw = list(method = "HoltWinters",
+                          method_arg = NULL,
                           notes = "HoltWinters Model"),
-                tslm = list(method = "tslm", 
-                            method_arg = list(formula = input ~ trend + season), 
+                tslm = list(method = "tslm",
+                            method_arg = list(formula = input ~ trend + season),
                             notes = "tslm model with trend and seasonal components"))
 
 # Training the models with backtesting
@@ -92,4 +91,6 @@ md <- train_model(input = USgas,
                   
 # View the model performance on the backtesting partitions
 md$leaderboard
+
+plot(md$forecast$ets1$forecast)
 }
