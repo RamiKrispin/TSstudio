@@ -2163,39 +2163,33 @@ add_train_method <- function(model.obj, train_method){
   # Checking the train argument
   if(!base::is.list(train_method)){
     stop("Error on the 'train_method' argument: the argument is not a list")
-  } else if(!"method" %in% base::names(train_method)){
-    stop("Error on the 'train_method' argument: the 'method' argument is missing")
-  } else if(!"train_arg" %in% base::names(train_method)){
-    stop("Error on the 'train_method' argument: the 'train_arg' argument is missing")
-  }
-  
-  if(train_method$method == "backtesting"){
-    # check all the backtesting arguments
-    if(!"partitions" %in% base::names(train_method)){
-      stop("Error on the 'train_method' argument: the number of partitions of the backtesting was not defined")
-    }
-    
-    # Checking the testing partition 
-    if(!"sample.out" %in% base::names(train_method)){
-      stop("Error on the 'train_method' argument: the testing partition length of the backtesting was not defined")
-    }
-    
-    # Checking the space argument
-    if(!"space" %in% base::names(train_method)){
-      stop("Error on the 'train_method' argument: the space between each partition of the backtesting was not defined")
-    }
-  } else if(train_method$method == "sample.out"){
-    if(!"sample.out" %in% base::names(train_method)){
-      stop("Error on the 'train_method' argument: the length of the sample out was not defined") 
-    }
-  }
+  } else if(!"partitions" %in% base::names(train_method)){
+    stop("Error on the 'train_method' argument: the 'partition' argument is missing")
+  } else if(!"space" %in% base::names(train_method)){
+    stop("Error on the 'train_method' argument: the 'space' argument is missing")
+  } else if(!"sample.out" %in% base::names(train_method)){
+    stop("Error on the 'train_method' argument: the 'sample.out' argument is missing")
+  } else if(!base::is.numeric(train_method$sample.out) || 
+            train_method$sample.out < 1 ||
+            train_method$sample.out %% 1 != 0){
+    stop("Error on the 'train_method' argument: the 'sample.out' argument is not valide, please use a positive integer")
+  } else if(!base::is.numeric(train_method$partitions) || 
+            train_method$partitions < 1 ||
+            train_method$partitions %% 1 != 0){
+    stop("Error on the 'train_method' argument:  the 'partitions' argument is not valide, please use a positive integer")
+  } else if(!base::is.numeric(train_method$space) || 
+            train_method$space < 1 ||
+            train_method$space %% 1 != 0){
+    stop("Error on the 'train_method' argument:  the 'space' argument is not valide, please use a positive integer")
+  } 
+
   
   # Adding the train object
   if(!"train_method" %in% base::names(model.obj) || base::is.null(model.obj$train_method)){
     model.obj$train_method <- train_method
   } else if(!base::is.null(model.obj$train_method)){
-    q <- base::readline(base::paste("The model object already has train method, do you wish to overwrite it? yes/no ", sep = " ")) %>% base::tolower()
-    if(q == "y" || q == "yes"){
+    q <- base::readline(base::paste("The model object already has train method, do you wish to overwrite it? (yes) ", sep = " ")) %>% base::tolower()
+    if(q == "y" || q == "yes" || q == ""){
       model.obj$methods[[i]] <- methods[[i]]
     } else{
       warning("Did not update the train method")
