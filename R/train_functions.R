@@ -1315,7 +1315,7 @@ plot_grid <- function(grid.obj,
 }
 
 #' Train, Test, Evaluate, and Forecast Multiple Time Series Forecasting Models
-#' @export train_model 
+#' @export 
 #' @description Method for train test and compare multiple time series models using either one partition (i.e., sample out) 
 #' or multipe partitions (backtesting)
 #' @param input A univariate time series object (ts class)
@@ -1381,7 +1381,6 @@ plot_grid <- function(grid.obj,
 #'                 tslm = list(method = "tslm",
 #'                             method_arg = list(formula = input ~ trend + season),
 #'                             notes = "tslm model with trend and seasonal components"))
-#' 
 #' # Training the models with backtesting
 #' md <- train_model(input = USgas,
 #'                   methods = methods,
@@ -1390,9 +1389,9 @@ plot_grid <- function(grid.obj,
 #'                                       space = 3),
 #'                   horizon = 12,
 #'                   error = "MAPE")
-#'                   
 #' # View the model performance on the backtesting partitions
 #' md$leaderboard
+#' 
 
 
 train_model <- function(input,
@@ -1416,9 +1415,9 @@ train_model <- function(input,
   
   ### Error Handling
   # Check the level argument
-  if(base::all(!is.numeric(level)) || 
+  if(base::all(!is.numeric(level)) ||
      base::any(level %% 1 != 0) ||
-     base::any(level  <= 0 || level > 100)){
+     base::any(level  <= 0 | level > 100)){
     stop("Error on the 'level' argument: the argument is out of range (0,100]")
   }
   
@@ -2034,15 +2033,16 @@ train_model <- function(input,
 #'                             notes = "ETS model with opt.crit = amse"),
 #'                 arima1 = list(method = "arima", 
 #'                               method_arg = list(order = c(1,1,1), 
-#'                                                 seasonal = list(order = c(1,0,1))), 
+#'                                         seasonal = list(order = c(1,0,1))), 
 #'                               notes = "SARIMA(1,1,1)(1,0,1)"))
 #'                               
 #' md <- add_methods(model.obj = md, methods = methods)   
 #' 
+
 #' # Add additional methods
 #' methods2 <- list(arima2 = list(method = "arima", 
 #'                               method_arg = list(order = c(2,1,2), 
-#'                                                 seasonal = list(order = c(1,1,1))), 
+#'                                      seasonal = list(order = c(1,1,1))), 
 #'                               notes = "SARIMA(2,1,2)(1,1,1)"),
 #'                 auto_arima = list(method = "auto.arima", 
 #'                                   method_arg = NULL, 
@@ -2051,8 +2051,8 @@ train_model <- function(input,
 #'                           method_arg = NULL, 
 #'                           notes = "HoltWinters Model"),
 #'                 tslm = list(method = "tslm", 
-#'                             method_arg = list(formula = input ~ trend + season), 
-#'                             notes = "tslm model with trend and seasonal components"))
+#'                     method_arg = list(formula = input ~ trend + season), 
+#'                     notes = "tslm model with trend and seasonal components"))
 #'
 #' md <- add_methods(model.obj = md, methods = methods2)
 #' 
@@ -2068,7 +2068,8 @@ train_model <- function(input,
 #' # Set the forecast horizon
 #' md <- add_horizon(model.obj = md, horizon = 12)
 #'                                                         
-#' ### Alternatively, pipe the function with the magrittr package                                                      
+#' ### Alternatively, pipe the function with the magrittr package  
+#'                                                     
 #' library(magrittr)
 #' 
 #' md <- create_model() %>%
@@ -2080,9 +2081,7 @@ train_model <- function(input,
 #'        add_horizon(horizon = 12)
 #'        
 #' # Run the model
-#' fc <- md %>% build_model()                                                        
-#' 
-
+#' fc <- md %>% build_model()  
 
 
 
