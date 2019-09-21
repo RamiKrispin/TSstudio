@@ -89,7 +89,7 @@ methods <- list(ets1 = list(method = "ets",
                             notes = "ETS model with opt.crit = amse"),
                 arima1 = list(method = "arima", 
                               method_arg = list(order = c(1,1,1), 
-                                                seasonal = list(order = c(1,0,1))), 
+                                        seasonal = list(order = c(1,0,1))), 
                               notes = "SARIMA(1,1,1)(1,0,1)"))
                               
 md <- add_methods(model.obj = md, methods = methods)   
@@ -97,7 +97,7 @@ md <- add_methods(model.obj = md, methods = methods)
 # Add additional methods
 methods2 <- list(arima2 = list(method = "arima", 
                               method_arg = list(order = c(2,1,2), 
-                                                seasonal = list(order = c(1,1,1))), 
+                                     seasonal = list(order = c(1,1,1))), 
                               notes = "SARIMA(2,1,2)(1,1,1)"),
                 auto_arima = list(method = "auto.arima", 
                                   method_arg = NULL, 
@@ -106,8 +106,8 @@ methods2 <- list(arima2 = list(method = "arima",
                           method_arg = NULL, 
                           notes = "HoltWinters Model"),
                 tslm = list(method = "tslm", 
-                            method_arg = list(formula = input ~ trend + season), 
-                            notes = "tslm model with trend and seasonal components"))
+                    method_arg = list(formula = input ~ trend + season), 
+                    notes = "tslm model with trend and seasonal components"))
 
 md <- add_methods(model.obj = md, methods = methods2)
 
@@ -123,7 +123,8 @@ md <- add_train_method(model.obj = md, train_method = list(partitions = 6,
 # Set the forecast horizon
 md <- add_horizon(model.obj = md, horizon = 12)
                                                         
-### Alternatively, pipe the function with the magrittr package                                                      
+### Alternatively, pipe the function with the magrittr package  
+                                                    
 library(magrittr)
 
 md <- create_model() \%>\%
@@ -135,6 +136,5 @@ md <- create_model() \%>\%
        add_horizon(horizon = 12)
        
 # Run the model
-fc <- md \%>\% build_model()                                                        
-
+fc <- md \%>\% build_model()  
 }
