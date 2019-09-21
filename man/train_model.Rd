@@ -49,6 +49,8 @@ or use multiple testing partitions (backtesting). The list should include the tr
 \item{xreg}{Optional, a list with two vectors (e.g., data.frame or matrix) of external regressors, 
 one vector corresponding to the input series and second to the forecast itself 
 (e.g., must have the same length as the input and forecast horizon, respectively)}
+
+\item{level}{An integer, set the  confidence level of the prediction intervals}
 }
 \description{
 Method for train test and compare multiple time series models using either one partition (i.e., sample out) 
