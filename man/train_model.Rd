@@ -5,7 +5,7 @@
 \title{Train, Test, Evaluate, and Forecast Multiple Time Series Forecasting Models}
 \usage{
 train_model(input, methods, train_method, horizon, error = "MAPE",
-  xreg = NULL)
+  xreg = NULL, level = c(80, 95))
 }
 \arguments{
 \item{input}{A univariate time series object (ts class)}
@@ -91,6 +91,4 @@ md <- train_model(input = USgas,
                   
 # View the model performance on the backtesting partitions
 md$leaderboard
-
-plot(md$forecast$ets1$forecast)
 }
