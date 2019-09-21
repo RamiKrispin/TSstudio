@@ -1355,6 +1355,7 @@ plot_grid <- function(grid.obj,
 #' one vector corresponding to the input series and second to the forecast itself 
 #' (e.g., must have the same length as the input and forecast horizon, respectively)
 #' @param error A character, defines the error metrics to be used to sort the models leaderboard. Possible metric - "MAPE" or "RMSE"
+#' @param level An integer, set the  confidence level of the prediction intervals
 #' @examples 
 #' 
 #' # Defining the models and their arguments
@@ -1399,7 +1400,8 @@ train_model <- function(input,
                         train_method,
                         horizon,
                         error = "MAPE",
-                        xreg = NULL){
+                        xreg = NULL,
+                        level = c(80, 95)){
   
   # Setting the pipe operator
   `%>%` <- magrittr::`%>%`
@@ -1413,6 +1415,13 @@ train_model <- function(input,
   
   
   ### Error Handling
+  # Check the level argument
+  if(base::all(!is.numeric(level)) || 
+     base::any(level %% 1 != 0) ||
+     base::any(level  <= 0 || level > 100)){
+    stop("Error on the 'level' argument: the argument is out of range (0,100]")
+  }
+  
   # Check the error argument
   if(base::is.null(error) || !base::is.character(error) || base::length(error) !=1){
     stop("Error on the 'error' argument: the input is not valid, please use either 'RMSE' or 'MAPE'")
@@ -1578,10 +1587,15 @@ train_model <- function(input,
           arg_xreg <- arg
           arg_xreg$xreg <- xreg_train[,arg$xreg]
           md <- do.call(stats::arima,c(base::list(train), arg_xreg))
-          fc <- forecast::forecast(md, h = grid_df$horizon[i], xreg = xreg_test[,arg$xreg])
+          fc <- forecast::forecast(md, 
+                                   h = grid_df$horizon[i], 
+                                   xreg = xreg_test[,arg$xreg],
+                                   level = level)
         } else {
           md <- do.call(stats::arima,c(base::list(train), arg))
-          fc <- forecast::forecast(md, h = grid_df$horizon[i])
+          fc <- forecast::forecast(md, 
+                                   h = grid_df$horizon[i],
+                                   level = level)
         }
       }
       
@@ -1590,6 +1604,9 @@ train_model <- function(input,
           arg <- methods[[grid_df$model_id[i]]]$method_arg
         }
         md <- do.call(stats::HoltWinters,c(base::list(train), arg))
+        fc <- forecast::forecast(md, 
+                                 h = grid_df$horizon[i],
+                                 level = level)
       }
       
       if(grid_df$methods_selected[i] == "auto.arima"){
@@ -1600,10 +1617,15 @@ train_model <- function(input,
           arg_xreg <- arg
           arg_xreg$xreg <- xreg_train[,arg$xreg]
           md <- do.call(forecast::auto.arima,c(base::list(train), arg_xreg))
-          fc <- forecast::forecast(md, h = grid_df$horizon[i], xreg = xreg_test[,arg$xreg])
+          fc <- forecast::forecast(md, 
+                                   h = grid_df$horizon[i], 
+                                   xreg = xreg_test[,arg$xreg],
+                                   level = level)
         } else {
           md <- do.call(forecast::auto.arima,c(base::list(train), arg))
-          fc <- forecast::forecast(md, h = grid_df$horizon[i])
+          fc <- forecast::forecast(md, 
+                                   h = grid_df$horizon[i],
+                                   level = level)
         }
       }
       
@@ -1613,6 +1635,9 @@ train_model <- function(input,
           arg <- methods[[grid_df$model_id[i]]]$method_arg
         }
         md <- do.call(forecast::ets,c(base::list(train), arg))
+        fc <- forecast::forecast(md, 
+                                 h = grid_df$horizon[i],
+                                 level = level)
       } 
       
       
@@ -1624,10 +1649,15 @@ train_model <- function(input,
           arg_xreg <- arg
           arg_xreg$xreg <- xreg_train[,arg$xreg]
           md <- do.call(forecast::nnetar,c(base::list(train), arg_xreg))
-          fc <- forecast::forecast(md, h = grid_df$horizon[i], xreg = xreg_test[,arg$xreg])
+          fc <- forecast::forecast(md, 
+                                   h = grid_df$horizon[i], 
+                                   xreg = xreg_test[,arg$xreg],
+                                   level = level)
         } else {
           md <- do.call(forecast::nnetar,c(base::list(train), arg))
-          fc <- forecast::forecast(md, h = grid_df$horizon[i])
+          fc <- forecast::forecast(md, 
+                                   h = grid_df$horizon[i],
+                                   level = level)
         }
       }
       
@@ -1653,11 +1683,16 @@ train_model <- function(input,
                                                 sep = "")
                 
                 md <-  do.call(forecast::tslm,c(base::list(train), arg_xreg))
-                fc <- forecast::forecast(md, h = grid_df$horizon[i], newdata = xreg_test)
+                fc <- forecast::forecast(md, 
+                                         h = grid_df$horizon[i], 
+                                         newdata = xreg_test,
+                                         level = level)
               } else {
                 arg$formula <- base::paste("train", base::substr(f, tilde + 1, base::nchar(f)), sep = "~")
                 md <-  do.call(forecast::tslm,c(base::list(train), arg))
-                fc <- forecast::forecast(md, h = grid_df$horizon[i])
+                fc <- forecast::forecast(md, 
+                                         h = grid_df$horizon[i],
+                                         level = level)
               }
             }
           }
@@ -1682,10 +1717,15 @@ train_model <- function(input,
           arg_xreg <- arg
           arg_xreg$xreg <- xreg_train[,arg$xreg]
           md <- do.call(stats::arima,c(base::list(ts.obj), arg_xreg))
-          fc <- forecast::forecast(md, h = grid_df$horizon[i], xreg = xreg_forecast[,arg$xreg])
+          fc <- forecast::forecast(md, 
+                                   h = grid_df$horizon[i], 
+                                   xreg = xreg_forecast[,arg$xreg],
+                                   level = level)
         } else {
           md <- do.call(stats::arima,c(base::list(ts.obj), arg))
-          fc <- forecast::forecast(md, h = grid_df$horizon[i])
+          fc <- forecast::forecast(md, 
+                                   h = grid_df$horizon[i],
+                                   level = level)
         }
       }
       
@@ -1694,6 +1734,9 @@ train_model <- function(input,
           arg <- methods[[grid_df$model_id[i]]]$method_arg
         }
         md <- do.call(stats::HoltWinters,c(base::list(ts.obj), arg))
+        fc <- forecast::forecast(md, 
+                                 h = grid_df$horizon[i],
+                                 level = level)
       }
       
       if(grid_df$methods_selected[i] == "auto.arima"){
@@ -1704,10 +1747,15 @@ train_model <- function(input,
           arg_xreg <- arg
           arg_xreg$xreg <- xreg_train[,arg$xreg]
           md <- do.call(forecast::auto.arima,c(base::list(ts.obj), arg_xreg))
-          fc <- forecast::forecast(md, h = grid_df$horizon[i], xreg = xreg_test[,arg$xreg])
+          fc <- forecast::forecast(md, 
+                                   h = grid_df$horizon[i], 
+                                   xreg = xreg_test[,arg$xreg],
+                                   level = level)
         } else {
           md <- do.call(forecast::auto.arima,c(base::list(ts.obj), arg))
-          fc <- forecast::forecast(md, h = grid_df$horizon[i])
+          fc <- forecast::forecast(md, 
+                                   h = grid_df$horizon[i],
+                                   level = level)
         }
       }
       
@@ -1717,6 +1765,9 @@ train_model <- function(input,
           arg <- methods[[grid_df$model_id[i]]]$method_arg
         }
         md <- do.call(forecast::ets,c(base::list(ts.obj), arg))
+        fc <- forecast::forecast(md, 
+                                 h = grid_df$horizon[i],
+                                 level = level)
       } 
       
       
@@ -1728,10 +1779,15 @@ train_model <- function(input,
           arg_xreg <- arg
           arg_xreg$xreg <- xreg_train[,arg$xreg]
           md <- do.call(forecast::nnetar,c(base::list(ts.obj), arg_xreg))
-          fc <- forecast::forecast(md, h = grid_df$horizon[i], xreg = xreg_test[,arg$xreg])
+          fc <- forecast::forecast(md, 
+                                   h = grid_df$horizon[i], 
+                                   xreg = xreg_test[,arg$xreg],
+                                   level = level)
         } else {
           md <- do.call(forecast::nnetar,c(base::list(ts.obj), arg))
-          fc <- forecast::forecast(md, h = grid_df$horizon[i])
+          fc <- forecast::forecast(md, 
+                                   h = grid_df$horizon[i],
+                                   level = level)
         }
       }
       
@@ -1757,11 +1813,16 @@ train_model <- function(input,
                                                 sep = "")
                 
                 md <-  do.call(forecast::tslm,c(base::list(ts.obj), arg_xreg))
-                fc <- forecast::forecast(md, h = grid_df$horizon[i], newdata = xreg_test)
+                fc <- forecast::forecast(md, 
+                                         h = grid_df$horizon[i], 
+                                         newdata = xreg_test,
+                                         level = level)
               } else {
                 arg$formula <- base::paste("ts.obj", base::substr(f, tilde + 1, base::nchar(f)), sep = "~")
                 md <-  do.call(forecast::tslm,c(base::list(ts.obj), arg))
-                fc <- forecast::forecast(md, h = grid_df$horizon[i])
+                fc <- forecast::forecast(md, 
+                                         h = grid_df$horizon[i],
+                                         level = level)
               }
             }
           }
@@ -1772,9 +1833,7 @@ train_model <- function(input,
       
       
     }
-    
-    
-    fc <- forecast::forecast(md, h = grid_df$horizon[i])
+
     output <- list(model = md, 
                    forecast = fc, 
                    parameters = base::list(
@@ -1848,15 +1907,20 @@ train_model <- function(input,
     a <- training[p1] %>% purrr::map("test") 
     u <- training[p1] %>% purrr::map(m) %>% purrr::map("forecast") %>% purrr::map("upper")
     l <- training[p1] %>% purrr::map(m) %>% purrr::map("forecast") %>% purrr::map("lower")
-    level <- training[p1] %>% purrr::map(m) %>% purrr::map("forecast") %>% purrr::map("level")
+    levels <- training[p1] %>% purrr::map(m) %>% purrr::map("forecast") %>% purrr::map("level")
     
     
     error_df <- lapply(base::seq_along(p),function(n){
+
       df <-  coverage_df <-  NULL
       
       if(base::is.null(base::colnames(u[[p[n]]]))){
-        base::colnames(u[[p[n]]]) <- base::paste0(level[[p[n]]], "%")
-        base::colnames(l[[p[n]]]) <- base::paste0(level[[p[n]]], "%")
+        if(base::is.null(base::dim(u[[p[n]]]))){
+          u[[p[n]]] <- u[[p[n]]] %>% as.matrix()
+          l[[p[n]]] <- l[[p[n]]] %>% as.matrix()
+        }
+        base::colnames(u[[p[n]]]) <- base::paste0(levels[[p[n]]], "%")
+        base::colnames(l[[p[n]]]) <- base::paste0(levels[[p[n]]], "%")
       }
       
       coverage_df <- lapply(base::colnames(u[[p[n]]]), function(i){
@@ -1909,7 +1973,8 @@ train_model <- function(input,
                          parameters = list(methods = methods,
                                            train_method = train_method,
                                            horizon = horizon,
-                                           xreg = xreg))
+                                           xreg = xreg,
+                                           level = level))
   
   
   print(leaderboard)
@@ -1942,6 +2007,7 @@ train_model <- function(input,
 #' 
 #' @param train_method A list, defines the train approach, either using a single testing partition (sample out) 
 #' or use multiple testing partitions (backtesting). The list should include the training method argument, (please see 'details' for the structure of the argument)
+#' @param method_ids A character, defines the IDs of the model methods to be remove with the remove_methods function
 #' @param horizon An integer, defines the forecast horizon
 #' @param xreg Optional, a list with two vectors (e.g., data.frame or matrix) of external regressors, 
 #' one vector corresponding to the input series and second to the forecast itself 
@@ -2002,7 +2068,7 @@ train_model <- function(input,
 #' # Set the forecast horizon
 #' md <- add_horizon(model.obj = md, horizon = 12)
 #'                                                         
-#' ### Alternatively, can use the magrittr to pipe the process                                                       
+#' ### Alternatively, pipe the function with the magrittr package                                                      
 #' library(magrittr)
 #' 
 #' md <- create_model() %>%
@@ -2014,7 +2080,7 @@ train_model <- function(input,
 #'        add_horizon(horizon = 12)
 #'        
 #' # Run the model
-#' fc <- md %>% build_model                                                        
+#' fc <- md %>% build_model()                                                        
 #' 
 
 
@@ -2151,7 +2217,7 @@ remove_methods <- function(model.obj, method_ids){
 #' 
 add_train_method <- function(model.obj, train_method){
   `%>%` <- magrittr::`%>%`
-  
+  q <- NULL
   # Error handling 
   # Checking the model.obj class
   if(base::class(model.obj) != "train_model"){
@@ -2188,7 +2254,7 @@ add_train_method <- function(model.obj, train_method){
   } else if(!base::is.null(model.obj$train_method)){
     q <- base::readline(base::paste("The model object already has train method, do you wish to overwrite it? (yes) ", sep = " ")) %>% base::tolower()
     if(q == "y" || q == "yes" || q == ""){
-      model.obj$methods[[i]] <- methods[[i]]
+      model.obj$train_method <- train_method
     } else{
       warning("Did not update the train method")
     } 
@@ -2304,7 +2370,7 @@ set_error <- function(model.obj, error){
 
 add_xreg <- function(model.obj, xreg){
   `%>%` <- magrittr::`%>%`
-  
+  q <- NULL
   # Error handling 
   # Checking the model.obj class
   if(base::class(model.obj) != "train_model"){
@@ -2319,12 +2385,9 @@ add_xreg <- function(model.obj, xreg){
            " inputs for the 'input' argument (train) and for the forecast horizon (forecast)")
     } else if(base::names(xreg$train) != base::names(xreg$forecast)){
       stop("Error on the 'xreg' argument: the regressors names in the train and forecast inputs are not aligned")
-    } else if(base::nrow(xreg$train) != base::length(input)){
-      stop("Error on the 'xreg' argument: the length of the xreg train input is not aligned with the length of the input series")
-    } else if(base::nrow(xreg$forecast) != horizon){
-      stop("Error on the 'xreg' argument: the length of the xreg forecast input is not aligned with the forecast horizon")
-    }
+    } 
   }
+  
   if(!"xreg" %in% base::names(model.obj) ||
      ("xreg" %in% base::names(model.obj) && base::is.null(model.obj$xreg))){
     model.obj$xreg <- xreg
