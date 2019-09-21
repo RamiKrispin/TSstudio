@@ -52,6 +52,8 @@ The sub-list name will be used as the model ID. Possible models:
 
 \code{\link[forecast]{tslm}} - model from the forecast package (note that the 'tslm' model must have the formula argument in the 'method_arg' argument)}
 
+\item{method_ids}{A character, defines the IDs of the model methods to be remove with the remove_methods function}
+
 \item{train_method}{A list, defines the train approach, either using a single testing partition (sample out) 
 or use multiple testing partitions (backtesting). The list should include the training method argument, (please see 'details' for the structure of the argument)}
 
@@ -121,7 +123,7 @@ md <- add_train_method(model.obj = md, train_method = list(partitions = 6,
 # Set the forecast horizon
 md <- add_horizon(model.obj = md, horizon = 12)
                                                         
-### Alternatively, can use the magrittr to pipe the process                                                       
+### Alternatively, pipe the function with the magrittr package                                                      
 library(magrittr)
 
 md <- create_model() \%>\%
@@ -133,6 +135,6 @@ md <- create_model() \%>\%
        add_horizon(horizon = 12)
        
 # Run the model
-fc <- md \%>\% build_model                                                        
+fc <- md \%>\% build_model()                                                        
 
 }
