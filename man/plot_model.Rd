@@ -20,3 +20,39 @@ Plot the Models Performance on the Testing Partitions
 \details{
 The plot_model provides a visualization of the models performance on the testing paritions for the train_model function output
 }
+\examples{
+# Defining the models and their arguments
+methods <- list(ets1 = list(method = "ets",
+                            method_arg = list(opt.crit = "lik"),
+                            notes = "ETS model with opt.crit = lik"),
+                ets2 = list(method = "ets",
+                            method_arg = list(opt.crit = "amse"),
+                            notes = "ETS model with opt.crit = amse"),
+                arima1 = list(method = "arima",
+                              method_arg = list(order = c(2,1,0)),
+                              notes = "ARIMA(2,1,0)"),
+                arima2 = list(method = "arima",
+                              method_arg = list(order = c(2,1,2),
+                                                seasonal = list(order = c(1,1,1))),
+                              notes = "SARIMA(2,1,2)(1,1,1)"),
+                hw = list(method = "HoltWinters",
+                          method_arg = NULL,
+                          notes = "HoltWinters Model"),
+                tslm = list(method = "tslm",
+                            method_arg = list(formula = input ~ trend + season),
+                            notes = "tslm model with trend and seasonal components"))
+# Training the models with backtesting
+md <- train_model(input = USgas,
+                  methods = methods,
+                  train_method = list(partitions = 6, 
+                                      sample.out = 12, 
+                                      space = 3),
+                  horizon = 12,
+                  error = "MAPE")
+# Plot the models performance on the testing partitions
+plot_model(model.obj = md)
+
+# Plot only the ETS models
+plot_model(model.obj = md , model_ids = c("ets1", "ets2"))
+
+}

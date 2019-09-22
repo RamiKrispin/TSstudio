@@ -2481,7 +2481,7 @@ add_level <- function(model.obj, level){
 #' plot_model(model.obj = md)
 #' 
 #' # Plot only the ETS models
-#' plot_model(model.obj = md , model_ids = c("ets1", "ets2))
+#' plot_model(model.obj = md , model_ids = c("ets1", "ets2"))
 #' 
 
 plot_model <- function(model.obj, model_ids = NULL){
@@ -2505,7 +2505,7 @@ plot_model <- function(model.obj, model_ids = NULL){
   }
   
   if(!base::is.null(model_ids)){
-    if(base::all(model_ids %in% m)){
+    if(!base::all(model_ids %in% m)){
       stop("Error on the 'model_ids' argument: cannot find some (or all) of the model ids in the 'model.obj' object")
     }
     
