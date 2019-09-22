@@ -1967,12 +1967,13 @@ train_model <- function(input,
   output <-   base::list(train = training,
                          forecast = forecast$final_partition,
                          input = input,
-                         performance = error,
+                         error_summary = error_summary,
                          leaderboard  = leaderboard,
                          parameters = list(methods = methods,
                                            train_method = train_method,
                                            horizon = horizon,
                                            xreg = xreg,
+                                           error_metric = error,
                                            level = level))
   
   
@@ -2535,9 +2536,9 @@ plot_model <- function(model.obj, model_ids = NULL){
                      title = "",
                      zeroline = F
                    ),
-                   font = list(color = "white"),
-                   plot_bgcolor = "black",
-                   paper_bgcolor = "black"
+                   font = list(color = "black"),
+                   plot_bgcolor = "white",
+                   paper_bgcolor = "white"
     ) %>%
     plotly::animation_opts(
       frame = 500,
