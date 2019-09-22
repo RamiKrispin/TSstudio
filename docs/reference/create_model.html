@@ -141,7 +141,9 @@
 
 <span class='fu'>set_error</span>(<span class='no'>model.obj</span>, <span class='no'>error</span>)
 
-<span class='fu'>add_xreg</span>(<span class='no'>model.obj</span>, <span class='no'>xreg</span>)</pre>
+<span class='fu'>add_xreg</span>(<span class='no'>model.obj</span>, <span class='no'>xreg</span>)
+
+<span class='fu'>add_level</span>(<span class='no'>model.obj</span>, <span class='no'>level</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -190,6 +192,10 @@ or use multiple testing partitions (backtesting). The list should include the tr
 one vector corresponding to the input series and second to the forecast itself 
 (e.g., must have the same length as the input and forecast horizon, respectively)</p></td>
     </tr>
+    <tr>
+      <th>level</th>
+      <td><p>An integer, set the  confidence level of the prediction intervals</p></td>
+    </tr>
     </table>
     
 
@@ -223,9 +229,6 @@ one vector corresponding to the input series and second to the forecast itself
                               <span class='kw'>method_arg</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>order</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>2</span>,<span class='fl'>1</span>,<span class='fl'>2</span>),
                                      <span class='kw'>seasonal</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>order</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span>))),
                               <span class='kw'>notes</span> <span class='kw'>=</span> <span class='st'>"SARIMA(2,1,2)(1,1,1)"</span>),
-                <span class='kw'>auto_arima</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"auto.arima"</span>,
-                                  <span class='kw'>method_arg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-                                  <span class='kw'>notes</span> <span class='kw'>=</span> <span class='st'>"auto.arima model"</span>),
                 <span class='kw'>hw</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"HoltWinters"</span>,
                           <span class='kw'>method_arg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
                           <span class='kw'>notes</span> <span class='kw'>=</span> <span class='st'>"HoltWinters Model"</span>),
@@ -236,8 +239,7 @@ one vector corresponding to the input series and second to the forecast itself
 <span class='no'>md</span> <span class='kw'>&lt;-</span> <span class='fu'>add_methods</span>(<span class='kw'>model.obj</span> <span class='kw'>=</span> <span class='no'>md</span>, <span class='kw'>methods</span> <span class='kw'>=</span> <span class='no'>methods2</span>)
 
 <span class='co'># Remove methods</span>
-<span class='no'>md</span> <span class='kw'>&lt;-</span> <span class='fu'>remove_methods</span>(<span class='kw'>model.obj</span> <span class='kw'>=</span> <span class='no'>md</span>, <span class='kw'>method_ids</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"ets2"</span>, <span class='st'>"auto_arima"</span>))
-
+<span class='no'>md</span> <span class='kw'>&lt;-</span> <span class='fu'>remove_methods</span>(<span class='kw'>model.obj</span> <span class='kw'>=</span> <span class='no'>md</span>, <span class='kw'>method_ids</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"ets2"</span>, <span class='st'>"auto_arima"</span>))</div><div class='output co'>#&gt; <span class='warning'>Warning: The auto_arima does not exist on the model object</span></div><div class='input'>
 <span class='co'># Add train method</span>
 <span class='no'>md</span> <span class='kw'>&lt;-</span> <span class='fu'>add_train_method</span>(<span class='kw'>model.obj</span> <span class='kw'>=</span> <span class='no'>md</span>, <span class='kw'>train_method</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>partitions</span> <span class='kw'>=</span> <span class='fl'>6</span>,
                                                        <span class='kw'>sample.out</span> <span class='kw'>=</span> <span class='fl'>12</span>,
@@ -247,6 +249,9 @@ one vector corresponding to the input series and second to the forecast itself
 <span class='co'># Set the forecast horizon</span>
 <span class='no'>md</span> <span class='kw'>&lt;-</span> <span class='fu'>add_horizon</span>(<span class='kw'>model.obj</span> <span class='kw'>=</span> <span class='no'>md</span>, <span class='kw'>horizon</span> <span class='kw'>=</span> <span class='fl'>12</span>)
 
+<span class='co'># Add the forecast prediction intervals confidence level</span>
+<span class='no'>md</span> <span class='kw'>&lt;-</span> <span class='fu'>add_level</span>(<span class='kw'>model.obj</span> <span class='kw'>=</span> <span class='no'>md</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>90</span>, <span class='fl'>95</span>))
+
 <span class='co'>### Alternatively, pipe the function with the magrittr package  </span>
 
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>magrittr</span>)
@@ -254,18 +259,23 @@ one vector corresponding to the input series and second to the forecast itself
 <span class='no'>md</span> <span class='kw'>&lt;-</span> <span class='fu'>create_model</span>() <span class='kw'>%&gt;%</span>
       <span class='fu'>add_input</span>(<span class='kw'>input</span> <span class='kw'>=</span> <span class='no'>USgas</span>) <span class='kw'>%&gt;%</span>
       <span class='fu'>add_methods</span>(<span class='kw'>methods</span> <span class='kw'>=</span> <span class='no'>methods</span>) <span class='kw'>%&gt;%</span>
+      <span class='fu'>add_methods</span>(<span class='kw'>methods</span> <span class='kw'>=</span> <span class='no'>methods2</span>) <span class='kw'>%&gt;%</span>
       <span class='fu'>add_train_method</span>(<span class='kw'>train_method</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>partitions</span> <span class='kw'>=</span> <span class='fl'>6</span>,
                                            <span class='kw'>sample.out</span> <span class='kw'>=</span> <span class='fl'>12</span>,
                                            <span class='kw'>space</span> <span class='kw'>=</span> <span class='fl'>3</span>)) <span class='kw'>%&gt;%</span>
-       <span class='fu'>add_horizon</span>(<span class='kw'>horizon</span> <span class='kw'>=</span> <span class='fl'>12</span>)
+       <span class='fu'>add_horizon</span>(<span class='kw'>horizon</span> <span class='kw'>=</span> <span class='fl'>12</span>) <span class='kw'>%&gt;%</span>
+       <span class='fu'>add_level</span>(<span class='kw'>level</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>90</span>, <span class='fl'>95</span>))
 
 <span class='co'># Run the model</span>
-<span class='no'>fc</span> <span class='kw'>&lt;-</span> <span class='no'>md</span> <span class='kw'>%&gt;%</span> <span class='fu'>build_model</span>()</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 3 x 7</span><span>
-#&gt;   model_id model notes       avg_mape avg_rmse `avg_coverage80… `avg_coverage95…
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span> arima1   arima SARIMA(1,1…   0.054</span><span style='text-decoration: underline;'>1</span><span>     165.            0.556            0.847
-#&gt; </span><span style='color: #555555;'>2</span><span> ets1     ets   ETS model …   0.065</span><span style='text-decoration: underline;'>4</span><span>     180.            0.569            0.958
-#&gt; </span><span style='color: #555555;'>3</span><span> ets2     ets   ETS model …   0.071</span><span style='text-decoration: underline;'>1</span><span>     196.            0.417            0.792</div></span></pre>
+<span class='no'>fc</span> <span class='kw'>&lt;-</span> <span class='no'>md</span> <span class='kw'>%&gt;%</span> <span class='fu'>build_model</span>()</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 6 x 7</span><span>
+#&gt;   model_id model  notes      avg_mape avg_rmse `avg_coverage80… `avg_coverage95…
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span> arima1   arima  SARIMA(1,…   0.054</span><span style='text-decoration: underline;'>1</span><span>     165.            0.556            0.847
+#&gt; </span><span style='color: #555555;'>2</span><span> arima2   arima  SARIMA(2,…   0.056</span><span style='text-decoration: underline;'>5</span><span>     169.            0.542            0.792
+#&gt; </span><span style='color: #555555;'>3</span><span> hw       HoltW… HoltWinte…   0.058</span><span style='text-decoration: underline;'>5</span><span>     170.            0.75             0.875
+#&gt; </span><span style='color: #555555;'>4</span><span> ets1     ets    ETS model…   0.065</span><span style='text-decoration: underline;'>4</span><span>     180.            0.569            0.958
+#&gt; </span><span style='color: #555555;'>5</span><span> ets2     ets    ETS model…   0.071</span><span style='text-decoration: underline;'>1</span><span>     196.            0.417            0.792
+#&gt; </span><span style='color: #555555;'>6</span><span> tslm     tslm   tslm mode…   0.076</span><span style='text-decoration: underline;'>3</span><span>     217.            0.431            0.681</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
