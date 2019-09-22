@@ -2431,7 +2431,7 @@ add_level <- function(model.obj, level){
     model.obj$level <- level
   } else if(!base::is.null(model.obj$level)){
     q <- base::readline(base::paste("The model object already has 'level', do you wish to overwrite it? (yes) ", sep = " ")) %>% base::tolower()
-    if(q == "y" || q == "yes" || q = ""){
+    if(q == "y" || q == "yes" || q == ""){
       model.obj$level <- level
     } else{
       warning("No change had made on the model 'level' argument")
