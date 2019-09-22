@@ -2400,3 +2400,160 @@ add_xreg <- function(model.obj, xreg){
   }
   return(model.obj)
 }
+
+#' Plot the Models Performance on the Testing Partitions
+#' @export
+#' @details The plot_model provides a visualization of the models performance on the testing paritions for the train_model function output 
+#' @param  model.obj A train_model object
+#' @param model_ids A character, defines the trained models to plot, if set to NULL (default), will plot all the models
+#' @return Animation of models forecast on the testing partitions compared to the actuals
+#' @examples 
+#' # Defining the models and their arguments
+#' methods <- list(ets1 = list(method = "ets",
+#'                             method_arg = list(opt.crit = "lik"),
+#'                             notes = "ETS model with opt.crit = lik"),
+#'                 ets2 = list(method = "ets",
+#'                             method_arg = list(opt.crit = "amse"),
+#'                             notes = "ETS model with opt.crit = amse"),
+#'                 arima1 = list(method = "arima",
+#'                               method_arg = list(order = c(2,1,0)),
+#'                               notes = "ARIMA(2,1,0)"),
+#'                 arima2 = list(method = "arima",
+#'                               method_arg = list(order = c(2,1,2),
+#'                                                 seasonal = list(order = c(1,1,1))),
+#'                               notes = "SARIMA(2,1,2)(1,1,1)"),
+#'                 hw = list(method = "HoltWinters",
+#'                           method_arg = NULL,
+#'                           notes = "HoltWinters Model"),
+#'                 tslm = list(method = "tslm",
+#'                             method_arg = list(formula = input ~ trend + season),
+#'                             notes = "tslm model with trend and seasonal components"))
+#' # Training the models with backtesting
+#' md <- train_model(input = USgas,
+#'                   methods = methods,
+#'                   train_method = list(partitions = 6, 
+#'                                       sample.out = 12, 
+#'                                       space = 3),
+#'                   horizon = 12,
+#'                   error = "MAPE")
+#' # Plot the models performance on the testing partitions
+#' plot_model(model.obj = md)
+#' 
+#' # Plot only the ETS models
+#' plot_model(model.obj = md , model_ids = c("ets1", "ets2))
+#' 
+
+
+plot_model <- function(model.obj, model_ids = NULL){
+  
+  m <- p <- ac_df <- fc_df <- df <- output <- obj_name <- NULL
+  
+  obj_name <- obj.name <- base::deparse(base::substitute(model.obj))
+  # Error handling 
+  # Checking the model.obj class
+  if(base::class(model.obj) != "train_model"){
+    stop("The 'model.obj' is not valid 'train_model' object")
+  }
+  
+  
+  
+  
+  m <-  model.obj$parameters$methods %>% base::names()
+  
+  if(base::is.null(m)){
+    stop("Error on the 'model.obj' argument: cannot find any method in the 'model.obj' argument")
+  }
+  
+  if(!base::is.null(model_ids)){
+    if(base::all(method_ids %in% m)){
+      stop("Error on the 'method_ids' argument: cannot find some (or all) of the methods ids in the 'model.obj' object")
+    }
+    
+    m <- model_ids
+  }
+  
+  
+  
+  
+  p <- model.obj$parameters$train_method$partitions
+  ac_df <- base::data.frame(y = rep(base::as.numeric(model.obj$input), p),
+                            time = base::rep(base::as.numeric(stats::time(model.obj$input)), p),
+                            partition = base::rep(1:p, each = base::length(model.obj$input)),
+                            type = "actual")
+  
+  
+  fc_df <-  lapply(m, function(i){
+    df1 <- df2 <- NULL
+    df1 <- model.obj$train %>% 
+      purrr::map(~.x[[i]]) %>% 
+      purrr::map(~.x[["forecast"]]) %>% 
+      purrr::map(~.x[["mean"]]) %>%
+      dplyr::bind_cols()
+    
+    for(c in 1:base::ncol(df1)){
+      temp <- df3 <- NULL
+      temp <- df1[, c] %>% 
+        as.data.frame() %>% 
+        stats::setNames("y") 
+      
+      df3 <- base::data.frame(y = base::as.numeric(temp$y),
+                              time = base::as.numeric(stats::time(temp$y)),
+                              partition = c,
+                              type = i,
+                              stringsAsFactors = FALSE)
+      
+      df2 <- dplyr::bind_rows(df2, df3)
+    }
+    
+    
+    df1 <- model.obj$train %>% 
+      purrr::map(~.x[[i]]) %>% 
+      purrr::map(~.x[["forecast"]]) %>% 
+      purrr::map(~.x[["mean"]]) %>%
+      dplyr::bind_cols()
+    return(df2)    
+    
+  }) %>% dplyr::bind_rows()
+  
+  df <- rbind(fc_df, ac_df)
+  
+  output <- plotly::plot_ly(data = df,
+                            x = ~ time,
+                            y = ~ y,
+                            split = ~ type,
+                            frame = ~ partition,
+                            type = 'scatter',
+                            mode = 'lines',
+                            line = list(simplyfy = F))%>%
+    plotly::layout(title = base::paste(obj_name, "Models Performance by Testing Partitions", sep = " "),
+                   margin = 50,
+                   title = "",
+                   xaxis = list(
+                     title = "Date",
+                     zeroline = F),
+                   yaxis = list(
+                     title = "",
+                     zeroline = F
+                   ),
+                   font = list(color = "white"),
+                   plot_bgcolor = "black",
+                   paper_bgcolor = "black"
+    ) %>%
+    plotly::animation_opts(
+      frame = 500,
+      transition = 0,
+      redraw = F
+    ) %>%
+    plotly::animation_slider(
+      hide = F
+    ) %>%
+    plotly::animation_button(
+      x = 1, xanchor = "right", y = 0, yanchor = "bottom"
+    )
+  
+  return(output)
+}
+
+
+
+
