@@ -2,6 +2,7 @@
 
 export(add_horizon)
 export(add_input)
+export(add_level)
 export(add_methods)
 export(add_train_method)
 export(add_xreg)
