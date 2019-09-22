@@ -2013,6 +2013,7 @@ train_model <- function(input,
 #' one vector corresponding to the input series and second to the forecast itself 
 #' (e.g., must have the same length as the input and forecast horizon, respectively)
 #' @param error A character, defines the error metrics to be used to sort the models leaderboard. Possible metric - "MAPE" or "RMSE"
+#' @param level An integer, set the  confidence level of the prediction intervals
 #' @examples 
 #' 
 #' ### Building train_model function by adding its different components
@@ -2045,9 +2046,6 @@ train_model <- function(input,
 #'                               method_arg = list(order = c(2,1,2), 
 #'                                      seasonal = list(order = c(1,1,1))), 
 #'                               notes = "SARIMA(2,1,2)(1,1,1)"),
-#'                 auto_arima = list(method = "auto.arima", 
-#'                                   method_arg = NULL, 
-#'                                   notes = "auto.arima model"),
 #'                 hw = list(method = "HoltWinters", 
 #'                           method_arg = NULL, 
 #'                           notes = "HoltWinters Model"),
@@ -2068,6 +2066,9 @@ train_model <- function(input,
 #'                                                        
 #' # Set the forecast horizon
 #' md <- add_horizon(model.obj = md, horizon = 12)
+#' 
+#' # Add the forecast prediction intervals confidence level
+#' md <- add_level(model.obj = md, level = c(90, 95))
 #'                                                         
 #' ### Alternatively, pipe the function with the magrittr package  
 #'                                                     
@@ -2076,10 +2077,12 @@ train_model <- function(input,
 #' md <- create_model() %>%
 #'       add_input(input = USgas) %>%
 #'       add_methods(methods = methods) %>%
+#'       add_methods(methods = methods2) %>%
 #'       add_train_method(train_method = list(partitions = 6, 
 #'                                            sample.out = 12, 
 #'                                            space = 3)) %>%
-#'        add_horizon(horizon = 12)
+#'        add_horizon(horizon = 12) %>%
+#'        add_level(level = c(90, 95))
 #'        
 #' # Run the model
 #' fc <- md %>% build_model()  
