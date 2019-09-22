@@ -11,7 +11,7 @@ plot_error(model.obj, error = "MAPE", palette = "Set1")
 
 \item{error}{A character, defines the type of error metrics to plot, possible metric - "MAPE" or "RMSE"}
 
-\item{pallete}{A character, defines the color type to used on the plot, use row.names(RColorBrewer::brewer.pal.info) to view possible color palletes}
+\item{palette}{A character, defines the color type to used on the plot, use row.names(RColorBrewer::brewer.pal.info) to view possible color palletes}
 }
 \value{
 A plot with a summery of the models error rate by testing partition
