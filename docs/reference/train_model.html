@@ -128,7 +128,7 @@ or multipe partitions (backtesting)</p>
     </div>
 
     <pre class="usage"><span class='fu'>train_model</span>(<span class='no'>input</span>, <span class='no'>methods</span>, <span class='no'>train_method</span>, <span class='no'>horizon</span>, <span class='kw'>error</span> <span class='kw'>=</span> <span class='st'>"MAPE"</span>,
-  <span class='kw'>xreg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+  <span class='kw'>xreg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>80</span>, <span class='fl'>95</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -177,6 +177,10 @@ or use multiple testing partitions (backtesting). The list should include the tr
 one vector corresponding to the input series and second to the forecast itself 
 (e.g., must have the same length as the input and forecast horizon, respectively)</p></td>
     </tr>
+    <tr>
+      <th>level</th>
+      <td><p>An integer, set the  confidence level of the prediction intervals</p></td>
+    </tr>
     </table>
     
 
@@ -205,7 +209,6 @@ one vector corresponding to the input series and second to the forecast itself
                 <span class='kw'>tslm</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"tslm"</span>,
                             <span class='kw'>method_arg</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>formula</span> <span class='kw'>=</span> <span class='no'>input</span> ~ <span class='no'>trend</span> + <span class='no'>season</span>),
                             <span class='kw'>notes</span> <span class='kw'>=</span> <span class='st'>"tslm model with trend and seasonal components"</span>))
-
 <span class='co'># Training the models with backtesting</span>
 <span class='no'>md</span> <span class='kw'>&lt;-</span> <span class='fu'>train_model</span>(<span class='kw'>input</span> <span class='kw'>=</span> <span class='no'>USgas</span>,
                   <span class='kw'>methods</span> <span class='kw'>=</span> <span class='no'>methods</span>,
@@ -222,8 +225,7 @@ one vector corresponding to the input series and second to the forecast itself
 #&gt; </span><span style='color: #555555;'>4</span><span> ets1      ets    ETS mode…   0.065</span><span style='text-decoration: underline;'>4</span><span>     180.            0.569            0.958
 #&gt; </span><span style='color: #555555;'>5</span><span> ets2      ets    ETS mode…   0.071</span><span style='text-decoration: underline;'>1</span><span>     196.            0.417            0.792
 #&gt; </span><span style='color: #555555;'>6</span><span> tslm      tslm   tslm mod…   0.076</span><span style='text-decoration: underline;'>3</span><span>     217.            0.431            0.681
-#&gt; </span><span style='color: #555555;'>7</span><span> arima1    arima  ARIMA(2,…   0.228      671.            0.806            0.917</div><div class='input'>
-<span class='co'># View the model performance on the backtesting partitions</span>
+#&gt; </span><span style='color: #555555;'>7</span><span> arima1    arima  ARIMA(2,…   0.228      671.            0.806            0.917</div><div class='input'><span class='co'># View the model performance on the backtesting partitions</span>
 <span class='no'>md</span>$<span class='no'>leaderboard</span></div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 7 x 7</span><span>
 #&gt;   model_id  model  notes     avg_mape avg_rmse `avg_coverage80… `avg_coverage95…
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
@@ -234,7 +236,7 @@ one vector corresponding to the input series and second to the forecast itself
 #&gt; </span><span style='color: #555555;'>5</span><span> ets2      ets    ETS mode…   0.071</span><span style='text-decoration: underline;'>1</span><span>     196.            0.417            0.792
 #&gt; </span><span style='color: #555555;'>6</span><span> tslm      tslm   tslm mod…   0.076</span><span style='text-decoration: underline;'>3</span><span>     217.            0.431            0.681
 #&gt; </span><span style='color: #555555;'>7</span><span> arima1    arima  ARIMA(2,…   0.228      671.            0.806            0.917</div><div class='input'>
-<span class='fu'><a href='plot_forecast.html'>plot_forecast</a></span>(<span class='no'>md</span>$<span class='no'>forecast</span>$<span class='no'>ets1</span>$<span class='no'>forecast</span>)</div></span></pre>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

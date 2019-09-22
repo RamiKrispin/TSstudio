@@ -168,6 +168,10 @@ The sub-list name will be used as the model ID. Possible models:</p>
 <p><code><a href='https://www.rdocumentation.org/packages/forecast/topics/tslm'>tslm</a></code> - model from the forecast package (note that the 'tslm' model must have the formula argument in the 'method_arg' argument)</p></td>
     </tr>
     <tr>
+      <th>method_ids</th>
+      <td><p>A character, defines the IDs of the model methods to be remove with the remove_methods function</p></td>
+    </tr>
+    <tr>
       <th>train_method</th>
       <td><p>A list, defines the train approach, either using a single testing partition (sample out) 
 or use multiple testing partitions (backtesting). The list should include the training method argument, (please see 'details' for the structure of the argument)</p></td>
@@ -209,7 +213,7 @@ one vector corresponding to the input series and second to the forecast itself
                             <span class='kw'>notes</span> <span class='kw'>=</span> <span class='st'>"ETS model with opt.crit = amse"</span>),
                 <span class='kw'>arima1</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"arima"</span>,
                               <span class='kw'>method_arg</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>order</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span>),
-                                                <span class='kw'>seasonal</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>order</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>1</span>))),
+                                        <span class='kw'>seasonal</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>order</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>1</span>))),
                               <span class='kw'>notes</span> <span class='kw'>=</span> <span class='st'>"SARIMA(1,1,1)(1,0,1)"</span>))
 
 <span class='no'>md</span> <span class='kw'>&lt;-</span> <span class='fu'>add_methods</span>(<span class='kw'>model.obj</span> <span class='kw'>=</span> <span class='no'>md</span>, <span class='kw'>methods</span> <span class='kw'>=</span> <span class='no'>methods</span>)
@@ -217,7 +221,7 @@ one vector corresponding to the input series and second to the forecast itself
 <span class='co'># Add additional methods</span>
 <span class='no'>methods2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>arima2</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"arima"</span>,
                               <span class='kw'>method_arg</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>order</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>2</span>,<span class='fl'>1</span>,<span class='fl'>2</span>),
-                                                <span class='kw'>seasonal</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>order</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span>))),
+                                     <span class='kw'>seasonal</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>order</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span>))),
                               <span class='kw'>notes</span> <span class='kw'>=</span> <span class='st'>"SARIMA(2,1,2)(1,1,1)"</span>),
                 <span class='kw'>auto_arima</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"auto.arima"</span>,
                                   <span class='kw'>method_arg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -226,8 +230,8 @@ one vector corresponding to the input series and second to the forecast itself
                           <span class='kw'>method_arg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
                           <span class='kw'>notes</span> <span class='kw'>=</span> <span class='st'>"HoltWinters Model"</span>),
                 <span class='kw'>tslm</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"tslm"</span>,
-                            <span class='kw'>method_arg</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>formula</span> <span class='kw'>=</span> <span class='no'>input</span> ~ <span class='no'>trend</span> + <span class='no'>season</span>),
-                            <span class='kw'>notes</span> <span class='kw'>=</span> <span class='st'>"tslm model with trend and seasonal components"</span>))
+                    <span class='kw'>method_arg</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>formula</span> <span class='kw'>=</span> <span class='no'>input</span> ~ <span class='no'>trend</span> + <span class='no'>season</span>),
+                    <span class='kw'>notes</span> <span class='kw'>=</span> <span class='st'>"tslm model with trend and seasonal components"</span>))
 
 <span class='no'>md</span> <span class='kw'>&lt;-</span> <span class='fu'>add_methods</span>(<span class='kw'>model.obj</span> <span class='kw'>=</span> <span class='no'>md</span>, <span class='kw'>methods</span> <span class='kw'>=</span> <span class='no'>methods2</span>)
 
@@ -243,7 +247,8 @@ one vector corresponding to the input series and second to the forecast itself
 <span class='co'># Set the forecast horizon</span>
 <span class='no'>md</span> <span class='kw'>&lt;-</span> <span class='fu'>add_horizon</span>(<span class='kw'>model.obj</span> <span class='kw'>=</span> <span class='no'>md</span>, <span class='kw'>horizon</span> <span class='kw'>=</span> <span class='fl'>12</span>)
 
-<span class='co'>### Alternatively, can use the magrittr to pipe the process                                                       </span>
+<span class='co'>### Alternatively, pipe the function with the magrittr package  </span>
+
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>magrittr</span>)
 
 <span class='no'>md</span> <span class='kw'>&lt;-</span> <span class='fu'>create_model</span>() <span class='kw'>%&gt;%</span>
@@ -255,13 +260,12 @@ one vector corresponding to the input series and second to the forecast itself
        <span class='fu'>add_horizon</span>(<span class='kw'>horizon</span> <span class='kw'>=</span> <span class='fl'>12</span>)
 
 <span class='co'># Run the model</span>
-<span class='no'>fc</span> <span class='kw'>&lt;-</span> <span class='no'>md</span> <span class='kw'>%&gt;%</span> <span class='no'>build_model</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 3 x 7</span><span>
+<span class='no'>fc</span> <span class='kw'>&lt;-</span> <span class='no'>md</span> <span class='kw'>%&gt;%</span> <span class='fu'>build_model</span>()</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 3 x 7</span><span>
 #&gt;   model_id model notes       avg_mape avg_rmse `avg_coverage80… `avg_coverage95…
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #555555;'>1</span><span> arima1   arima SARIMA(1,1…   0.054</span><span style='text-decoration: underline;'>1</span><span>     165.            0.556            0.847
 #&gt; </span><span style='color: #555555;'>2</span><span> ets1     ets   ETS model …   0.065</span><span style='text-decoration: underline;'>4</span><span>     180.            0.569            0.958
-#&gt; </span><span style='color: #555555;'>3</span><span> ets2     ets   ETS model …   0.071</span><span style='text-decoration: underline;'>1</span><span>     196.            0.417            0.792</div><div class='input'>
-</div></span></pre>
+#&gt; </span><span style='color: #555555;'>3</span><span> ets2     ets   ETS model …   0.071</span><span style='text-decoration: underline;'>1</span><span>     196.            0.417            0.792</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

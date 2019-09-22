@@ -81,7 +81,6 @@ methods <- list(ets1 = list(method = "ets",
                 tslm = list(method = "tslm",
                             method_arg = list(formula = input ~ trend + season),
                             notes = "tslm model with trend and seasonal components"))
-
 # Training the models with backtesting
 md <- train_model(input = USgas,
                   methods = methods,
@@ -90,7 +89,7 @@ md <- train_model(input = USgas,
                                       space = 3),
                   horizon = 12,
                   error = "MAPE")
-                  
 # View the model performance on the backtesting partitions
 md$leaderboard
+
 }
