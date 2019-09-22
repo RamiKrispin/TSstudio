@@ -86,6 +86,7 @@ ts_backtesting <- function(ts.obj,
                            xreg.h = NULL,
                            parallel = FALSE){
   
+  base::.Deprecated(new = "train_model", msg = "The 'ts_backtesting' function is deprecated, please use 'train_model' instead")
   `%>%` <- magrittr::`%>%` 
   
   a <- model_list <- model_char <- color_ramp <- forecast_list <- obj.name <- NULL
