@@ -11,7 +11,7 @@
 \alias{set_error}
 \alias{add_xreg}
 \alias{add_level}
-\title{Build the Components of the \code{\link[TSstudio]{train_model}} Function}
+\title{Build the \code{\link[TSstudio]{train_model}} Function's Components}
 \usage{
 create_model()
 
