@@ -2402,6 +2402,43 @@ add_xreg <- function(model.obj, xreg){
   return(model.obj)
 }
 
+
+
+#' @export
+#' @rdname create_model
+#' 
+add_level <- function(model.obj, level){
+  `%>%` <- magrittr::`%>%`
+  q <- NULL
+ 
+  # Error handling 
+  # Checking the model.obj class
+  if(base::class(model.obj) != "train_model"){
+    stop("The 'model.obj' is not valid 'train_model' object")
+  }
+  
+  ### Error Handling
+  # Check the level argument
+  if(base::all(!is.numeric(level)) ||
+     base::any(level %% 1 != 0) ||
+     base::any(level  <= 0 | level > 100)){
+    stop("Error on the 'level' argument: the argument is out of range (0,100]")
+  }
+  if(!"level" %in% base::names(model.obj) || base::is.null(model.obj$level)){
+    model.obj$level <- level
+  } else if(!base::is.null(model.obj$level)){
+    q <- base::readline(base::paste("The model object already has 'level', do you wish to overwrite it? (yes) ", sep = " ")) %>% base::tolower()
+    if(q == "y" || q == "yes" || q = ""){
+      model.obj$level <- level
+    } else{
+      warning("No change had made on the model 'level' argument")
+    }  
+  }
+  
+  return(model.obj)
+  
+}
+
 #' Plot the Models Performance on the Testing Partitions
 #' @export
 #' @details The plot_model provides a visualization of the models performance on the testing paritions for the train_model function output 
