@@ -2445,7 +2445,7 @@ add_xreg <- function(model.obj, xreg){
 
 
 plot_model <- function(model.obj, model_ids = NULL){
-  
+  `%>%` <- magrittr::`%>%`
   m <- p <- ac_df <- fc_df <- df <- output <- obj_name <- NULL
   
   obj_name <- obj.name <- base::deparse(base::substitute(model.obj))
@@ -2465,8 +2465,8 @@ plot_model <- function(model.obj, model_ids = NULL){
   }
   
   if(!base::is.null(model_ids)){
-    if(base::all(method_ids %in% m)){
-      stop("Error on the 'method_ids' argument: cannot find some (or all) of the methods ids in the 'model.obj' object")
+    if(base::all(model_ids %in% m)){
+      stop("Error on the 'model_ids' argument: cannot find some (or all) of the model ids in the 'model.obj' object")
     }
     
     m <- model_ids
