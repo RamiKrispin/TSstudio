@@ -2600,7 +2600,7 @@ plot_model <- function(model.obj, model_ids = NULL){
 #' @details The plot_model provides a visualization of the models performance on the testing paritions for the train_model function output 
 #' @param  model.obj A train_model object
 #' @param error A character, defines the type of error metrics to plot, possible metric - "MAPE" or "RMSE"
-#' @param pallete A character, defines the color type to used on the plot, use row.names(RColorBrewer::brewer.pal.info) to view possible color palletes
+#' @param palette A character, defines the color type to used on the plot, use row.names(RColorBrewer::brewer.pal.info) to view possible color palletes
 #' @return A plot with a summery of the models error rate by testing partition
 #' @examples 
 #' # Defining the models and their arguments
@@ -2638,7 +2638,7 @@ plot_model <- function(model.obj, model_ids = NULL){
 
 plot_error <- function(model.obj, error = "MAPE", palette = "Set1"){
   `%>%` <- magrittr::`%>%`
-  m<- n_colors <- colors_list <- p1 <- p2 <- output <- NULL
+  m<- n_colors <- colors_list <- p1 <- p2 <- output <- error_df <- model_id <- NULL
   hex_to_rgb <- function(hex){
     rgb <- base::paste0(as.numeric(grDevices::col2rgb(hex) %>% base::t()), collapse = ",")
     return(rgb)
@@ -2655,7 +2655,7 @@ plot_error <- function(model.obj, error = "MAPE", palette = "Set1"){
     stop("Error on the 'error' argument: in valid error metric, can use either 'MAPE' or 'RMSE'")
   }
   
-  
+  error_df <- model.obj$error_summary %>% dplyr::bind_rows()
   m <- unique(error_df$model_id)
   palette_list <- base::row.names(RColorBrewer::brewer.pal.info)
   if(base::length(palette) != 1 || !palette %in% palette_list){
