@@ -1832,7 +1832,7 @@ train_model <- function(input,
       
       
     }
-
+    
     output <- list(model = md, 
                    forecast = fc, 
                    parameters = base::list(
@@ -1910,7 +1910,7 @@ train_model <- function(input,
     
     
     error_df <- lapply(base::seq_along(p),function(n){
-
+      
       df <-  coverage_df <-  NULL
       
       if(base::is.null(base::colnames(u[[p[n]]]))){
@@ -2246,7 +2246,7 @@ add_train_method <- function(model.obj, train_method){
             train_method$space %% 1 != 0){
     stop("Error on the 'train_method' argument:  the 'space' argument is not valide, please use a positive integer")
   } 
-
+  
   
   # Adding the train object
   if(!"train_method" %in% base::names(model.obj) || base::is.null(model.obj$train_method)){
@@ -2444,7 +2444,6 @@ add_xreg <- function(model.obj, xreg){
 #' plot_model(model.obj = md , model_ids = c("ets1", "ets2))
 #' 
 
-
 plot_model <- function(model.obj, model_ids = NULL){
   `%>%` <- magrittr::`%>%`
   m <- p <- ac_df <- fc_df <- df <- output <- obj_name <- NULL
@@ -2555,6 +2554,150 @@ plot_model <- function(model.obj, model_ids = NULL){
   return(output)
 }
 
+
+#' Plot the Models Error Metric on the Testing Partitions
+#' @export
+#' @details The plot_model provides a visualization of the models performance on the testing paritions for the train_model function output 
+#' @param  model.obj A train_model object
+#' @param error A character, defines the type of error metrics to plot, possible metric - "MAPE" or "RMSE"
+#' @param pallete A character, defines the color type to used on the plot, use row.names(RColorBrewer::brewer.pal.info) to view possible color palletes
+#' @return A plot with a summery of the models error rate by testing partition
+#' @examples 
+#' # Defining the models and their arguments
+#' methods <- list(ets1 = list(method = "ets",
+#'                             method_arg = list(opt.crit = "lik"),
+#'                             notes = "ETS model with opt.crit = lik"),
+#'                 ets2 = list(method = "ets",
+#'                             method_arg = list(opt.crit = "amse"),
+#'                             notes = "ETS model with opt.crit = amse"),
+#'                 arima1 = list(method = "arima",
+#'                               method_arg = list(order = c(2,1,0)),
+#'                               notes = "ARIMA(2,1,0)"),
+#'                 arima2 = list(method = "arima",
+#'                               method_arg = list(order = c(2,1,2),
+#'                                                 seasonal = list(order = c(1,1,1))),
+#'                               notes = "SARIMA(2,1,2)(1,1,1)"),
+#'                 hw = list(method = "HoltWinters",
+#'                           method_arg = NULL,
+#'                           notes = "HoltWinters Model"),
+#'                 tslm = list(method = "tslm",
+#'                             method_arg = list(formula = input ~ trend + season),
+#'                             notes = "tslm model with trend and seasonal components"))
+#' # Training the models with backtesting
+#' md <- train_model(input = USgas,
+#'                   methods = methods,
+#'                   train_method = list(partitions = 6, 
+#'                                       sample.out = 12, 
+#'                                       space = 3),
+#'                   horizon = 12,
+#'                   error = "MAPE")
+#'                   
+#' # Plot the models performance on the testing partitions
+#' plot_error(model.obj = md)
+#' 
+
+plot_error <- function(model.obj, error = "MAPE", palette = "Set1"){
+  `%>%` <- magrittr::`%>%`
+  m<- n_colors <- colors_list <- p1 <- p2 <- output <- NULL
+  hex_to_rgb <- function(hex){
+    rgb <- base::paste0(as.numeric(grDevices::col2rgb(hex) %>% base::t()), collapse = ",")
+    return(rgb)
+  }
+  
+  # Error handling 
+  # Checking the model.obj class
+  if(base::class(model.obj) != "train_model"){
+    stop("The 'model.obj' is not valid 'train_model' object")
+  }
+  
+  # Checking the error argument
+  if(error != "MAPE" && error != "RMSE"){
+    stop("Error on the 'error' argument: in valid error metric, can use either 'MAPE' or 'RMSE'")
+  }
+  
+  
+  m <- unique(error_df$model_id)
+  palette_list <- base::row.names(RColorBrewer::brewer.pal.info)
+  if(base::length(palette) != 1 || !palette %in% palette_list){
+    stop("Error on the 'palette' argument: cannot find the color palette on the RColorBrewer palettes list, ", 
+         "use row.names(RColorBrewer::brewer.pal.info) to view possible color palettes")
+  }
+  
+  n_colors <- RColorBrewer::brewer.pal.info$maxcolors[row.names(RColorBrewer::brewer.pal.info)  == palette]
+  colors_list <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(n_colors, palette))(base::length(m))
+  
+  p1 <- plotly::plot_ly()
+  p2 <- plotly::plot_ly()
+  
+  if(error == "MAPE"){
+    for(i in base::seq_along(m)){
+      df <- NULL
+      
+      df <- error_df %>% dplyr::filter(model_id == m[i])
+      
+      p1 <- p1 %>% plotly::add_lines(x = df$partition, y = df$mape * 100, name = m[i],
+                                     showlegend = TRUE,
+                                     legendgroup = m[i], 
+                                     line = list(color = colors_list[i])) 
+      p2 <- p2 %>% plotly::add_trace(y = df$mape * 100, name = m[i], 
+                                     type = "box", 
+                                     fillcolor = base::paste("rgba(", hex_to_rgb(colors_list[i]), ", 0.5)", sep = ""),
+                                     line = list(color = colors_list[i]),
+                                     marker = list(color = colors_list[i]),
+                                     boxpoints = "all", 
+                                     jitter = 0.3,
+                                     pointpos = -1.8,
+                                     showlegend = FALSE,
+                                     legendgroup = m[i])
+      
+      
+      
+      
+      
+    }
+    p1 <- p1 %>% plotly::layout(yaxis = list(title = "MAPE", ticksuffix = '%'),
+                                xaxis = list(title = "Partition"))
+    p2 <- p2 %>% plotly::layout(yaxis = list(title = "MAPE", ticksuffix = '%'),
+                                xaxis = list(title = "Partition"))
+    
+    output <- plotly::subplot(p1, p2, nrows = 1, shareY = T) %>% 
+      plotly::layout(title = "Model Performance by Testing Partition - MAPE")
+  } else if(error == "RMSE"){
+    for(i in base::seq_along(m)){
+      df <- NULL
+      
+      df <- error_df %>% dplyr::filter(model_id == m[i])
+      
+      p1 <- p1 %>% plotly::add_lines(x = df$partition, y = df$rmse, name = m[i],
+                                     showlegend = TRUE,
+                                     legendgroup = m[i], 
+                                     line = list(color = colors_list[i])) 
+      p2 <- p2 %>% plotly::add_trace(y = df$rmse, name = m[i], 
+                                     type = "box", 
+                                     fillcolor = base::paste("rgba(", hex_to_rgb(colors_list[i]), ", 0.5)", sep = ""),
+                                     line = list(color = colors_list[i]),
+                                     marker = list(color = colors_list[i]),
+                                     boxpoints = "all", 
+                                     jitter = 0.3,
+                                     pointpos = -1.8,
+                                     showlegend = FALSE,
+                                     legendgroup = m[i])
+      
+      
+      
+      
+      
+    }
+    p1 <- p1 %>% plotly::layout(yaxis = list(title = "RMSE"),
+                                xaxis = list(title = "Partition"))
+    p2 <- p2 %>% plotly::layout(yaxis = list(title = "RMSE"),
+                                xaxis = list(title = "Partition"))
+    
+    output <- plotly::subplot(p1, p2, nrows = 1, shareY = T) %>% 
+      plotly::layout(title = "Model Performance by Testing Partition - RMSE")
+  }
+  return(output)
+}
 
 
 
