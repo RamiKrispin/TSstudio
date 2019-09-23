@@ -707,7 +707,8 @@ ts_cor <- function(ts.obj,
                    lag.max = NULL){
   `%>%` <- magrittr::`%>%`
   df <- f <- p1 <- p2 <- NULL
-  
+  storeWarn <- base::getOption("warn")
+  base::options(warn = -1) 
   # Error handling 
   # Checking the input object
   if(!stats::is.ts(ts.obj)){
@@ -826,7 +827,7 @@ ts_cor <- function(ts.obj,
   } else if(type == "pacf"){
     output <- p2
   }
-  
+  base::options(warn = storeWarn) 
   return(base::suppressWarnings(output))
   
 }
