@@ -722,7 +722,7 @@ ts_cor <- function(ts.obj,
   lower <- - upper
   
   if(type == "both" || type == "acf"){
-    x <- stats::acf(USVSales, lag.max = lag.max)
+    x <- stats::acf(USVSales, lag.max = lag.max, plot = FALSE)
     df <- data.frame(y = as.numeric(x$acf),
                      lag = 0:(base::nrow(x$acf) -1),
                      stringsAsFactors = FALSE)
@@ -730,7 +730,7 @@ ts_cor <- function(ts.obj,
     df$non_seasonal_lag <- ifelse(df$lag %% f  != 0, df$y, NA)
     df$zero_lag <-  ifelse(df$lag == 0, df$y, NA)
     
-    p1 <- plotly::plot_ly(data = df) %>%
+    p1 <- base::suppressWarnings(plotly::plot_ly(data = df) %>%
       plotly::add_trace(x = ~ lag, 
                         y = ~ zero_lag, 
                         type = "bar",
@@ -770,6 +770,7 @@ ts_cor <- function(ts.obj,
                            showlegend = FALSE, 
                            name = "CI Lower Bound") %>%
       plotly::layout(xaxis = list(dtick = f))
+    )
   }
   
   if(type == "both" || type == "pacf"){
@@ -781,7 +782,7 @@ ts_cor <- function(ts.obj,
     df$non_seasonal_lag <- ifelse(df$lag %% f  != 0, df$y, NA)
     
     showlegend <- ifelse(type == "both", FALSE, TRUE)
-    p2 <- plotly::plot_ly(data = df) %>%
+    p2 <- suppressWarnings(plotly::plot_ly(data = df) %>%
       plotly::add_trace(x = ~ lag, 
                         y = ~ seasonal_lag, 
                         type = "bar", 
@@ -815,17 +816,18 @@ ts_cor <- function(ts.obj,
                            showlegend = FALSE, 
                            name = "CI Lower Bound") %>%
       plotly::layout(xaxis = list(dtick = f))
+    )
   }
   
   if(type == "both"){
-    output <- plotly::subplot(p1, p2, nrows = 2, shareX = TRUE)
+    output <- base::suppressWarnings(plotly::subplot(p1, p2, nrows = 2, shareX = TRUE))
   } else if(type == "acf"){
     output <- p1
   } else if(type == "pacf"){
     output <- p2
   }
   
-  return(output)
+  return(base::suppressWarnings(output))
   
 }
 
