@@ -571,7 +571,7 @@ ccf_plot <- function(x, y,
   `%>%` <- magrittr::`%>%`
   x.name <- base::deparse(base::substitute(x))
   y.name <- base::deparse(base::substitute(y))
-  # --------------Error handling --------------
+  ### Error handling 
   if(!base::is.null(title)){
     if(!base::is.character(title)){
       warning("The value of the 'title' is not valid, using default")
@@ -675,3 +675,158 @@ ccf_plot <- function(x, y,
   
   return(lags_plot)
 }
+
+
+#'  An Interactive Visualization of the ACF and PACF Functions
+#' @export
+#' @param ts.obj A univariate time series object class 'ts'
+#' @param type A character, defines the plot type - 'acf' for ACF plot, 'pacf' for PACF plot, and 'both' (default) for both ACF and PACF plots
+#' @param seasonal A boolean, when set to TRUE (default) will color the seasonal lags
+#' @param ci The significant level of the estimation - a numeric value between 0 and 1, default is set for 0.95 
+#' @param lag.max maximum lag at which to calculate the acf. Default is 10*log10(N/m) 
+#' where N is the number of observations and m the number of series. 
+#' Will be automatically limited to one less than the number of observations in the series.
+#' @examples 
+#' 
+#' data(USgas)
+#' 
+#' ts_cor(ts.obj = USgas)
+#' 
+#' # Setting the maximum number of lags to 72
+#' ts_cor(ts.obj = USgas, lag.max = 72)
+#' 
+#' # Plotting only ACF 
+#' ts_cor(ts.obj = USgas, lag.max = 72, type = "acf")
+
+
+
+ts_cor <- function(ts.obj, 
+                   type = "both", 
+                   seasonal = TRUE, 
+                   ci = 0.95, 
+                   lag.max = NULL){
+  `%>%` <- magrittr::`%>%`
+  df <- f <- p1 <- p2 <- NULL
+  
+  # Error handling 
+  # Checking the input object
+  if(!stats::is.ts(ts.obj)){
+    stop("The 'ts.obj' argument is not a valid 'ts' object")
+  } else if(stats::is.mts(ts.obj)){
+    stop("Cannot use multiple time series object as an input")
+  } 
+  
+  f <- stats::frequency(ts.obj)
+  
+  upper <- stats::qnorm((1 + ci)/2)/sqrt(x[[3]])
+  lower <- - upper
+  
+  if(type == "both" || type == "acf"){
+    x <- stats::acf(USVSales, lag.max = lag.max)
+    df <- data.frame(y = as.numeric(x$acf),
+                     lag = 0:(base::nrow(x$acf) -1),
+                     stringsAsFactors = FALSE)
+    df$seasonal_lag <- ifelse(df$lag %% f  == 0 & df$lag != 0, df$y, NA)
+    df$non_seasonal_lag <- ifelse(df$lag %% f  != 0, df$y, NA)
+    df$zero_lag <-  ifelse(df$lag == 0, df$y, NA)
+    
+    p1 <- plotly::plot_ly(data = df) %>%
+      plotly::add_trace(x = ~ lag, 
+                        y = ~ zero_lag, 
+                        type = "bar",
+                        marker = list(color = "black"), 
+                        width = 0.1, 
+                        name = "Lag-Zero", 
+                        legendgroup = "lagzero",
+                        showlegend = FALSE) %>%
+      plotly::add_trace(x = ~ lag, 
+                        y = ~ seasonal_lag, 
+                        type = "bar", 
+                        marker = list(color = "red"), 
+                        width = 0.1, 
+                        legendgroup = "seasonal",
+                        name = "Seasonal") %>%
+      plotly::add_trace(x = ~ lag, 
+                        y = ~ non_seasonal_lag, 
+                        type = "bar", 
+                        marker = list(color = "#00526d"), 
+                        width = 0.1, 
+                        legendgroup = "nonseasonal",
+                        name = "Non-Seasonal") %>%
+      plotly::add_segments(x = ~ min(lag), 
+                           xend = ~ max(lag), 
+                           y = upper, 
+                           yend = upper, 
+                           line = list(color = "green", dash = "dash"), 
+                           legendgroup = "ci", 
+                           showlegend = FALSE, 
+                           name = "CI Upper Bound") %>%
+      plotly::add_segments(x = ~ min(lag), 
+                           xend = ~ max(lag), 
+                           y = lower, 
+                           yend = lower, 
+                           line = list(color = "green", dash = "dash"), 
+                           legendgroup = "ci", 
+                           showlegend = FALSE, 
+                           name = "CI Lower Bound") %>%
+      plotly::layout(xaxis = list(dtick = f))
+  }
+  
+  if(type == "both" || type == "pacf"){
+    x <- stats::pacf(USVSales, lag.max = lag.max)
+    df <- data.frame(y = as.numeric(x$acf),
+                     lag = 1:(base::nrow(x$acf)),
+                     stringsAsFactors = FALSE)
+    df$seasonal_lag <- ifelse(df$lag %% f  == 0, df$y, NA)
+    df$non_seasonal_lag <- ifelse(df$lag %% f  != 0, df$y, NA)
+    
+    showlegend <- ifelse(type == "both", FALSE, TRUE)
+    p2 <- plotly::plot_ly(data = df) %>%
+      plotly::add_trace(x = ~ lag, 
+                        y = ~ seasonal_lag, 
+                        type = "bar", 
+                        marker = list(color = "red"), 
+                        width = 0.1, 
+                        legendgroup = "seasonal",
+                        showlegend = showlegend,
+                        name = "Seasonal") %>%
+      plotly::add_trace(x = ~ lag, 
+                        y = ~ non_seasonal_lag, 
+                        type = "bar", 
+                        marker = list(color = "#00526d"), 
+                        width = 0.1, 
+                        legendgroup = "nonseasonal",
+                        showlegend = showlegend,
+                        name = "Non-Seasonal") %>%
+      plotly::add_segments(x = ~ min(lag), 
+                           xend = ~ max(lag), 
+                           y = upper, 
+                           yend = upper, 
+                           line = list(color = "green", dash = "dash"), 
+                           legendgroup = "ci", 
+                           showlegend = FALSE, 
+                           name = "CI Upper Bound") %>%
+      plotly::add_segments(x = ~ min(lag), 
+                           xend = ~ max(lag), 
+                           y = lower, 
+                           yend = lower, 
+                           line = list(color = "green", dash = "dash"), 
+                           legendgroup = "ci", 
+                           showlegend = FALSE, 
+                           name = "CI Lower Bound") %>%
+      plotly::layout(xaxis = list(dtick = f))
+  }
+  
+  if(type == "both"){
+    output <- plotly::subplot(p1, p2, nrows = 2, shareX = TRUE)
+  } else if(type == "acf"){
+    output <- p1
+  } else if(type == "pacf"){
+    output <- p2
+  }
+  
+  return(output)
+  
+}
+
+
