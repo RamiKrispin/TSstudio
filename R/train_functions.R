@@ -2109,7 +2109,7 @@ add_input <- function(model.obj, input){
   if(!stats::is.ts(input)){
     stop("The input argument is not a valid 'ts' object")
   } else if(stats::is.mts(input)){
-    stop("Cannot use multiple time series object as input")
+    stop("Cannot use multiple time series object as an input")
   }
   
   # Checking the model.obj 
