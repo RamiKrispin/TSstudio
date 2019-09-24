@@ -133,6 +133,7 @@ ts_lags <- function(ts.obj, lags = 1:12, margin = 0.02,
 
 
 ts_acf <- function(ts.obj, lag.max = NULL, ci = 0.95, color = NULL) {
+  base::.Deprecated(new = "ts_cor", msg = "The 'ts_acf' function is deprecated, please use 'ts_cor' instead")
   `%>%` <- magrittr::`%>%`
   # Error handling
   if (is.null(ts.obj)) {
@@ -275,6 +276,7 @@ ts_acf <- function(ts.obj, lag.max = NULL, ci = 0.95, color = NULL) {
 #' ts_pacf(USgas, lag.max = 60)
 
 ts_pacf <- function(ts.obj, lag.max = NULL, ci = 0.95, color = NULL) {
+  base::.Deprecated(new = "ts_cor", msg = "The 'ts_pacf' function is deprecated, please use 'ts_cor' instead")
   `%>%` <- magrittr::`%>%`
   # Error handling
   if (is.null(ts.obj)) {
@@ -706,7 +708,11 @@ ts_cor <- function(ts.obj,
                    ci = 0.95, 
                    lag.max = NULL){
   `%>%` <- magrittr::`%>%`
-  df <- f <- p1 <- p2 <- NULL
+  df <- f <- p1 <- p2 <- obj.name <- NULL
+  
+  obj.name <- base::deparse(base::substitute(ts.obj))
+  
+  
   storeWarn <- base::getOption("warn")
   base::options(warn = -1) 
   # Error handling 
@@ -771,7 +777,8 @@ ts_cor <- function(ts.obj,
                            legendgroup = "ci", 
                            showlegend = FALSE, 
                            name = "CI Lower Bound") %>%
-      plotly::layout(xaxis = list(dtick = f))
+      plotly::layout(xaxis = list(dtick = f, title = "Lag"),
+                     yaxis = list(title = "ACF"))
     } else {
       df$zero_lag <-  ifelse(df$lag == 0, df$y, NA)
       df$y <-  ifelse(df$lag == 0, NA, df$y)
@@ -809,7 +816,8 @@ ts_cor <- function(ts.obj,
                              legendgroup = "ci", 
                              showlegend = FALSE, 
                              name = "CI Lower Bound") %>%
-        plotly::layout(xaxis = list(dtick = f))
+        plotly::layout(xaxis = list(dtick = f, title = "Lag"),
+                       yaxis = list(title = "ACF"))
     }
     
   }
@@ -857,7 +865,8 @@ ts_cor <- function(ts.obj,
                            legendgroup = "ci", 
                            showlegend = FALSE, 
                            name = "CI Lower Bound") %>%
-      plotly::layout(xaxis = list(dtick = f))
+      plotly::layout(xaxis = list(dtick = f, title = "Lag"),
+                      yaxis = list(title = "PACF"))
     } else {
       
       p2 <- plotly::plot_ly(data = df) %>%
@@ -884,16 +893,20 @@ ts_cor <- function(ts.obj,
                              legendgroup = "ci", 
                              showlegend = FALSE, 
                              name = "CI Lower Bound") %>%
-        plotly::layout(xaxis = list(dtick = f))
+        plotly::layout(xaxis = list(dtick = f, title = "Lag"),
+                       yaxis = list(title = "PACF"))
     }
   }
   
   if(type == "both"){
-    output <- base::suppressWarnings(plotly::subplot(p1, p2, nrows = 2, shareX = TRUE))
+    output <- plotly::subplot(p1, p2, nrows = 2, shareX = TRUE, titleY = TRUE) %>% 
+      plotly::layout(title = base::paste(obj.name, "ACF and PACF Plots", sep = " "))
   } else if(type == "acf"){
-    output <- p1
+    output <- p1 %>%
+      plotly::layout(title = base::paste(obj.name, "ACF Plot", sep = " "))
   } else if(type == "pacf"){
-    output <- p2
+    output <- p2 %>%
+      plotly::layout(title = base::paste(obj.name, "PACF Plot", sep = " "))
   }
   base::options(warn = storeWarn) 
   return(base::suppressWarnings(output))
