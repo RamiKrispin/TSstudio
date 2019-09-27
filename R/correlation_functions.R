@@ -725,11 +725,12 @@ ts_cor <- function(ts.obj,
   
   f <- stats::frequency(ts.obj)
   
-  upper <- stats::qnorm((1 + ci)/2)/sqrt(x[[3]])
-  lower <- - upper
-  
   if(type == "both" || type == "acf"){
     x <- stats::acf(ts.obj, lag.max = lag.max, plot = FALSE)
+    
+    upper <- stats::qnorm((1 + ci)/2)/sqrt(x[[3]])
+    lower <- - upper
+    
     df <- data.frame(y = as.numeric(x$acf),
                      lag = 0:(base::nrow(x$acf) -1),
                      stringsAsFactors = FALSE)
@@ -824,6 +825,10 @@ ts_cor <- function(ts.obj,
   
   if(type == "both" || type == "pacf"){
     x <- stats::pacf(ts.obj, lag.max = lag.max, plot = FALSE)
+    
+    upper <- stats::qnorm((1 + ci)/2)/sqrt(x[[3]])
+    lower <- - upper
+    
     df <- data.frame(y = as.numeric(x$acf),
                      lag = 1:(base::nrow(x$acf)),
                      stringsAsFactors = FALSE)
