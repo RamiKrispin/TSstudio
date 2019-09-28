@@ -727,6 +727,15 @@ ts_cor <- function(ts.obj,
     stop("Cannot use multiple time series object as an input")
   } 
   
+  # Check the seasonal_lags argument
+  if(!base::is.null(seasonal_lags)){
+    if(!base::all(seasonal_lags %% 1 == 0)){
+      stop("Error on the 'seasonal_lags' argument: one of the input is not integer")
+    } else if(base::any(seasonal_lags <1)){
+      stop("Error on the 'seasonal_lags' argument: all inputs must be greater than 1")
+    }
+  }
+  
   f <- stats::frequency(ts.obj)
   
   if(type == "both" || type == "acf"){
