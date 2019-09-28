@@ -1664,6 +1664,7 @@ train_model <- function(input,
       
       
       if(grid_df$methods_selected[i] == "tslm"){
+        #  tslm model must have formula argument
         if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
           arg <- methods[[grid_df$model_id[i]]]$method_arg
           # Validate the formula
@@ -1672,17 +1673,18 @@ train_model <- function(input,
           } else{
             f <-  base::Reduce(base::paste, base::deparse(arg$formula))
             tilde <- base::regexpr("~", f) %>% base::as.numeric()
+            # If the tilde is missing return error
             if(tilde == -1){
               stop("Error on the 'train_method' argument: cannot run 'tslm' model without the 'formula' argument")
-            } else {
+            } 
               # If formula good check the castumize the xreg argument
-              
               # Parsing the formula
               f1 <- base::substr(f, tilde + 1, base::nchar(f))
               f2 <- base::gsub('[\\+]' , "", base::gsub('\"', "", f1))
               f3 <- base::unlist(base::strsplit(x = f2, split = " "))
               f4 <- f3[base::which(f3 != "")]
               
+              # Checkig for external variables
               if(any(!f4 %in% c("trend", "season"))){
                 if(!f4[which(!f4 %in% c("trend", "season"))] %in% base::names(xreg$train)){
                   stop(base::paste("Error on the tslm model formula: the ",
@@ -1724,7 +1726,6 @@ train_model <- function(input,
                                          h = grid_df$horizon[i],
                                          level = level)
               }
-            }
           }
         } else {
           stop("Error on the 'train_method' argument: cannot run 'tslm' model without the function's arguments")
