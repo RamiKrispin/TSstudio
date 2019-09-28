@@ -86,6 +86,7 @@ ts_backtesting <- function(ts.obj,
                            xreg.h = NULL,
                            parallel = FALSE){
   
+  base::.Deprecated(new = "train_model", msg = "The 'ts_backtesting' function is deprecated, please use 'train_model' instead")
   `%>%` <- magrittr::`%>%` 
   
   a <- model_list <- model_char <- color_ramp <- forecast_list <- obj.name <- NULL
@@ -2142,7 +2143,7 @@ add_input <- function(model.obj, input){
   if(!stats::is.ts(input)){
     stop("The input argument is not a valid 'ts' object")
   } else if(stats::is.mts(input)){
-    stop("Cannot use multiple time series object as input")
+    stop("Cannot use multiple time series object as an input")
   }
   
   # Checking the model.obj 
