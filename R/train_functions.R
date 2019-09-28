@@ -1537,8 +1537,6 @@ train_model <- function(input,
     if(!all(c("train", "forecast") %in% base::names(xreg))){
       stop("Error on the 'xreg' argument: the 'xreg' list is not valid, please make sure setting the correspinding regressor",
            " inputs for the 'input' argument (train) and for the forecast horizon (forecast)")
-    } else if(base::names(xreg$train) != base::names(xreg$forecast)){
-      stop("Error on the 'xreg' argument: the regressors names in the train and forecast inputs are not aligned")
     } else if(base::nrow(xreg$train) != base::length(input)){
       stop("Error on the 'xreg' argument: the length of the xreg train input is not aligned with the length of the input series")
     } else if(base::nrow(xreg$forecast) != horizon){
@@ -1723,7 +1721,7 @@ train_model <- function(input,
     } else if(grid_df$type[i] == "forecast"){
       if(!base::is.null(xreg)){
         xreg_train <- xreg$train[grid_df$start[i]:grid_df$end[i],]
-        
+        xreg_forecast <- xreg$forecast
       }
       
       
@@ -2422,8 +2420,6 @@ add_xreg <- function(model.obj, xreg){
     if(!all(c("train", "forecast") %in% base::names(xreg))){
       stop("Error on the 'xreg' argument: the 'xreg' list is not valid, please make sure setting the correspinding regressor",
            " inputs for the 'input' argument (train) and for the forecast horizon (forecast)")
-    } else if(base::names(xreg$train) != base::names(xreg$forecast)){
-      stop("Error on the 'xreg' argument: the regressors names in the train and forecast inputs are not aligned")
     } 
   }
   
