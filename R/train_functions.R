@@ -1817,7 +1817,7 @@ train_model <- function(input,
           # Validate the formula
           if(!"formula" %in% base::names(arg)){
             stop("Error on the 'train_method' argument: cannot run 'tslm' model without the 'formula' argument")
-          } else{
+          } 
             f <-  base::Reduce(base::paste, base::deparse(arg$formula))
             tilde <- base::regexpr("~", f) %>% base::as.numeric()
             # If the tilde is missing return error
@@ -1860,7 +1860,7 @@ train_model <- function(input,
                                        newdata = xreg_test,
                                        level = level) 
             }
-          }
+            
         } else {
           stop("Error on the 'train_method' argument: cannot run 'tslm' model without the function's arguments")
         }
