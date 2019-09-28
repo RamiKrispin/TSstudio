@@ -1693,38 +1693,25 @@ train_model <- function(input,
                                    sep = " "))
                 }
                 arg$data <- xreg_train
+              } else {
+                arg$data <- NULL
               }
               arg$formula <- stats::as.formula(base::paste("train ~ ",
                                                            base::paste0(f4, collapse = "+"), 
                                                            sep = ""))
               
-              md <- do.call(forecast::tslm, c(base::list(train, arg)))
-              fc <- forecast::forecast(md, 
-                                       h = grid_df$horizon[i], 
-                                       newdata = xreg_test,
-                                       level = level) 
+              md <- do.call(forecast::tslm, c(base::list(arg$formula, arg$data)))
               
               
-              
-              
-              if("xreg" %in% base::names(arg) && !base::is.null(xreg)){
-                arg_xreg <- arg
-                arg_xreg$formula <- base::paste("train ~ ", 
-                                                base::substr(f, tilde + 1, base::nchar(f)), "+", 
-                                                base::paste0(arg$xreg, collapse = "+"), ", data = xreg_train",
-                                                sep = "")
-                
-                md <-  do.call(forecast::tslm,c(base::list(train), arg_xreg))
+              if(base::is.null(arg$data)){
+                fc <- forecast::forecast(md, 
+                                         h = grid_df$horizon[i], 
+                                         level = level) 
+              } else {
                 fc <- forecast::forecast(md, 
                                          h = grid_df$horizon[i], 
                                          newdata = xreg_test,
-                                         level = level)
-              } else {
-                arg$formula <- base::paste("train", base::substr(f, tilde + 1, base::nchar(f)), sep = "~")
-                md <-  do.call(forecast::tslm,c(base::list(train), arg))
-                fc <- forecast::forecast(md, 
-                                         h = grid_df$horizon[i],
-                                         level = level)
+                                         level = level) 
               }
           }
         } else {
