@@ -1569,14 +1569,16 @@ train_model <- function(input,
     
     
     if(grid_df$type[i] == "train"){
-      if(!base::is.null(xreg)){
-        xreg_train <- xreg$train[grid_df$start[i]:grid_df$end[i],]
-        xreg_test <- xreg$train[(grid_df$end[i] + 1):(grid_df$end[i] + grid_df$horizon[i]) ,]
-      }
-      ts_partitions <- TSstudio::ts_split(ts.obj = ts.obj, sample.out = train_method$sample.out)
       
+      ts_partitions <- TSstudio::ts_split(ts.obj = ts.obj, sample.out = train_method$sample.out)
       train <- ts_partitions$train
       test <- ts_partitions$test
+      
+      if(!base::is.null(xreg)){
+        xreg_base <- xreg$train[grid_df$start[i]:grid_df$end[i],]
+        xreg_train <- xreg_base[1:base::length(train),]
+        xreg_test <- xreg_base[(base::length(train) + 1):nrow(xreg_base),]
+      }
       
       if(grid_df$methods_selected[i] == "arima"){
         if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
