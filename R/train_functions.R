@@ -1723,7 +1723,7 @@ train_model <- function(input,
     } else if(grid_df$type[i] == "forecast"){
       if(!base::is.null(xreg)){
         xreg_train <- xreg$train[grid_df$start[i]:grid_df$end[i],]
-        xreg_forecast<- xreg$forecast
+        
       }
       
       
@@ -1857,7 +1857,7 @@ train_model <- function(input,
             } else {
               fc <- forecast::forecast(md, 
                                        h = grid_df$horizon[i], 
-                                       newdata = xreg_test,
+                                       newdata = xreg_forecast,
                                        level = level) 
             }
             
