@@ -1963,7 +1963,7 @@ train_model <- function(input,
       }) %>% dplyr::bind_rows() %>% 
         base::t() %>% 
         base::as.data.frame() %>% 
-        stats::setNames(base::paste0("coverage", base::colnames(u[[p[n]]])))
+        stats::setNames(base::paste0("coverage_", base::colnames(u[[p[n]]])))
       
       
       df <- base::cbind(base::data.frame(partition = n,
@@ -2361,7 +2361,8 @@ build_model <- function(model.obj){
   output <- TSstudio::train_model(input = model.obj$input,
                                   methods = model.obj$methods,
                                   train_method = model.obj$train_method,
-                                  horizon = model.obj$horizon)
+                                  horizon = model.obj$horizon,
+                                  xreg = model.obj$xreg)
   
   return(output)
 }
