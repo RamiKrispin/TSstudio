@@ -2355,6 +2355,18 @@ build_model <- function(model.obj){
     stop("Cannot build a model, the 'input' argument is missing")
   }
   
+  if(!"error" %in% base::names(model.obj)){
+   model.obj$error <- "MAPE"
+  }
+  
+  if(!"level" %in% base::names(model.obj)){
+    model.obj$level <- c(80, 95)
+  }
+  
+  if(!"xreg" %in% base::names(model.obj)){
+    model.obj$xreg <- NULL
+  }
+  
   
   output <- NULL
   
@@ -2362,7 +2374,9 @@ build_model <- function(model.obj){
                                   methods = model.obj$methods,
                                   train_method = model.obj$train_method,
                                   horizon = model.obj$horizon,
-                                  xreg = model.obj$xreg)
+                                  xreg = model.obj$xreg,
+                                  error = model.obj$error,
+                                  level = model.obj$level)
   
   return(output)
 }
