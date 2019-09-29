@@ -765,27 +765,8 @@ ts_cor <- function(ts.obj,
       df$zero_lag <-  ifelse(df$lag == 0, df$y, NA)
      
        p1 <- plotly::plot_ly()
-      
+      ### Need to check this logic
        if(!base::is.null(seasonal_lags)){
-        # for(l in base::seq_along(seasonal_lags)){
-        # df[[base::paste("slag_", seasonal_lags[l], sep = "")]] <- ifelse(df$lag %% seasonal_lags[l] == 0 & 
-        #                                                                    df$lag != 0 & 
-        #                                                                    base::is.na(df$seasonal_lag), 
-        #                                                                  df$y , NA)
-        # df$non_seasonal_lag <- ifelse(df$lag %% seasonal_lags[l]  != 0, 
-        #                               df$non_seasonal_lag, NA)
-        # p1 <- p1 %>%
-        #   plotly::add_trace(x = df$lag,
-        #                     y =  df[[base::paste("slag_",  seasonal_lags[l], sep = "")]],
-        #                     type = "bar",
-        #                     marker = list(color = seasonal_colors[l]),
-        #                     width = 0.1,
-        #                     name = base::paste("Seasonal Lag", seasonal_lags[l], sep = " "),
-        #                     legendgroup = base::paste("slag_", seasonal_lags[l], sep = ""),
-        #                     showlegend = TRUE)
-        # }
-         
-         
          c <- NULL
          seasonal_lags <- sort(seasonal_lags, decreasing = TRUE)
          for(i in base::seq_along(seasonal_lags)){
@@ -868,20 +849,33 @@ ts_cor <- function(ts.obj,
       p1 <- plotly::plot_ly()
       
       if(!base::is.null(seasonal_lags)){
-        for(l in base::seq_along(seasonal_lags)){
-          df[[base::paste("slag_", seasonal_lags[l], sep = "")]] <- ifelse(df$lag %% seasonal_lags[l] ==0 & 
-                                                                             df$lag != 0, 
-                                                                           df$y, NA)
-        df$non_seasonal_lag <- ifelse(df$lag %% seasonal_lags[l]  != 0, df$non_seasonal_lag, NA)
-        p1 <- p1 %>%
-          plotly::add_trace(x = df$lag,
-                            y =  df[[base::paste("slag_",  seasonal_lags[l], sep = "")]],
-                            type = "bar",
-                            marker = list(color = seasonal_colors[l]), 
-                            width = 0.1, 
-                            name = base::paste("Seasonal Lag", seasonal_lags[l], sep = " "), 
-                            legendgroup = base::paste("slag_", seasonal_lags[l], sep = ""),
-                            showlegend = TRUE)
+        c <- NULL
+        seasonal_lags <- sort(seasonal_lags, decreasing = TRUE)
+        for(i in base::seq_along(seasonal_lags)){
+          if(i == 1){
+            df[[paste("lag_", seasonal_lags[i])]] <- ifelse(df$lag %% seasonal_lags[i] == 0, df$y, NA)
+            c <- c(c, seasonal_lags[i])
+          } else {
+            df[[paste("lag_",seasonal_lags[i])]] <- ifelse(df$lag %% seasonal_lags[i] == 0, df$y, NA)
+            for(n in c){
+              df[[paste("lag_",seasonal_lags[i])]] <- ifelse(!base::is.na(df[[paste("lag_",n)]]), 
+                                                             NA, df[[paste("lag_",seasonal_lags[i])]])
+            }
+            c <- c(c, seasonal_lags[i])
+            
+          }
+          
+          df$non_seasonal_lag <- ifelse(!base::is.na( df[[paste("lag_",seasonal_lags[i])]]), NA, df$non_seasonal_lag)
+          
+          p1 <- p1 %>%
+            plotly::add_trace(x = df$lag,
+                              y =  df[[paste("lag_", seasonal_lags[i])]],
+                              type = "bar",
+                              marker = list(color = seasonal_colors[i]),
+                              width = 0.1,
+                              name = base::paste("Seasonal Lag", seasonal_lags[i], sep = " "),
+                              legendgroup = base::paste("slag_", seasonal_lags[i], sep = ""),
+                              showlegend = TRUE)
         }
       }
       
@@ -944,22 +938,38 @@ ts_cor <- function(ts.obj,
     showlegend <- ifelse(type == "both", FALSE, TRUE)
     
     if(!base::is.null(seasonal_lags)){
-      for(l in base::seq_along(seasonal_lags)){
-        df[[base::paste("slag_", seasonal_lags[l], sep = "")]] <- ifelse(df$lag %% seasonal_lags[l] ==0 & 
-                                                                           df$lag != 0 & 
-                                                                           base::is.na(df$seasonal_lag), 
-                                                                         df$y, NA)
-      df$non_seasonal_lag <- ifelse(df$lag %% seasonal_lags[l]  != 0, df$non_seasonal_lag, NA)
-      p2 <- p2 %>%
-        plotly::add_trace(x = df$lag,
-                          y =  df[[base::paste("slag_", seasonal_lags[l], sep = "")]],
-                          type = "bar",
-                          marker = list(color = seasonal_colors[l]), 
-                          width = 0.1, 
-                          name = base::paste("Seasonal Lag", seasonal_lags[l], sep = " "), 
-                          legendgroup = base::paste("slag_", seasonal_lags[l], sep = ""),
-                          showlegend = showlegend)
+      c <- NULL
+      seasonal_lags <- sort(seasonal_lags, decreasing = TRUE)
+      for(i in base::seq_along(seasonal_lags)){
+        if(i == 1){
+          df[[paste("lag_", seasonal_lags[i])]] <- ifelse(df$lag %% seasonal_lags[i] == 0 & df$lag %% f != 0, df$y, NA)
+          c <- c(c, seasonal_lags[i])
+        } else {
+          df[[paste("lag_",seasonal_lags[i])]] <- ifelse(df$lag %% seasonal_lags[i] == 0  & 
+                                                           df$lag %% f != 0, df$y, NA)
+          for(n in c){
+            df[[paste("lag_",seasonal_lags[i])]] <- ifelse(!base::is.na(df[[paste("lag_",n)]]), 
+                                                           NA, df[[paste("lag_",seasonal_lags[i])]])
+          }
+          c <- c(c, seasonal_lags[i])
+          
+        }
+        
+        df$non_seasonal_lag <- ifelse(!base::is.na( df[[paste("lag_",seasonal_lags[i])]]), NA, df$non_seasonal_lag)
+        
+        p2 <- p2 %>%
+          plotly::add_trace(x = df$lag,
+                            y =  df[[paste("lag_", seasonal_lags[i])]],
+                            type = "bar",
+                            marker = list(color = seasonal_colors[i]),
+                            width = 0.1,
+                            name = base::paste("Seasonal Lag", seasonal_lags[i], sep = " "),
+                            legendgroup = base::paste("slag_", seasonal_lags[i], sep = ""),
+                            showlegend = showlegend)
       }
+      
+      
+      
     }
     
     
@@ -1003,21 +1013,33 @@ ts_cor <- function(ts.obj,
       p2 <- plotly::plot_ly()
       
       if(!base::is.null(seasonal_lags)){
-        for(l in base::seq_along(seasonal_lags)){
-          df[[base::paste("slag_", seasonal_lags[l], sep = "")]] <- ifelse(df$lag %% seasonal_lags[l] ==0 & 
-                                                                             df$lag != 0, 
-                                                                           df$y, NA)
-        df$non_seasonal_lag <- ifelse(df$lag %% seasonal_lags[l]  != 0, 
-                                      df$non_seasonal_lag, NA)
-        p2 <- p2 %>%
-          plotly::add_trace(x = df$lag,
-                            y =  df[[base::paste("slag_", seasonal_lags[l], sep = "")]],
-                            type = "bar",
-                            marker = list(color = seasonal_colors[l]), 
-                            width = 0.1, 
-                            name = base::paste("Seasonal Lag", seasonal_lags[l], sep = " "), 
-                            legendgroup = base::paste("slag_", seasonal_lags[l], sep = ""),
-                            showlegend = showlegend)
+        c <- NULL
+        seasonal_lags <- sort(seasonal_lags, decreasing = TRUE)
+        for(i in base::seq_along(seasonal_lags)){
+          if(i == 1){
+            df[[paste("lag_", seasonal_lags[i])]] <- ifelse(df$lag %% seasonal_lags[i] == 0, df$y, NA)
+            c <- c(c, seasonal_lags[i])
+          } else {
+            df[[paste("lag_",seasonal_lags[i])]] <- ifelse(df$lag %% seasonal_lags[i] == 0, df$y, NA)
+            for(n in c){
+              df[[paste("lag_",seasonal_lags[i])]] <- ifelse(!base::is.na(df[[paste("lag_",n)]]), 
+                                                             NA, df[[paste("lag_",seasonal_lags[i])]])
+            }
+            c <- c(c, seasonal_lags[i])
+            
+          }
+          
+          df$non_seasonal_lag <- ifelse(!base::is.na(df[[paste("lag_",seasonal_lags[i])]]), NA, df$non_seasonal_lag)
+          
+          p2 <- p2 %>%
+            plotly::add_trace(x = df$lag,
+                              y =  df[[paste("lag_", seasonal_lags[i])]],
+                              type = "bar",
+                              marker = list(color = seasonal_colors[i]),
+                              width = 0.1,
+                              name = base::paste("Seasonal Lag", seasonal_lags[i], sep = " "),
+                              legendgroup = base::paste("slag_", seasonal_lags[i], sep = ""),
+                              showlegend = showlegend)
         }
       }
       
