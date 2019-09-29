@@ -727,16 +727,19 @@ ts_cor <- function(ts.obj,
     stop("Cannot use multiple time series object as an input")
   } 
   
+  f <- stats::frequency(ts.obj)
+  
   # Check the seasonal_lags argument
   if(!base::is.null(seasonal_lags)){
     if(!base::all(seasonal_lags %% 1 == 0)){
       stop("Error on the 'seasonal_lags' argument: one of the input is not integer")
     } else if(base::any(seasonal_lags <1)){
       stop("Error on the 'seasonal_lags' argument: all inputs must be greater than 1")
+    } else if(f %in% seasonal_lags && seasonal){
+      warning(base::paste("The 'seasonal_lags' argument includes the seasonal lag of the seires - ", f," and therefore, will be plot as the seasonal lag" ))
+      seasonal_lags <- seasonal_lags[which(seasonal_lags != f)]
     }
   }
-  
-  f <- stats::frequency(ts.obj)
   
   if(type == "both" || type == "acf"){
     x <- stats::acf(ts.obj, lag.max = lag.max, plot = FALSE)
@@ -752,7 +755,14 @@ ts_cor <- function(ts.obj,
       df$seasonal_lag <- ifelse(df$lag %% f  == 0 & df$lag != 0, df$y, NA)
       df$non_seasonal_lag <- ifelse(df$lag %% f  != 0, df$y, NA)
       df$zero_lag <-  ifelse(df$lag == 0, df$y, NA)
-    p1 <- plotly::plot_ly(data = df) %>%
+      
+      if(!base::is.null(seasonal_lag)){
+        
+      }
+    p1 <- plotly::plot_ly(data = df)
+    
+    
+    p1 <- p1 %>%
       plotly::add_trace(x = ~ lag, 
                         y = ~ zero_lag, 
                         type = "bar",
