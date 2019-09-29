@@ -739,7 +739,12 @@ ts_cor <- function(ts.obj,
       warning(base::paste("The 'seasonal_lags' argument includes the seasonal lag of the seires - ", f," and therefore, will be plot as the seasonal lag" ))
       seasonal_lags <- seasonal_lags[which(seasonal_lags != f)]
     }
+    seasonal_colors <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(8, "Dark2"))(base::length(seasonal_lags))
+    
   }
+  
+  
+  
   
   if(type == "both" || type == "acf"){
     x <- stats::acf(ts.obj, lag.max = lag.max, plot = FALSE)
@@ -750,51 +755,68 @@ ts_cor <- function(ts.obj,
     df <- data.frame(y = as.numeric(x$acf),
                      lag = 0:(base::nrow(x$acf) -1),
                      stringsAsFactors = FALSE)
+    
+  
    
     if(seasonal){
       df$seasonal_lag <- ifelse(df$lag %% f  == 0 & df$lag != 0, df$y, NA)
       df$non_seasonal_lag <- ifelse(df$lag %% f  != 0, df$y, NA)
       df$zero_lag <-  ifelse(df$lag == 0, df$y, NA)
+     
+       p1 <- plotly::plot_ly()
       
-      if(!base::is.null(seasonal_lag)){
-        
-      }
-    p1 <- plotly::plot_ly(data = df)
-    
-    
+       if(!base::is.null(seasonal_lags)){
+        for(l in base::seq_along(seasonal_lags)){
+        df[[base::paste("slag_", seasonal_lags[l], sep = "")]] <- ifelse(df$lag %% seasonal_lags[l] == 0 & 
+                                                                           df$lag != 0, 
+                                                                         df$y, NA)
+        df$non_seasonal_lag <- ifelse(df$lag %% seasonal_lags[l]  != 0, 
+                                      df$non_seasonal_lag, NA)
+        p1 <- p1 %>%
+          plotly::add_trace(x = df$lag,
+                            y =  df[[base::paste("slag_",  seasonal_lags[l], sep = "")]],
+                            type = "bar",
+                            marker = list(color = seasonal_colors[l]), 
+                            width = 0.1, 
+                            name = base::paste("Seasonal Lag", seasonal_lags[l], sep = " "), 
+                            legendgroup = base::paste("slag_", seasonal_lags[l], sep = ""),
+                            showlegend = TRUE)
+        }
+       }
+
     p1 <- p1 %>%
-      plotly::add_trace(x = ~ lag, 
-                        y = ~ zero_lag, 
+      plotly::add_trace(x = df$lag, 
+                        y = df$zero_lag, 
                         type = "bar",
                         marker = list(color = "black"), 
                         width = 0.1, 
                         name = "Lag-Zero", 
                         legendgroup = "lagzero",
                         showlegend = FALSE) %>%
-      plotly::add_trace(x = ~ lag, 
-                        y = ~ seasonal_lag, 
+      plotly::add_trace(x = df$lag, 
+                        y = df$seasonal_lag, 
                         type = "bar", 
                         marker = list(color = "red"), 
                         width = 0.1, 
                         legendgroup = "seasonal",
-                        name = "Seasonal") %>%
-      plotly::add_trace(x = ~ lag, 
-                        y = ~ non_seasonal_lag, 
+                        name = base::paste("Seasonal Lag", f, sep = " ")) %>%
+      plotly::add_trace(x = df$lag, 
+                        y = df$non_seasonal_lag, 
                         type = "bar", 
                         marker = list(color = "#00526d"), 
                         width = 0.1, 
                         legendgroup = "nonseasonal",
                         name = "Non-Seasonal") %>%
-      plotly::add_segments(x = ~ min(lag), 
-                           xend = ~ max(lag), 
+      plotly::add_segments(x = min(df$lag), 
+                           xend = max(df$lag), 
                            y = upper, 
                            yend = upper, 
                            line = list(color = "green", dash = "dash"), 
                            legendgroup = "ci", 
                            showlegend = FALSE, 
                            name = "CI Upper Bound") %>%
-      plotly::add_segments(x = ~ min(lag), 
-                           xend = ~ max(lag), 
+      plotly::add_segments(x = min(df$lag), 
+                           xend = max(df$lag), 
                            y = lower, 
                            yend = lower, 
                            line = list(color = "green", dash = "dash"), 
@@ -805,35 +827,54 @@ ts_cor <- function(ts.obj,
                      yaxis = list(title = "ACF"))
     } else {
       df$zero_lag <-  ifelse(df$lag == 0, df$y, NA)
-      df$y <-  ifelse(df$lag == 0, NA, df$y)
+      df$non_seasonal_lag <-  ifelse(df$lag == 0, NA, df$y)
       
-      p1 <- plotly::plot_ly(data = df) %>%
-        plotly::add_trace(x = ~ lag, 
-                          y = ~ zero_lag, 
+      p1 <- plotly::plot_ly()
+      
+      if(!base::is.null(seasonal_lags)){
+        for(l in base::seq_along(seasonal_lags)){
+          df[[base::paste("slag_", l, sep = "")]] <- ifelse(df$lag %% l ==0 & df$lag != 0, df$y, NA)
+        df$non_seasonal_lag <- ifelse(df$lag %% l  != 0, df$non_seasonal_lag, NA)
+        p1 <- p1 %>%
+          plotly::add_trace(x = df$lag,
+                            y =  df[[base::paste("slag_", l, sep = "")]],
+                            type = "bar",
+                            marker = list(color = "green"), 
+                            width = 0.1, 
+                            name = base::paste("Seasonal Lag", l, sep = " "), 
+                            legendgroup = base::paste("slag_", l, sep = ""),
+                            showlegend = TRUE)
+        }
+      }
+      
+      
+      p1 <- p1 %>%
+        plotly::add_trace(x = df$lag, 
+                          y = df$zero_lag, 
                           type = "bar",
                           marker = list(color = "black"), 
                           width = 0.1, 
                           name = "Lag-Zero", 
                           legendgroup = "lagzero",
                           showlegend = FALSE) %>%
-        plotly::add_trace(x = ~ lag, 
-                          y = ~ y, 
+        plotly::add_trace(x = df$lag, 
+                          y = df$non_seasonal_lag, 
                           type = "bar", 
                           marker = list(color = "#00526d"), 
                           width = 0.1, 
                           showlegend = FALSE,
                           legendgroup = "lag",
                           name = "Non-Seasonal") %>%
-        plotly::add_segments(x = ~ min(lag), 
-                             xend = ~ max(lag), 
+        plotly::add_segments(x = min(df$lag), 
+                             xend = max(df$lag), 
                              y = upper, 
                              yend = upper, 
                              line = list(color = "green", dash = "dash"), 
                              legendgroup = "ci", 
                              showlegend = FALSE, 
                              name = "CI Upper Bound") %>%
-        plotly::add_segments(x = ~ min(lag), 
-                             xend = ~ max(lag), 
+        plotly::add_segments(x = min(df$lag), 
+                             xend = max(df$lag), 
                              y = lower, 
                              yend = lower, 
                              line = list(color = "green", dash = "dash"), 
@@ -859,34 +900,54 @@ ts_cor <- function(ts.obj,
     df$seasonal_lag <- ifelse(df$lag %% f  == 0, df$y, NA)
     df$non_seasonal_lag <- ifelse(df$lag %% f  != 0, df$y, NA)
     
+    
+    p2 <- plotly::plot_ly()
+    
     showlegend <- ifelse(type == "both", FALSE, TRUE)
-    p2 <- plotly::plot_ly(data = df) %>%
-      plotly::add_trace(x = ~ lag, 
-                        y = ~ seasonal_lag, 
+    
+    if(!base::is.null(seasonal_lags)){
+      for(l in seasonal_lags)
+        df[[base::paste("slag_", l, sep = "")]] <- ifelse(df$lag %% l ==0 & df$lag != 0, df$y, NA)
+      df$non_seasonal_lag <- ifelse(df$lag %% l  != 0, df$non_seasonal_lag, NA)
+      p2 <- p2 %>%
+        plotly::add_trace(x = df$lag,
+                          y =  df[[base::paste("slag_", l, sep = "")]],
+                          type = "bar",
+                          marker = list(color = "green"), 
+                          width = 0.1, 
+                          name = base::paste("Seasonal Lag", l, sep = " "), 
+                          legendgroup = base::paste("slag_", l, sep = ""),
+                          showlegend = showlegend)
+    }
+    
+    
+    p2 <- p2 %>%
+      plotly::add_trace(x = df$lag, 
+                        y = df$seasonal_lag, 
                         type = "bar", 
                         marker = list(color = "red"), 
                         width = 0.1, 
                         legendgroup = "seasonal",
                         showlegend = showlegend,
-                        name = "Seasonal") %>%
-      plotly::add_trace(x = ~ lag, 
-                        y = ~ non_seasonal_lag, 
+                        name = base::paste("Seasonal Lag", f, sep = " ")) %>%
+      plotly::add_trace(x = df$lag, 
+                        y = df$non_seasonal_lag, 
                         type = "bar", 
                         marker = list(color = "#00526d"), 
                         width = 0.1, 
                         legendgroup = "nonseasonal",
                         showlegend = showlegend,
                         name = "Non-Seasonal") %>%
-      plotly::add_segments(x = ~ min(lag), 
-                           xend = ~ max(lag), 
+      plotly::add_segments(x = min(df$lag), 
+                           xend = max(df$lag), 
                            y = upper, 
                            yend = upper, 
                            line = list(color = "green", dash = "dash"), 
                            legendgroup = "ci", 
                            showlegend = FALSE, 
                            name = "CI Upper Bound") %>%
-      plotly::add_segments(x = ~ min(lag), 
-                           xend = ~ max(lag), 
+      plotly::add_segments(x = min(df$lag), 
+                           xend = max(df$lag), 
                            y = lower, 
                            yend = lower, 
                            line = list(color = "green", dash = "dash"), 
@@ -896,25 +957,44 @@ ts_cor <- function(ts.obj,
       plotly::layout(xaxis = list(dtick = f, title = "Lag"),
                       yaxis = list(title = "PACF"))
     } else {
+      df$non_seasonal_lag <- df$y
+      p2 <- plotly::plot_ly()
       
-      p2 <- plotly::plot_ly(data = df) %>%
-        plotly::add_trace(x = ~ lag, 
-                          y = ~ y, 
+      if(!base::is.null(seasonal_lags)){
+        for(l in seasonal_lags)
+          df[[base::paste("slag_", l, sep = "")]] <- ifelse(df$lag %% l ==0 & df$lag != 0, df$y, NA)
+        df$non_seasonal_lag <- ifelse(df$lag %% l  != 0, df$non_seasonal_lag, NA)
+        p2 <- p2 %>%
+          plotly::add_trace(x = df$lag,
+                            y =  df[[base::paste("slag_", l, sep = "")]],
+                            type = "bar",
+                            marker = list(color = "green"), 
+                            width = 0.1, 
+                            name = base::paste("Seasonal Lag", l, sep = " "), 
+                            legendgroup = base::paste("slag_", l, sep = ""),
+                            showlegend = showlegend)
+      }
+      
+      
+      
+      p2 <- p2 %>%
+        plotly::add_trace(x = df$lag, 
+                          y = df$non_seasonal_lag, 
                           type = "bar", 
                           marker = list(color = "#00526d"), 
                           width = 0.1, 
                           showlegend = FALSE,
                           name = "Lags") %>%
-        plotly::add_segments(x = ~ min(lag), 
-                             xend = ~ max(lag), 
+        plotly::add_segments(x = min(df$lag), 
+                             xend = max(df$lag), 
                              y = upper, 
                              yend = upper, 
                              line = list(color = "green", dash = "dash"), 
                              legendgroup = "ci", 
                              showlegend = FALSE, 
                              name = "CI Upper Bound") %>%
-        plotly::add_segments(x = ~ min(lag), 
-                             xend = ~ max(lag), 
+        plotly::add_segments(x = min(df$lag), 
+                             xend = max(df$lag), 
                              y = lower, 
                              yend = lower, 
                              line = list(color = "green", dash = "dash"), 
