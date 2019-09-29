@@ -740,7 +740,7 @@ ts_cor <- function(ts.obj,
       seasonal_lags <- seasonal_lags[base::which(seasonal_lags != f)]
     }
     seasonal_lags <- base::sort(seasonal_lags)
-    seasonal_colors <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(8, "Dark2"))(base::length(seasonal_lags))
+    seasonal_colors <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(8, "Set3"))(base::length(seasonal_lags))
     
   }
   
@@ -894,7 +894,7 @@ ts_cor <- function(ts.obj,
                           marker = list(color = "#00526d"), 
                           width = 0.1, 
                           showlegend = showlegend,
-                          legendgroup = "lag",
+                          legendgroup = "nonseasonal",
                           name = "Non-Seasonal") %>%
         plotly::add_segments(x = min(df$lag), 
                              xend = max(df$lag), 
@@ -1051,8 +1051,8 @@ ts_cor <- function(ts.obj,
                           marker = list(color = "#00526d"), 
                           width = 0.1, 
                           legendgroup = "nonseasonal",
-                          showlegend = FALSE,
-                          name = "Lags") %>%
+                          showlegend = showlegend,
+                          name = "Non-Seasonal") %>%
         plotly::add_segments(x = min(df$lag), 
                              xend = max(df$lag), 
                              y = upper, 
