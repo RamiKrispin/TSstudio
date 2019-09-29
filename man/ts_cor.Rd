@@ -5,7 +5,7 @@
 \title{An Interactive Visualization of the ACF and PACF Functions}
 \usage{
 ts_cor(ts.obj, type = "both", seasonal = TRUE, ci = 0.95,
-  lag.max = NULL)
+  lag.max = NULL, seasonal_lags = NULL)
 }
 \arguments{
 \item{ts.obj}{A univariate time series object class 'ts'}
@@ -18,7 +18,11 @@ ts_cor(ts.obj, type = "both", seasonal = TRUE, ci = 0.95,
 
 \item{lag.max}{maximum lag at which to calculate the acf. Default is 10*log10(N/m) 
 where N is the number of observations and m the number of series. 
-Will be automatically limited to one less than the number of observations in the series.}
+Will be automatically limited to one less than the number of observations in the series}
+
+\item{seasonal_lags}{A vector of integers, highlight specific cyclic lags (besides the main seasonal lags of the series).
+This is useful when working with multiseasonal time series data. For example, for a monthly series 
+(e.g., frequency 12) setting the argument to 3 will highlight the quarterly lags}
 }
 \description{
 An Interactive Visualization of the ACF and PACF Functions
