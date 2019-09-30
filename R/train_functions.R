@@ -1723,6 +1723,7 @@ train_model <- function(input,
       
     } else if(grid_df$type[i] == "forecast"){
       if(!base::is.null(xreg)){
+        xreg_forecast <- xreg_train <- NULL
         xreg_train <- xreg$train[grid_df$start[i]:grid_df$end[i],]
         xreg_forecast <- xreg$forecast
       }
