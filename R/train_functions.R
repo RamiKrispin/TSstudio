@@ -1955,9 +1955,9 @@ train_model <- function(input,
           u[[p[n]]] <- u[[p[n]]] %>% as.matrix()
           l[[p[n]]] <- l[[p[n]]] %>% as.matrix()
         }
+      }
         base::colnames(u[[p[n]]]) <- base::paste0(levels[[p[n]]], "%")
         base::colnames(l[[p[n]]]) <- base::paste0(levels[[p[n]]], "%")
-      }
       
       coverage_df <- lapply(base::colnames(u[[p[n]]]), function(i){
         df <-  base::data.frame(coverage = base::sum(ifelse(u[[p[n]]][, i] >=  a[[p[n]]] & l[[p[n]]][, i] <=  a[[p[n]]], 1, 0)) / base::length(u[[p[n]]][, i]))
