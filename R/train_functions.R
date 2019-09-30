@@ -1538,8 +1538,6 @@ train_model <- function(input,
     if(!all(c("train", "forecast") %in% base::names(xreg))){
       stop("Error on the 'xreg' argument: the 'xreg' list is not valid, please make sure setting the correspinding regressor",
            " inputs for the 'input' argument (train) and for the forecast horizon (forecast)")
-    } else if(base::names(xreg$train) != base::names(xreg$forecast)){
-      stop("Error on the 'xreg' argument: the regressors names in the train and forecast inputs are not aligned")
     } else if(base::nrow(xreg$train) != base::length(input)){
       stop("Error on the 'xreg' argument: the length of the xreg train input is not aligned with the length of the input series")
     } else if(base::nrow(xreg$forecast) != horizon){
@@ -1665,13 +1663,14 @@ train_model <- function(input,
       
       
       if(grid_df$methods_selected[i] == "tslm"){
+        
         #  tslm model must have formula argument
         if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
           arg <- methods[[grid_df$model_id[i]]]$method_arg
           # Validate the formula
           if(!"formula" %in% base::names(arg)){
             stop("Error on the 'train_method' argument: cannot run 'tslm' model without the 'formula' argument")
-          } else{
+          } 
             f <-  base::Reduce(base::paste, base::deparse(arg$formula))
             tilde <- base::regexpr("~", f) %>% base::as.numeric()
             # If the tilde is missing return error
@@ -1694,27 +1693,28 @@ train_model <- function(input,
                                    sep = " "))
                 }
                 arg$data <- xreg_train
-              } else {
-                arg$data <- NULL
-              }
-              arg$formula <- stats::as.formula(base::paste("train ~ ",
-                                                           base::paste0(f4, collapse = "+"), 
-                                                           sep = ""))
-              
-              md <- do.call(forecast::tslm, c(base::list(arg$formula, arg$data)))
-              
-              
-              if(base::is.null(arg$data)){
-                fc <- forecast::forecast(md, 
-                                         h = grid_df$horizon[i], 
-                                         level = level) 
-              } else {
+                
+                arg$formula <- stats::as.formula(base::paste("train ~ ",
+                                                             base::paste0(f4, collapse = "+"), 
+                                                             sep = ""))
+                
+                md <- do.call(forecast::tslm, arg)
+                
                 fc <- forecast::forecast(md, 
                                          h = grid_df$horizon[i], 
                                          newdata = xreg_test,
                                          level = level) 
+              } else {
+                arg$formula <- stats::as.formula(base::paste("train ~ ",
+                                                             base::paste0(f4, collapse = "+"), 
+                                                             sep = ""))
+                md <- do.call(forecast::tslm, arg)
+                
+                fc <- forecast::forecast(md, 
+                                         h = grid_df$horizon[i],
+                                         level = level) 
               }
-          }
+          
         } else {
           stop("Error on the 'train_method' argument: cannot run 'tslm' model without the function's arguments")
         }
@@ -1724,7 +1724,7 @@ train_model <- function(input,
     } else if(grid_df$type[i] == "forecast"){
       if(!base::is.null(xreg)){
         xreg_train <- xreg$train[grid_df$start[i]:grid_df$end[i],]
-        
+        xreg_forecast <- xreg$forecast
       }
       
       
@@ -1810,8 +1810,8 @@ train_model <- function(input,
         }
       }
       
-      
       if(grid_df$methods_selected[i] == "tslm"){
+       
         #  tslm model must have formula argument
         if(!base::is.null(methods[[grid_df$model_id[i]]]$method_arg)){
           arg <- methods[[grid_df$model_id[i]]]$method_arg
@@ -1819,55 +1819,55 @@ train_model <- function(input,
           if(!"formula" %in% base::names(arg)){
             stop("Error on the 'train_method' argument: cannot run 'tslm' model without the 'formula' argument")
           } 
-            f <-  base::Reduce(base::paste, base::deparse(arg$formula))
-            tilde <- base::regexpr("~", f) %>% base::as.numeric()
-            # If the tilde is missing return error
-            if(tilde == -1){
-              stop("Error on the 'train_method' argument: cannot run 'tslm' model without the 'formula' argument")
-            } 
-            # If formula good check the castumize the xreg argument
-            # Parsing the formula
-            f1 <- base::substr(f, tilde + 1, base::nchar(f))
-            f2 <- base::gsub('[\\+]' , "", base::gsub('\"', "", f1))
-            f3 <- base::unlist(base::strsplit(x = f2, split = " "))
-            f4 <- f3[base::which(f3 != "")]
-            
-            # Checkig for external variables
-            if(any(!f4 %in% c("trend", "season"))){
-              if(!f4[which(!f4 %in% c("trend", "season"))] %in% base::names(xreg$train)){
-                stop(base::paste("Error on the tslm model formula: the ",
-                                 f4[which(!f4 %in% c("trend", "season"))],
-                                 "variables could not be found on the xreg input",
-                                 sep = " "))
-              }
-              arg$data <- xreg_train
-            } else {
-              arg$data <- NULL
+          f <-  base::Reduce(base::paste, base::deparse(arg$formula))
+          tilde <- base::regexpr("~", f) %>% base::as.numeric()
+          # If the tilde is missing return error
+          if(tilde == -1){
+            stop("Error on the 'train_method' argument: cannot run 'tslm' model without the 'formula' argument")
+          } 
+          # If formula good check the castumize the xreg argument
+          # Parsing the formula
+          f1 <- base::substr(f, tilde + 1, base::nchar(f))
+          f2 <- base::gsub('[\\+]' , "", base::gsub('\"', "", f1))
+          f3 <- base::unlist(base::strsplit(x = f2, split = " "))
+          f4 <- f3[base::which(f3 != "")]
+          
+          # Checkig for external variables
+          if(any(!f4 %in% c("trend", "season"))){
+            if(!f4[which(!f4 %in% c("trend", "season"))] %in% base::names(xreg$train)){
+              stop(base::paste("Error on the tslm model formula: the ",
+                               f4[which(!f4 %in% c("trend", "season"))],
+                               "variables could not be found on the xreg input",
+                               sep = " "))
             }
+            arg$data <- xreg_train
+            
             arg$formula <- stats::as.formula(base::paste("ts.obj ~ ",
                                                          base::paste0(f4, collapse = "+"), 
                                                          sep = ""))
             
-            md <- do.call(forecast::tslm, c(base::list(arg$formula, arg$data)))
+            md <- do.call(forecast::tslm, arg)
             
+            fc <- forecast::forecast(md, 
+                                     h = grid_df$horizon[i], 
+                                     newdata = xreg_forecast,
+                                     level = level) 
+          } else {
+            arg$formula <- stats::as.formula(base::paste("ts.obj ~ ",
+                                                         base::paste0(f4, collapse = "+"), 
+                                                         sep = ""))
             
-            if(base::is.null(arg$data)){
-              fc <- forecast::forecast(md, 
-                                       h = grid_df$horizon[i], 
-                                       level = level) 
-            } else {
-              fc <- forecast::forecast(md, 
-                                       h = grid_df$horizon[i], 
-                                       newdata = xreg_forecast,
-                                       level = level) 
-            }
+            md <- do.call(forecast::tslm, arg)
             
+            fc <- forecast::forecast(md, 
+                                     h = grid_df$horizon[i],
+                                     level = level) 
+          }
+          
         } else {
           stop("Error on the 'train_method' argument: cannot run 'tslm' model without the function's arguments")
         }
       }
-      
-      
     }
     
     output <- list(model = md, 
@@ -1955,9 +1955,9 @@ train_model <- function(input,
           u[[p[n]]] <- u[[p[n]]] %>% as.matrix()
           l[[p[n]]] <- l[[p[n]]] %>% as.matrix()
         }
+      }
         base::colnames(u[[p[n]]]) <- base::paste0(levels[[p[n]]], "%")
         base::colnames(l[[p[n]]]) <- base::paste0(levels[[p[n]]], "%")
-      }
       
       coverage_df <- lapply(base::colnames(u[[p[n]]]), function(i){
         df <-  base::data.frame(coverage = base::sum(ifelse(u[[p[n]]][, i] >=  a[[p[n]]] & l[[p[n]]][, i] <=  a[[p[n]]], 1, 0)) / base::length(u[[p[n]]][, i]))
@@ -1965,7 +1965,7 @@ train_model <- function(input,
       }) %>% dplyr::bind_rows() %>% 
         base::t() %>% 
         base::as.data.frame() %>% 
-        stats::setNames(base::paste0("coverage", base::colnames(u[[p[n]]])))
+        stats::setNames(base::paste0("coverage_", base::colnames(u[[p[n]]])))
       
       
       df <- base::cbind(base::data.frame(partition = n,
@@ -2357,13 +2357,28 @@ build_model <- function(model.obj){
     stop("Cannot build a model, the 'input' argument is missing")
   }
   
+  if(!"error" %in% base::names(model.obj)){
+   model.obj$error <- "MAPE"
+  }
+  
+  if(!"level" %in% base::names(model.obj)){
+    model.obj$level <- c(80, 95)
+  }
+  
+  if(!"xreg" %in% base::names(model.obj)){
+    model.obj$xreg <- NULL
+  }
+  
   
   output <- NULL
   
   output <- TSstudio::train_model(input = model.obj$input,
                                   methods = model.obj$methods,
                                   train_method = model.obj$train_method,
-                                  horizon = model.obj$horizon)
+                                  horizon = model.obj$horizon,
+                                  xreg = model.obj$xreg,
+                                  error = model.obj$error,
+                                  level = model.obj$level)
   
   return(output)
 }
@@ -2423,8 +2438,6 @@ add_xreg <- function(model.obj, xreg){
     if(!all(c("train", "forecast") %in% base::names(xreg))){
       stop("Error on the 'xreg' argument: the 'xreg' list is not valid, please make sure setting the correspinding regressor",
            " inputs for the 'input' argument (train) and for the forecast horizon (forecast)")
-    } else if(base::names(xreg$train) != base::names(xreg$forecast)){
-      stop("Error on the 'xreg' argument: the regressors names in the train and forecast inputs are not aligned")
     } 
   }
   
