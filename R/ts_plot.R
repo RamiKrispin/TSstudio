@@ -232,28 +232,28 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
     
     p <-  switch (line.mode,
                   "markers" = {
-                    plotly::plot_ly(data = df, x = ~ date, y = ~y, 
-                            mode = "markers", 
+                    plotly::plot_ly(data = df, x = ~ date, y = ~y,
+                            mode = "markers",
                             type = 'scatter',
                             marker = list(color = color, width = width)
                     )
                   },
                   "lines+markers" = {
-                    plotly::plot_ly(data = df, x = ~ date, y = ~y, 
-                            mode = "lines+markers", 
+                    plotly::plot_ly(data = df, x = ~ date, y = ~y,
+                            mode = "lines+markers",
                             type = 'scatter',
                             marker = list(color = color),
                             line = list(width = width, dash = dash, color = color)
                     )
                   },
                   "lines" = {
-                    plotly::plot_ly(data = df, x = ~ date, y = ~y, 
-                            mode = "lines", 
+                    plotly::plot_ly(data = df, x = ~ date, y = ~y,
+                            mode = "lines",
                             type = 'scatter',
                             line = list(width = width, dash = dash, color = color)
                     )
                   }
-                  
+
     )
     
     if(!base::is.null(p) & slider){
