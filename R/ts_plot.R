@@ -190,7 +190,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
       for(i in 2:ncol(df)){
         p <- p %>% plotly::add_trace(x = df[,1], y = df[,i],
                              name = names(df)[i],
-                             mode = "lines",
+                             mode = line.mode,
                              type = 'scatter')
       }
       p <- p %>% plotly::layout(
@@ -209,7 +209,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
     } else if(type == "multiple"){
       for(i in 2:ncol(df)){
         plot_list[[i-1]] <- plotly::plot_ly(x = df[,1], y = df[,i], 
-                                    mode = "lines", 
+                                    mode = line.mode, 
                                     name = names(df)[i],
                                     type = 'scatter'
         )%>% 
