@@ -190,7 +190,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
       for(i in 2:ncol(df)){
         p <- p %>% plotly::add_trace(x = df[,1], y = df[,i],
                              name = names(df)[i],
-                             mode = "lines",
+                             mode = line.mode,
                              type = 'scatter')
       }
       p <- p %>% plotly::layout(
@@ -209,7 +209,7 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
     } else if(type == "multiple"){
       for(i in 2:ncol(df)){
         plot_list[[i-1]] <- plotly::plot_ly(x = df[,1], y = df[,i], 
-                                    mode = "lines", 
+                                    mode = line.mode, 
                                     name = names(df)[i],
                                     type = 'scatter'
         )%>% 
@@ -232,28 +232,28 @@ ts_plot <- function(ts.obj, line.mode = "lines", width = 2,
     
     p <-  switch (line.mode,
                   "markers" = {
-                    plotly::plot_ly(data = df, x = ~ date, y = ~y, 
-                            mode = "markers", 
+                    plotly::plot_ly(data = df, x = ~ date, y = ~y,
+                            mode = "markers",
                             type = 'scatter',
                             marker = list(color = color, width = width)
                     )
                   },
                   "lines+markers" = {
-                    plotly::plot_ly(data = df, x = ~ date, y = ~y, 
-                            mode = "lines+markers", 
+                    plotly::plot_ly(data = df, x = ~ date, y = ~y,
+                            mode = "lines+markers",
                             type = 'scatter',
                             marker = list(color = color),
                             line = list(width = width, dash = dash, color = color)
                     )
                   },
                   "lines" = {
-                    plotly::plot_ly(data = df, x = ~ date, y = ~y, 
-                            mode = "lines", 
+                    plotly::plot_ly(data = df, x = ~ date, y = ~y,
+                            mode = "lines",
                             type = 'scatter',
                             line = list(width = width, dash = dash, color = color)
                     )
                   }
-                  
+
     )
     
     if(!base::is.null(p) & slider){
