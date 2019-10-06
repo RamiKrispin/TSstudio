@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>US Monthly Civilian Unemployment Rate — USUnRate • TSstudio</title>
+<title>An Interactive Visualization of the ACF and PACF Functions — ts_cor • TSstudio</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,10 +30,9 @@
 
 
 
-<meta property="og:title" content="US Monthly Civilian Unemployment Rate — USUnRate" />
+<meta property="og:title" content="An Interactive Visualization of the ACF and PACF Functions — ts_cor" />
 
-<meta property="og:description" content="US monthly civilian unemployment rate: 1948 - 2019.
-Units: Percent" />
+<meta property="og:description" content="An Interactive Visualization of the ACF and PACF Functions" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -115,41 +114,71 @@ Units: Percent" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>US Monthly Civilian Unemployment Rate</h1>
-    <small class="dont-index">Source: <a href='https://github.com/RamiKrispin/TSstudio/blob/master/R/data.R'><code>R/data.R</code></a></small>
-    <div class="hidden name"><code>USUnRate.Rd</code></div>
+    <h1>An Interactive Visualization of the ACF and PACF Functions</h1>
+    <small class="dont-index">Source: <a href='https://github.com/RamiKrispin/TSstudio/blob/master/R/correlation_functions.R'><code>R/correlation_functions.R</code></a></small>
+    <div class="hidden name"><code>ts_cor.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>US monthly civilian unemployment rate: 1948 - 2019.
-Units: Percent</p>
+    <p>An Interactive Visualization of the ACF and PACF Functions</p>
     
     </div>
 
-    <pre class="usage"><span class='no'>USUnRate</span></pre>
-        
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
-
-    <p>Time series data - 'ts' object</p>
+    <pre class="usage"><span class='fu'>ts_cor</span>(<span class='no'>ts.obj</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"both"</span>, <span class='kw'>seasonal</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>ci</span> <span class='kw'>=</span> <span class='fl'>0.95</span>,
+  <span class='kw'>lag.max</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>seasonal_lags</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
-    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
-
-    <p>U.S. Bureau of Labor Statistics, Civilian Unemployment Rate [UNRATENSA], retrieved from FRED, Federal Reserve Bank of St. Louis; https://fred.stlouisfed.org/series/UNRATENSA, January 6, 2018.</p>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>ts.obj</th>
+      <td><p>A univariate time series object class 'ts'</p></td>
+    </tr>
+    <tr>
+      <th>type</th>
+      <td><p>A character, defines the plot type - 'acf' for ACF plot, 'pacf' for PACF plot, and 'both' (default) for both ACF and PACF plots</p></td>
+    </tr>
+    <tr>
+      <th>seasonal</th>
+      <td><p>A boolean, when set to TRUE (default) will color the seasonal lags</p></td>
+    </tr>
+    <tr>
+      <th>ci</th>
+      <td><p>The significant level of the estimation - a numeric value between 0 and 1, default is set for 0.95</p></td>
+    </tr>
+    <tr>
+      <th>lag.max</th>
+      <td><p>maximum lag at which to calculate the acf. Default is 10*log10(N/m) 
+where N is the number of observations and m the number of series. 
+Will be automatically limited to one less than the number of observations in the series</p></td>
+    </tr>
+    <tr>
+      <th>seasonal_lags</th>
+      <td><p>A vector of integers, highlight specific cyclic lags (besides the main seasonal lags of the series).
+This is useful when working with multiseasonal time series data. For example, for a monthly series 
+(e.g., frequency 12) setting the argument to 3 will highlight the quarterly lags</p></td>
+    </tr>
+    </table>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='ts_plot.html'>ts_plot</a></span>(<span class='no'>USUnRate</span>)
-<span class='fu'><a href='ts_seasonal.html'>ts_seasonal</a></span>(<span class='no'>USUnRate</span>)</div></pre>
+    <pre class="examples"><div class='input'>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='no'>USgas</span>)
+
+<span class='fu'>ts_cor</span>(<span class='kw'>ts.obj</span> <span class='kw'>=</span> <span class='no'>USgas</span>)
+
+<span class='co'># Setting the maximum number of lags to 72</span>
+<span class='fu'>ts_cor</span>(<span class='kw'>ts.obj</span> <span class='kw'>=</span> <span class='no'>USgas</span>, <span class='kw'>lag.max</span> <span class='kw'>=</span> <span class='fl'>72</span>)
+
+<span class='co'># Plotting only ACF </span>
+<span class='fu'>ts_cor</span>(<span class='kw'>ts.obj</span> <span class='kw'>=</span> <span class='no'>USgas</span>, <span class='kw'>lag.max</span> <span class='kw'>=</span> <span class='fl'>72</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"acf"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Ignoring 72 observations</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Ignoring 67 observations</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Ignoring 7 observations</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      
-      <li><a href="#format">Format</a></li>
-
-      <li><a href="#source">Source</a></li>
-      
+      <li><a href="#arguments">Arguments</a></li>
+            
       <li><a href="#examples">Examples</a></li>
     </ul>
 
