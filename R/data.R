@@ -60,7 +60,7 @@
 
 #' Crude Oil Prices: Brent - Europe
 #' 
-#' Crude Oil Prices: Brent - Europe: 1987 - 2017.
+#' Crude Oil Prices: Brent - Europe: 1987 - 2019.
 #' Units: Dollars per Barrel
 #' 
 #' @format Time series data - 'zoo' object
