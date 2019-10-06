@@ -15,6 +15,7 @@ Deprecated functions
 
 Fix errors 
 * ts_seasonal - aligning the box plot color 
+* ts_plot - setting the dash and marker mode for multiple time series
 
 ## Version 0.1.4 is now available on CRAN
 New functions
