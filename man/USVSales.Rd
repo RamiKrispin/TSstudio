@@ -12,7 +12,7 @@ U.S. Bureau of Economic Analysis, Total Vehicle Sales [TOTALNSA], retrieved from
 USVSales
 }
 \description{
-US monthly total vehicle sales: 1976 - 2017.
+US monthly total vehicle sales: 1976 - 2019.
 Units: Thousands of units
 }
 \examples{

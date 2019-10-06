@@ -12,7 +12,7 @@ U.S. Bureau of Labor Statistics, Civilian Unemployment Rate [UNRATENSA], retriev
 USUnRate
 }
 \description{
-US monthly civilian unemployment rate: 1948 - 2017.
+US monthly civilian unemployment rate: 1948 - 2019.
 Units: Percent
 }
 \examples{
