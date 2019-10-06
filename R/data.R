@@ -1,6 +1,6 @@
 #' US Monthly Total Vehicle Sales
 #' 
-#' US monthly total vehicle sales: 1976 - 2017.
+#' US monthly total vehicle sales: 1976 - 2019.
 #' Units: Thousands of units
 #' 
 #' 
@@ -15,7 +15,7 @@
 
 #' US Monthly Civilian Unemployment Rate
 #' 
-#' US monthly civilian unemployment rate: 1948 - 2017.
+#' US monthly civilian unemployment rate: 1948 - 2019.
 #' Units: Percent
 #' 
 #' @format Time series data - 'ts' object
@@ -31,7 +31,7 @@
 
 #' US monthly natural gas consumption
 #' 
-#' US monthly natural gas consumption: 2000 - 2017.
+#' US monthly natural gas consumption: 2000 - 2019.
 #' Units: Billion Cubic Feet
 #' 
 #' @format Time series data - 'ts' object
@@ -45,7 +45,7 @@
 
 #' University of Michigan Consumer Survey, Index of Consumer Sentiment
 #' 
-#' University of Michigan Consumer Survey, Index of Consumer Sentiment: 1980 - 2017.
+#' University of Michigan Consumer Survey, Index of Consumer Sentiment: 1980 - 2019.
 #' Units: Index 1966:Q1=100
 #' 
 #' @format Time series data - 'xts' object
@@ -87,7 +87,7 @@
 
 #' US Key Indicators - data frame format
 #' 
-#' Monthly total vehicle sales and unemployment rate: 1976 - 2018.
+#' Monthly total vehicle sales and unemployment rate: 1976 - 2019.
 #' Units: Dollars per Kg
 #' 
 #' @format Time series data - 'data.frame' object
