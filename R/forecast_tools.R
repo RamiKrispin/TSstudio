@@ -385,4 +385,62 @@ forecast_sim <- function(model,h,n, sim_color = "blue", opacity = 0.05, plot = T
   return(output)
 }
 
+#' Diagnostic Plots for ARIMA Models
+#' @export
+#' @param ts.obj A ts object
+#' @param method A list, defines the transformation parameters of each plot. 
+#' Each plot should be defined by a list, where the name of the list defines the plot ID. 
+#' The plot parameters are:
+#' 
+#' diff - an integer, defines the degree of diffrence
+#' log - a boolean, defines if log transformation should be used
+#' title - optional, the plot title
+#' @param cor A boolean, if TRUE (default), will plot the series ACF and PACF
+
+arima_diag <- function(ts.obj, method = list(first = list(diff = 1, log = TRUE, title = "First Difference with Log Transformation")), cor = TRUE){
+  
+  p1 <- TSstudio::ts_plot(ts.obj)
+  
+  if(cor){
+    lag.max <- ifelse(stats::frequency(ts.obj) * 3 > base::length(ts.obj), base::length(ts.obj), stats::frequency(ts.obj) * 3)
+    p2 <- TSstudio::ts_cor(ts.obj = ts.obj, type = "both", lag.max = lag.max)
+  }
+  
+  
+  if(!base::is.null(method)){
+    diff_obj <- diff_method <- diff_plot <- NULL
+    diff_method <- base::names(method)
+    
+    diff_plot <- lapply(diff_method, function(i){
+      if(!"diff" %in% base::names(method[[i]])){
+        stop("Error on the 'method' argument: the 'diff' argument is missing")
+      } else if(!"log" %in% base::names(method[[i]])){
+        stop("Error on the 'method' argument: the 'log' argument is missing")
+      }
+      diff_obj <- ts.obj
+      if(method[[i]]$log){
+        diff_obj <- base::log(diff_obj)
+      }
+      
+      for(d in method[[i]]$diff){
+        diff_obj <- base::diff(diff_obj, d)
+      }
+      
+      return(TSstudio::ts_plot(diff_obj))
+      
+      
+    })
+    output <- plotly::subplot(p1, p2, plotly::subplot(diff_plot, nrows = base::length(diff_plot)), nrows = 3, titleY = TRUE)
+  } else {
+    output <- plotly::subplot(p1, p2, nrows = 2)
+  }
+  
+  
+  
+  
+  return(output)
+  
+}
+
+
 
