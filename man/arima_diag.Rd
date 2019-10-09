@@ -31,3 +31,20 @@ The arima_diag function provides a set of diagnostic plots for identify the ARIM
 The ACF and PACF can assist in identifying the AR and MA process, 
 and the diffrence plotting hel in idenitfying the degree of differencing that required to make the series stationary
 }
+\examples{
+
+data(USgas)
+
+arima_diag(ts.obj = USgas)
+
+# Can define more than one differencing plot using the 'method' argument
+
+arima_diag(ts.obj = USgas,
+           cor = TRUE,
+           method = list(first = list(diff = 1, 
+                                      log = TRUE,
+                                      title = "First Diff with Log Transformation),
+                         Second = list(diff = c(1,1),
+                                       log = TRUE,
+                                       title = "Second Diff with Log Transformation)))
+}
