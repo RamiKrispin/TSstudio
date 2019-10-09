@@ -422,7 +422,7 @@ arima_diag <- function(ts.obj, method = list(first = list(diff = 1, log = TRUE, 
   
   obj.name <- base::deparse(base::substitute(ts.obj))
   
-  p1 <- TSstudio::ts_plot(ts.obj, Ytitle = obj.name)
+  p1 <- TSstudio::ts_plot(ts.obj, Ytitle = obj.name) %>% plotly::hide_legend()
   
   if(cor){
     lag.max <- ifelse(stats::frequency(ts.obj) * 3 > base::length(ts.obj), base::length(ts.obj), stats::frequency(ts.obj) * 3)
@@ -453,9 +453,15 @@ arima_diag <- function(ts.obj, method = list(first = list(diff = 1, log = TRUE, 
       
       
     })
-    output <- plotly::subplot(p1, p2, plotly::subplot(diff_plot, nrows = base::length(diff_plot), titleY = TRUE, margin = 0.1), nrows = 3, titleY = TRUE)
+    output <- plotly::subplot(p1, p2, 
+                              plotly::subplot(diff_plot, nrows = base::length(diff_plot), titleY = TRUE, margin = 0.1), 
+                              nrows = 3, 
+                              titleY = TRUE,
+                              margin = 0.04)
   } else {
-    output <- plotly::subplot(p1, p2, nrows = 2)
+    output <- plotly::subplot(p1, p2, 
+                              nrows = 2,
+                              margin = 0.04)
   }
   
   
