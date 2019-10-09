@@ -413,14 +413,16 @@ forecast_sim <- function(model,h,n, sim_color = "blue", opacity = 0.05, plot = T
 #'            cor = TRUE,
 #'            method = list(first = list(diff = 1, 
 #'                                       log = TRUE,
-#'                                       title = "First Diff with Log Transformation),
+#'                                       title = "First Diff with Log Transformation"),
 #'                          Second = list(diff = c(1,1),
 #'                                        log = TRUE,
 #'                                        title = "Second Diff with Log Transformation)))
 
 arima_diag <- function(ts.obj, method = list(first = list(diff = 1, log = TRUE, title = "First Difference with Log Transformation")), cor = TRUE){
   
-  p1 <- TSstudio::ts_plot(ts.obj)
+  obj.name <- base::deparse(base::substitute(ts.obj))
+  
+  p1 <- TSstudio::ts_plot(ts.obj, Ytitle = obj.name)
   
   if(cor){
     lag.max <- ifelse(stats::frequency(ts.obj) * 3 > base::length(ts.obj), base::length(ts.obj), stats::frequency(ts.obj) * 3)
@@ -447,11 +449,11 @@ arima_diag <- function(ts.obj, method = list(first = list(diff = 1, log = TRUE, 
         diff_obj <- base::diff(diff_obj, d)
       }
       
-      return(TSstudio::ts_plot(diff_obj))
+      return(TSstudio::ts_plot(diff_obj, Ytitle = method[[i]]$title))
       
       
     })
-    output <- plotly::subplot(p1, p2, plotly::subplot(diff_plot, nrows = base::length(diff_plot)), nrows = 3, titleY = TRUE)
+    output <- plotly::subplot(p1, p2, plotly::subplot(diff_plot, nrows = base::length(diff_plot), titleY = TRUE, margin = 0.1), nrows = 3, titleY = TRUE)
   } else {
     output <- plotly::subplot(p1, p2, nrows = 2)
   }
