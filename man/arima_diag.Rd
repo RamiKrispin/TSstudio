@@ -20,6 +20,14 @@ title - optional, the plot title}
 
 \item{cor}{A boolean, if TRUE (default), will plot the series ACF and PACF}
 }
+\value{
+A plot
+}
 \description{
 Diagnostic Plots for ARIMA Models
+}
+\details{
+The arima_diag function provides a set of diagnostic plots for identify the ARIMA model parameters.
+The ACF and PACF can assist in identifying the AR and MA process, 
+and the diffrence plotting hel in idenitfying the degree of differencing that required to make the series stationary
 }

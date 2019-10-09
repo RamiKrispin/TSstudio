@@ -396,6 +396,10 @@ forecast_sim <- function(model,h,n, sim_color = "blue", opacity = 0.05, plot = T
 #' log - a boolean, defines if log transformation should be used
 #' title - optional, the plot title
 #' @param cor A boolean, if TRUE (default), will plot the series ACF and PACF
+#' @details The arima_diag function provides a set of diagnostic plots for identify the ARIMA model parameters.
+#' The ACF and PACF can assist in identifying the AR and MA process, 
+#' and the diffrence plotting hel in idenitfying the degree of differencing that required to make the series stationary
+#' @return A plot
 
 arima_diag <- function(ts.obj, method = list(first = list(diff = 1, log = TRUE, title = "First Difference with Log Transformation")), cor = TRUE){
   
