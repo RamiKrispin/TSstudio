@@ -416,25 +416,43 @@ forecast_sim <- function(model,h,n, sim_color = "blue", opacity = 0.05, plot = T
 #'                                       title = "First Diff with Log Transformation"),
 #'                          Second = list(diff = c(1,1),
 #'                                        log = TRUE,
-#'                                        title = "Second Diff with Log Transformation)))
+#'                                        title = "Second Diff with Log Transformation")))
 
 arima_diag <- function(ts.obj, method = list(first = list(diff = 1, log = TRUE, title = "First Difference with Log Transformation")), cor = TRUE){
   `%>%` <- magrittr::`%>%`
   obj.name <- base::deparse(base::substitute(ts.obj))
   
-  plot_obj <- function(input, obj.name, color = "#00526d"){
+  plot_obj <- function(input, 
+                       obj.name = NULL, 
+                       color = "#00526d", 
+                       annotations = NULL,
+                       ann_x = 0.05,
+                       ann_y = 0.9){
     p <- plotly::plot_ly(x = stats::time(input) + stats::deltat(input),
                          y = base::as.numeric(input),
                          type = "scatter",
                          mode = "lines",
                          name = obj.name,
                          line = list(color = "#00526d"),
-                         showlegend = FALSE) %>%
-      plotly::layout(yaxis = list(title = obj.name))
+                         showlegend = FALSE) 
+    
+    if(!base::is.null(annotations)){
+      p <- p %>% plotly::layout(annotations = list(text = annotations, 
+                                             xref = "paper", 
+                                             yref = "paper",
+                                             yanchor = "bottom",
+                                             xanchor = "center",
+                                             align = "cneter",
+                                             x = ann_x,
+                                             y = ann_y, 
+                                             showarrow = FALSE,
+                                             font = list(size = 12)))
+    }
+      
     return(p)
   }
   
-  p1 <- plot_obj(input = ts.obj, obj.name = obj.name)
+  p1 <- plot_obj(input = ts.obj, annotations = obj.name)
   if(cor){
     lag.max <- ifelse(stats::frequency(ts.obj) * 3 > base::length(ts.obj), base::length(ts.obj), stats::frequency(ts.obj) * 3)
     p2 <- TSstudio::ts_cor(ts.obj = ts.obj, type = "both", lag.max = lag.max)
@@ -460,7 +478,7 @@ arima_diag <- function(ts.obj, method = list(first = list(diff = 1, log = TRUE, 
         diff_obj <- base::diff(diff_obj, d)
       }
       
-      return(plot_obj(input = diff_obj, obj.name =  method[[i]]$title))
+      return(plot_obj(input = diff_obj, annotations =  method[[i]]$title, ann_x = 0.25))
       
       
     })
@@ -475,7 +493,7 @@ arima_diag <- function(ts.obj, method = list(first = list(diff = 1, log = TRUE, 
                               margin = 0.04)
   }
   
-  
+  output <- output %>% plotly::layout(title = base::paste("ARIMA Diagnostic Plot - ", obj.name, sep = ""))
   
   
   return(output)
