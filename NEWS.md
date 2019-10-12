@@ -7,10 +7,11 @@ New functions
 * plot_model - animation the performance of the train_model output on the backtesting partitions
 * plot_error - plotting the error distribution of the train_model output 
 * ts_cor - for acf and pacf plots with seasonal lags
+* arima_diag - a diagnostic plot for identify the AR, MA and differencing components of the ARIMA model
 
 Deprecated functions
 
-*ts_backtesting - will be replaced by the train_model function
+* ts_backtesting - will be replaced by the train_model function
 * ts_acf / ts_pacf functions - will be replaced by the ts_cor function
 
 Fix errors 
