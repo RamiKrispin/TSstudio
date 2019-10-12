@@ -1,3 +1,22 @@
+## Version 0.1.5 is now available on CRAN
+Changing the package license from GPL-3 to MIT
+
+New functions
+
+*train_model - a flexible framework for training, testing, evaluating, and forecasting models. This function provides the ability to run multiple models with backtesting or single training/testing partitions
+* plot_model - animation the performance of the train_model output on the backtesting partitions
+* plot_error - plotting the error distribution of the train_model output 
+* ts_cor - for acf and pacf plots with seasonal lags
+
+Deprecated functions
+
+*ts_backtesting - will be replaced by the train_model function
+* ts_acf / ts_pacf functions - will be replaced by the ts_cor function
+
+Fix errors 
+* ts_seasonal - aligning the box plot color 
+* ts_plot - setting the dash and marker mode for multiple time series
+
 ## Version 0.1.4 is now available on CRAN
 New functions
 * forecast_sim - creating different forecast paths for forecast objects (when applicable), by utilizing the underline model distribution with the simulate function

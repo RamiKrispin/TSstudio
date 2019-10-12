@@ -12,7 +12,7 @@ U.S. Bureau of Transportation Statistics, Natural Gas Consumption [NATURALGAS], 
 USgas
 }
 \description{
-US monthly natural gas consumption: 2000 - 2017.
+US monthly natural gas consumption: 2000 - 2019.
 Units: Billion Cubic Feet
 }
 \examples{

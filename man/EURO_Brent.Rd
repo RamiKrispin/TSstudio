@@ -12,7 +12,7 @@ U.S. Energy Information Administration, Crude Oil Prices: Brent - Europe [MCOILB
 EURO_Brent
 }
 \description{
-Crude Oil Prices: Brent - Europe: 1987 - 2017.
+Crude Oil Prices: Brent - Europe: 1987 - 2019.
 Units: Dollars per Barrel
 }
 \examples{

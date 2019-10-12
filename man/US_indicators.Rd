@@ -13,7 +13,7 @@ U.S. Bureau of Labor Statistics, Civilian Unemployment Rate [UNRATENSA], retriev
 US_indicators
 }
 \description{
-Monthly total vehicle sales and unemployment rate: 1976 - 2018.
+Monthly total vehicle sales and unemployment rate: 1976 - 2019.
 Units: Dollars per Kg
 }
 \examples{
