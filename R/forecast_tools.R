@@ -184,7 +184,7 @@ res_hist <- function(forecast.obj){
       stop("The 'forecast.obj' is not valid parameter")
     }
   }
-    
+  
   dens <- stats::density(forecast.obj$residuals, kernel = "gaussian")
   p <- plotly::plot_ly(x = forecast.obj$residuals, type  = "histogram", name = "Histogram") %>%
     plotly::add_trace(x = dens$x, 
@@ -234,7 +234,7 @@ check_res <- function(ts.model, lag.max = 36){
     } else if(!"method" %in% at$names){
       try(method <- forecast::forecast(ts.model)$method, silent = TRUE)
       if(is.null(method)){
-      stop("The 'ts.model' is not valid parameter - the 'method' attribute is missing")
+        stop("The 'ts.model' is not valid parameter - the 'method' attribute is missing")
       }
     } else {
       method <- ts.model$method
@@ -262,17 +262,17 @@ check_res <- function(ts.model, lag.max = 36){
   p3 <- plotly::plot_ly(x = res, type = "histogram", 
                         name = "Histogram", 
                         marker = list(color = "#00526d")
-                        ) %>%
+  ) %>%
     plotly::layout(xaxis = list(title = "Residuals"),
                    yaxis = list(title = "Count")
-                   )
+    )
   
   p <- plotly::subplot(p1,
-                  plotly::subplot(p2, p3, nrows = 1, margin = 0.04,
-                                  titleX =  TRUE, titleY = TRUE), 
-                  titleX =  TRUE, titleY = TRUE,
-                  nrows = 2, margin = 0.04
-                  ) %>% plotly::hide_legend() %>%
+                       plotly::subplot(p2, p3, nrows = 1, margin = 0.04,
+                                       titleX =  TRUE, titleY = TRUE), 
+                       titleX =  TRUE, titleY = TRUE,
+                       nrows = 2, margin = 0.04
+  ) %>% plotly::hide_legend() %>%
     plotly::layout(
       title =  base::paste("Residuals Plot for", method, sep = " ")
     )
@@ -352,7 +352,7 @@ forecast_sim <- function(model,h,n, sim_color = "blue", opacity = 0.05, plot = T
     tidyr::spread(key = n, value = y) %>% 
     dplyr::select(-x) %>% 
     stats::ts(start = stats::start(stats::simulate(model,nsim = 1)), 
-       frequency = stats::frequency(stats::simulate(model,nsim = 1))) 
+              frequency = stats::frequency(stats::simulate(model,nsim = 1))) 
   
   p <- plotly::plot_ly()
   
@@ -375,7 +375,7 @@ forecast_sim <- function(model,h,n, sim_color = "blue", opacity = 0.05, plot = T
                                line = list(color = "#00526d"), 
                                name = "Actual")
   if(plot){
-  print(p)
+    print(p)
   }
   
   output <- list()
@@ -419,16 +419,22 @@ forecast_sim <- function(model,h,n, sim_color = "blue", opacity = 0.05, plot = T
 #'                                        title = "Second Diff with Log Transformation)))
 
 arima_diag <- function(ts.obj, method = list(first = list(diff = 1, log = TRUE, title = "First Difference with Log Transformation")), cor = TRUE){
-  
+  `%>%` <- magrittr::`%>%`
   obj.name <- base::deparse(base::substitute(ts.obj))
   
-  p1 <- plotly::plot_ly(x = stats::time(ts.obj) + stats::deltat(ts.obj),
-                        y = base::as.numeric(ts.obj),
-                        type = "scatter",
-                        mode = "line",
-                        name = obj.name,
-                        line = list(color = "#00526d")) %>%
-    plotly::layout(yaxis = list(title = obj.name))
+  plot_obj <- function(input, obj.name, color = "#00526d"){
+    p <- plotly::plot_ly(x = stats::time(input) + stats::deltat(input),
+                         y = base::as.numeric(input),
+                         type = "scatter",
+                         mode = "lines",
+                         name = obj.name,
+                         line = list(color = "#00526d"),
+                         showlegend = FALSE) %>%
+      plotly::layout(yaxis = list(title = obj.name))
+    return(p)
+  }
+  
+  p1 <- plot_obj(input = ts.obj, obj.name = obj.name)
   if(cor){
     lag.max <- ifelse(stats::frequency(ts.obj) * 3 > base::length(ts.obj), base::length(ts.obj), stats::frequency(ts.obj) * 3)
     p2 <- TSstudio::ts_cor(ts.obj = ts.obj, type = "both", lag.max = lag.max)
@@ -454,7 +460,7 @@ arima_diag <- function(ts.obj, method = list(first = list(diff = 1, log = TRUE, 
         diff_obj <- base::diff(diff_obj, d)
       }
       
-      return(TSstudio::ts_plot(diff_obj, Ytitle = method[[i]]$title))
+      return(plot_obj(input = diff_obj, obj.name =  method[[i]]$title))
       
       
     })
