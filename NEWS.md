@@ -1,5 +1,8 @@
 ## Version 0.1.5 is now available on CRAN
-Changing the package license from GPL-3 to MIT
+
+Package license
+
+* Changing the package license from GPL-3 to MIT
 
 New functions
 
