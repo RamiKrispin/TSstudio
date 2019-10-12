@@ -184,7 +184,7 @@ res_hist <- function(forecast.obj){
       stop("The 'forecast.obj' is not valid parameter")
     }
   }
-    
+  
   dens <- stats::density(forecast.obj$residuals, kernel = "gaussian")
   p <- plotly::plot_ly(x = forecast.obj$residuals, type  = "histogram", name = "Histogram") %>%
     plotly::add_trace(x = dens$x, 
@@ -234,7 +234,7 @@ check_res <- function(ts.model, lag.max = 36){
     } else if(!"method" %in% at$names){
       try(method <- forecast::forecast(ts.model)$method, silent = TRUE)
       if(is.null(method)){
-      stop("The 'ts.model' is not valid parameter - the 'method' attribute is missing")
+        stop("The 'ts.model' is not valid parameter - the 'method' attribute is missing")
       }
     } else {
       method <- ts.model$method
@@ -262,17 +262,17 @@ check_res <- function(ts.model, lag.max = 36){
   p3 <- plotly::plot_ly(x = res, type = "histogram", 
                         name = "Histogram", 
                         marker = list(color = "#00526d")
-                        ) %>%
+  ) %>%
     plotly::layout(xaxis = list(title = "Residuals"),
                    yaxis = list(title = "Count")
-                   )
+    )
   
   p <- plotly::subplot(p1,
-                  plotly::subplot(p2, p3, nrows = 1, margin = 0.04,
-                                  titleX =  TRUE, titleY = TRUE), 
-                  titleX =  TRUE, titleY = TRUE,
-                  nrows = 2, margin = 0.04
-                  ) %>% plotly::hide_legend() %>%
+                       plotly::subplot(p2, p3, nrows = 1, margin = 0.04,
+                                       titleX =  TRUE, titleY = TRUE), 
+                       titleX =  TRUE, titleY = TRUE,
+                       nrows = 2, margin = 0.04
+  ) %>% plotly::hide_legend() %>%
     plotly::layout(
       title =  base::paste("Residuals Plot for", method, sep = " ")
     )
@@ -352,7 +352,7 @@ forecast_sim <- function(model,h,n, sim_color = "blue", opacity = 0.05, plot = T
     tidyr::spread(key = n, value = y) %>% 
     dplyr::select(-x) %>% 
     stats::ts(start = stats::start(stats::simulate(model,nsim = 1)), 
-       frequency = stats::frequency(stats::simulate(model,nsim = 1))) 
+              frequency = stats::frequency(stats::simulate(model,nsim = 1))) 
   
   p <- plotly::plot_ly()
   
@@ -375,7 +375,7 @@ forecast_sim <- function(model,h,n, sim_color = "blue", opacity = 0.05, plot = T
                                line = list(color = "#00526d"), 
                                name = "Actual")
   if(plot){
-  print(p)
+    print(p)
   }
   
   output <- list()
@@ -384,5 +384,127 @@ forecast_sim <- function(model,h,n, sim_color = "blue", opacity = 0.05, plot = T
   output$series <- model$x
   return(output)
 }
+
+#' Diagnostic Plots for ARIMA Models
+#' @export
+#' @param ts.obj A ts object
+#' @param method A list, defines the transformation parameters of each plot. 
+#' Each plot should be defined by a list, where the name of the list defines the plot ID. 
+#' The plot parameters are:
+#' 
+#' diff - an integer, defines the degree of diffrence
+#' log - a boolean, defines if log transformation should be used
+#' title - optional, the plot title
+#' @param cor A boolean, if TRUE (default), will plot the series ACF and PACF
+#' @details The arima_diag function provides a set of diagnostic plots for identify the ARIMA model parameters.
+#' The ACF and PACF can assist in identifying the AR and MA process, 
+#' and the diffrence plotting hel in idenitfying the degree of differencing that required to make the series stationary
+#' @return A plot
+#' 
+#' @examples 
+#' 
+#' data(USgas)
+#' 
+#' arima_diag(ts.obj = USgas)
+#' 
+#' # Can define more than one differencing plot using the 'method' argument
+#' 
+#' arima_diag(ts.obj = USgas,
+#'            cor = TRUE,
+#'            method = list(first = list(diff = 1, 
+#'                                       log = TRUE,
+#'                                       title = "First Diff with Log Transformation"),
+#'                          Second = list(diff = c(1,1),
+#'                                        log = TRUE,
+#'                                        title = "Second Diff with Log Transformation")))
+
+arima_diag <- function(ts.obj, method = list(first = list(diff = 1, log = TRUE, title = "First Difference with Log Transformation")), cor = TRUE){
+  `%>%` <- magrittr::`%>%`
+  obj.name <- base::deparse(base::substitute(ts.obj))
+  
+  plot_obj <- function(input, 
+                       obj.name = NULL, 
+                       color = "#00526d", 
+                       annotations = NULL,
+                       ann_x = 0.05,
+                       ann_y = 0.9){
+    p <- plotly::plot_ly(x = stats::time(input) + stats::deltat(input),
+                         y = base::as.numeric(input),
+                         type = "scatter",
+                         mode = "lines",
+                         name = obj.name,
+                         line = list(color = "#00526d"),
+                         showlegend = FALSE) 
+    
+    if(!base::is.null(annotations)){
+      p <- p %>% plotly::layout(annotations = list(text = annotations, 
+                                             xref = "paper", 
+                                             yref = "paper",
+                                             yanchor = "bottom",
+                                             xanchor = "center",
+                                             align = "cneter",
+                                             x = ann_x,
+                                             y = ann_y, 
+                                             showarrow = FALSE,
+                                             font = list(size = 12)))
+    } else if(!base::is.null(obj.name)){
+      p <- p %>% plotly::layout(yaxis = list(title = obj.name))
+    }
+      
+    return(p)
+  }
+  
+  p1 <- plot_obj(input = ts.obj, obj.name = obj.name)
+  if(cor){
+    lag.max <- ifelse(stats::frequency(ts.obj) * 3 > base::length(ts.obj), base::length(ts.obj), stats::frequency(ts.obj) * 3)
+    p2 <- TSstudio::ts_cor(ts.obj = ts.obj, type = "both", lag.max = lag.max)
+  }
+  
+  
+  if(!base::is.null(method)){
+    diff_obj <- diff_method <- diff_plot <- NULL
+    diff_method <- base::names(method)
+    
+    diff_plot <- lapply(diff_method, function(i){
+      if(!"diff" %in% base::names(method[[i]])){
+        stop("Error on the 'method' argument: the 'diff' argument is missing")
+      } else if(!"log" %in% base::names(method[[i]])){
+        method[[i]]$log <- FALSE
+      }
+      diff_obj <- ts.obj
+      if(method[[i]]$log){
+        diff_obj <- base::log(diff_obj)
+      }
+      
+      for(d in method[[i]]$diff){
+        diff_obj <- base::diff(diff_obj, d)
+      }
+      
+      return(plot_obj(input = diff_obj, annotations =  method[[i]]$title, ann_x = 0.25))
+      
+      
+    })
+    output <- plotly::subplot(p1, p2, 
+                              plotly::subplot(diff_plot, 
+                                              nrows = base::length(diff_plot), 
+                                              titleY = TRUE,
+                                              margin = 0.1,
+                                              shareX = TRUE), 
+                              nrows = 3, 
+                              titleY = TRUE,
+                              margin = 0.04)
+  } else {
+    output <- plotly::subplot(p1, p2, 
+                              nrows = 2,
+                              margin = 0.04)
+  }
+  
+  output <- output %>% plotly::layout(title = base::paste("ARIMA Diagnostic Plot - ", obj.name, sep = ""))
+  
+  
+  return(output)
+  
+}
+
 
 

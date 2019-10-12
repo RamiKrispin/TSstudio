@@ -5,7 +5,7 @@
 \title{Plotting Time Series Objects}
 \usage{
 ts_plot(ts.obj, line.mode = "lines", width = 2, dash = NULL,
-  color = NULL, slider = FALSE, type = "multiple", Xtitle = NULL,
+  color = NULL, slider = FALSE, type = "single", Xtitle = NULL,
   Ytitle = NULL, title = NULL, Xgrid = FALSE, Ygrid = FALSE)
 }
 \arguments{
@@ -22,7 +22,9 @@ a minimum of one numeric column and either a Date or POSIXt class column}
 
 \item{slider}{Logic, add slider to modify the time axis (default set to FALSE)}
 
-\item{type}{Applicable for multiple time series object, plot on a separate plot or all together c("single, "multiple)}
+\item{type}{A character, optional, if having multiple tims series object,
+will plot all series in one plot when set to "single" (default), 
+or plot each series on a separate plot when set to "multiple"}
 
 \item{Xtitle}{A character, set the X axis title, default set to NULL}
 
