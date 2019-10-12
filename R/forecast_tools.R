@@ -467,7 +467,7 @@ arima_diag <- function(ts.obj, method = list(first = list(diff = 1, log = TRUE, 
       if(!"diff" %in% base::names(method[[i]])){
         stop("Error on the 'method' argument: the 'diff' argument is missing")
       } else if(!"log" %in% base::names(method[[i]])){
-        stop("Error on the 'method' argument: the 'log' argument is missing")
+        log <- FALSE
       }
       diff_obj <- ts.obj
       if(method[[i]]$log){
