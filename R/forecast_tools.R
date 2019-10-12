@@ -447,12 +447,14 @@ arima_diag <- function(ts.obj, method = list(first = list(diff = 1, log = TRUE, 
                                              y = ann_y, 
                                              showarrow = FALSE,
                                              font = list(size = 12)))
+    } else if(!base::is.null(obj.name)){
+      p <- p %>% plotly::layout(yaxis = list(title = obj.name))
     }
       
     return(p)
   }
   
-  p1 <- plot_obj(input = ts.obj, annotations = obj.name)
+  p1 <- plot_obj(input = ts.obj, obj.name = obj.name)
   if(cor){
     lag.max <- ifelse(stats::frequency(ts.obj) * 3 > base::length(ts.obj), base::length(ts.obj), stats::frequency(ts.obj) * 3)
     p2 <- TSstudio::ts_cor(ts.obj = ts.obj, type = "both", lag.max = lag.max)
@@ -467,7 +469,7 @@ arima_diag <- function(ts.obj, method = list(first = list(diff = 1, log = TRUE, 
       if(!"diff" %in% base::names(method[[i]])){
         stop("Error on the 'method' argument: the 'diff' argument is missing")
       } else if(!"log" %in% base::names(method[[i]])){
-        log <- FALSE
+        method[[i]]$log <- FALSE
       }
       diff_obj <- ts.obj
       if(method[[i]]$log){
@@ -483,7 +485,11 @@ arima_diag <- function(ts.obj, method = list(first = list(diff = 1, log = TRUE, 
       
     })
     output <- plotly::subplot(p1, p2, 
-                              plotly::subplot(diff_plot, nrows = base::length(diff_plot), titleY = TRUE, margin = 0.1), 
+                              plotly::subplot(diff_plot, 
+                                              nrows = base::length(diff_plot), 
+                                              titleY = TRUE,
+                                              margin = 0.1,
+                                              shareX = TRUE), 
                               nrows = 3, 
                               titleY = TRUE,
                               margin = 0.04)
