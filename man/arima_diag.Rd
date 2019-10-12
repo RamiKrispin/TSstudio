@@ -15,7 +15,7 @@ Each plot should be defined by a list, where the name of the list defines the pl
 The plot parameters are:
 
 diff - an integer, defines the degree of diffrence
-log - a boolean, defines if log transformation should be used
+log - a boolean, optional, defines if log transformation should be used
 title - optional, the plot title}
 
 \item{cor}{A boolean, if TRUE (default), will plot the series ACF and PACF}
@@ -30,4 +30,21 @@ Diagnostic Plots for ARIMA Models
 The arima_diag function provides a set of diagnostic plots for identify the ARIMA model parameters.
 The ACF and PACF can assist in identifying the AR and MA process, 
 and the diffrence plotting hel in idenitfying the degree of differencing that required to make the series stationary
+}
+\examples{
+
+data(USgas)
+
+arima_diag(ts.obj = USgas)
+
+# Can define more than one differencing plot using the 'method' argument
+
+arima_diag(ts.obj = USgas,
+           cor = TRUE,
+           method = list(first = list(diff = 1, 
+                                      log = TRUE,
+                                      title = "First Diff with Log Transformation"),
+                         Second = list(diff = c(1,1),
+                                       log = TRUE,
+                                       title = "Second Diff with Log Transformation")))
 }

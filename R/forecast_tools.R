@@ -393,7 +393,7 @@ forecast_sim <- function(model,h,n, sim_color = "blue", opacity = 0.05, plot = T
 #' The plot parameters are:
 #' 
 #' diff - an integer, defines the degree of diffrence
-#' log - a boolean, defines if log transformation should be used
+#' log - a boolean, optional, defines if log transformation should be used
 #' title - optional, the plot title
 #' @param cor A boolean, if TRUE (default), will plot the series ACF and PACF
 #' @details The arima_diag function provides a set of diagnostic plots for identify the ARIMA model parameters.
