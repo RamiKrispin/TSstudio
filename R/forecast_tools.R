@@ -422,8 +422,13 @@ arima_diag <- function(ts.obj, method = list(first = list(diff = 1, log = TRUE, 
   
   obj.name <- base::deparse(base::substitute(ts.obj))
   
-  p1 <- TSstudio::ts_plot(ts.obj, Ytitle = obj.name) %>% plotly::hide_legend()
-  
+  p1 <- plotly::plot_ly(x = stats::time(ts.obj) + stats::deltat(ts.obj),
+                        y = base::as.numeric(ts.obj),
+                        type = "scatter",
+                        mode = "line",
+                        name = obj.name,
+                        line = list(color = "#00526d")) %>%
+    plotly::layout(yaxis = list(title = obj.name))
   if(cor){
     lag.max <- ifelse(stats::frequency(ts.obj) * 3 > base::length(ts.obj), base::length(ts.obj), stats::frequency(ts.obj) * 3)
     p2 <- TSstudio::ts_cor(ts.obj = ts.obj, type = "both", lag.max = lag.max)
