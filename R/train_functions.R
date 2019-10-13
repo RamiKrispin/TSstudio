@@ -1357,6 +1357,20 @@ plot_grid <- function(grid.obj,
 #' (e.g., must have the same length as the input and forecast horizon, respectively)
 #' @param error A character, defines the error metrics to be used to sort the models leaderboard. Possible metric - "MAPE" or "RMSE"
 #' @param level An integer, set the  confidence level of the prediction intervals
+#' 
+#' @details 
+#' 
+#' The train_model function provides a training framework for time series forecasting models. The function has two main functionalities:
+#' 
+#' - Conduct a horse racing between multiple forecasting models or approaches
+#' - Train the models with backtesting approach
+#' 
+#' The advantage of using backtesting as a training approach that indicates how stable the model is. 
+#' 
+#' The create_model function builds the different components of the train_model function in a functional way. 
+#' The \code{\link[TSstudio]{plot_error} function plot the error distribution on the train_model output. 
+#' The \code{\link[TSstudio]{plot_model} function animate the forecasted values of the different models on the backtesting testing partitions
+#' 
 #' @examples 
 #' 
 #' # Defining the models and their arguments
@@ -1373,9 +1387,6 @@ plot_grid <- function(grid.obj,
 #'                               method_arg = list(order = c(2,1,2),
 #'                                                 seasonal = list(order = c(1,1,1))),
 #'                               notes = "SARIMA(2,1,2)(1,1,1)"),
-#'                 auto_arima = list(method = "auto.arima",
-#'                                   method_arg = NULL,
-#'                                   notes = "auto.arima model"),
 #'                 hw = list(method = "HoltWinters",
 #'                           method_arg = NULL,
 #'                           notes = "HoltWinters Model"),
