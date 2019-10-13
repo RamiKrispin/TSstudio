@@ -3,4 +3,5 @@ pkgdown: 1.3.0
 pkgdown_sha: ~
 articles:
   Plotting_Time_Series: Plotting_Time_Series.html
+  seasonality_analysis: seasonality_analysis.html
 

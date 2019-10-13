@@ -29,7 +29,7 @@ The plotting of time series object is most likely one of the steps of the analys
 
 ^1^ Must have a `Date` or `POSIXct/lt` column and at least on numeric column
 
-For example let's plot the `USgas` series, a `ts` object:
+For example let's load and plot the `USgas` series, a `ts` object:
 
 ```{r setup}
 library(TSstudio)
