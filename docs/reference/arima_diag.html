@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plotting Time Series Objects — ts_plot • TSstudio</title>
+<title>Diagnostic Plots for ARIMA Models — arima_diag • TSstudio</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Plotting Time Series Objects — ts_plot" />
+<meta property="og:title" content="Diagnostic Plots for ARIMA Models — arima_diag" />
 
-<meta property="og:description" content="Visualization functions for time series object" />
+<meta property="og:description" content="Diagnostic Plots for ARIMA Models" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -114,90 +114,79 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plotting Time Series Objects</h1>
-    <small class="dont-index">Source: <a href='https://github.com/RamiKrispin/TSstudio/blob/master/R/ts_plot.R'><code>R/ts_plot.R</code></a></small>
-    <div class="hidden name"><code>ts_plot.Rd</code></div>
+    <h1>Diagnostic Plots for ARIMA Models</h1>
+    <small class="dont-index">Source: <a href='https://github.com/RamiKrispin/TSstudio/blob/master/R/forecast_tools.R'><code>R/forecast_tools.R</code></a></small>
+    <div class="hidden name"><code>arima_diag.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Visualization functions for time series object</p>
+    <p>Diagnostic Plots for ARIMA Models</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>ts_plot</span>(<span class='no'>ts.obj</span>, <span class='kw'>line.mode</span> <span class='kw'>=</span> <span class='st'>"lines"</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>dash</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>color</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>slider</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"single"</span>, <span class='kw'>Xtitle</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>Ytitle</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>Xgrid</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>Ygrid</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>arima_diag</span>(<span class='no'>ts.obj</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>first</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>diff</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>log</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>title</span>
+  <span class='kw'>=</span> <span class='st'>"First Difference with Log Transformation"</span>)), <span class='kw'>cor</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>ts.obj</th>
-      <td><p>A univariate or multivariate time series object of class "ts", "mts", "zoo", "xts", or any data frame object with 
-a minimum of one numeric column and either a Date or POSIXt class column</p></td>
+      <td><p>A ts object</p></td>
     </tr>
     <tr>
-      <th>line.mode</th>
-      <td><p>A plotly argument, define the plot type, c("lines", "lines+markers", "markers")</p></td>
+      <th>method</th>
+      <td><p>A list, defines the transformation parameters of each plot. 
+Each plot should be defined by a list, where the name of the list defines the plot ID. 
+The plot parameters are:</p>
+<p>diff - an integer, defines the degree of diffrence
+log - a boolean, optional, defines if log transformation should be used
+title - optional, the plot title</p></td>
     </tr>
     <tr>
-      <th>width</th>
-      <td><p>An Integer, define the plot width, default is set to 2</p></td>
-    </tr>
-    <tr>
-      <th>dash</th>
-      <td><p>A plotly argument, define the line style, c(NULL, "dot", "dash")</p></td>
-    </tr>
-    <tr>
-      <th>color</th>
-      <td><p>The color of the plot, support both name and expression</p></td>
-    </tr>
-    <tr>
-      <th>slider</th>
-      <td><p>Logic, add slider to modify the time axis (default set to FALSE)</p></td>
-    </tr>
-    <tr>
-      <th>type</th>
-      <td><p>A character, optional, if having multiple tims series object,
-will plot all series in one plot when set to "single" (default), 
-or plot each series on a separate plot when set to "multiple"</p></td>
-    </tr>
-    <tr>
-      <th>Xtitle</th>
-      <td><p>A character, set the X axis title, default set to NULL</p></td>
-    </tr>
-    <tr>
-      <th>Ytitle</th>
-      <td><p>A character, set the Y axis title, default set to NULL</p></td>
-    </tr>
-    <tr>
-      <th>title</th>
-      <td><p>A character, set the plot title, default set to NULL</p></td>
-    </tr>
-    <tr>
-      <th>Xgrid</th>
-      <td><p>Logic,show the X axis grid if set to TRUE</p></td>
-    </tr>
-    <tr>
-      <th>Ygrid</th>
-      <td><p>Logic,show the Y axis grid if set to TRUE</p></td>
+      <th>cor</th>
+      <td><p>A boolean, if TRUE (default), will plot the series ACF and PACF</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A plot</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The arima_diag function provides a set of diagnostic plots for identify the ARIMA model parameters.
+The ACF and PACF can assist in identifying the AR and MA process, 
+and the diffrence plotting hel in idenitfying the degree of differencing that required to make the series stationary</p>
+    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='no'>USVSales</span>)
-<span class='fu'>ts_plot</span>(<span class='no'>USVSales</span>)
+    <pre class="examples"><div class='input'>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='no'>USgas</span>)
 
-<span class='co'># adding slider</span>
-<span class='fu'>ts_plot</span>(<span class='no'>USVSales</span>, <span class='kw'>slider</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div></pre>
+<span class='fu'>arima_diag</span>(<span class='kw'>ts.obj</span> <span class='kw'>=</span> <span class='no'>USgas</span>)
+
+<span class='co'># Can define more than one differencing plot using the 'method' argument</span>
+
+<span class='fu'>arima_diag</span>(<span class='kw'>ts.obj</span> <span class='kw'>=</span> <span class='no'>USgas</span>,
+           <span class='kw'>cor</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+           <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>first</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>diff</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+                                      <span class='kw'>log</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+                                      <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"First Diff with Log Transformation"</span>),
+                         <span class='kw'>Second</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>diff</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>1</span>),
+                                       <span class='kw'>log</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+                                       <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"Second Diff with Log Transformation"</span>)))</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-            
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
+      
       <li><a href="#examples">Examples</a></li>
     </ul>
 

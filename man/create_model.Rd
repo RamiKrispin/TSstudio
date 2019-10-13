@@ -114,7 +114,7 @@ methods2 <- list(arima2 = list(method = "arima",
 md <- add_methods(model.obj = md, methods = methods2)
 
 # Remove methods
-md <- remove_methods(model.obj = md, method_ids = c("ets2", "auto_arima"))  
+md <- remove_methods(model.obj = md, method_ids = c("ets2"))  
   
 # Add train method
 md <- add_train_method(model.obj = md, train_method = list(partitions = 6, 

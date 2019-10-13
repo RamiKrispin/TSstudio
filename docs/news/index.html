@@ -118,17 +118,21 @@
     <div id="version-0-1-5-is-now-available-on-cran" class="section level2">
 <h2 class="hasAnchor">
 <a href="#version-0-1-5-is-now-available-on-cran" class="anchor"></a>Version 0.1.5 is now available on CRAN</h2>
-<p>Updating the package license to MIT (from GPL-3)</p>
+<p>Package license</p>
+<ul>
+<li>Changing the package license from GPL-3 to MIT</li>
+</ul>
 <p>New functions</p>
 <p>*train_model - a flexible framework for training, testing, evaluating, and forecasting models. This function provides the ability to run multiple models with backtesting or single training/testing partitions</p>
 <ul>
 <li>plot_model - animation the performance of the train_model output on the backtesting partitions</li>
 <li>plot_error - plotting the error distribution of the train_model output</li>
 <li>ts_cor - for acf and pacf plots with seasonal lags</li>
+<li>arima_diag - a diagnostic plot for identify the AR, MA and differencing components of the ARIMA model</li>
 </ul>
 <p>Deprecated functions</p>
-<p>*ts_backtesting - will be replaced by the train_model function</p>
 <ul>
+<li>ts_backtesting - will be replaced by the train_model function</li>
 <li>ts_acf / ts_pacf functions - will be replaced by the ts_cor function</li>
 </ul>
 <p>Fix errors</p>
