@@ -1357,6 +1357,10 @@ plot_grid <- function(grid.obj,
 #' (e.g., must have the same length as the input and forecast horizon, respectively)
 #' @param error A character, defines the error metrics to be used to sort the models leaderboard. Possible metric - "MAPE" or "RMSE"
 #' @param level An integer, set the  confidence level of the prediction intervals
+#' 
+#' @details 
+#' 
+#' 
 #' @examples 
 #' 
 #' # Defining the models and their arguments
@@ -1373,9 +1377,6 @@ plot_grid <- function(grid.obj,
 #'                               method_arg = list(order = c(2,1,2),
 #'                                                 seasonal = list(order = c(1,1,1))),
 #'                               notes = "SARIMA(2,1,2)(1,1,1)"),
-#'                 auto_arima = list(method = "auto.arima",
-#'                                   method_arg = NULL,
-#'                                   notes = "auto.arima model"),
 #'                 hw = list(method = "HoltWinters",
 #'                           method_arg = NULL,
 #'                           notes = "HoltWinters Model"),
