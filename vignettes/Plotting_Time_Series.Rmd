@@ -2,17 +2,17 @@
 title: "Plotting Time Series Data"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Plotting Time Series Data}
+%\VignetteIndexEntry{Plotting Time Series Data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
----
-
-```{r, include = FALSE}
+  ---
+  
+  ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  fig.width=8, 
-  fig.height=5,
-  collapse = TRUE,
-  comment = "#>"
+fig.width=8, 
+fig.height=5,
+collapse = TRUE,
+comment = "#>"
 )
 ```
 
@@ -72,5 +72,96 @@ ts_plot(USgas,
 
 
 ### Customize the line 
+
+The `color`, `width`  arguments allow you to customize the line's color and width of the plot:
+
+```{r}
+ts_plot(USgas,
+        title = "US Monthly Natural Gas Consumption",
+        Xtitle = "Time",
+        Ytitle = "Billion Cubic Feet",
+        color = "black",
+        width = 3)
+```
+
+The `dash` argument enables to create a dashed or dotted line (as opposed to the default setting of a solid line):
+
+```{r}
+ts_plot(USgas,
+        title = "US Monthly Natural Gas Consumption",
+        Xtitle = "Time",
+        Ytitle = "Billion Cubic Feet",
+        dash = "dash")
+```
+
+The `line.mode` enables to add to the solid line markers (by setting it to `lines+markers`) or just replace the solid one with markers (by setting it to `markers`):
+
+
+```{r}
+ts_plot(USgas,
+        title = "US Monthly Natural Gas Consumption",
+        Xtitle = "Time",
+        Ytitle = "Billion Cubic Feet",
+        line.mode =  "lines+markers")
+```
+
+
+
+## Advance Customization of the plot
+
+The `ts_plot` is a wraper of the **plotly** package plotting functions for time series objects, therefore, the output of the `ts_plot` is a `plotly` object:
+
+```{r}
+class(ts_plot(USgas))
+```
+
+
+Advance customization of the `ts_plot` output can be done with plotly's `layout` function. For example, let's replot the `USgas` series and customize the background to black:
+
+```{r message=FALSE, warning=FALSE}
+library(plotly)
+
+ts_plot(USgas,
+        title = "US Monthly Natural Gas Consumption",
+        Xtitle = "Time",
+        Ytitle = "Billion Cubic Feet",
+        color =  "pink",
+        Xgrid = TRUE,
+        Ygrid = TRUE) %>%
+  layout(paper_bgcolor = "black",
+         plot_bgcolor = "black",
+         font = list(color = "white"),
+         yaxis = list(linecolor = "#6b6b6b",
+                      zerolinecolor = "#6b6b6b",
+                      gridcolor= "#444444"),
+         xaxis = list(linecolor = "#6b6b6b",
+                      zerolinecolor = "#6b6b6b",
+                      gridcolor= "#444444"))
+```
+
+Note that the `Xgrid` and `Ygrid` arguments, when set to `TRUE`, add the corresponding X and Y grid lines.
+
+
+### Plotting multiple time series object
+
+The plotting of a multiple time series object is straightforward.  Let's load the `Coffee_Prices` an `mts` object that represents the monthly prices of the Robusta and Arabica coffee prices (USD per Kg.):
+
+```{r}
+data("Coffee_Prices")
+
+ts_info(Coffee_Prices)
+```
+
+
+```{r}
+ts_plot(Coffee_Prices)
+```
+
+By default, the function will plot all the series in one plot. Plotting the different series on a separate plot can be done by setting the `type` argument to `multiple`:
+
+```{r}
+ts_plot(Coffee_Prices,
+        type = "multiple")
+```
 
 
