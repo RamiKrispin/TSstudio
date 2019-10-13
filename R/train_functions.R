@@ -2657,7 +2657,7 @@ plot_model <- function(model.obj, model_ids = NULL){
 }
 
 
-#' Plot the Models Error Metric on the Testing Partitions
+#' Plot the Models Error Rates on the Testing Partitions
 #' @export
 #' @details The plot_model provides a visualization of the models performance on the testing paritions for the train_model function output 
 #' @param  model.obj A train_model object

@@ -239,7 +239,8 @@ one vector corresponding to the input series and second to the forecast itself
 <span class='no'>md</span> <span class='kw'>&lt;-</span> <span class='fu'>add_methods</span>(<span class='kw'>model.obj</span> <span class='kw'>=</span> <span class='no'>md</span>, <span class='kw'>methods</span> <span class='kw'>=</span> <span class='no'>methods2</span>)
 
 <span class='co'># Remove methods</span>
-<span class='no'>md</span> <span class='kw'>&lt;-</span> <span class='fu'>remove_methods</span>(<span class='kw'>model.obj</span> <span class='kw'>=</span> <span class='no'>md</span>, <span class='kw'>method_ids</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"ets2"</span>, <span class='st'>"auto_arima"</span>))</div><div class='output co'>#&gt; <span class='warning'>Warning: The auto_arima does not exist on the model object</span></div><div class='input'>
+<span class='no'>md</span> <span class='kw'>&lt;-</span> <span class='fu'>remove_methods</span>(<span class='kw'>model.obj</span> <span class='kw'>=</span> <span class='no'>md</span>, <span class='kw'>method_ids</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"ets2"</span>))
+
 <span class='co'># Add train method</span>
 <span class='no'>md</span> <span class='kw'>&lt;-</span> <span class='fu'>add_train_method</span>(<span class='kw'>model.obj</span> <span class='kw'>=</span> <span class='no'>md</span>, <span class='kw'>train_method</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>partitions</span> <span class='kw'>=</span> <span class='fl'>6</span>,
                                                        <span class='kw'>sample.out</span> <span class='kw'>=</span> <span class='fl'>12</span>,

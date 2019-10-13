@@ -2,7 +2,7 @@
 % Please edit documentation in R/train_functions.R
 \name{plot_error}
 \alias{plot_error}
-\title{Plot the Models Error Metric on the Testing Partitions}
+\title{Plot the Models Error Rates on the Testing Partitions}
 \usage{
 plot_error(model.obj, error = "MAPE", palette = "Set1")
 }
@@ -17,7 +17,7 @@ plot_error(model.obj, error = "MAPE", palette = "Set1")
 A plot with a summery of the models error rate by testing partition
 }
 \description{
-Plot the Models Error Metric on the Testing Partitions
+Plot the Models Error Rates on the Testing Partitions
 }
 \details{
 The plot_model provides a visualization of the models performance on the testing paritions for the train_model function output
