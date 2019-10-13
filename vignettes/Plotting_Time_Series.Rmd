@@ -2,12 +2,12 @@
 title: "Plotting Time Series Data"
 output: rmarkdown::html_vignette
 vignette: >
-%\VignetteIndexEntry{Plotting Time Series Data}
+  %\VignetteIndexEntry{Plotting Time Series Data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-  ---
+---
   
-  ```{r, include = FALSE}
+```{r, include = FALSE}
 knitr::opts_chunk$set(
 fig.width=8, 
 fig.height=5,
@@ -107,7 +107,7 @@ ts_plot(USgas,
 
 
 
-## Advance Customization of the plot
+## Advance customization
 
 The `ts_plot` is a wraper of the **plotly** package plotting functions for time series objects, therefore, the output of the `ts_plot` is a `plotly` object:
 
@@ -139,7 +139,7 @@ ts_plot(USgas,
                       gridcolor= "#444444"))
 ```
 
-Note that the `Xgrid` and `Ygrid` arguments, when set to `TRUE`, add the corresponding X and Y grid lines.
+**Note** that the `Xgrid` and `Ygrid` arguments, when set to `TRUE`, add the corresponding X and Y grid lines.
 
 
 ### Plotting multiple time series object
@@ -162,6 +162,47 @@ By default, the function will plot all the series in one plot. Plotting the diff
 ```{r}
 ts_plot(Coffee_Prices,
         type = "multiple")
+```
+
+**Note** that the `color`, `Ytitle`, and `Xtitle` arguments are not applicable when plotting multiple time series object.
+
+## Working with other time series class
+
+Working with other types of time series classes following the execute same process as the one demonstrated with the ts object above. 
+
+The main advantage of plotting time series objects such as `xts`, `zoo`, `data.frame` and now `tsibble`, is that their index is more readable (e.g., support Date and other time classes).
+
+### Plotting zoo and xts objects
+
+Let's load the University of Michigan consumer sentiment index:
+
+```{r}
+data("Michigan_CS")
+
+ts_info(Michigan_CS)
+```
+
+
+```{r}
+ts_plot(Michigan_CS)
+```
+
+### Plotting data.frame object
+
+Plotting `data.frame` or `tbl` objects must follow the following structure:
+
+* Have a `Date` or `POSIXct/lt` column
+* At least one numeric column
+
+For example, let's convert the USgas series to `data.frame` with the `ts_to_prophet` function:
+
+```{r}
+USgas_df <- ts_to_prophet(USgas)
+
+str(USgas_df)
+
+
+ts_plot(USgas_df)
 ```
 
 
