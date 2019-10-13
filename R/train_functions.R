@@ -1365,7 +1365,11 @@ plot_grid <- function(grid.obj,
 #' - Conduct a horse racing between multiple forecasting models or approaches
 #' - Train the models with backtesting approach
 #' 
-#' The advantage of using backtesting as a training approach that indicates how stable the model is
+#' The advantage of using backtesting as a training approach that indicates how stable the model is. 
+#' 
+#' The create_model function builds the different components of the train_model function in a functional way. 
+#' The \code{\link[TSstudio]{plot_error} function plot the error distribution on the train_model output. 
+#' The \code{\link[TSstudio]{plot_model} function animate the forecasted values of the different models on the backtesting testing partitions
 #' 
 #' @examples 
 #' 

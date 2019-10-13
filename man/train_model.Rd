@@ -56,14 +56,6 @@ one vector corresponding to the input series and second to the forecast itself
 Method for train test and compare multiple time series models using either one partition (i.e., sample out) 
 or multipe partitions (backtesting)
 }
-\details{
-The train_model function provides a training framework for time series forecasting models. The function has two main functionalities:
-
-- Conduct a horse racing between multiple forecasting models or approaches
-- Train the models with backtesting approach
-
-The advantage of using backtesting as a training approach that indicates how stable the model is
-}
 \examples{
 
 # Defining the models and their arguments
