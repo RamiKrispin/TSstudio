@@ -39,7 +39,7 @@ plot_forecast - fixing a gap between the forecast values and the time (x-axis) v
 
 ## Version 0.1.2 is now available on CRAN
 New functions:
-* ts_backtesting -  a horce race of multiple forecasting models with backtestin
+* ts_backtesting -  a horce race of multiple forecasting models with backtesting
 * ts_quantile - time series quantile plot for time series data
 * ts_seasonal - supports multiple inputs and new color palattes 
 
