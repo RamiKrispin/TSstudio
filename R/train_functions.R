@@ -1360,6 +1360,12 @@ plot_grid <- function(grid.obj,
 #' 
 #' @details 
 #' 
+#' The train_model function provides a training framework for time series forecasting models. The function has two main functionalities:
+#' 
+#' - Conduct a horse racing between multiple forecasting models or approaches
+#' - Train the models with backtesting approach
+#' 
+#' The advantage of using backtesting as a training approach that indicates how stable the model is
 #' 
 #' @examples 
 #' 
