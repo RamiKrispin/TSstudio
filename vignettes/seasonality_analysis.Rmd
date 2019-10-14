@@ -59,3 +59,32 @@ In the plot above, you can notice that while the series is trending up, the hier
 ts_seasonal(USgas, type = "box")
 ```
 
+As each view may reveal different patterns, it would make more sense to plot all the three together. This can be done by setting `type = all`:
+
+```{r}
+ts_seasonal(USgas, type = "all")
+```
+
+Note that some of the variations seen in those seasonal plots, especially in the `box` view,  related to the series trend. In some cases, it would make more sense to remove the trend from the series and replot it. The next example demonstrated the plot of the series without the trend. A simple detrending of the series is done with the decompose function:
+
+```{r}
+USgas_detrend <- USgas - decompose(USgas)$trend
+ts_seasonal(USgas_detrend, type = "all")
+```
+
+
+## Time series heatmap
+
+Another way to look at seasonality is with the use of heatmap. The ts_heatmap function returns heatmap of the series object:
+
+```{r}
+ts_heatmap(USgas)
+```
+
+The `color` argument defines the heatmap color scale supporting the RColorBrewer colors palettes. For example, we can modify the heatmap above to green scale by using the `Greens` colors palette:
+
+```{r}
+ts_heatmap(USgas, color = "Greens")
+```
+
+
