@@ -81,10 +81,10 @@ Another way to look at seasonality is with the use of heatmap. The ts_heatmap fu
 ts_heatmap(USgas)
 ```
 
-The `color` argument defines the heatmap color scale supporting the RColorBrewer colors palettes. For example, we can modify the heatmap above to green scale by using the `Greens` colors palette:
+The `color` argument defines the heatmap color scale supporting the RColorBrewer colors palettes. For example, we can modify the heatmap above to red scale by using the `Reds` colors palette:
 
 ```{r}
-ts_heatmap(USgas, color = "Greens")
+ts_heatmap(USgas, color = "Reds")
 ```
 
 
