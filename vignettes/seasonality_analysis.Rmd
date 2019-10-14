@@ -104,7 +104,7 @@ ts_polar(USgas)
 
 ## Analysing multiple seasonality
 
-
+High-frequency time-series data (e.g., daily, hourly, minutely, etc.) may have more than one seasonal patterns. For example, hourly data may have several seasonal layers such as the hour of the day, day of the week and month of the year. A good example for such type of series is the demand for electricity in the UK that available on the **UKgrid** package:
 
 ```{r}
 library(UKgrid)
@@ -114,25 +114,34 @@ UKgrid_df <- extract_grid(type = "data.frame",
                           start = 2017,
                           aggregate = "hourly")
 
-ts_plot(UKgrid_df,
-        title = "Hourly Demand for Electricity in the UK",
-        Ytitle = "MW")
+str(UKgrid_df)
 ```
 
+As can be seen in the plot below, the series has strong seasonality across the year (high consumption during the wintertime and low throughout the summer). If zooming in (use the slider), you can reveal more seasonal patterns during the week and day time:
 
+```{r}
+ts_plot(UKgrid_df,
+        title = "Hourly Demand for Electricity in the UK",
+        Ytitle = "MW", 
+        slider = TRUE)
+```
 
+The `ts_quantile` function provides a quantile plot for time series object (supporting `zoo`, `xts`, `data.frame`, `data.table` and `tbl` objects). For example, let's plot the quantile plot of the demand for electricity:
 
 ```{r}
 ts_quantile(UKgrid_df)
 ```
 
-
+By default, the function will calculate and plot the quantile of the series over the base frequency of the series, which in this case, is 24 hours. The `period` argument enables to plot the quantile of the series base frequency condition on different periodicities such as weekdays or month.  For example, setting the `period` argument to `weekdays`, enable to view the variation of the series during the 24-hour cycle condition on the day of the week:
 
 ```{r}
 ts_quantile(UKgrid_df, period = "weekdays", n = 2)
 ```
 
+Similarly, when setting the `period` argument to `monthly`, the function returns the 24-hour cycle condition on the month of the year:
+
 ```{r}
 ts_quantile(UKgrid_df, period = "monthly", n = 2)
 ```
 
+On a side note, you should be aware that some of the variations of the quantile plot may result from the growth of the series over time (or the series trend). Therefore, to reduce the trend effect from the plot either detrend the series or select a short period (such as one or two full cycles)
