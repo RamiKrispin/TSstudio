@@ -21,7 +21,7 @@ comment = "#>"
 
 Seasonality analysis is one of the core elements of the descriptive analysis process of time series data. This process is typically done with the use of data visualization tools and summary statistics methods. The **TSstudio** package provides a set of functions for seasonality plots.
 
-## The ts_decompose function
+## Decomposition of time series
 
 The ts_decompose function is an interactive wrapper for the `decompose` function from the **stats** package. It provides a decomposition of the series into seasonal, trend, and irregular components. The decomposition of the series is done by using a moving average.  The following example demonstrated the decomposition of the US monthly consumption of natural gas (`USgas`):
 
@@ -36,10 +36,7 @@ ts_decompose(USgas)
 ```
 
 
-
-
-
-## The ts_seasonal plot
+## Seasonality plot
 
 The `ts_seasonal` function provides three different seasonal views of the series for low-frequency time series objects (i.e., monthly, quarterly, half-year). The type of seasonal view defined by the `type` argument. The default view, `type = normal`, split and plot the series by its full cycle units (which is typically years). This allows comparing the changes of the series from year to year by the series frequency units (e.g. the month of the year), and therefore, to identify seasonal patterns:
 
@@ -87,4 +84,55 @@ The `color` argument defines the heatmap color scale supporting the RColorBrewer
 ts_heatmap(USgas, color = "Reds")
 ```
 
+## Surface plot
+
+The `ts_surface` function provides a 3D plot for low-frequency time-series data (e.g., monthly), by plotting the cycles (years), frequency units (months) and the corresponding values of the series:
+
+```{r}
+ts_surface(USgas)
+```
+
+
+## Polar plot
+
+The `ts_polar` function returns a polar plot representation for monthly and quarterly time series data:
+
+```{r}
+ts_polar(USgas)
+```
+
+
+## Analysing multiple seasonality
+
+
+
+```{r}
+library(UKgrid)
+
+UKgrid_df <- extract_grid(type = "data.frame", 
+                          columns = "ND",
+                          start = 2017,
+                          aggregate = "hourly")
+
+ts_plot(UKgrid_df,
+        title = "Hourly Demand for Electricity in the UK",
+        Ytitle = "MW")
+```
+
+
+
+
+```{r}
+ts_quantile(UKgrid_df)
+```
+
+
+
+```{r}
+ts_quantile(UKgrid_df, period = "weekdays", n = 2)
+```
+
+```{r}
+ts_quantile(UKgrid_df, period = "monthly", n = 2)
+```
 
