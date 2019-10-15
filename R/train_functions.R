@@ -2064,7 +2064,7 @@ train_model <- function(input,
 #' @param error A character, defines the error metrics to be used to sort the models leaderboard. Possible metric - "MAPE" or "RMSE"
 #' @param level An integer, set the  confidence level of the prediction intervals
 #' @examples 
-#' 
+#'  \dontrun{
 #' ### Building train_model function by adding its different components
 #' # Create a skeleton model
 #' md <- create_model()
@@ -2135,6 +2135,7 @@ train_model <- function(input,
 #'        
 #' # Run the model
 #' fc <- md %>% build_model()  
+#' }
 
 
 

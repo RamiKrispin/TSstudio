@@ -74,7 +74,7 @@ one vector corresponding to the input series and second to the forecast itself
 Add, edit, or remove the components of the  \code{\link[TSstudio]{train_model}} function
 }
 \examples{
-
+ \dontrun{
 ### Building train_model function by adding its different components
 # Create a skeleton model
 md <- create_model()
@@ -144,4 +144,5 @@ md <- create_model() \%>\%
        
 # Run the model
 fc <- md \%>\% build_model()  
+}
 }
