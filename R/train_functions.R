@@ -1396,7 +1396,7 @@ plot_grid <- function(grid.obj,
 #' # Training the models with backtesting
 #' md <- train_model(input = USgas,
 #'                   methods = methods,
-#'                   train_method = list(partitions = 6, 
+#'                   train_method = list(partitions = 4, 
 #'                                       sample.out = 12, 
 #'                                       space = 3),
 #'                   horizon = 12,
