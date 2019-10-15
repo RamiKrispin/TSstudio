@@ -136,7 +136,7 @@ md <- create_model() \%>\%
       add_input(input = USgas) \%>\%
       add_methods(methods = methods) \%>\%
       add_methods(methods = methods2) \%>\%
-      add_train_method(train_method = list(partitions = 6, 
+      add_train_method(train_method = list(partitions = 4, 
                                            sample.out = 12, 
                                            space = 3)) \%>\%
        add_horizon(horizon = 12) \%>\%
