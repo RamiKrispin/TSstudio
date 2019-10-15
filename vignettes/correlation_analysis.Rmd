@@ -18,6 +18,13 @@ comment = "#>"
 )
 ```
 
+Correlation analysis (along with seasonal analysis) has a pivotal part in the descriptive analysis of time series data. Typically, time-series data will have some degree of correlation with its past lags. A common example is the hourly temperatures, as the current temperature is most likely to be fairly close to the one during the previous hour. Moreover, correlation is also could reveal seasonal patterns as it is most likely that the series will have a high correlation with its seasonal lags. The TSstudio provides several tools for correlation analysis, such as ts_cor, ts_lags, and ccf_plot.
+
+The ACF and PACF functions
+
+Traditionally, the `acf` (autocorrelation) and `pacf` (partial autocorrelations) functions from the **stats** package are used to calculate and plot the correlation relationship between the series and its lags. 
+
+
 ```{r setup}
 library(TSstudio)
 ```
