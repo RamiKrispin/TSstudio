@@ -1,0 +1,23 @@
+---
+title: "Correlation Analysis"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Correlation Analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+fig.width=8, 
+fig.height=5,
+warning = FALSE, 
+message = FALSE,
+collapse = TRUE,
+comment = "#>"
+)
+```
+
+```{r setup}
+library(TSstudio)
+```
