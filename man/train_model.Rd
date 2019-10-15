@@ -57,7 +57,7 @@ Method for train test and compare multiple time series models using either one p
 or multipe partitions (backtesting)
 }
 \examples{
-
+ \dontrun{
 # Defining the models and their arguments
 methods <- list(ets1 = list(method = "ets",
                             method_arg = list(opt.crit = "lik"),
@@ -88,5 +88,5 @@ md <- train_model(input = USgas,
                   error = "MAPE")
 # View the model performance on the backtesting partitions
 md$leaderboard
-
+}
 }

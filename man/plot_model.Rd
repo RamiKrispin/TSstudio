@@ -21,6 +21,7 @@ Plot the Models Performance on the Testing Partitions
 The plot_model provides a visualization of the models performance on the testing paritions for the train_model function output
 }
 \examples{
+ \dontrun{
 # Defining the models and their arguments
 methods <- list(ets1 = list(method = "ets",
                             method_arg = list(opt.crit = "lik"),
@@ -54,5 +55,5 @@ plot_model(model.obj = md)
 
 # Plot only the ETS models
 plot_model(model.obj = md , model_ids = c("ets1", "ets2"))
-
+}
 }

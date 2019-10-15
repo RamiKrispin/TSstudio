@@ -1372,7 +1372,7 @@ plot_grid <- function(grid.obj,
 #' The \code{\link[TSstudio]{plot_model} function animate the forecasted values of the different models on the backtesting testing partitions
 #' 
 #' @examples 
-#' 
+#'  \dontrun{
 #' # Defining the models and their arguments
 #' methods <- list(ets1 = list(method = "ets",
 #'                             method_arg = list(opt.crit = "lik"),
@@ -1403,7 +1403,7 @@ plot_grid <- function(grid.obj,
 #'                   error = "MAPE")
 #' # View the model performance on the backtesting partitions
 #' md$leaderboard
-#' 
+#' }
 
 
 train_model <- function(input,
@@ -2512,6 +2512,7 @@ add_level <- function(model.obj, level){
 #' @param model_ids A character, defines the trained models to plot, if set to NULL (default), will plot all the models
 #' @return Animation of models forecast on the testing partitions compared to the actuals
 #' @examples 
+#'  \dontrun{
 #' # Defining the models and their arguments
 #' methods <- list(ets1 = list(method = "ets",
 #'                             method_arg = list(opt.crit = "lik"),
@@ -2545,7 +2546,7 @@ add_level <- function(model.obj, level){
 #' 
 #' # Plot only the ETS models
 #' plot_model(model.obj = md , model_ids = c("ets1", "ets2"))
-#' 
+#' }
 
 plot_model <- function(model.obj, model_ids = NULL){
   `%>%` <- magrittr::`%>%`
@@ -2666,6 +2667,7 @@ plot_model <- function(model.obj, model_ids = NULL){
 #' @param palette A character, defines the color type to used on the plot, use row.names(RColorBrewer::brewer.pal.info) to view possible color palletes
 #' @return A plot with a summery of the models error rate by testing partition
 #' @examples 
+#'  \dontrun{
 #' # Defining the models and their arguments
 #' methods <- list(ets1 = list(method = "ets",
 #'                             method_arg = list(opt.crit = "lik"),
@@ -2697,7 +2699,7 @@ plot_model <- function(model.obj, model_ids = NULL){
 #'                   
 #' # Plot the models performance on the testing partitions
 #' plot_error(model.obj = md)
-#' 
+#' }
 
 plot_error <- function(model.obj, error = "MAPE", palette = "Set1"){
   `%>%` <- magrittr::`%>%`
