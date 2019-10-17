@@ -46,7 +46,7 @@ ts_plot(UKgrid_daily)
 
 It is easy to observe, just by looking at the plot above, that the series has a strong seasonal component across the day of the year. If you zoom in, you can also observe that the series has a strong seasonal component across the day of the week (e.g., high consumption during the normal working days of the weeks and relatively low consumption throughout the weekend days). Quantify those relationships can be done by measuring the level of correlation between the series and its different seasonal lags. One of the downsides of the acf and pacf functions that it is hard to isolate a specific seasonal lag and compare that relationship over time. For example, the below plots represent the ACF and PACF relationship of the demand for electricity with its past 730 lags (or two seasonal cycles):
 
-```{r, fig.height=8}
+```{r fig.height=8}
 par(mfrow=c(2,1))
 
 acf(UKgrid_daily, lag.max = 365 * 2)
@@ -56,7 +56,12 @@ pacf(UKgrid_daily, lag.max = 365 * 2)
 
 You can observe from the ACF plot above that the series is highly correlated with both its default seasonal lags (i.e., frequency 365) and also with the close lags. Yet, it is hard to compare between the two due to the high density of the plot. The ts_cor solve this issue by providing a more friendly plot of the ACF and PACF functions:
 
-```{r, fig.height=8}
+```{r, fig.height=8, fig.width=10}
 ts_cor(UKgrid_daily, seasonal = TRUE, lag.max = 365 * 2)
 ```
 
+The `seasonal` argument, when set to TRUE, allows you to distinguish the seasonal lags from the non-seasonal lags. In addition, you can remove the non-seasonal lags by clicking on the non-seasonal legend. This is very useful to tune the seasonal components of SARIMA model. The `seasonal_lags` argument allows you to mark and distinguish other seasonal lags, besides the default one. For instance, add to the plot the weekly lags by setting the `seasonal_lags` to 7:
+
+```{r, fig.height=8, fig.width=10}
+ts_cor(UKgrid_daily, seasonal = TRUE, lag.max = 365 * 2, seasonal_lags = 7)
+```
