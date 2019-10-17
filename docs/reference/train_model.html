@@ -191,7 +191,7 @@ one vector corresponding to the input series and second to the forecast itself
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
+    <pre class="examples"><div class='input'> </div><span class='co'># NOT RUN {</span>
 <span class='co'># Defining the models and their arguments</span>
 <span class='no'>methods</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>ets1</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"ets"</span>,
                             <span class='kw'>method_arg</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>opt.crit</span> <span class='kw'>=</span> <span class='st'>"lik"</span>),
@@ -219,25 +219,10 @@ one vector corresponding to the input series and second to the forecast itself
                                       <span class='kw'>sample.out</span> <span class='kw'>=</span> <span class='fl'>12</span>,
                                       <span class='kw'>space</span> <span class='kw'>=</span> <span class='fl'>3</span>),
                   <span class='kw'>horizon</span> <span class='kw'>=</span> <span class='fl'>12</span>,
-                  <span class='kw'>error</span> <span class='kw'>=</span> <span class='st'>"MAPE"</span>)</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 6 x 7</span><span>
-#&gt;   model_id model  notes      avg_mape avg_rmse `avg_coverage_8… `avg_coverage_9…
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span> hw       HoltW… HoltWinte…   0.044</span><span style='text-decoration: underline;'>8</span><span>     130.            0.833            0.979
-#&gt; </span><span style='color: #555555;'>2</span><span> ets1     ets    ETS model…   0.048</span><span style='text-decoration: underline;'>4</span><span>     143.            0.833            0.958
-#&gt; </span><span style='color: #555555;'>3</span><span> arima2   arima  SARIMA(2,…   0.056</span><span style='text-decoration: underline;'>0</span><span>     163.            0.562            0.854
-#&gt; </span><span style='color: #555555;'>4</span><span> ets2     ets    ETS model…   0.063</span><span style='text-decoration: underline;'>6</span><span>     180.            0.479            0.854
-#&gt; </span><span style='color: #555555;'>5</span><span> tslm     tslm   tslm mode…   0.085</span><span style='text-decoration: underline;'>7</span><span>     238.            0.312            0.604
-#&gt; </span><span style='color: #555555;'>6</span><span> arima1   arima  ARIMA(2,1…   0.176      561.            0.875            0.938</div><div class='input'><span class='co'># View the model performance on the backtesting partitions</span>
-<span class='no'>md</span>$<span class='no'>leaderboard</span></div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 6 x 7</span><span>
-#&gt;   model_id model  notes      avg_mape avg_rmse `avg_coverage_8… `avg_coverage_9…
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span> hw       HoltW… HoltWinte…   0.044</span><span style='text-decoration: underline;'>8</span><span>     130.            0.833            0.979
-#&gt; </span><span style='color: #555555;'>2</span><span> ets1     ets    ETS model…   0.048</span><span style='text-decoration: underline;'>4</span><span>     143.            0.833            0.958
-#&gt; </span><span style='color: #555555;'>3</span><span> arima2   arima  SARIMA(2,…   0.056</span><span style='text-decoration: underline;'>0</span><span>     163.            0.562            0.854
-#&gt; </span><span style='color: #555555;'>4</span><span> ets2     ets    ETS model…   0.063</span><span style='text-decoration: underline;'>6</span><span>     180.            0.479            0.854
-#&gt; </span><span style='color: #555555;'>5</span><span> tslm     tslm   tslm mode…   0.085</span><span style='text-decoration: underline;'>7</span><span>     238.            0.312            0.604
-#&gt; </span><span style='color: #555555;'>6</span><span> arima1   arima  ARIMA(2,1…   0.176      561.            0.875            0.938</div><div class='input'>
-</div></span></pre>
+                  <span class='kw'>error</span> <span class='kw'>=</span> <span class='st'>"MAPE"</span>)
+<span class='co'># View the model performance on the backtesting partitions</span>
+<span class='no'>md</span>$<span class='no'>leaderboard</span>
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
