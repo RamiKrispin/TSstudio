@@ -1076,13 +1076,16 @@ ts_cor <- function(ts.obj,
   
   if(type == "both"){
     output <- plotly::subplot(p1, p2, nrows = 2, shareX = TRUE, titleY = TRUE) %>% 
-      plotly::layout(title = base::paste(obj.name, "ACF and PACF Plots", sep = " "))
+      plotly::layout(title = base::paste(obj.name, "ACF and PACF Plots", sep = " "),
+                     hovermode = 'compare')
   } else if(type == "acf"){
     output <- p1 %>%
-      plotly::layout(title = base::paste(obj.name, "ACF Plot", sep = " "))
+      plotly::layout(title = base::paste(obj.name, "ACF Plot", sep = " "),
+                     hovermode = 'compare')
   } else if(type == "pacf"){
     output <- p2 %>%
-      plotly::layout(title = base::paste(obj.name, "PACF Plot", sep = " "))
+      plotly::layout(title = base::paste(obj.name, "PACF Plot", sep = " "),
+                     hovermode = 'compare')
   }
   base::options(warn = storeWarn) 
   return(base::suppressWarnings(output))
