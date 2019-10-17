@@ -18,28 +18,33 @@ comment = "#>"
 )
 ```
 
-Correlation analysis (along with seasonal analysis) is one of the main elements of the descriptive analysis of time series data. Furthermore, those patterns and insights revealed in the descriptive analysis play a pivotal role in the building process of a forecasting model. A common example is the setting of the AR and MA processes of the ARIMA models, which can be done with the autocorrelation and partial autocorrelation functions. Typically, time-series data will have some degree of correlation with its past lags. A common example is the hourly temperatures, as the current temperature is most likely to be close to the one during the previous hour. Moreover, correlation is also could reveal seasonal patterns as it is most likely that the series will have a high correlation with its seasonal lags. The **TSstudio** provides several tools for correlation analysis, such as `ts_cor`, `ts_lags`, and `ccf_plot`.
+Correlation analysis (along with seasonal analysis) is one of the main elements of the descriptive analysis of time series data. Furthermore, those patterns and insights revealed in the descriptive analysis play a pivotal role in the building process of a forecasting model. A common example is the setting of the AR and MA processes of the ARIMA models, which can be done with the autocorrelation and partial autocorrelation functions. Typically, time-series data will have some degree of correlation with its past lags. This can be seen in the hourly temperatures, as the current temperature is most likely to be close to the one during the previous hour. Moreover, correlation is also could reveal seasonal patterns as it is most likely that the series will have a high correlation with its seasonal lags. The **TSstudio** provides several tools for correlation analysis, such as `ts_cor`, `ts_lags`, and `ccf_plot`.
 
 ## The ACF and PACF functions
 
-Traditionally, the `acf` (autocorrelation) and `pacf` (partial autocorrelations) functions from the **stats** package are used to calculate and plot the correlation relationship between the series and its lags. The ts_cor function provides an interactive wrapper and flexible version for those functions. Let's load the `UKgrid` series from the **UKgrid** package. This series represents the demand for electricity in the UK. Will use the `extract_grid` function to aggregate the series to daily frequency:
+Traditionally, the `acf` (autocorrelation) and `pacf` (partial autocorrelations) functions from the **stats** package are used to calculate and plot the correlation relationship between the series and its lags. The `ts_cor` function provides an interactive wrapper and flexible version for those functions. Let's load the `UKgrid` series from the **UKgrid** package. This series represents the demand for electricity in the UK. Will use the `extract_grid` function to aggregate the series to daily frequency:
 
 
 ```{r }
-library(TSstudio)
 library(UKgrid)
 
 UKgrid_daily <- extract_grid(type = "ts",
              aggregate = "daily")
+
+```
+
+Before plotting the ACF and PACF of the series, let's review the series main characteristics:
+
+```{r}
+library(TSstudio)
 
 ts_info(UKgrid_daily)
 
 ts_plot(UKgrid_daily)
 ```
 
-Although the main seasonality of this 
 
-
+It is easy to observe, just by looking at the plot above, that the series has a strong seasonal component across the day of the year. If you zoom in, you can also observe that the series has a strong seasonal component across the day of the week (e.g., high consumption during the normal working days of the weeks and relatively low consumption throughout the weekend days). Quantify those relationships can be done by measuring the level of correlation between the series and its different seasonal lags. One of the downsides of the acf and pacf functions that it is hard to isolate a specific seasonal lag and compare that relationship over time. For example, the below plots represent the ACF and PACF relationship of the demand for electricity with its past 730 lags (or two seasonal cycles):
 
 ```{r, fig.height=10}
 par(mfrow=c(2,1))
