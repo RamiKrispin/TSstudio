@@ -6,8 +6,8 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-
-```{r, include = FALSE}
+  
+  ```{r, include = FALSE}
 knitr::opts_chunk$set(
 fig.width=8, 
 fig.height=5,
@@ -29,7 +29,7 @@ Traditionally, the `acf` (autocorrelation) and `pacf` (partial autocorrelations)
 library(UKgrid)
 
 UKgrid_daily <- extract_grid(type = "ts",
-             aggregate = "daily")
+                             aggregate = "daily")
 
 ```
 
@@ -91,18 +91,66 @@ ts_lags(UKgrid_daily, lags = c(7, 364 ,365))
 
 ```
 
-
+Similarly to what we observed with the ACF plot above, it is easy to observe in the plot above that the series has a stronger linear relationship with lag 7 and 364. 
 
 ### Cross correlation function
 
-```{r}
+```{r,  fig.height=8, fig.width=10}
 data("USUnRate")
 data("USVSales")
 
+ts_info(USUnRate)
+
+ts_info(USVSales)
+```
+
+
+
+
+```{r}
+
+us_rate_df <- ts_to_prophet(USUnRate)
+us_vsales_df <- ts_to_prophet(USVSales)
+
+
+library(dplyr)
+
+df <- us_rate_df %>% 
+  inner_join(us_vsales_df, by = "ds", ) %>%
+  setNames(c("date", "Unemployment Rate", "Vehicle Sales")) %>%
+  arrange(date)
+
+head(df)
+```
+
+```{r, fig.width=10}
+library(plotly)
+
+plot_ly(data = df) %>%
+  add_lines(x = ~ date, y = ~ `Vehicle Sales`, name = "Vehicle Sales") %>%
+  add_lines(x = ~ date, y = ~ `Unemployment Rate`, yaxis = "y2", line = list(color = "red"), name = "Unemployment Rate") %>%
+  layout(
+    title = "US Monthly Vehical Sales vs. Unemployment Rate", 
+    yaxis2 =  list(
+      title = "%",
+      overlaying = "y",
+      side = "right",
+      title = "second y axis"
+    ),
+    xaxis = list(title=" Thousands of units")
+  )
+
+
+
 ccf_plot(x = USVSales, y = USUnRate)
 
+
+
+```
+
+
+```{r fig.height=10, fig.width=10}
 #Plotting the first 6 lead and lags of the USVSales with the USUnRate
 ccf_plot(x = USVSales, y = USUnRate, lags = -12:12)
-
 ```
 
