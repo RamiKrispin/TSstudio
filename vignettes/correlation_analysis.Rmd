@@ -77,19 +77,23 @@ ts_cor(UKgrid_daily,
 
 ### Lags plot
 
-Lags plot is alternative approach for visualize the relationship between the series and its lags. As linear the relationship between the series and its lags the highes the correlation between the two. For example, let's plot the relationship of the demand for electricity with its first 7 lags:
+Lags plot is an alternative approach for visualizing the relationship between the series and its lags. As linear the relationship between the series and its lags, the higher the correlation between the two. For example, let's plot the relationship of the demand for electricity with its first 7 lags:
 
 ```{r}
 ts_lags(UKgrid_daily, lags = c(1:7))
 
 ```
 
-As observed with the ACF plot, the series has strong linear relationship with first and seventh lags. Similarly, we can plot the relationship of the series with its yearly lags and compared it with the seventh lag:
+As observed with the ACF plot above, the series has a strong linear relationship with the first and seventh lags. The `lags` argument enables to plot specific lags. For instance, let's compare the dominant lags (7, 364, and 365), as observed by the ACF plot above:
 
 ```{r}
 ts_lags(UKgrid_daily, lags = c(7, 364 ,365))
 
 ```
+
+
+
+### Cross correlation function
 
 ```{r}
 data("USUnRate")
