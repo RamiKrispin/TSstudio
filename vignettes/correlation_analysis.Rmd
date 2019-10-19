@@ -49,19 +49,54 @@ It is easy to observe, just by looking at the plot above, that the series has a 
 ```{r fig.height=8}
 par(mfrow=c(2,1))
 
-acf(UKgrid_daily, lag.max = 365 * 2)
+acf(UKgrid_daily, 
+    lag.max = 365 * 2)
 
-pacf(UKgrid_daily, lag.max = 365 * 2)
+pacf(UKgrid_daily, 
+     lag.max = 365 * 2)
 ```
 
 You can observe from the ACF plot above that the series is highly correlated with both its default seasonal lags (i.e., frequency 365) and also with the close lags. Yet, it is hard to compare between the two due to the high density of the plot. The ts_cor solve this issue by providing a more friendly plot of the ACF and PACF functions:
 
 ```{r, fig.height=8, fig.width=10}
-ts_cor(UKgrid_daily, seasonal = TRUE, lag.max = 365 * 2)
+ts_cor(UKgrid_daily, 
+       seasonal = TRUE, 
+       lag.max = 365 * 2)
 ```
 
 The `seasonal` argument, when set to TRUE, allows you to distinguish the seasonal lags from the non-seasonal lags. In addition, you can remove the non-seasonal lags by clicking on the non-seasonal legend. This is very useful to tune the seasonal components of SARIMA model. The `seasonal_lags` argument allows you to mark and distinguish other seasonal lags, besides the default one. For instance, add to the plot the weekly lags by setting the `seasonal_lags` to 7:
 
 ```{r, fig.height=8, fig.width=10}
-ts_cor(UKgrid_daily, seasonal = TRUE, lag.max = 365 * 2, seasonal_lags = 7)
+ts_cor(UKgrid_daily, 
+       seasonal = TRUE, 
+       lag.max = 365 * 2, 
+       seasonal_lags = 7)
 ```
+
+### Lags plot
+
+Lags plot is alternative approach for visualize the relationship between the series and its lags. As linear the relationship between the series and its lags the highes the correlation between the two. For example, let's plot the relationship of the demand for electricity with its first 7 lags:
+
+```{r}
+ts_lags(UKgrid_daily, lags = c(1:7))
+
+```
+
+As observed with the ACF plot, the series has strong linear relationship with first and seventh lags. Similarly, we can plot the relationship of the series with its yearly lags and compared it with the seventh lag:
+
+```{r}
+ts_lags(UKgrid_daily, lags = c(7, 364 ,365))
+
+```
+
+```{r}
+data("USUnRate")
+data("USVSales")
+
+ccf_plot(x = USVSales, y = USUnRate)
+
+#Plotting the first 6 lead and lags of the USVSales with the USUnRate
+ccf_plot(x = USVSales, y = USUnRate, lags = -12:12)
+
+```
+
