@@ -64,6 +64,8 @@ ts_cor(UKgrid_daily,
        lag.max = 365 * 2)
 ```
 
+Note that the X-axis legend of the `ts_cor` plot represents the actual lags number (i.e., 1 for the first lag, 2 for the second, etc.), as opposed to the `acf` plot that represents the seasonal lags (i.e., 1/frequency for the first lag, or 1 for the first seasonal lag). In addition, the interactivity feature of the plot enables to view in more detail a specific range of lags by zoom in it. For example, in the plot above, if zoom in on the seasonal lag, you can notice that lag 364 is actually is more correlated with the series than the seasonal lag 365.   
+
 The `seasonal` argument, when set to TRUE, allows you to distinguish the seasonal lags from the non-seasonal lags. In addition, you can remove the non-seasonal lags by clicking on the non-seasonal legend. This is very useful to tune the seasonal components of SARIMA model. The `seasonal_lags` argument allows you to mark and distinguish other seasonal lags, besides the default one. For instance, add to the plot the weekly lags by setting the `seasonal_lags` to 7:
 
 ```{r, fig.height=8, fig.width=10}
