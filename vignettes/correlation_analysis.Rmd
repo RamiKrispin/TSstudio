@@ -95,6 +95,9 @@ Similarly to what we observed with the ACF plot above, it is easy to observe in 
 
 ### Cross correlation function
 
+The `ccf_plot` (cross correlation plot) function vizualize the relationship between two time series
+
+
 ```{r,  fig.height=8, fig.width=10}
 data("USUnRate")
 data("USVSales")
