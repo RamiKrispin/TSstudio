@@ -95,7 +95,12 @@ Similarly to what we observed with the ACF plot above, it is easy to observe in 
 
 ### Cross correlation function
 
-The `ccf_plot` (cross correlation plot) function vizualize the relationship between two time series
+The `ccf_plot` (cross-correlation plot) function visualize the relationship of one series (y) with the past and leading lags of other series (x). This allows identifying if one series correlated with another series and its lags. In addition, the function returns the cross-correlation between series y and the corresponding lags of series x.
+
+
+The example below demonstrate the use of the `ccf_plot` function to plot the relationship between the monthly vehicle sales and the unemployment rate in the US. Let's first load and plot the two series:
+
+
 
 
 ```{r,  fig.height=8, fig.width=10}
