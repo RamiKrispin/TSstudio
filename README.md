@@ -11,7 +11,7 @@ TSstudio
 
 The [TSstudio](https://ramikrispin.github.io/TSstudio) package provides a set of tools descriptive and predictive analysis of time series data. That includes utility functions for preprocessing time series data,  interactive visualization functions based on the [plotly](https://CRAN.R-project.org/package=plotly) package engine, and set of tools for training and evaluating time series forecasting models from the [forecast](https://CRAN.R-project.org/package=forecast), [forecastHybrid](https://CRAN.R-project.org/package=forecastHybrid), and [bsts](https://CRAN.R-project.org/package=bsts) packages.
 
-More information available on the package [vignettes](https://ramikrispin.github.io/TSstudio/articles/)
+More information available on the package [vignettes](https://ramikrispin.github.io/TSstudio/articles/).
 
 
 Installation
