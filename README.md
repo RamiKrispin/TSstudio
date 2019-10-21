@@ -49,6 +49,11 @@ ts_seasonal(USgas, type = "all")
 ```
 ![](./vignettes/gif/USgas_seasonal.png)
 ``` r
+# ACF and PACF plots
+ts_cor(USgas, lag.max = 60)
+```
+![](./vignettes/gif/USgas_acf.png)
+``` r
 # Lags plot
 ts_lags(USgas, lags = 1:12)
 ```
