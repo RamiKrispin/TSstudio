@@ -45,8 +45,6 @@ ts_plot(USgas,
         title = "US Monthly Natural Gas Consumption",
         Ytitle = "Billion Cubic Feet")
 ```
-#![](./man/figures/USgas_plot.png) 
-
 <img src="man/figures/USgas_plot.png" width="100%" />
 
 ### Seasonality analysis
@@ -54,31 +52,37 @@ ts_plot(USgas,
 # Seasonal plot
 ts_seasonal(USgas, type = "all")
 ```
+<img src="man/figures/USgas_seasonal.png" width="100%" />
 
 ``` r
+
 # Heatmap plot
+
 ts_heatmap(USgas)
 ```
-![](./vignettes/gif/USgas_heatmap.png)
+<img src="man/figures/USgas_heatmap.png" width="100%" />
+
 
 ### Correlation analysis
 
-![](./vignettes/gif/USgas_seasonal.png)
 ``` r
 # ACF and PACF plots
 ts_cor(USgas, lag.max = 60)
 ```
-![](./vignettes/gif/USgas_acf.png)
+<img src="man/figures/USgas_acf.png" width="100%" />
+
 ``` r
 # Lags plot
 ts_lags(USgas, lags = 1:12)
 ```
-![](./vignettes/gif/USgas_lags.png)
+
+<img src="man/figures/USgas_lags.png" width="100%" />
+
 ``` r
 # Seasonal lags plot
 ts_lags(USgas, lags = c(12, 24, 36, 48))
 ```
-![](./vignettes/gif/USgas_lags2.png)
+<img src="man/figures/USgas_lags2.png" width="100%" />
 
 ### Training forecasting models
 
@@ -97,12 +101,14 @@ fc <- forecast(md, h = 12)
 # Plotting actual vs. fitted and forecasted
 test_forecast(actual = USgas, forecast.obj = fc, test = test)
 ```
-![](./vignettes/gif/USgas_test_f.png)
+<img src="man/figures/USgas_test_f.png" width="100%" />
+
 ``` r
 # Plotting the forecast 
 plot_forecast(fc)
 ```
-![](./vignettes/gif/USgas_forecast.png)
+<img src="man/figures/USgas_forecast.png" width="100%" />
+
 ``` r
 # Run horse race between multiple models
 methods <- list(ets1 = list(method = "ets",
@@ -149,7 +155,8 @@ md <- train_model(input = USgas,
 # Plot the performance of the different models on the testing partitions
 plot_model(md)
 ```
-![](./vignettes/gif/plot_model.gif)
+
+<img src="man/figures/plot_model.gif" width="100%" />
 
 
 ``` r
@@ -165,4 +172,6 @@ hw_grid <- ts_grid(USgas,
                                        
 plot_grid(hw_grid, type = "3D")
 ```
-![](./vignettes/gif/hw_grid.png)
+
+<img src="man/figures/hw_grid.png" width="100%" />
+
