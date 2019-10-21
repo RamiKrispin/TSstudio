@@ -36,7 +36,9 @@ library(TSstudio)
 data(USgas)
 
 # Ploting time series object
-ts_plot(USgas)
+ts_plot(USgas, 
+        title = "US Monthly Natural Gas Consumption",
+        Ytitle = "Billion Cubic Feet")
 ```
 ![](./vignettes/gif/USgas_plot.png) 
 ``` r
