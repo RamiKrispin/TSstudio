@@ -45,7 +45,7 @@ ts_plot(USgas,
         title = "US Monthly Natural Gas Consumption",
         Ytitle = "Billion Cubic Feet")
 ```
-![](./vignettes/gif/USgas_plot.png) 
+![](./man/figures/USgas_plot.png) 
 
 ### Seasonality analysis
 ``` r
