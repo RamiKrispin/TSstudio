@@ -53,8 +53,11 @@ ts_plot(USgas,
 ts_seasonal(USgas, type = "all")
 ```
 <img src="man/figures/USgas_seasonal.png" width="100%" />
+
 ``` r
+
 # Heatmap plot
+
 ts_heatmap(USgas)
 ```
 <img src="man/figures/USgas_heatmap.png" width="100%" />
