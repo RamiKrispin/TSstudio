@@ -130,7 +130,7 @@ md <- train_model(input = USgas,
 
 ```
 
-![](./vignettes/gif/plot_model.mov)
+![](./vignettes/gif/plot_model.gif)
 
 
 ``` r
