@@ -1,3 +1,5 @@
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/TSstudio)](https://cran.r-project.org/package=TSstudio)
+[![CRAN\_Status\_Badge](http://cranlogs.r-pkg.org/badges/TSstudio)]
 
 TSstudio
 ========
