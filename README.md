@@ -33,6 +33,9 @@ devtools::install_github("RamiKrispin/TSstudio")
 
 Usage
 -----
+
+### Plotting time series data
+
 ``` r
 library(TSstudio)
 data(USgas)
@@ -43,10 +46,21 @@ ts_plot(USgas,
         Ytitle = "Billion Cubic Feet")
 ```
 ![](./vignettes/gif/USgas_plot.png) 
+
+### Seasonality analysis
 ``` r
 # Seasonal plot
 ts_seasonal(USgas, type = "all")
 ```
+
+``` r
+# Heatmap plot
+ts_heatmap(USgas)
+```
+![](./vignettes/gif/USgas_heatmap.png)
+
+### Correlation analysis
+
 ![](./vignettes/gif/USgas_seasonal.png)
 ``` r
 # ACF and PACF plots
@@ -63,11 +77,9 @@ ts_lags(USgas, lags = 1:12)
 ts_lags(USgas, lags = c(12, 24, 36, 48))
 ```
 ![](./vignettes/gif/USgas_lags2.png)
-``` r
-# Heatmap plot
-ts_heatmap(USgas)
-```
-![](./vignettes/gif/USgas_heatmap.png)
+
+### Training forecasting models
+
 ``` r
 # Forecasting applications
 # Setting training and testing partitions
