@@ -47,6 +47,8 @@ ts_plot(USgas,
 ```
 ![](./man/figures/USgas_plot.png) 
 
+<img src="man/figures/USgas_plot.png" width="100%" />
+
 ### Seasonality analysis
 ``` r
 # Seasonal plot
