@@ -90,14 +90,43 @@ plot_forecast(fc)
 ```
 ![](./vignettes/gif/USgas_forecast.png)
 ``` r
-# Forecasting with backtesting 
-USgas_backtesting <- ts_backtesting(USgas, 
-                                    models = "abehntw", 
-                                    periods = 6, 
-                                    error = "RMSE", 
-                                    window_size = 12, 
-                                    h = 12)
-
+# Run horse race between multiple models
+methods <- list(ets1 = list(method = "ets",
+                            method_arg = list(opt.crit = "lik"),
+                            notes = "ETS model with opt.crit = lik"),
+                ets2 = list(method = "ets",
+                            method_arg = list(opt.crit = "amse"),
+                            notes = "ETS model with opt.crit = amse"),
+                arima1 = list(method = "arima",
+                              method_arg = list(order = c(2,1,0)),
+                              notes = "ARIMA(2,1,0)"),
+                arima2 = list(method = "arima",
+                              method_arg = list(order = c(2,1,2),
+                                                seasonal = list(order = c(1,1,1))),
+                              notes = "SARIMA(2,1,2)(1,1,1)"),
+                hw = list(method = "HoltWinters",
+                          method_arg = NULL,
+                          notes = "HoltWinters Model"),
+                tslm = list(method = "tslm",
+                            method_arg = list(formula = input ~ trend + season),
+                            notes = "tslm model with trend and seasonal components"))
+# Training the models with backtesting
+md <- train_model(input = USgas,
+                  methods = methods,
+                  train_method = list(partitions = 4, 
+                                      sample.out = 12, 
+                                      space = 3),
+                  horizon = 12,
+                  error = "MAPE")
+ # A tibble: 6 x 7
+  model_id model       notes                                         avg_mape avg_rmse `avg_coverage_80%` `avg_coverage_95%`
+  <chr>    <chr>       <chr>                                            <dbl>    <dbl>              <dbl>              <dbl>
+1 hw       HoltWinters HoltWinters Model                               0.0448     130.              0.833              0.979
+2 ets1     ets         ETS model with opt.crit = lik                   0.0484     143.              0.833              0.958
+3 arima2   arima       SARIMA(2,1,2)(1,1,1)                            0.0560     163.              0.562              0.854
+4 ets2     ets         ETS model with opt.crit = amse                  0.0636     180.              0.479              0.854
+5 tslm     tslm        tslm model with trend and seasonal components   0.0857     238.              0.312              0.604
+6 arima1   arima       ARIMA(2,1,0)                                    0.176      561.              0.875              0.938 
 
 ```
 
@@ -105,6 +134,7 @@ USgas_backtesting <- ts_backtesting(USgas,
 
 
 ``` r
+# Holt-Winters tunning parameters with grid search
 hw_grid <- ts_grid(USgas, 
                    model = "HoltWinters",
                    periods = 6,
