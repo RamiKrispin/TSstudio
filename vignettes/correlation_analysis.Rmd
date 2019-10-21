@@ -75,7 +75,7 @@ ts_cor(UKgrid_daily,
        seasonal_lags = 7)
 ```
 
-### Lags plot
+## Lags plot
 
 Lags plot is an alternative approach for visualizing the relationship between the series and its lags. As linear the relationship between the series and its lags, the higher the correlation between the two. For example, let's plot the relationship of the demand for electricity with its first 7 lags:
 
@@ -93,7 +93,7 @@ ts_lags(UKgrid_daily, lags = c(7, 364 ,365))
 
 Similarly to what we observed with the ACF plot above, it is easy to observe in the plot above that the series has a stronger linear relationship with lag 7 and 364. 
 
-### Cross correlation plot
+## Cross correlation plot
 
 The `ccf_plot` (cross-correlation plot) function helps to identify if two series (i.e., series y and x) are correlated and the strength of it. The function returns a sequence of plots of series y aginst the past and/or the leading lags of series x and the cross-correlation value. The cross-correlation value is calculated by the `ccf` function from the stats package. Let's use the function to explore the relationship between the monthly unemployment rate and the total vehicle sales in the US. The two series available on the TSstudio package: 
 
