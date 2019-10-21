@@ -113,24 +113,24 @@ methods <- list(ets1 = list(method = "ets",
 # Training the models with backtesting
 md <- train_model(input = USgas,
                   methods = methods,
-                  train_method = list(partitions = 4, 
+                  train_method = list(partitions = 6, 
                                       sample.out = 12, 
                                       space = 3),
                   horizon = 12,
                   error = "MAPE")
- # A tibble: 6 x 7
+# A tibble: 6 x 7
   model_id model       notes                                         avg_mape avg_rmse `avg_coverage_80%` `avg_coverage_95%`
   <chr>    <chr>       <chr>                                            <dbl>    <dbl>              <dbl>              <dbl>
-1 hw       HoltWinters HoltWinters Model                               0.0448     130.              0.833              0.979
-2 ets1     ets         ETS model with opt.crit = lik                   0.0484     143.              0.833              0.958
-3 arima2   arima       SARIMA(2,1,2)(1,1,1)                            0.0560     163.              0.562              0.854
-4 ets2     ets         ETS model with opt.crit = amse                  0.0636     180.              0.479              0.854
-5 tslm     tslm        tslm model with trend and seasonal components   0.0857     238.              0.312              0.604
-6 arima1   arima       ARIMA(2,1,0)                                    0.176      561.              0.875              0.938 
+1 arima2   arima       SARIMA(2,1,2)(1,1,1)                            0.0557     167.              0.583              0.806
+2 hw       HoltWinters HoltWinters Model                               0.0563     163.              0.736              0.889
+3 ets1     ets         ETS model with opt.crit = lik                   0.0611     172.              0.681              0.903
+4 ets2     ets         ETS model with opt.crit = amse                  0.0666     186.              0.458              0.833
+5 tslm     tslm        tslm model with trend and seasonal components   0.0767     220.              0.417              0.667
+6 arima1   arima       ARIMA(2,1,0)                                    0.188      598.              0.875              0.958
 
 ```
 
-![](./vignettes/gif/USgas_backtesting.png)
+![](./vignettes/gif/plot_model.mov)
 
 
 ``` r
