@@ -115,7 +115,6 @@
 <a class="sourceLine" id="cb3-5" data-line-number="5"><span class="kw"><a href="reference/ts_plot.html">ts_plot</a></span>(USgas, </a>
 <a class="sourceLine" id="cb3-6" data-line-number="6">        <span class="dt">title =</span> <span class="st">"US Monthly Natural Gas Consumption"</span>,</a>
 <a class="sourceLine" id="cb3-7" data-line-number="7">        <span class="dt">Ytitle =</span> <span class="st">"Billion Cubic Feet"</span>)</a></code></pre></div>
-<p>#<img src="./man/figures/USgas_plot.png"></p>
 <p><img src="reference/figures/USgas_plot.png" width="100%"></p>
 </div>
 <div id="seasonality-analysis" class="section level3">
@@ -123,23 +122,25 @@
 <a href="#seasonality-analysis" class="anchor"></a>Seasonality analysis</h3>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># Seasonal plot</span></a>
 <a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw"><a href="reference/ts_seasonal.html">ts_seasonal</a></span>(USgas, <span class="dt">type =</span> <span class="st">"all"</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># Heatmap plot</span></a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw"><a href="reference/ts_heatmap.html">ts_heatmap</a></span>(USgas)</a></code></pre></div>
-<p><img src="./vignettes/gif/USgas_heatmap.png"></p>
+<p><img src="reference/figures/USgas_seasonal.png" width="100%"></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co"># Heatmap plot</span></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="kw"><a href="reference/ts_heatmap.html">ts_heatmap</a></span>(USgas)</a></code></pre></div>
+<p><img src="reference/figures/USgas_heatmap.png" width="100%"></p>
 </div>
 <div id="correlation-analysis" class="section level3">
 <h3 class="hasAnchor">
 <a href="#correlation-analysis" class="anchor"></a>Correlation analysis</h3>
-<p><img src="./vignettes/gif/USgas_seasonal.png"></p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="co"># ACF and PACF plots</span></a>
 <a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw"><a href="reference/ts_cor.html">ts_cor</a></span>(USgas, <span class="dt">lag.max =</span> <span class="dv">60</span>)</a></code></pre></div>
-<p><img src="./vignettes/gif/USgas_acf.png"></p>
+<p><img src="reference/figures/USgas_acf.png" width="100%"></p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># Lags plot</span></a>
 <a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw"><a href="reference/ts_lags.html">ts_lags</a></span>(USgas, <span class="dt">lags =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">12</span>)</a></code></pre></div>
-<p><img src="./vignettes/gif/USgas_lags.png"></p>
+<p><img src="reference/figures/USgas_lags.png" width="100%"></p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co"># Seasonal lags plot</span></a>
 <a class="sourceLine" id="cb8-2" data-line-number="2"><span class="kw"><a href="reference/ts_lags.html">ts_lags</a></span>(USgas, <span class="dt">lags =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">12</span>, <span class="dv">24</span>, <span class="dv">36</span>, <span class="dv">48</span>))</a></code></pre></div>
-<p><img src="./vignettes/gif/USgas_lags2.png"></p>
+<p><img src="reference/figures/USgas_lags2.png" width="100%"></p>
 </div>
 <div id="training-forecasting-models" class="section level3">
 <h3 class="hasAnchor">
@@ -157,10 +158,10 @@
 <a class="sourceLine" id="cb9-11" data-line-number="11"></a>
 <a class="sourceLine" id="cb9-12" data-line-number="12"><span class="co"># Plotting actual vs. fitted and forecasted</span></a>
 <a class="sourceLine" id="cb9-13" data-line-number="13"><span class="kw"><a href="reference/test_forecast.html">test_forecast</a></span>(<span class="dt">actual =</span> USgas, <span class="dt">forecast.obj =</span> fc, <span class="dt">test =</span> test)</a></code></pre></div>
-<p><img src="./vignettes/gif/USgas_test_f.png"></p>
+<p><img src="reference/figures/USgas_test_f.png" width="100%"></p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="co"># Plotting the forecast </span></a>
 <a class="sourceLine" id="cb10-2" data-line-number="2"><span class="kw"><a href="reference/plot_forecast.html">plot_forecast</a></span>(fc)</a></code></pre></div>
-<p><img src="./vignettes/gif/USgas_forecast.png"></p>
+<p><img src="reference/figures/USgas_forecast.png" width="100%"></p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="co"># Run horse race between multiple models</span></a>
 <a class="sourceLine" id="cb11-2" data-line-number="2">methods &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">ets1 =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">method =</span> <span class="st">"ets"</span>,</a>
 <a class="sourceLine" id="cb11-3" data-line-number="3">                            <span class="dt">method_arg =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">opt.crit =</span> <span class="st">"lik"</span>),</a>
@@ -200,7 +201,7 @@
 <a class="sourceLine" id="cb11-37" data-line-number="37"><span class="dv">6</span> arima1   arima       <span class="kw">ARIMA</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">0</span>)                                    <span class="fl">0.188</span>      <span class="fl">598.</span>              <span class="fl">0.875</span>              <span class="fl">0.958</span></a></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="co"># Plot the performance of the different models on the testing partitions</span></a>
 <a class="sourceLine" id="cb12-2" data-line-number="2"><span class="kw"><a href="reference/plot_model.html">plot_model</a></span>(md)</a></code></pre></div>
-<p><img src="./vignettes/gif/plot_model.gif"></p>
+<p><img src="reference/figures/plot_model.gif" width="100%"></p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="co"># Holt-Winters tunning parameters with grid search</span></a>
 <a class="sourceLine" id="cb13-2" data-line-number="2">hw_grid &lt;-<span class="st"> </span><span class="kw"><a href="reference/ts_grid.html">ts_grid</a></span>(USgas, </a>
 <a class="sourceLine" id="cb13-3" data-line-number="3">                   <span class="dt">model =</span> <span class="st">"HoltWinters"</span>,</a>
@@ -212,7 +213,7 @@
 <a class="sourceLine" id="cb13-9" data-line-number="9">                                       <span class="dt">gamma =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.1</span>)))</a>
 <a class="sourceLine" id="cb13-10" data-line-number="10">                                       </a>
 <a class="sourceLine" id="cb13-11" data-line-number="11"><span class="kw"><a href="reference/plot_grid.html">plot_grid</a></span>(hw_grid, <span class="dt">type =</span> <span class="st">"3D"</span>)</a></code></pre></div>
-<p><img src="./vignettes/gif/hw_grid.png"></p>
+<p><img src="reference/figures/hw_grid.png" width="100%"></p>
 </div>
 </div>
 </div>
