@@ -130,6 +130,11 @@ md <- train_model(input = USgas,
 
 ```
 
+
+``` r
+# Plot the performance of the different models on the testing partitions
+plot_model(md)
+```
 ![](./vignettes/gif/plot_model.gif)
 
 
