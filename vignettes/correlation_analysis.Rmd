@@ -93,17 +93,12 @@ ts_lags(UKgrid_daily, lags = c(7, 364 ,365))
 
 Similarly to what we observed with the ACF plot above, it is easy to observe in the plot above that the series has a stronger linear relationship with lag 7 and 364. 
 
-### Cross correlation function
+### Cross correlation plot
 
-The `ccf_plot` (cross-correlation plot) function visualize the relationship of one series (y) with the past and leading lags of other series (x). This allows identifying if one series correlated with another series and its lags. In addition, the function returns the cross-correlation between series y and the corresponding lags of series x.
-
-
-The example below demonstrate the use of the `ccf_plot` function to plot the relationship between the monthly vehicle sales and the unemployment rate in the US. Let's first load and plot the two series:
+The `ccf_plot` (cross-correlation plot) function helps to identify if two series (i.e., series y and x) are correlated and the strength of it. The function returns a sequence of plots of series y aginst the past and/or the leading lags of series x and the cross-correlation value. The cross-correlation value is calculated by the `ccf` function from the stats package. Let's use the function to explore the relationship between the monthly unemployment rate and the total vehicle sales in the US. The two series available on the TSstudio package: 
 
 
-
-
-```{r,  fig.height=8, fig.width=10}
+```{r}
 data("USUnRate")
 data("USVSales")
 
@@ -113,16 +108,17 @@ ts_info(USVSales)
 ```
 
 
-
+Before using the `ccf_plot` function, let's first plot the two series side by side. We will use the `ts_to_prophet` function from the **TSstudio** to convert the `ts` object to `data.frame`, and then merge and plot them with the **dplyr** and **plotly** packages respectively:
 
 ```{r}
-
+# Converting the ts object to data.frame
 us_rate_df <- ts_to_prophet(USUnRate)
 us_vsales_df <- ts_to_prophet(USVSales)
 
 
 library(dplyr)
 
+# Merge the two tables
 df <- us_rate_df %>% 
   inner_join(us_vsales_df, by = "ds", ) %>%
   setNames(c("date", "Unemployment Rate", "Vehicle Sales")) %>%
@@ -132,6 +128,7 @@ head(df)
 ```
 
 ```{r, fig.width=10}
+# Plotting the object
 library(plotly)
 
 plot_ly(data = df) %>%
@@ -150,15 +147,23 @@ plot_ly(data = df) %>%
 
 
 
-ccf_plot(x = USVSales, y = USUnRate)
-
-
 
 ```
 
 
+Looking at the plot above, it is easy to observe that the series has an inverse relationship. In other words, when the vehicle sales are dropping down, the unemployment rate is going up and the opposite around. Let's use the `ccf_plot` function to evaluate the cross-correlation between the unemployment rate and the past lags of the vehicle sales series:
+
+
+
 ```{r fig.height=10, fig.width=10}
-#Plotting the first 6 lead and lags of the USVSales with the USUnRate
+
+ccf_plot(x = USVSales, y = USUnRate)
+```
+
+By default, the function calculates and plots the correlation between series y and series x (lag 0) and the first 12 lags of series x. Likewise the `ts_lags` function, the lags argument, enables you to define specific lags to plot. For instance, you can plot the first 12 past and leading lags by setting the `lags` argument:
+
+```{r fig.height=10, fig.width=10}
+
 ccf_plot(x = USVSales, y = USUnRate, lags = -12:12)
 ```
 
