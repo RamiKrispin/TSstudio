@@ -1,0 +1,93 @@
+---
+title: "Forecasting Applications"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Forecasting Applications}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+fig.width=8, 
+fig.height=5,
+warning = FALSE, 
+message = FALSE,
+collapse = TRUE,
+comment = "#>"
+)
+```
+
+```{r}
+library(TSstudio)
+
+data(USgas)
+
+ts_info(USgas)
+
+USgas_par <- ts_split(USgas, sample.out = 12)
+
+train <- USgas_par$train
+test <- USgas_par$test
+
+library(forecast)
+md <- tslm(train ~ season + trend)
+fc <- forecast(md, h = 12)
+
+test_forecast(actual = USgas,
+              forecast.obj = fc,
+              test = test)
+
+```
+
+```{r}
+ hw_grid_shallow <- ts_grid(ts.obj = USgas,
+                            periods = 6,
+                            model = "HoltWinters",
+                            optim = "MAPE",
+                            window_space = 6,
+                            window_test = 12,
+                            hyper_params = list(alpha = seq(0.01, 1,0.1),
+                                                beta =  seq(0.01, 1,0.1),
+                                                gamma = seq(0.01, 1,0.1)),
+                            parallel = TRUE,
+                            n.cores = 8)
+
+TSstudio::plot_grid(hw_grid_shallow)
+
+ a_min <- min(hw_grid_shallow$grid_df$alpha[1:20])
+ a_max <- max(hw_grid_shallow$grid_df$alpha[1:20])
+ 
+ b_min <- min(hw_grid_shallow$grid_df$beta[1:20])
+ b_max <- max(hw_grid_shallow$grid_df$beta[1:20])
+ 
+ g_min <- min(hw_grid_shallow$grid_df$gamma[1:20])
+ g_max <- max(hw_grid_shallow$grid_df$gamma[1:20])
+ 
+ hw_grid_second <- ts_grid(ts.obj = USgas,
+                           periods = 6,
+                           model = "HoltWinters",
+                           optim = "MAPE",
+                           window_space = 6,
+                           window_test = 12,
+                           hyper_params = list(alpha = seq(a_min, a_max,0.05),
+                                               beta =  seq(b_min, b_max,0.05),
+                                               gamma = seq(g_min, g_max,0.05)),
+                           parallel = TRUE,
+                           n.cores = 8)
+
+
+TSstudio::plot_grid(hw_grid_second)
+TSstudio::plot_grid(hw_grid_second, type = "3D")
+
+md <- HoltWinters(USgas, 
+                   alpha = hw_grid_second$alpha,
+                   beta = hw_grid_second$beta,
+                   gamma = hw_grid_second$gamma)
+ 
+ 
+fc <- forecast(md, h = 60)
+ 
+ plot_forecast(fc)
+```
+
