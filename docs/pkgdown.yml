@@ -4,5 +4,6 @@ pkgdown_sha: ~
 articles:
   Plotting_Time_Series: Plotting_Time_Series.html
   correlation_analysis: correlation_analysis.html
+  forecasting: forecasting.html
   seasonality_analysis: seasonality_analysis.html
 
