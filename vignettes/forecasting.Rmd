@@ -18,6 +18,13 @@ comment = "#>"
 )
 ```
 
+The **TSstudio** package provides a set of functions for train, test, and evaluate time series forecasting models. This vignette covers the main ones.
+
+
+### Creating testing and training partitons
+
+The `ts_split` function split time series data into training (sample-in) and testing (sample-out) partitions, keeping the chronological order of the series. The `sample.out` argument defines the length of the testing partition. In the following example, we will use the function to split the `USgas` series (the monthly demand for natural gas in the US) into training and testing partitions, leaving the last 12 months as testing partition:
+
 ```{r}
 library(TSstudio)
 
@@ -30,6 +37,14 @@ USgas_par <- ts_split(USgas, sample.out = 12)
 train <- USgas_par$train
 test <- USgas_par$test
 
+ts_info(train)
+ts_info(test)
+
+
+```
+
+
+```{r}
 library(forecast)
 md <- tslm(train ~ season + trend)
 fc <- forecast(md, h = 12)
@@ -37,8 +52,10 @@ fc <- forecast(md, h = 12)
 test_forecast(actual = USgas,
               forecast.obj = fc,
               test = test)
-
 ```
+
+
+
 
 ```{r}
  hw_grid_shallow <- ts_grid(ts.obj = USgas,
