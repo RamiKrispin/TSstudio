@@ -18,7 +18,7 @@ comment = "#>"
 )
 ```
 
-The **TSstudio** package provides a set of functions for train, test, and evaluate time series forecasting models. This vignette covers the main ones.
+The **TSstudio** package provides a set of functions for train, test, and evaluate time series forecasting models, this vignette covers the main ones.
 
 
 ## Creating testing and training partitons
@@ -47,17 +47,26 @@ ts_info(test)
 
 ## Forecast perfromance 
 
+The `test_forecast` function visualizes the performance of a forecasting model on the training and testing partitions by plotting the fitted and forecasted values against the actuals. For example, let's train a `tslm` model on the `train` partition and forecast the corresponding observations of the `test` partition:
 
 ```{r}
 library(forecast)
-md <- tslm(train ~ season + trend)
-fc <- forecast(md, h = 12)
 
+md <- tslm(train ~ season + trend)
+
+fc <- forecast(md, h = 12)
+```
+
+Using the actual series (`USgas`), forecast object (`fc`), and the corresponding testing partition (`test`), the function will plot the fitted and forecasted values against the actuals:
+
+```{r}
 test_forecast(actual = USgas,
               forecast.obj = fc,
               test = test)
 ```
 
+
+## Grid search for tunning Holt-Winters model
 
 
 
