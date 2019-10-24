@@ -65,6 +65,9 @@ test_forecast(actual = USgas,
               test = test)
 ```
 
+The MAPE and RMSE score of both the fitted and forecasted values can be seen when hovering on the plot. 
+
+**Note:** that the function supports forecast objects from the `forecast` and `stats` packages.
 
 ## Grid search for tunning Holt-Winters model
 
