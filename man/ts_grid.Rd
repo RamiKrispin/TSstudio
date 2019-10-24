@@ -29,7 +29,8 @@ If set to NULL (default) will use an expending window starting the from the firs
 
 \item{parallel}{Logical, if TRUE use multiple cores in parallel}
 
-\item{n.cores}{Set the number of cores to use if the parallel argument is set to TRUE.}
+\item{n.cores}{Set the number of cores to use if the parallel argument is set to TRUE. 
+If set to "auto" (default), will use n-1 of the available cores}
 }
 \value{
 A list

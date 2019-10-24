@@ -756,6 +756,7 @@ ts_backtesting <- function(ts.obj,
 #' @param hyper_params A list, defines the tuning parameters and their range
 #' @param parallel Logical, if TRUE use multiple cores in parallel
 #' @param n.cores Set the number of cores to use if the parallel argument is set to TRUE. 
+#' If set to "auto" (default), will use n-1 of the available cores 
 #' @description Tuning time series models with grid search approach using backtesting method.
 #'  If set to "auto" (default), will use all available cores in the system minus 1
 #' @return A list
