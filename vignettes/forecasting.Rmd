@@ -45,7 +45,7 @@ ts_info(test)
 ```
 
 
-## Forecast perfromance 
+## Visualize forecast performance 
 
 The `test_forecast` function visualizes the performance of a forecasting model on the training and testing partitions by plotting the fitted and forecasted values against the actuals. The function supports forecast models from the `forecast` and `stats` packages such as `auto.arima`, `tslm`, `ets`, `HoltWinters`, etc.
 
@@ -70,7 +70,7 @@ test_forecast(actual = USgas,
 
 The MAPE and RMSE score of both the fitted and forecasted values can be seen when hovering on the plot. 
 
-# Training multiple time series model with backtesting
+## Training multiple time series model with backtesting
 
 The `train_model` function provides a flexible framework for forecasting. The use of the function is for train, test, and evaluate multiple models (or different versions of those models) with the use of a backtesting approach. The backtesting approach enables you to evaluate the performance of the model over time (as opposed to single training and testing partitions) and select a model that performed best using some error criteria (e.g., **MAPE** or **RMSE**). The main arguments of this function are:
 
@@ -89,7 +89,7 @@ The `train_model` function provides a flexible framework for forecasting. The us
 
   + `tslm` - model from the forecast package (note that the 'tslm' model must have the formula argument in the 'method_arg' argument)
 
-The method argument using the following structure:
+The `method` argument defines as a `list` and using the following structure:
 
 ```{r, eval = FALSE}
 
@@ -104,6 +104,9 @@ list(model_1_id = list(method = "[type of model]",
                       notes = "[set notes for model n]"))
 
 ```
+
+ 
+Where each element in the list represents a model define
 
 ```{r}
 methods <- list(ets1 = list(method = "ets",
