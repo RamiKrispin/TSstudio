@@ -72,7 +72,7 @@ The MAPE and RMSE score of both the fitted and forecasted values can be seen whe
 
 ## Training multiple time series model with backtesting
 
-The `train_model` function provides a flexible framework for forecasting. The use of the function is for train, test, and evaluate multiple models (or different versions of those models) with the use of a backtesting approach. The backtesting approach enables you to evaluate the performance of the model over time (as opposed to single training and testing partitions) and select a model that performed best using some error criteria (e.g., **MAPE** or **RMSE**). The main arguments of this function are:
+The `train_model` function replaces the `ts_backtesting` function, which will deprecate on the next version. The function provides a flexible framework for forecasting. The use of the function is for train, test, and evaluate multiple models (or different versions of those models) with the use of a backtesting approach. The backtesting approach enables you to evaluate the performance of the model over time (as opposed to single training and testing partitions) and select a model that performed best using some error criteria (e.g., **MAPE** or **RMSE**). The main arguments of this function are:
 
 
 * `methods` - defines the type of models and their setting to be used on the training process. Currently, it supports the following models:
@@ -152,6 +152,7 @@ train_method = list(partitions = 6,
                     space = 3)
 ```
 
+We will now set the `train_model` function, using the `methods` and `train_method` lists to set the corresponding arguments of the function. The `horizon` argument defines the length of the forecast, and the `error` argument defines the error metric to use to evaluate the performance of the models:
 
 ```{r}
 md <- train_model(input = USgas,
@@ -161,6 +162,8 @@ md <- train_model(input = USgas,
                   error = "MAPE")
 
 ```
+
+The function returns a leaderboard table sorting the models by the selected error metric (which in this case was MAPE). In addition to the average MAPE and RMSE error of the models on the testing partitions, the function returns the average coverage rate of the prediction intervals. The coverage rate represents the percentage of actual observations that were bounded between the prediction intervals. As closer the coverage rate to the level rate of the prediction intervals (e.g., 95%), the more reliable the prediction intervals are. For instance, the prediction intervals of the best model, `arima2`, had average coverage of 58% and 80% for the corresponding 80% and 95% prediction intervals. 
 
 
 
