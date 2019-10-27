@@ -72,7 +72,11 @@ The MAPE and RMSE score of both the fitted and forecasted values can be seen whe
 
 ## Training multiple time series model with backtesting
 
-The `train_model` function replaces the `ts_backtesting` function, which will deprecate on the next version. The function provides a flexible framework for forecasting. The use of the function is for train, test, and evaluate multiple models (or different versions of those models) with the use of a backtesting approach. The backtesting approach enables you to evaluate the performance of the model over time (as opposed to single training and testing partitions) and select a model that performed best using some error criteria (e.g., **MAPE** or **RMSE**). The main arguments of this function are:
+The `train_model` function replaces the `ts_backtesting` function, which will deprecate on the next version. The function provides a flexible framework for forecasting. The use of the function is for train, test, and evaluate multiple models (or different versions of those models) with the use of a backtesting approach. The backtesting approach enables you to evaluate the performance of the model over time (as opposed to single training and testing partitions) and select a model that performed best using some error criteria (e.g., **MAPE** or **RMSE**). 
+
+### The train_model main arguments
+
+The main arguments of this `train_model` function are:
 
 
 * `methods` - defines the type of models and their setting to be used on the training process. Currently, it supports the following models:
@@ -165,14 +169,130 @@ md <- train_model(input = USgas,
 
 The function returns a leaderboard table sorting the models by the selected error metric (which in this case was MAPE). In addition to the average MAPE and RMSE error of the models on the testing partitions, the function returns the average coverage rate of the prediction intervals. The coverage rate represents the percentage of actual observations that were bounded between the prediction intervals. As closer the coverage rate to the level rate of the prediction intervals (e.g., 95%), the more reliable the prediction intervals are. For instance, the prediction intervals of the best model, `arima2`, had average coverage of 58% and 80% for the corresponding 80% and 95% prediction intervals. 
 
+### Visualizing the models' performance
 
+The `plot_error` function returns a more detailed view of the models' error rate on the different testing partition: 
 
+```{r}
+plot_error(md)
+```
+Where the left plot represents the models' performance by testing partitions, and the right side represents the error spread of each model. 
+
+The `plot_model` provides an animated visualization of the tested models' performance by animating the forecasted values by testing partition:
 
 ```{r}
 plot_model(md)
 
-plot_error(md)
 ```
 
+Press the **Play** button to run the view the animated plot.
+
+### A functional approach for building the train_mode components
+
+The `create_model` function represents a set of functions that enable you to add, modify, and remove the different components of the train_model function. Let's repeat the previous example, forecasting the demand for natural gas in the US, this time using the functional approach. 
+
+The following two examples demonstrate the usage of the `create_model` function:
+* The first example demonstrate a step-by-step approach of the `create_model` functions, and
+* The second one will demonstrate a more concise approach using pipes (`%>%`).
+
+**Step by step approach**
+
+First step, create the `train_model` object using the `create_model` function:
+
+```{r}
+md1 <- create_model()
+
+class(md1)
+```
+
+The `add_input` function allows you to define the input series for the model:
+
+```{r}
+md1 <- add_input(model.obj = md1, input = USgas)
+```
+
+Next, we will take the same methods we used previously, but this time we will spread them into three separate lists:
+
+```{r}
+ets_methods <- list(ets1 = list(method = "ets",
+                                method_arg = list(opt.crit = "lik"),
+                                notes = "ETS model with opt.crit = lik"),
+                    ets2 = list(method = "ets",
+                                method_arg = list(opt.crit = "amse"),
+                                notes = "ETS model with opt.crit = amse"))
+arima_methods <- list(arima1 = list(method = "arima",
+                                    method_arg = list(order = c(2,1,0)),
+                                    notes = "ARIMA(2,1,0)"),
+                      arima2 = list(method = "arima",
+                                    method_arg = list(order = c(2,1,2),
+                                                      seasonal = list(order = c(1,1,1))),
+                                    notes = "SARIMA(2,1,2)(1,1,1)"))
+
+other_methods <- list(hw = list(method = "HoltWinters",
+                                method_arg = NULL,
+                                notes = "HoltWinters Model"),
+                      tslm = list(method = "tslm",
+                                  method_arg = list(formula = input ~ trend + season),
+                                  notes = "tslm model with trend and seasonal components"))
+```
+
+Next we will use the `add_method` function to add those methods to the `train_model` object:
 
 
+```{r}
+md1 <- add_methods(model.obj = md1, methods = ets_methods)
+md1 <- add_methods(model.obj = md1, methods = arima_methods)
+md1 <- add_methods(model.obj = md1, methods = other_methods)
+```
+
+The `remove_methods`, as the name implies, enables you the remove methods from the object. As we saw before, the performance of the `arima1` model were bad, so let's remove it from the object:
+
+```{r}
+md1 <- remove_methods(model.obj = md1, method_ids = "arima1")
+```
+
+The add_train_method defines the train_method argument of the train_model function:
+
+```{r}
+md1 <- add_train_method(model.obj = md1, train_method = list(partitions = 6, 
+                                                           sample.out = 12, 
+                                                           space = 3))
+```
+
+Last but not least, we will set the forecast horizon and the prediction intervals level using the add_horizon and add_level functions, respectively:
+
+```{r}
+md1 <- add_horizon(model.obj = md1, horizon = 12)
+
+md1 <- add_level(model.obj = md1, level = c(90, 95))
+```
+
+Once all the main parameters are defined, the model can be build by using the `build_model` function:
+
+```{r}
+fc1 <- build_model(model.obj = md1)
+```
+
+**Using the %>% operator**
+
+A more concise approach for using the `create_model` functionality is by piping the process with the `%>%` operatore:
+
+```{r}
+md2 <- create_model() %>%
+  add_input(input = USgas) %>%
+  add_methods(methods = ets_methods) %>%
+  add_methods(methods = arima_methods) %>%
+  add_methods(methods = other_methods) %>%
+  remove_methods(method_ids = "arima1") %>%
+  add_train_method(train_method = list(partitions = 6, 
+                                       sample.out = 12, 
+                                       space = 3)) %>%
+  add_horizon(horizon = 12) %>%
+  add_level(level = c(90, 95))
+```
+
+Likewise, we will pipe the `md2` object to the `build_model` function to run the model:
+
+```{r}
+fc2 <- md2 %>% build_model()
+```
