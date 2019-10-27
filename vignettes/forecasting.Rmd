@@ -47,7 +47,10 @@ ts_info(test)
 
 ## Forecast perfromance 
 
-The `test_forecast` function visualizes the performance of a forecasting model on the training and testing partitions by plotting the fitted and forecasted values against the actuals. For example, let's train a `tslm` model on the `train` partition and forecast the corresponding observations of the `test` partition:
+The `test_forecast` function visualizes the performance of a forecasting model on the training and testing partitions by plotting the fitted and forecasted values against the actuals. The function supports forecast models from the `forecast` and `stats` packages such as `auto.arima`, `tslm`, `ets`, `HoltWinters`, etc.
+
+
+For example, let's train a `tslm` model on the `train` partition and forecast the corresponding observations of the `test` partition:
 
 ```{r}
 library(forecast)
@@ -67,62 +70,25 @@ test_forecast(actual = USgas,
 
 The MAPE and RMSE score of both the fitted and forecasted values can be seen when hovering on the plot. 
 
-**Note:** that the function supports forecast objects from the `forecast` and `stats` packages.
+# Training multiple time series model with backtesting
 
-## Grid search for tunning Holt-Winters model
-
-
-
-```{r}
- hw_grid_shallow <- ts_grid(ts.obj = USgas,
-                            periods = 6,
-                            model = "HoltWinters",
-                            optim = "MAPE",
-                            window_space = 6,
-                            window_test = 12,
-                            hyper_params = list(alpha = seq(0.01, 1,0.1),
-                                                beta =  seq(0.01, 1,0.1),
-                                                gamma = seq(0.01, 1,0.1)),
-                            parallel = TRUE,
-                            n.cores = "auto")
-
-TSstudio::plot_grid(hw_grid_shallow)
-
- a_min <- min(hw_grid_shallow$grid_df$alpha[1:20])
- a_max <- max(hw_grid_shallow$grid_df$alpha[1:20])
- 
- b_min <- min(hw_grid_shallow$grid_df$beta[1:20])
- b_max <- max(hw_grid_shallow$grid_df$beta[1:20])
- 
- g_min <- min(hw_grid_shallow$grid_df$gamma[1:20])
- g_max <- max(hw_grid_shallow$grid_df$gamma[1:20])
- 
- hw_grid_second <- ts_grid(ts.obj = USgas,
-                           periods = 6,
-                           model = "HoltWinters",
-                           optim = "MAPE",
-                           window_space = 6,
-                           window_test = 12,
-                           hyper_params = list(alpha = seq(a_min, a_max,0.05),
-                                               beta =  seq(b_min, b_max,0.05),
-                                               gamma = seq(g_min, g_max,0.05)),
-                           parallel = TRUE,
-                           n.cores = "auto")
+The `train_model` function provides a flexible framework for forecasting. The use of the function is for train, test, and evaluate multiple models (or different versions of those models) with the use of a backtesting approach. The backtesting approach enables you to evaluate the performance of the model over time (as opposed to single training and testing partitions) and select a model that performed best using some error criteria (e.g., **MAPE** or **RMSE**). The main arguments of this function are:
 
 
-TSstudio::plot_grid(hw_grid_second)
-TSstudio::plot_grid(hw_grid_second, type = "3D")
+`methods` - defines the type of models and their setting to be used on the training process. Currently, it supports the following models:
 
-md <- HoltWinters(USgas, 
-                   alpha = hw_grid_second$alpha,
-                   beta = hw_grid_second$beta,
-                   gamma = hw_grid_second$gamma)
- 
- 
-fc <- forecast(md, h = 60)
- 
- plot_forecast(fc)
-```
+  + `arima` - model from the stats package
+
+  + `auto.arima` - model from the forecast package
+
+  + `ets` - model from the forecast package
+
+  + `HoltWinters` - model from the stats package
+
+  + `nnetar` - model from the forecast package
+
+  + `tslm` - model from the forecast package (note that the 'tslm' model must have the formula argument in the 'method_arg' argument)
+  
 
 ```{r}
 methods <- list(ets1 = list(method = "ets",
