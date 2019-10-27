@@ -2032,8 +2032,7 @@ train_model <- function(input,
   return(output)
   
 }
-
-#' Build the \code{\link[TSstudio]{train_model}} Function's Components
+#' A Functional Approach for Building the \code{\link[TSstudio]{train_model}} Components
 #' @description  Add, edit, or remove the components of the  \code{\link[TSstudio]{train_model}} function
 #' @export
 #' @param model.obj The train_model skeleton, created by the create_model 
