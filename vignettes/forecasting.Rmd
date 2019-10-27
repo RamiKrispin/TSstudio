@@ -88,7 +88,22 @@ The `train_model` function provides a flexible framework for forecasting. The us
   + `nnetar` - model from the forecast package
 
   + `tslm` - model from the forecast package (note that the 'tslm' model must have the formula argument in the 'method_arg' argument)
-  
+
+The method argument using the following structure:
+
+```{r, eval = FALSE}
+
+list(model_1_id = list(method = "[type of model]",
+                      method_arg = list("[model 1 arguments]"),
+                      notes = "[set notes for model 1]"),
+     .
+     .
+     .
+     model_n_id = list(method = "[type of model]",
+                      method_arg = list("[model n arguments]"),
+                      notes = "[set notes for model n]"))
+
+```
 
 ```{r}
 methods <- list(ets1 = list(method = "ets",
@@ -113,7 +128,7 @@ methods <- list(ets1 = list(method = "ets",
 # Training the models with backtesting
 md <- train_model(input = USgas,
                   methods = methods,
-                  train_method = list(partitions = 4, 
+                  train_method = list(partitions = 6, 
                                       sample.out = 12, 
                                       space = 3),
                   horizon = 12,
