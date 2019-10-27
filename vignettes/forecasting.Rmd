@@ -6,8 +6,8 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-
-```{r, include = FALSE}
+  
+  ```{r, include = FALSE}
 knitr::opts_chunk$set(
 fig.width=8, 
 fig.height=5,
@@ -75,38 +75,47 @@ The MAPE and RMSE score of both the fitted and forecasted values can be seen whe
 The `train_model` function provides a flexible framework for forecasting. The use of the function is for train, test, and evaluate multiple models (or different versions of those models) with the use of a backtesting approach. The backtesting approach enables you to evaluate the performance of the model over time (as opposed to single training and testing partitions) and select a model that performed best using some error criteria (e.g., **MAPE** or **RMSE**). The main arguments of this function are:
 
 
-`methods` - defines the type of models and their setting to be used on the training process. Currently, it supports the following models:
+* `methods` - defines the type of models and their setting to be used on the training process. Currently, it supports the following models:
 
-  + `arima` - model from the stats package
-
-  + `auto.arima` - model from the forecast package
-
-  + `ets` - model from the forecast package
-
-  + `HoltWinters` - model from the stats package
-
-  + `nnetar` - model from the forecast package
-
-  + `tslm` - model from the forecast package (note that the 'tslm' model must have the formula argument in the 'method_arg' argument)
++ `arima` - model from the stats package
++ `auto.arima` - model from the forecast package
++ `ets` - model from the forecast package
++ `HoltWinters` - model from the stats package
++ `nnetar` - model from the forecast package
++ `tslm` - model from the forecast package (note that the 'tslm' model must have the formula argument in the 'method_arg' argument)
 
 The `method` argument defines as a `list` and using the following structure:
 
 ```{r, eval = FALSE}
 
 list(model_1_id = list(method = "[type of model]",
-                      method_arg = list("[model 1 arguments]"),
-                      notes = "[set notes for model 1]"),
+                       method_arg = list("[model 1 arguments]"),
+                       notes = "[set notes for model 1]"),
      .
      .
      .
      model_n_id = list(method = "[type of model]",
-                      method_arg = list("[model n arguments]"),
-                      notes = "[set notes for model n]"))
+                       method_arg = list("[model n arguments]"),
+                       notes = "[set notes for model n]"))
 
 ```
 
- 
-Where each element in the list represents a model define
+
+Where each element of the list defines the specific model and its setting. The name of the element represents the model ID, and it has three arguments:
+`method` - the type of model to use (one of the listed models above)
+`method_arg` - a list (optional), enables you to modify the default setting of the model argument
+`notes` - a character (optional), allows you to set notes about the model. This useful when testing multiple versions of the same models
+
+
+* `train_method` - a list, set the window structure of the backtesting process, where:
++ `partitions` - set the number of partitions to use on the backtesting
++ `sample.out` - set the length of the testing partitions
++ `space` - defines the expansion length of the backtesting window
+
+**Note:** by default, the backtesting algorithm is using the expending window approach. Alternatively, it is possible to use a sliding window approach by setting the `sample.in` argument. 
+
+
+The following example demonstrated the use of the `train_model` function to forecast the demand for natural gas in the next 12 months. Let's first defines the forecasting methods:
 
 ```{r}
 methods <- list(ets1 = list(method = "ets",
@@ -128,17 +137,39 @@ methods <- list(ets1 = list(method = "ets",
                 tslm = list(method = "tslm",
                             method_arg = list(formula = input ~ trend + season),
                             notes = "tslm model with trend and seasonal components"))
-# Training the models with backtesting
+
+```
+
+Similarly, we will define the window structure of the backtesting by using:
+
+* Six testing partitions
+* Each partition with a length of 12 observations, and
+* Expending rate of the backtesting window of 3 observations  
+
+```{r}
+train_method = list(partitions = 6,
+                    sample.out = 12,
+                    space = 3)
+```
+
+
+```{r}
 md <- train_model(input = USgas,
                   methods = methods,
-                  train_method = list(partitions = 6, 
-                                      sample.out = 12, 
-                                      space = 3),
+                  train_method = train_method,
                   horizon = 12,
                   error = "MAPE")
 
+```
+
+
+
+
+```{r}
 plot_model(md)
 
 plot_error(md)
 ```
+
+
 
