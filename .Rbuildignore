@@ -5,3 +5,8 @@
 ^data-raw$
 ^LICENSE\.md$
 ^docs$
+^CRAN-RELEASE$
+^man/figures/*.*$
+^vignettes/seasonality_analysis.Rmd$
+^vignettes/correlation_analysis.Rmd$
+^vignettes/forecasting.Rmd$
