@@ -258,7 +258,9 @@ check_res <- function(ts.model, lag.max = 36){
   
   
   p1 <- TSstudio::ts_plot(res)
-  p2 <- TSstudio::ts_acf(res, lag.max = lag.max) 
+  p2 <- TSstudio::ts_cor(ts.obj = res, 
+                         type = "acf",
+                         lag.max = lag.max) 
   p3 <- plotly::plot_ly(x = res, type = "histogram", 
                         name = "Histogram", 
                         marker = list(color = "#00526d")
