@@ -12,7 +12,6 @@ LazyData: true
 Depends:
   R (>= 3.0.2)
 Imports:
-  bsts(>= 0.7.1),
   data.table(>= 1.11.2),
   dplyr(>= 0.7.5),
   forecast (>= 8.2),
