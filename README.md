@@ -3,6 +3,7 @@
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/TSstudio)](https://cran.r-project.org/package=TSstudio)
 [![Downloads](http://cranlogs.r-pkg.org/badges/TSstudio)](https://cran.r-project.org/package=TSstudio)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 <!-- badges: end -->
 
