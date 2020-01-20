@@ -1,5 +1,8 @@
-## Version 0.1.51 
+## Version 0.1.6 
 
+* Fixing errors on the `train_model` function:
+    - Error with the forecast output
+    - Error with the nnetar model
 * Replacing the `xts::indexClass` function with `xts::tclass` function
 * Removing the `ts_backtesting` function, which was replaced by the `train_model` function
 * Removing the `ts_acf` and `ts_pacf` functions, the `ts_cor` will replace them
