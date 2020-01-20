@@ -1190,28 +1190,7 @@ train_model <- function(input,
   }) %>%
     stats::setNames(md_names)
   
-  
-  # forecast <- lapply(base::seq_along(p2), function(i1){
-  #   l <- NULL
-  #   l <- base::which(fc_output[f] %>% purrr::map("parameters") %>% purrr::map_chr("partition") == p2[i1])
-  #   md_id <- fc_output[l] %>% purrr::map("parameters") %>% purrr::map_chr("model_id") 
-  #   partition_output <- lapply(l, function(i2){
-  #     x <- fc_output[[i2]]
-  #     y <- base::list()
-  #     y[[x$parameters$model_id]] <- list(model = x$model, forecast = x$forecast, parameters = x$parameters)
-  #   }) %>% stats::setNames(md_id)
-  #   
-  #   
-  #   ts.obj <- NULL
-  #   ts.obj <- stats::window(input, 
-  #                           start = stats::time(input)[input_window$start[which(input_window$partition == p2[i1])]],
-  #                           end = stats::time(input)[input_window$end[which(input_window$partition == p2[i1])]])
-  #   
-  #   partition_output$train <- ts.obj
-  #   return(partition_output)
-  # }) %>% stats::setNames(p2)
-  
-  # Need to fix - nnetar error rate
+  #-------------Error Summary-------------
   error_summary <- lapply(models_df$model_id, function(m){
     
     f <- training[p1] %>% purrr::map(m) %>% purrr::map("forecast") %>% purrr::map("mean") 
@@ -1225,7 +1204,7 @@ train_model <- function(input,
     error_df <- lapply(base::seq_along(p),function(n){
       
       df <-  coverage_df <-  NULL
-      
+      if(m != "nnetar"){
       if(base::is.null(base::colnames(u[[p[n]]]))){
         if(base::is.null(base::dim(u[[p[n]]]))){
           u[[p[n]]] <- u[[p[n]]] %>% as.matrix()
@@ -1251,12 +1230,19 @@ train_model <- function(input,
                                          stringsAsFactors = FALSE), 
                         coverage_df)
       
+      } else if(m == "nnetar"){
+        df <- base::data.frame(partition = n,
+                               model_id = m,
+                               mape = base::mean(base::abs(f[[p[n]]] - a[[p[n]]]) / a[[p[n]]]),
+                               rmse = (base::mean((a[[p[n]]] - f[[p[n]]]) ^ 2)) ^ 0.5,
+                               stringsAsFactors = FALSE)
+      }
       return(df)
     }) %>% dplyr::bind_rows()
     
     return(error_df)
   }) %>% stats::setNames(models_df$model_id)
-  
+  #-------------Setting the leaderboard-------------
   leaderboard <- error_summary %>% dplyr::bind_rows() %>% 
     dplyr::group_by(model_id) %>%
     dplyr::summarise_all(~mean(.)) %>% dplyr::select(-partition) %>%
@@ -1276,7 +1262,7 @@ train_model <- function(input,
     leaderboard <- leaderboard %>% dplyr::arrange(avg_rmse)
   }
   
-  
+  #-------------Setting the output-------------
   output <-   base::list(train = training,
                          forecast = forecast,
                          input = input,
@@ -1295,6 +1281,9 @@ train_model <- function(input,
   return(output)
   
 }
+
+
+
 #' A Functional Approach for Building the \code{\link[TSstudio]{train_model}} Components
 #' @description  Add, edit, or remove the components of the  \code{\link[TSstudio]{train_model}} function
 #' @export
