@@ -28,7 +28,7 @@ Imports:
   tidyr(>= 0.8.1),
   tsibble(>= 0.8.2),
   viridis (>= 0.5.1),
-  xts (>= 0.10-1),
+  xts (>= 0.12-0),
   zoo (>= 1.8-0)
 Suggests:
     devtools,
