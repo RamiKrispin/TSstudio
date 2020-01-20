@@ -1,5 +1,6 @@
-## Version 0.1.5.9000 [version 0.1.6 dev]
+## Version 0.1.51 
 
+* Replacing the `xts::indexClass` function with `xts::tclass` function
 * Removing the `ts_backtesting` function, which was replaced by the `train_model` function
 * Removing the `ts_acf` and `ts_pacf` functions, the `ts_cor` will replace them
 * Removing the `bsts` package from the package dependency
