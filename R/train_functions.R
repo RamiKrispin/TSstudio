@@ -1,7 +1,7 @@
 #' Tuning Time Series Forecasting Models Parameters with Grid Search 
 #' @export ts_grid
 #' @param ts.obj A univariate time series object of a class "ts"
-#' @param model A string, defines the model
+#' @param model A string, defines the model c("HoltWinters"), currently support only Holt-Winters model
 #' @param optim A string, set the optimization method - c("MAPE", "RMSE")
 #' @param periods A string, set the number backtesting periods
 #' @param window_length An integer, defines the length of the backtesting training window.

@@ -11,7 +11,7 @@ ts_grid(ts.obj, model, optim = "MAPE", periods, window_length = NULL,
 \arguments{
 \item{ts.obj}{A univariate time series object of a class "ts"}
 
-\item{model}{A string, defines the model}
+\item{model}{A string, defines the model c("HoltWinters"), currently support only Holt-Winters model}
 
 \item{optim}{A string, set the optimization method - c("MAPE", "RMSE")}
 
