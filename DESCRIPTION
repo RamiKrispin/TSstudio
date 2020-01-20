@@ -1,7 +1,7 @@
 Package: TSstudio
 Type: Package
 Title: Functions for Time Series Analysis and Forecasting
-Version: 0.1.51
+Version: 0.1.6
 Authors@R: person("Rami", "Krispin", email = "rami.krispin@gmail.com",
   role = c("aut", "cre"))
 Maintainer: Rami Krispin <rami.krispin@gmail.com>
