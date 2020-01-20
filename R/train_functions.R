@@ -1181,36 +1181,37 @@ train_model <- function(input,
   # Indexing the forecast output
   f <- base::which(fc_output %>% purrr::map("parameters") %>% purrr::map_chr("type") == "forecast")
   p2 <- fc_output[f]  %>% purrr::map("parameters") %>% purrr::map_chr("partition") %>% base::unique()
-  
-  # forecast <- lapply(f, function(i1){
-  #   l <- NULL
-  #   l <- fc_output[[i1]]
-  #   
-  #   md_id <- l$parameters$model_id
-  # })
+  md_names <- fc_output[f] %>% purrr::map("parameters") %>% purrr::map_chr("model_id")
   
   
-  forecast <- lapply(base::seq_along(p2), function(i1){
+  forecast <- lapply(f, function(i1){
     l <- NULL
-    l <- base::which(fc_output[f] %>% purrr::map("parameters") %>% purrr::map_chr("partition") == p2[i1])
-    md_id <- fc_output[l] %>% purrr::map("parameters") %>% purrr::map_chr("model_id") 
-    partition_output <- lapply(l, function(i2){
-      x <- fc_output[[i2]]
-      y <- base::list()
-      y[[x$parameters$model_id]] <- list(model = x$model, forecast = x$forecast, parameters = x$parameters)
-    }) %>% stats::setNames(md_id)
-    
-    
-    ts.obj <- NULL
-    ts.obj <- stats::window(input, 
-                            start = stats::time(input)[input_window$start[which(input_window$partition == p2[i1])]],
-                            end = stats::time(input)[input_window$end[which(input_window$partition == p2[i1])]])
-    
-    partition_output$train <- ts.obj
-    return(partition_output)
-  }) %>% stats::setNames(p2)
+    l <- fc_output[[i1]]
+  }) %>%
+    stats::setNames(md_names)
   
   
+  # forecast <- lapply(base::seq_along(p2), function(i1){
+  #   l <- NULL
+  #   l <- base::which(fc_output[f] %>% purrr::map("parameters") %>% purrr::map_chr("partition") == p2[i1])
+  #   md_id <- fc_output[l] %>% purrr::map("parameters") %>% purrr::map_chr("model_id") 
+  #   partition_output <- lapply(l, function(i2){
+  #     x <- fc_output[[i2]]
+  #     y <- base::list()
+  #     y[[x$parameters$model_id]] <- list(model = x$model, forecast = x$forecast, parameters = x$parameters)
+  #   }) %>% stats::setNames(md_id)
+  #   
+  #   
+  #   ts.obj <- NULL
+  #   ts.obj <- stats::window(input, 
+  #                           start = stats::time(input)[input_window$start[which(input_window$partition == p2[i1])]],
+  #                           end = stats::time(input)[input_window$end[which(input_window$partition == p2[i1])]])
+  #   
+  #   partition_output$train <- ts.obj
+  #   return(partition_output)
+  # }) %>% stats::setNames(p2)
+  
+  # Need to fix - nnetar error rate
   error_summary <- lapply(models_df$model_id, function(m){
     
     f <- training[p1] %>% purrr::map(m) %>% purrr::map("forecast") %>% purrr::map("mean") 
