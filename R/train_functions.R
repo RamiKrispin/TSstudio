@@ -1150,9 +1150,11 @@ train_model <- function(input,
   #-------------Extracting the training partitions by model-------------
   input_window <- grid_df %>% dplyr::select(start, end, horizon, partition) %>% dplyr::distinct()
   
+  # Indexing the training partitions
   t <- base::which(fc_output %>% purrr::map("parameters") %>% purrr::map_chr("type") == "train")
   p1 <- fc_output[t]  %>% purrr::map("parameters") %>% purrr::map_chr("partition") %>% base::unique()
   
+  # Pulling the backtesting training results 
   training <- lapply(base::seq_along(p1), function(i1){
     l <- NULL
     l <- base::which(fc_output[t] %>% purrr::map("parameters") %>% purrr::map_chr("partition") == p1[i1])
@@ -1176,8 +1178,17 @@ train_model <- function(input,
     return(partition_output)
   }) %>% stats::setNames(p1)
   
+  # Indexing the forecast output
   f <- base::which(fc_output %>% purrr::map("parameters") %>% purrr::map_chr("type") == "forecast")
   p2 <- fc_output[f]  %>% purrr::map("parameters") %>% purrr::map_chr("partition") %>% base::unique()
+  
+  # forecast <- lapply(f, function(i1){
+  #   l <- NULL
+  #   l <- fc_output[[i1]]
+  #   
+  #   md_id <- l$parameters$model_id
+  # })
+  
   
   forecast <- lapply(base::seq_along(p2), function(i1){
     l <- NULL
