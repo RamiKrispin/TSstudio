@@ -1278,7 +1278,7 @@ train_model <- function(input,
   
   
   output <-   base::list(train = training,
-                         forecast = forecast$final_partition,
+                         forecast = forecast,
                          input = input,
                          error_summary = error_summary,
                          leaderboard  = leaderboard,
