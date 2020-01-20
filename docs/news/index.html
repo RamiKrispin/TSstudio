@@ -60,7 +60,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TSstudio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -124,6 +124,22 @@
       <small>Source: <a href='https://github.com/RamiKrispin/TSstudio/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="version-0-1-6" class="section level2">
+<h2 class="hasAnchor">
+<a href="#version-0-1-6" class="anchor"></a>Version 0.1.6</h2>
+<ul>
+<li>Fixing errors on the <code>train_model</code> function:
+<ul>
+<li>Error with the forecast output</li>
+<li>Error with the nnetar model</li>
+</ul>
+</li>
+<li>Replacing the <code><a href="https://www.rdocumentation.org/packages/xts/topics/tclass">xts::indexClass</a></code> function with <code><a href="https://www.rdocumentation.org/packages/xts/topics/tclass">xts::tclass</a></code> function</li>
+<li>Removing the <code>ts_backtesting</code> function, which was replaced by the <code>train_model</code> function</li>
+<li>Removing the <code>ts_acf</code> and <code>ts_pacf</code> functions, the <code>ts_cor</code> will replace them</li>
+<li>Removing the <code>bsts</code> package from the package dependency</li>
+</ul>
+</div>
     <div id="version-0-1-5-is-now-available-on-cran" class="section level2">
 <h2 class="hasAnchor">
 <a href="#version-0-1-5-is-now-available-on-cran" class="anchor"></a>Version 0.1.5 is now available on CRAN</h2>
@@ -212,6 +228,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#version-0-1-6">0.1.6</a></li>
         <li><a href="#version-0-1-5-is-now-available-on-cran">0.1.5</a></li>
         <li><a href="#version-0-1-4-is-now-available-on-cran">0.1.4</a></li>
         <li><a href="#version-0-1-3-is-now-available-on-cran">0.1.3</a></li>

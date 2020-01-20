@@ -80,7 +80,7 @@ xts_to_ts <- function(xts.obj,
   
   if(frequency == 1){
     if(base::is.null(start)){
-      if(base::any(xts::indexClass(xts.obj) %in% c("Date", "POSIXct", "POSIXlt", "POSIXt"))){
+      if(base::any(xts::tclass(xts.obj) %in% c("Date", "POSIXct", "POSIXlt", "POSIXt"))){
         start <- NULL
         start <- lubridate::year(base::min(zoo::index(xts.obj)))
       } else{
@@ -90,7 +90,7 @@ xts_to_ts <- function(xts.obj,
     }
   } else if(frequency == 4){
     if(base::is.null(start)){
-      if(base::any(xts::indexClass(xts.obj) %in% c("Date", "POSIXct", "POSIXlt", "POSIXt", "yearqtr"))){
+      if(base::any(xts::tclass(xts.obj) %in% c("Date", "POSIXct", "POSIXlt", "POSIXt", "yearqtr"))){
         start <- NULL
         start <- c(lubridate::year(base::min(zoo::index(xts.obj))), lubridate::quarter(base::min(zoo::index(xts.obj))))
       } else{
@@ -102,7 +102,7 @@ xts_to_ts <- function(xts.obj,
     }
   } else if(frequency == 12){
     if(base::is.null(start)){
-      if(base::any(xts::indexClass(xts.obj) %in% c("Date", "POSIXct", "POSIXlt", "POSIXt", "yearmon"))){
+      if(base::any(xts::tclass(xts.obj) %in% c("Date", "POSIXct", "POSIXlt", "POSIXt", "yearmon"))){
         start <- NULL
         start <- c(lubridate::year(base::min(zoo::index(xts.obj))), lubridate::month(base::min(zoo::index(xts.obj))))
       } else{
@@ -114,7 +114,7 @@ xts_to_ts <- function(xts.obj,
     }
   } else if(base::round(frequency) == 52){
     if(base::is.null(start)){
-      if(base::any(xts::indexClass(xts.obj) %in% c("Date", "POSIXct", "POSIXlt", "POSIXt"))){
+      if(base::any(xts::tclass(xts.obj) %in% c("Date", "POSIXct", "POSIXlt", "POSIXt"))){
         start <- NULL
         start <- c(lubridate::year(base::min(zoo::index(xts.obj))), lubridate::week(base::min(zoo::index(xts.obj))))
       } else{
@@ -126,7 +126,7 @@ xts_to_ts <- function(xts.obj,
     }
   } else if(base::round(frequency) == 365){
     if(base::is.null(start)){
-      if(base::any(xts::indexClass(xts.obj) %in% c("Date", "POSIXct", "POSIXlt", "POSIXt"))){
+      if(base::any(xts::tclass(xts.obj) %in% c("Date", "POSIXct", "POSIXlt", "POSIXt"))){
         start <- NULL
         start <- c(lubridate::year(base::min(zoo::index(xts.obj))), lubridate::yday(base::min(zoo::index(xts.obj))))
       } else{
@@ -138,7 +138,7 @@ xts_to_ts <- function(xts.obj,
     }
   } else if(frequency == 7){
     if(base::is.null(start)){
-      if(base::any(xts::indexClass(xts.obj) %in% c("Date", "POSIXct", "POSIXlt", "POSIXt"))){
+      if(base::any(xts::tclass(xts.obj) %in% c("Date", "POSIXct", "POSIXlt", "POSIXt"))){
         start <- NULL
         start <- c(lubridate::wday(base::min(zoo::index(xts.obj))))
       } else{
@@ -150,7 +150,7 @@ xts_to_ts <- function(xts.obj,
     }
   } else if(frequency == 24){
     if(base::is.null(start)){
-      if(base::any(xts::indexClass(xts.obj) %in% c("POSIXct", "POSIXlt", "POSIXt"))){
+      if(base::any(xts::tclass(xts.obj) %in% c("POSIXct", "POSIXlt", "POSIXt"))){
         start <- NULL
         start <- c(lubridate::hour(base::min(zoo::index(xts.obj))) + 1)
       } else{
@@ -162,7 +162,7 @@ xts_to_ts <- function(xts.obj,
     }
   } else if(frequency == 48){
     if(base::is.null(start)){
-      if(base::any(xts::indexClass(xts.obj) %in% c( "POSIXct", "POSIXlt", "POSIXt"))){
+      if(base::any(xts::tclass(xts.obj) %in% c( "POSIXct", "POSIXlt", "POSIXt"))){
         start <- NULL
         start <- c(1, (lubridate::hour(base::min(zoo::index(xts.obj))) * 2 + lubridate::minute(base::min(zoo::index(xts.obj)))) +  1)
       } else{
@@ -174,7 +174,7 @@ xts_to_ts <- function(xts.obj,
     }
   } else if(frequency == 24 * 365){
     if(base::is.null(start)){
-      if(base::any(xts::indexClass(xts.obj) %in% c("POSIXct", "POSIXlt", "POSIXt"))){
+      if(base::any(xts::tclass(xts.obj) %in% c("POSIXct", "POSIXlt", "POSIXt"))){
         start <- NULL
         start <- c(1, ((lubridate::yday(base::min(zoo::index(xts.obj))) -1) * 24 + 
                          lubridate::hour(base::min(zoo::index(xts.obj))) + 1))
@@ -187,7 +187,7 @@ xts_to_ts <- function(xts.obj,
     }
   } else if(frequency == 1440){
     if(base::is.null(start)){
-      if(base::any(xts::indexClass(xts.obj) %in% c("POSIXct", "POSIXlt", "POSIXt"))){
+      if(base::any(xts::tclass(xts.obj) %in% c("POSIXct", "POSIXlt", "POSIXt"))){
         start <- NULL
         start <- c(1, (lubridate::hour(base::min(zoo::index(xts.obj))) ) * 60 + lubridate::minute(base::min(zoo::index(xts.obj))) + 1)
       } else{
@@ -199,7 +199,7 @@ xts_to_ts <- function(xts.obj,
     }
   } else if(frequency == 288){
     if(base::is.null(start)){
-      if(base::any(xts::indexClass(xts.obj) %in% c("POSIXct", "POSIXlt", "POSIXt"))){
+      if(base::any(xts::tclass(xts.obj) %in% c("POSIXct", "POSIXlt", "POSIXt"))){
         start <- NULL
         start <- c(1, (lubridate::hour(base::min(zoo::index(xts.obj))) ) * 12 + lubridate::minute(base::min(zoo::index(xts.obj))) + 1)
       } else{
@@ -211,7 +211,7 @@ xts_to_ts <- function(xts.obj,
     }
   } else if(frequency == 96){
     if(base::is.null(start)){
-      if(base::any(xts::indexClass(xts.obj) %in% c("POSIXct", "POSIXlt", "POSIXt"))){
+      if(base::any(xts::tclass(xts.obj) %in% c("POSIXct", "POSIXlt", "POSIXt"))){
         start <- NULL
         start <- c(1, (lubridate::hour(base::min(zoo::index(xts.obj))) ) * 4 + lubridate::minute(base::min(zoo::index(xts.obj))) + 1)
       } else{

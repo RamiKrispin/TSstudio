@@ -1,7 +1,7 @@
 Package: TSstudio
 Type: Package
 Title: Functions for Time Series Analysis and Forecasting
-Version: 0.1.5
+Version: 0.1.6
 Authors@R: person("Rami", "Krispin", email = "rami.krispin@gmail.com",
   role = c("aut", "cre"))
 Maintainer: Rami Krispin <rami.krispin@gmail.com>
@@ -12,7 +12,6 @@ LazyData: true
 Depends:
   R (>= 3.0.2)
 Imports:
-  bsts(>= 0.7.1),
   data.table(>= 1.11.2),
   dplyr(>= 0.7.5),
   forecast (>= 8.2),
@@ -29,7 +28,7 @@ Imports:
   tidyr(>= 0.8.1),
   tsibble(>= 0.8.2),
   viridis (>= 0.5.1),
-  xts (>= 0.10-1),
+  xts (>= 0.12-0),
   zoo (>= 1.8-0)
 Suggests:
     devtools,
