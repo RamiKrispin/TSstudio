@@ -671,18 +671,18 @@ train_model <- function(input,
                         xreg = NULL,
                         level = c(80, 95)){
   
+  #-------------Setting functions and variables-------------
   # Setting the pipe operator
   `%>%` <- magrittr::`%>%`
-  
+  # Defines variables
   method_list <- input_freq <- input_length <- w <- s1 <- s2 <- NULL
   grid_df <- models_df <- w_range <-  notes <- NULL
   methods_selected <- model_id <- start <- end <- partition <- NULL
   model <- avg_mape <- avg_rmse <- NULL
+  # Defines list of possible models
   # Whenever updating, need to update the add_method function as well
   method_list <- list("arima", "auto.arima", "ets", "HoltWinters", "nnetar", "tslm")
-  
-  
-  ### Error Handling
+  #-------------Error handling-------------
   # Check the level argument
   if(base::all(!is.numeric(level)) ||
      base::any(level %% 1 != 0) ||
@@ -697,7 +697,6 @@ train_model <- function(input,
     stop("Error on the 'error' argument: the input is not valid, please use either 'RMSE' or 'MAPE'")
   }
   
-  
   # Checking the input argument
   if(!stats::is.ts(input)){
     stop("The input argument is not a valid 'ts' object")
@@ -708,8 +707,6 @@ train_model <- function(input,
   # Getting the attributes of the input object
   input_freq <- stats::frequency(input)
   input_length <- base::length(input)
-  
-  
   
   # Validating the methods argument
   
@@ -753,7 +750,6 @@ train_model <- function(input,
             train_method$space %% 1 != 0){
     stop("Error on the 'train_method' argument:  the 'space' argument is not valide, please use a positive integer")
   } 
-  
   
   w <-  seq(from = input_length - train_method$space * (train_method$partitions - 1), 
             by = train_method$space, 
@@ -812,8 +808,7 @@ train_model <- function(input,
       stop("Error on the 'xreg' argument: the length of the xreg forecast input is not aligned with the forecast horizon")
     }
   }
-  
-  # Creating grid of all the modeling combinations
+  #-------------Model combintation grid-------------
   grid_df <- base::expand.grid(models_df$model_id, s1, train_method$sample.out, stringsAsFactors = FALSE) %>% 
     stats::setNames(c("model_id", "start", "horizon")) %>% 
     dplyr::left_join(models_df, by = c("model_id"))  %>%
@@ -825,11 +820,11 @@ train_model <- function(input,
     ) %>%
     dplyr::left_join(w_range, by = c("start", "type"))
   
-  
+  #-------------Backtesting function-------------
   fc_output <-  lapply(base::seq_along(grid_df$model_id), function(i){
     
     ts.obj <- train <- test <- md <- fc <- arg <- NULL
-    
+    # Setting the training partition
     ts.obj <- stats::window(input, 
                             start = stats::time(input)[grid_df$start[i]], 
                             end = stats::time(input)[grid_df$end[i]])
@@ -1152,7 +1147,7 @@ train_model <- function(input,
     return(output)
     
   })
-  
+  #-------------Extracting the training partitions by model-------------
   input_window <- grid_df %>% dplyr::select(start, end, horizon, partition) %>% dplyr::distinct()
   
   t <- base::which(fc_output %>% purrr::map("parameters") %>% purrr::map_chr("type") == "train")
