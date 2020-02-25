@@ -232,7 +232,7 @@ ts_seasonal <- function(ts.obj,
       df_temp <- base::data.frame(date = ts.obj[, date_col], ts.obj[, numeric_col[1]])
     }
     
-    dt_temp <- dt_temp %>% dplyr::arrange(date)
+    df_temp <- df_temp %>% dplyr::arrange(date)
     
     data_diff <- NULL
     date_diff <- base::diff(as.numeric(df_temp$date))
