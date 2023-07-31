@@ -117,7 +117,7 @@ ts_grid <- function(ts.obj,
               " setting it to 'auto' mode")
       n.cores <- "auto"
     } else{
-      if(future::availableCores() < n.cores){
+      if(parallel::detectCores() < n.cores){
         warning("The value of the 'n.cores' argument is not valid,", 
                 "(the requested number of cores are greater than available)",
                 ", setting it to 'auto' mode")
@@ -127,7 +127,7 @@ ts_grid <- function(ts.obj,
   }
   
   if(n.cores == "auto"){
-    n.cores <- base::as.numeric(future::availableCores() - 1)
+    n.cores <- base::as.numeric(parallel::detectCores() - 1)
   }
   
   if(!base::exists("model")){
@@ -287,9 +287,9 @@ ts_grid <- function(ts.obj,
       dplyr::bind_rows() %>%
       tidyr::spread(key = period, value = error)
   } else if(parallel){
-    future::plan(future::multiprocess, workers = n.cores)  
+    
     start_time <- Sys.time()
-    grid_output <- future.apply::future_lapply(1:periods, function(n){
+    grid_output <- parallel::mcmapply(mc.cores = n.cores, 1:periods, function(n){
       ts_sub <- train <- test <- search_df <- NULL
       
       search_df <- grid_df
