@@ -1,3 +1,11 @@
+## Version 0.1.7
+
+* Replacing deprecated functions:
+  - `ts_split` - replacing the `is.tsibble` function with `is_tsibble` function
+  - `ts_grid` - replacing the future package lapply function with the parallel 
+  package implementation 
+
+
 ## Version 0.1.6 
 
 * Fixing errors on the `train_model` function:
@@ -8,60 +16,66 @@
 * Removing the `ts_acf` and `ts_pacf` functions, the `ts_cor` will replace them
 * Removing the `bsts` package from the package dependency
 
-## Version 0.1.5 is now available on CRAN
+## Version 0.1.5
 
-Package license
+**Package license**
 
-* Changing the package license from GPL-3 to MIT
+Changing the package license from GPL-3 to MIT
 
-New functions
+**New functions**
 
-*train_model - a flexible framework for training, testing, evaluating, and forecasting models. This function provides the ability to run multiple models with backtesting or single training/testing partitions
+* train_model - a flexible framework for training, testing, evaluating, and forecasting models. This function provides the ability to run multiple models with backtesting or single training/testing partitions
 * plot_model - animation the performance of the train_model output on the backtesting partitions
 * plot_error - plotting the error distribution of the train_model output 
 * ts_cor - for acf and pacf plots with seasonal lags
 * arima_diag - a diagnostic plot for identify the AR, MA and differencing components of the ARIMA model
 
-Deprecated functions
+**Deprecated functions**
 
 * ts_backtesting - will be replaced by the train_model function
 * ts_acf / ts_pacf functions - will be replaced by the ts_cor function
 
-Fix errors 
+**Fix errors**
+
 * ts_seasonal - aligning the box plot color 
 * ts_plot - setting the dash and marker mode for multiple time series
 
-## Version 0.1.4 is now available on CRAN
-New functions
+## Version 0.1.4
+
+**New functions**
+
 * forecast_sim - creating different forecast paths for forecast objects (when applicable), by utilizing the underline model distribution with the simulate function
 * ts_grid - tuning time series models with grid search approach using backtesting method. Currently, support only the Holt-Winters model
 * plot_grid - plotting the output of the ts_grid function
 
-Fix errors
+**Fix errors**
+
 * ts_plot, test_forecast - avoid default setting of the plot_ly function, and set explicitly the plot setting (e.g., color, line mode, etc.). This allows using the function with the plotly subplot function 
 * ts_seasonal - define the order of the frequency units of the box plot option
 plot_forecast - fixing a gap between the forecast values and the time (x-axis) values 
 
-## Version 0.1.3 is now available on CRAN
+## Version 0.1.3 
 * ts_to_prophet function for converting ts objects ("ts", "zoo" and "xts" class) to prophet object
 * ccf_plot function for plotting corss correlation lags between two time series
 * Fixed error in the ts_backtesting function - supprting xreg option
 
-## Version 0.1.2 is now available on CRAN
-New functions:
+## Version 0.1.2 
+
+**New functions**
+
 * ts_backtesting -  a horce race of multiple forecasting models with backtesting
 * ts_quantile - time series quantile plot for time series data
 * ts_seasonal - supports multiple inputs and new color palattes 
 
-## Version 0.1.1 is now available on CRAN
-What's new:
+## Version 0.1.1 
+
+**New functions**
+
 * New options for the seasonality plot
 * Heatmap and surface plots
 * Polar plot
 * Converting function from xts and zoo to ts class
 * Spliting function for ts object for training and testing partitions
-
-## Updates for the development version (0.1.0.9000) on Github
 * Time series lags plot - ts_lags() function
 * Function ts_split() to split 'ts' object into training and testing partitions 
 * Functions for converting xts and zoo objects for ts object:
@@ -79,7 +93,7 @@ What's new:
 * Data set - University of Michigan Consumer Survey, Index of Consumer Sentiment: 1980 - 2017 (Michigan_CS), 'xts' object 
 * Data set - Monthly crude Oil Prices: Brent - Europe: 1987 - 2017 (EURO_Brent), 'zoo' object
 
-## Version 0.1.0 is now available on CRAN
+## Version 0.1.0 
 
 * Function for plotting univariate and multivariate time series data
 * Evaluation plot for the testing set (hold-out data)
