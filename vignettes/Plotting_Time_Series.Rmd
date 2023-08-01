@@ -18,7 +18,7 @@ comment = "#>"
 
 ## The ts_plot function
 
-The plotting of time series object is most likely one of the steps of the analysis of time-series data. The \code{\link[TSstudio]{ts_plot} is a customized function for plotting time series data based on the [plotly](https://plot.ly/r/) package visualization engine. It supports the following time-series classes:
+The plotting of time series object is most likely one of the steps of the analysis of time-series data. The \code{\link[TSstudio]{ts_plot} is a customized function for plotting time series data based on the [plotly](https://plotly.com/r/) package visualization engine. It supports the following time-series classes:
 
 * ts
 * mts
