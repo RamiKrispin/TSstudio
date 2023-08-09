@@ -74,121 +74,100 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ts_grid</span><span class="op">(</span><span class="va">ts.obj</span>, <span class="va">model</span>, optim <span class="op">=</span> <span class="st">"MAPE"</span>, <span class="va">periods</span>, window_length <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">window_space</span>, <span class="va">window_test</span>, <span class="va">hyper_params</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  n.cores <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ts_grid</span><span class="op">(</span><span class="va">ts.obj</span>, <span class="va">model</span>, optim <span class="op">=</span> <span class="st">"MAPE"</span>, <span class="va">periods</span>, window_length <span class="op">=</span> <span class="cn">NULL</span>,
+  <span class="va">window_space</span>, <span class="va">window_test</span>, <span class="va">hyper_params</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span>,
+  n.cores <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>ts.obj</dt>
 <dd><p>A univariate time series object of a class "ts"</p></dd>
-
-
 <dt>model</dt>
 <dd><p>A string, defines the model c("HoltWinters"), currently support only Holt-Winters model</p></dd>
-
-
 <dt>optim</dt>
 <dd><p>A string, set the optimization method - c("MAPE", "RMSE")</p></dd>
-
-
 <dt>periods</dt>
 <dd><p>A string, set the number backtesting periods</p></dd>
-
-
 <dt>window_length</dt>
 <dd><p>An integer, defines the length of the backtesting training window.
 If set to NULL (default) will use an expending window starting the from the first observation,
  otherwise will use a sliding window.</p></dd>
-
-
 <dt>window_space</dt>
 <dd><p>An integer, set the space length between each of the backtesting training partition</p></dd>
-
-
 <dt>window_test</dt>
 <dd><p>An integer, set the length of the backtesting testing partition</p></dd>
-
-
 <dt>hyper_params</dt>
 <dd><p>A list, defines the tuning parameters and their range</p></dd>
-
-
 <dt>parallel</dt>
 <dd><p>Logical, if TRUE use multiple cores in parallel</p></dd>
-
-
 <dt>n.cores</dt>
 <dd><p>Set the number of cores to use if the parallel argument is set to TRUE. 
 If set to "auto" (default), will use n-1 of the available cores</p></dd>
-
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>A list</p>
+    <p>A list</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">USgas</span><span class="op">)</span></span></span>
-<span class="r-in"><span> </span></span>
-<span class="r-in"><span> <span class="co"># Starting with a shallow search (sequence between 0 and 1 with jumps of 0.1)</span></span></span>
-<span class="r-in"><span> <span class="co"># To speed up the process, will set the parallel option to TRUE </span></span></span>
-<span class="r-in"><span> <span class="co"># to run the search in parallel using 8 cores</span></span></span>
-<span class="r-in"><span> </span></span>
-<span class="r-in"><span> <span class="va">hw_grid_shallow</span> <span class="op">&lt;-</span> <span class="fu">ts_grid</span><span class="op">(</span>ts.obj <span class="op">=</span> <span class="va">USgas</span>,</span></span>
-<span class="r-in"><span>                            periods <span class="op">=</span> <span class="fl">6</span>,</span></span>
-<span class="r-in"><span>                            model <span class="op">=</span> <span class="st">"HoltWinters"</span>,</span></span>
-<span class="r-in"><span>                            optim <span class="op">=</span> <span class="st">"MAPE"</span>,</span></span>
-<span class="r-in"><span>                            window_space <span class="op">=</span> <span class="fl">6</span>,</span></span>
-<span class="r-in"><span>                            window_test <span class="op">=</span> <span class="fl">12</span>,</span></span>
-<span class="r-in"><span>                            hyper_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">1</span>,<span class="fl">0.1</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                                                beta <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">1</span>,<span class="fl">0.1</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                                                gamma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">1</span>,<span class="fl">0.1</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                            parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>                            n.cores <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
-<span class="r-in"><span> </span></span>
-<span class="r-in"><span> </span></span>
-<span class="r-in"><span> <span class="co"># Use the parameter range of the top 20 models </span></span></span>
-<span class="r-in"><span> <span class="co"># to set a narrow but more agressive search</span></span></span>
-<span class="r-in"><span> </span></span>
-<span class="r-in"><span> <span class="va">a_min</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">hw_grid_shallow</span><span class="op">$</span><span class="va">grid_df</span><span class="op">$</span><span class="va">alpha</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-in"><span> <span class="va">a_max</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">hw_grid_shallow</span><span class="op">$</span><span class="va">grid_df</span><span class="op">$</span><span class="va">alpha</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-in"><span> </span></span>
-<span class="r-in"><span> <span class="va">b_min</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">hw_grid_shallow</span><span class="op">$</span><span class="va">grid_df</span><span class="op">$</span><span class="va">beta</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-in"><span> <span class="va">b_max</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">hw_grid_shallow</span><span class="op">$</span><span class="va">grid_df</span><span class="op">$</span><span class="va">beta</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-in"><span> </span></span>
-<span class="r-in"><span> <span class="va">g_min</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">hw_grid_shallow</span><span class="op">$</span><span class="va">grid_df</span><span class="op">$</span><span class="va">gamma</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-in"><span> <span class="va">g_max</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">hw_grid_shallow</span><span class="op">$</span><span class="va">grid_df</span><span class="op">$</span><span class="va">gamma</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-in"><span> </span></span>
-<span class="r-in"><span> <span class="va">hw_grid_second</span> <span class="op">&lt;-</span> <span class="fu">ts_grid</span><span class="op">(</span>ts.obj <span class="op">=</span> <span class="va">USgas</span>,</span></span>
-<span class="r-in"><span>                           periods <span class="op">=</span> <span class="fl">6</span>,</span></span>
-<span class="r-in"><span>                           model <span class="op">=</span> <span class="st">"HoltWinters"</span>,</span></span>
-<span class="r-in"><span>                           optim <span class="op">=</span> <span class="st">"MAPE"</span>,</span></span>
-<span class="r-in"><span>                           window_space <span class="op">=</span> <span class="fl">6</span>,</span></span>
-<span class="r-in"><span>                           window_test <span class="op">=</span> <span class="fl">12</span>,</span></span>
-<span class="r-in"><span>                           hyper_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">a_min</span>, <span class="va">a_max</span>,<span class="fl">0.05</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                                               beta <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">b_min</span>, <span class="va">b_max</span>,<span class="fl">0.05</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                                               gamma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">g_min</span>, <span class="va">g_max</span>,<span class="fl">0.05</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                           parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>                           n.cores <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
-<span class="r-in"><span> </span></span>
-<span class="r-in"><span> <span class="va">md</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/HoltWinters.html" class="external-link">HoltWinters</a></span><span class="op">(</span><span class="va">USgas</span>, </span></span>
-<span class="r-in"><span>                   alpha <span class="op">=</span> <span class="va">hw_grid_second</span><span class="op">$</span><span class="va">alpha</span>,</span></span>
-<span class="r-in"><span>                   beta <span class="op">=</span> <span class="va">hw_grid_second</span><span class="op">$</span><span class="va">beta</span>,</span></span>
-<span class="r-in"><span>                   gamma <span class="op">=</span> <span class="va">hw_grid_second</span><span class="op">$</span><span class="va">gamma</span><span class="op">)</span></span></span>
-<span class="r-in"><span> </span></span>
-<span class="r-in"><span> <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pkg.robjhyndman.com/forecast/" class="external-link">forecast</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span> </span></span>
-<span class="r-in"><span> <span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pkg.robjhyndman.com/forecast/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span><span class="va">md</span>, h <span class="op">=</span> <span class="fl">60</span><span class="op">)</span></span></span>
-<span class="r-in"><span> </span></span>
-<span class="r-in"><span> <span class="fu"><a href="plot_forecast.html">plot_forecast</a></span><span class="op">(</span><span class="va">fc</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="op">}</span>  </span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"> <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">USgas</span><span class="op">)</span></span>
+<span class="r-in"> </span>
+<span class="r-in"> <span class="co"># Starting with a shallow search (sequence between 0 and 1 with jumps of 0.1)</span></span>
+<span class="r-in"> <span class="co"># To speed up the process, will set the parallel option to TRUE </span></span>
+<span class="r-in"> <span class="co"># to run the search in parallel using 8 cores</span></span>
+<span class="r-in"> </span>
+<span class="r-in"> <span class="va">hw_grid_shallow</span> <span class="op">&lt;-</span> <span class="fu">ts_grid</span><span class="op">(</span>ts.obj <span class="op">=</span> <span class="va">USgas</span>,</span>
+<span class="r-in">                            periods <span class="op">=</span> <span class="fl">6</span>,</span>
+<span class="r-in">                            model <span class="op">=</span> <span class="st">"HoltWinters"</span>,</span>
+<span class="r-in">                            optim <span class="op">=</span> <span class="st">"MAPE"</span>,</span>
+<span class="r-in">                            window_space <span class="op">=</span> <span class="fl">6</span>,</span>
+<span class="r-in">                            window_test <span class="op">=</span> <span class="fl">12</span>,</span>
+<span class="r-in">                            hyper_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">1</span>,<span class="fl">0.1</span><span class="op">)</span>,</span>
+<span class="r-in">                                                beta <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">1</span>,<span class="fl">0.1</span><span class="op">)</span>,</span>
+<span class="r-in">                                                gamma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">1</span>,<span class="fl">0.1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span class="r-in">                            parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span class="r-in">                            n.cores <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
+<span class="r-in"> </span>
+<span class="r-in"> </span>
+<span class="r-in"> <span class="co"># Use the parameter range of the top 20 models </span></span>
+<span class="r-in"> <span class="co"># to set a narrow but more agressive search</span></span>
+<span class="r-in"> </span>
+<span class="r-in"> <span class="va">a_min</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">hw_grid_shallow</span><span class="op">$</span><span class="va">grid_df</span><span class="op">$</span><span class="va">alpha</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">]</span><span class="op">)</span></span>
+<span class="r-in"> <span class="va">a_max</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">hw_grid_shallow</span><span class="op">$</span><span class="va">grid_df</span><span class="op">$</span><span class="va">alpha</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">]</span><span class="op">)</span></span>
+<span class="r-in"> </span>
+<span class="r-in"> <span class="va">b_min</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">hw_grid_shallow</span><span class="op">$</span><span class="va">grid_df</span><span class="op">$</span><span class="va">beta</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">]</span><span class="op">)</span></span>
+<span class="r-in"> <span class="va">b_max</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">hw_grid_shallow</span><span class="op">$</span><span class="va">grid_df</span><span class="op">$</span><span class="va">beta</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">]</span><span class="op">)</span></span>
+<span class="r-in"> </span>
+<span class="r-in"> <span class="va">g_min</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">hw_grid_shallow</span><span class="op">$</span><span class="va">grid_df</span><span class="op">$</span><span class="va">gamma</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">]</span><span class="op">)</span></span>
+<span class="r-in"> <span class="va">g_max</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">hw_grid_shallow</span><span class="op">$</span><span class="va">grid_df</span><span class="op">$</span><span class="va">gamma</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">]</span><span class="op">)</span></span>
+<span class="r-in"> </span>
+<span class="r-in"> <span class="va">hw_grid_second</span> <span class="op">&lt;-</span> <span class="fu">ts_grid</span><span class="op">(</span>ts.obj <span class="op">=</span> <span class="va">USgas</span>,</span>
+<span class="r-in">                           periods <span class="op">=</span> <span class="fl">6</span>,</span>
+<span class="r-in">                           model <span class="op">=</span> <span class="st">"HoltWinters"</span>,</span>
+<span class="r-in">                           optim <span class="op">=</span> <span class="st">"MAPE"</span>,</span>
+<span class="r-in">                           window_space <span class="op">=</span> <span class="fl">6</span>,</span>
+<span class="r-in">                           window_test <span class="op">=</span> <span class="fl">12</span>,</span>
+<span class="r-in">                           hyper_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">a_min</span>, <span class="va">a_max</span>,<span class="fl">0.05</span><span class="op">)</span>,</span>
+<span class="r-in">                                               beta <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">b_min</span>, <span class="va">b_max</span>,<span class="fl">0.05</span><span class="op">)</span>,</span>
+<span class="r-in">                                               gamma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">g_min</span>, <span class="va">g_max</span>,<span class="fl">0.05</span><span class="op">)</span><span class="op">)</span>,</span>
+<span class="r-in">                           parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span class="r-in">                           n.cores <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
+<span class="r-in"> </span>
+<span class="r-in"> <span class="va">md</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/HoltWinters.html" class="external-link">HoltWinters</a></span><span class="op">(</span><span class="va">USgas</span>, </span>
+<span class="r-in">                   alpha <span class="op">=</span> <span class="va">hw_grid_second</span><span class="op">$</span><span class="va">alpha</span>,</span>
+<span class="r-in">                   beta <span class="op">=</span> <span class="va">hw_grid_second</span><span class="op">$</span><span class="va">beta</span>,</span>
+<span class="r-in">                   gamma <span class="op">=</span> <span class="va">hw_grid_second</span><span class="op">$</span><span class="va">gamma</span><span class="op">)</span></span>
+<span class="r-in"> </span>
+<span class="r-in"> <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pkg.robjhyndman.com/forecast/" class="external-link">forecast</a></span><span class="op">)</span></span>
+<span class="r-in"> </span>
+<span class="r-in"> <span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pkg.robjhyndman.com/forecast/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span><span class="va">md</span>, h <span class="op">=</span> <span class="fl">60</span><span class="op">)</span></span>
+<span class="r-in"> </span>
+<span class="r-in"> <span class="fu"><a href="plot_forecast.html">plot_forecast</a></span><span class="op">(</span><span class="va">fc</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="op">}</span>  </span>
 </code></pre></div>
     </div>
   </div>
@@ -203,7 +182,8 @@ If set to "auto" (default), will use n-1 of the available cores</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.1.</p>
 </div>
 
       </footer></div>

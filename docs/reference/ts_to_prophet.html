@@ -72,32 +72,27 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ts_to_prophet</span><span class="op">(</span><span class="va">ts.obj</span>, start <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ts_to_prophet</span><span class="op">(</span><span class="va">ts.obj</span>, start <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>ts.obj</dt>
 <dd><p>A univariate time series object of a class "ts", "zoo", "xts", with a daily, weekly, monthly , quarterly or yearly frequency</p></dd>
-
-
 <dt>start</dt>
 <dd><p>A date object (optional), if the starting date of the series is known. Otherwise, the date would be derive from the series index</p></dd>
-
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>A data frame object</p>
+    <p>A data frame object</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">USgas</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">ts_to_prophet</span><span class="op">(</span>ts.obj <span class="op">=</span> <span class="va">USgas</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">USgas</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="fu">ts_to_prophet</span><span class="op">(</span>ts.obj <span class="op">=</span> <span class="va">USgas</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ds      y</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1   2000-01-01 2510.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2   2000-02-01 2330.7</span>
@@ -337,10 +332,10 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> 236 2019-08-01 2437.2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 237 2019-09-01 2215.6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 238 2019-10-01 2472.3</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># If known setting the start date of the input object</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">ts_to_prophet</span><span class="op">(</span>ts.obj <span class="op">=</span> <span class="va">USgas</span>, start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2000-01-01"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># If known setting the start date of the input object</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="fu">ts_to_prophet</span><span class="op">(</span>ts.obj <span class="op">=</span> <span class="va">USgas</span>, start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2000-01-01"</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ds      y</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1   2000-01-01 2510.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2   2000-02-01 2330.7</span>
@@ -580,7 +575,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> 236 2019-08-01 2437.2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 237 2019-09-01 2215.6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 238 2019-10-01 2472.3</span>
-<span class="r-in"><span></span></span>
+<span class="r-in"></span>
 </code></pre></div>
     </div>
   </div>
@@ -595,7 +590,8 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.1.</p>
 </div>
 
       </footer></div>

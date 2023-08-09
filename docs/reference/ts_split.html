@@ -72,43 +72,40 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ts_split</span><span class="op">(</span><span class="va">ts.obj</span>, sample.out <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ts_split</span><span class="op">(</span><span class="va">ts.obj</span>, sample.out <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>ts.obj</dt>
 <dd><p>A univariate time series object of a class "ts" or "tsibble"</p></dd>
-
-
 <dt>sample.out</dt>
 <dd><p>An integer, set the number of periods of the testing or sample out partition, defualt set for 
 30 percent of the lenght of the series</p></dd>
-
 </dl></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## Split the USgas dataset into training and testing partitions</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## Set the last 12 months as a testing partition </span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## and the rest as a training partition</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">USgas</span>, package <span class="op">=</span> <span class="st">"TSstudio"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">split_USgas</span> <span class="op">&lt;-</span> <span class="fu">ts_split</span><span class="op">(</span>ts.obj <span class="op">=</span> <span class="va">USgas</span>, sample.out <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">training</span> <span class="op">&lt;-</span> <span class="va">split_USgas</span><span class="op">$</span><span class="va">train</span></span></span>
-<span class="r-in"><span><span class="va">testing</span> <span class="op">&lt;-</span> <span class="va">split_USgas</span><span class="op">$</span><span class="va">test</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">USgas</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
+<span class="r-in"><span class="co">## Split the USgas dataset into training and testing partitions</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co">## Set the last 12 months as a testing partition </span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co">## and the rest as a training partition</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">USgas</span>, package <span class="op">=</span> <span class="st">"TSstudio"</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">split_USgas</span> <span class="op">&lt;-</span> <span class="fu">ts_split</span><span class="op">(</span>ts.obj <span class="op">=</span> <span class="va">USgas</span>, sample.out <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">training</span> <span class="op">&lt;-</span> <span class="va">split_USgas</span><span class="op">$</span><span class="va">train</span></span>
+<span class="r-in"><span class="va">testing</span> <span class="op">&lt;-</span> <span class="va">split_USgas</span><span class="op">$</span><span class="va">test</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">USgas</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 238</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">training</span><span class="op">)</span></span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">training</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 226</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">testing</span><span class="op">)</span></span></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">testing</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 12</span>
 </code></pre></div>
     </div>
@@ -124,7 +121,8 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.1.</p>
 </div>
 
       </footer></div>

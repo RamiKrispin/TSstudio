@@ -72,7 +72,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ts_reshape</span><span class="op">(</span><span class="va">ts.obj</span>, type <span class="op">=</span> <span class="st">"wide"</span>, frequency <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ts_reshape</span><span class="op">(</span><span class="va">ts.obj</span>, type <span class="op">=</span> <span class="st">"wide"</span>, frequency <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -80,25 +80,20 @@
     <dl><dt>ts.obj</dt>
 <dd><p>a univariate time series object of a class "ts", "zoo", "xts", and the data frame family (data.frame, data.table, tbl, tibble, etc.) with a 
 Date column and at least one numeric column. This function support time series objects with a daily, weekly, monthly or quarterly frequencies</p></dd>
-
-
 <dt>type</dt>
 <dd><p>The reshape type -</p>
 <p>"wide" set the years as the columns and the cycle units (months or quarter) as the rows, or</p>
 <p>"long" split the time object to year, cycle unit and value</p></dd>
-
-
 <dt>frequency</dt>
 <dd><p>An integer, define the series frequency when more than one option is avaiable and the input is one of the data frame family. 
 If set to NULL will use the first option by default when applicable - daily = c(7, 365)</p></dd>
-
 </dl></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">USgas</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">USgas_df</span> <span class="op">&lt;-</span> <span class="fu">ts_reshape</span><span class="op">(</span><span class="va">USgas</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">USgas</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">USgas_df</span> <span class="op">&lt;-</span> <span class="fu">ts_reshape</span><span class="op">(</span><span class="va">USgas</span><span class="op">)</span></span>
 </code></pre></div>
     </div>
   </div>
@@ -113,7 +108,8 @@ If set to NULL will use the first option by default when applicable - daily = c(
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.1.</p>
 </div>
 
       </footer></div>

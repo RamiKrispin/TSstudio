@@ -87,22 +87,32 @@
       </header><div class="row">
   <div class="contents col-md-9">
 <div class="section level1">
-<div class="page-header"><h1 id="tsstudio-">TSstudio <a href="https://ramikrispin.github.io/TSstudio/" class="external-link"><img src="reference/figures/TSstudio%20logo.png" align="right"></a>
+<div class="page-header"><h1 id="tsstudio-">TSstudio
+<a href="https://ramikrispin.github.io/TSstudio/" class="external-link"><img src="reference/figures/TSstudio%20logo.png" align="right"></a>
 <a class="anchor" aria-label="anchor" href="#tsstudio-"></a>
 </h1></div>
 <!-- badges: start -->
-<!-- badges: end --><p>The <a href="https://ramikrispin.github.io/TSstudio/" class="external-link">TSstudio</a> package provides a set of tools descriptive and predictive analysis of time series data. That includes utility functions for preprocessing time series data, interactive visualization functions based on the <a href="https://CRAN.R-project.org/package=plotly" class="external-link">plotly</a> package engine, and set of tools for training and evaluating time series forecasting models from the <a href="https://CRAN.R-project.org/package=forecast" class="external-link">forecast</a>, <a href="https://CRAN.R-project.org/package=forecastHybrid" class="external-link">forecastHybrid</a>, and <a href="https://CRAN.R-project.org/package=bsts" class="external-link">bsts</a> packages.</p>
+
+<!-- badges: end -->
+<p>The <a href="https://ramikrispin.github.io/TSstudio/" class="external-link">TSstudio</a>
+package provides a set of tools descriptive and predictive analysis of
+time series data. That includes utility functions for preprocessing time
+series data, interactive visualization functions based on the <a href="https://CRAN.R-project.org/package=plotly" class="external-link">plotly</a> package
+engine, and set of tools for training and evaluating time series
+forecasting models from the <a href="https://CRAN.R-project.org/package=forecast" class="external-link">forecast</a>, <a href="https://CRAN.R-project.org/package=forecastHybrid" class="external-link">forecastHybrid</a>,
+and <a href="https://CRAN.R-project.org/package=bsts" class="external-link">bsts</a>
+packages.</p>
 <p>More information available on the package <a href="https://ramikrispin.github.io/TSstudio/articles/" class="external-link">vignettes</a>.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>Install the stable version from <a href="https://CRAN.R-project.org/package=TSstudio" class="external-link">CRAN</a>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"TSstudio"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"TSstudio"</span><span class="op">)</span></code></pre></div>
 <p>or install the development version from <a href="https://github.com/RamiKrispin/TSstudio" class="external-link">Github</a>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"RamiKrispin/TSstudio"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"RamiKrispin/TSstudio"</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
@@ -111,120 +121,120 @@
 <h3 id="plotting-time-series-data">Plotting time series data<a class="anchor" aria-label="anchor" href="#plotting-time-series-data"></a>
 </h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RamiKrispin/TSstudio" class="external-link">TSstudio</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">USgas</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Ploting time series object</span></span>
-<span><span class="fu"><a href="reference/ts_plot.html">ts_plot</a></span><span class="op">(</span><span class="va">USgas</span>, </span>
-<span>        title <span class="op">=</span> <span class="st">"US Monthly Natural Gas Consumption"</span>,</span>
-<span>        Ytitle <span class="op">=</span> <span class="st">"Billion Cubic Feet"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RamiKrispin/TSstudio" class="external-link">TSstudio</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">USgas</span><span class="op">)</span>
+
+<span class="co"># Ploting time series object</span>
+<span class="fu"><a href="reference/ts_plot.html">ts_plot</a></span><span class="op">(</span><span class="va">USgas</span>, 
+        title <span class="op">=</span> <span class="st">"US Monthly Natural Gas Consumption"</span>,
+        Ytitle <span class="op">=</span> <span class="st">"Billion Cubic Feet"</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/USgas_plot.png" width="100%"></p>
 </div>
 <div class="section level3">
 <h3 id="seasonality-analysis">Seasonality analysis<a class="anchor" aria-label="anchor" href="#seasonality-analysis"></a>
 </h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Seasonal plot</span></span>
-<span><span class="fu"><a href="reference/ts_seasonal.html">ts_seasonal</a></span><span class="op">(</span><span class="va">USgas</span>, type <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span class="co"># Seasonal plot</span>
+<span class="fu"><a href="reference/ts_seasonal.html">ts_seasonal</a></span><span class="op">(</span><span class="va">USgas</span>, type <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/USgas_seasonal.png" width="100%"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># Heatmap plot</span></span>
-<span></span>
-<span><span class="fu"><a href="reference/ts_heatmap.html">ts_heatmap</a></span><span class="op">(</span><span class="va">USgas</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R">
+<span class="co"># Heatmap plot</span>
+
+<span class="fu"><a href="reference/ts_heatmap.html">ts_heatmap</a></span><span class="op">(</span><span class="va">USgas</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/USgas_heatmap.png" width="100%"></p>
 </div>
 <div class="section level3">
 <h3 id="correlation-analysis">Correlation analysis<a class="anchor" aria-label="anchor" href="#correlation-analysis"></a>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># ACF and PACF plots</span></span>
-<span><span class="fu"><a href="reference/ts_cor.html">ts_cor</a></span><span class="op">(</span><span class="va">USgas</span>, lag.max <span class="op">=</span> <span class="fl">60</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span class="co"># ACF and PACF plots</span>
+<span class="fu"><a href="reference/ts_cor.html">ts_cor</a></span><span class="op">(</span><span class="va">USgas</span>, lag.max <span class="op">=</span> <span class="fl">60</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/USgas_acf.png" width="100%"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Lags plot</span></span>
-<span><span class="fu"><a href="reference/ts_lags.html">ts_lags</a></span><span class="op">(</span><span class="va">USgas</span>, lags <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span class="co"># Lags plot</span>
+<span class="fu"><a href="reference/ts_lags.html">ts_lags</a></span><span class="op">(</span><span class="va">USgas</span>, lags <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/USgas_lags.png" width="100%"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Seasonal lags plot</span></span>
-<span><span class="fu"><a href="reference/ts_lags.html">ts_lags</a></span><span class="op">(</span><span class="va">USgas</span>, lags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">24</span>, <span class="fl">36</span>, <span class="fl">48</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span class="co"># Seasonal lags plot</span>
+<span class="fu"><a href="reference/ts_lags.html">ts_lags</a></span><span class="op">(</span><span class="va">USgas</span>, lags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">24</span>, <span class="fl">36</span>, <span class="fl">48</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/USgas_lags2.png" width="100%"></p>
 </div>
 <div class="section level3">
 <h3 id="training-forecasting-models">Training forecasting models<a class="anchor" aria-label="anchor" href="#training-forecasting-models"></a>
 </h3>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Forecasting applications</span></span>
-<span><span class="co"># Setting training and testing partitions</span></span>
-<span><span class="va">USgas_s</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ts_split.html">ts_split</a></span><span class="op">(</span>ts.obj <span class="op">=</span> <span class="va">USgas</span>, sample.out <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span>
-<span><span class="va">train</span> <span class="op">&lt;-</span> <span class="va">USgas_s</span><span class="op">$</span><span class="va">train</span></span>
-<span><span class="va">test</span> <span class="op">&lt;-</span> <span class="va">USgas_s</span><span class="op">$</span><span class="va">test</span></span>
-<span></span>
-<span><span class="co"># Forecasting with auto.arima</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pkg.robjhyndman.com/forecast/" class="external-link">forecast</a></span><span class="op">)</span></span>
-<span><span class="va">md</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pkg.robjhyndman.com/forecast/reference/auto.arima.html" class="external-link">auto.arima</a></span><span class="op">(</span><span class="va">train</span><span class="op">)</span></span>
-<span><span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pkg.robjhyndman.com/forecast/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span><span class="va">md</span>, h <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Plotting actual vs. fitted and forecasted</span></span>
-<span><span class="fu"><a href="reference/test_forecast.html">test_forecast</a></span><span class="op">(</span>actual <span class="op">=</span> <span class="va">USgas</span>, forecast.obj <span class="op">=</span> <span class="va">fc</span>, test <span class="op">=</span> <span class="va">test</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span class="co"># Forecasting applications</span>
+<span class="co"># Setting training and testing partitions</span>
+<span class="va">USgas_s</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ts_split.html">ts_split</a></span><span class="op">(</span>ts.obj <span class="op">=</span> <span class="va">USgas</span>, sample.out <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>
+<span class="va">train</span> <span class="op">&lt;-</span> <span class="va">USgas_s</span><span class="op">$</span><span class="va">train</span>
+<span class="va">test</span> <span class="op">&lt;-</span> <span class="va">USgas_s</span><span class="op">$</span><span class="va">test</span>
+
+<span class="co"># Forecasting with auto.arima</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pkg.robjhyndman.com/forecast/" class="external-link">forecast</a></span><span class="op">)</span>
+<span class="va">md</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pkg.robjhyndman.com/forecast/reference/auto.arima.html" class="external-link">auto.arima</a></span><span class="op">(</span><span class="va">train</span><span class="op">)</span>
+<span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pkg.robjhyndman.com/forecast/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span><span class="va">md</span>, h <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>
+
+<span class="co"># Plotting actual vs. fitted and forecasted</span>
+<span class="fu"><a href="reference/test_forecast.html">test_forecast</a></span><span class="op">(</span>actual <span class="op">=</span> <span class="va">USgas</span>, forecast.obj <span class="op">=</span> <span class="va">fc</span>, test <span class="op">=</span> <span class="va">test</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/USgas_test_f.png" width="100%"></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Plotting the forecast </span></span>
-<span><span class="fu"><a href="reference/plot_forecast.html">plot_forecast</a></span><span class="op">(</span><span class="va">fc</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span class="co"># Plotting the forecast </span>
+<span class="fu"><a href="reference/plot_forecast.html">plot_forecast</a></span><span class="op">(</span><span class="va">fc</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/USgas_forecast.png" width="100%"></p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run horse race between multiple models</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>methods <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">ets1 =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"ets"</span>,</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">method_arg =</span> <span class="fu">list</span>(<span class="at">opt.crit =</span> <span class="st">"lik"</span>),</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">notes =</span> <span class="st">"ETS model with opt.crit = lik"</span>),</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">ets2 =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"ets"</span>,</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>                            <span class="at">method_arg =</span> <span class="fu">list</span>(<span class="at">opt.crit =</span> <span class="st">"amse"</span>),</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">notes =</span> <span class="st">"ETS model with opt.crit = amse"</span>),</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>                <span class="at">arima1 =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"arima"</span>,</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>                              <span class="at">method_arg =</span> <span class="fu">list</span>(<span class="at">order =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">0</span>)),</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>                              <span class="at">notes =</span> <span class="st">"ARIMA(2,1,0)"</span>),</span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>                <span class="at">arima2 =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"arima"</span>,</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>                              <span class="at">method_arg =</span> <span class="fu">list</span>(<span class="at">order =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>),</span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>                                                <span class="at">seasonal =</span> <span class="fu">list</span>(<span class="at">order =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>))),</span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>                              <span class="at">notes =</span> <span class="st">"SARIMA(2,1,2)(1,1,1)"</span>),</span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>                <span class="at">hw =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"HoltWinters"</span>,</span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>                          <span class="at">method_arg =</span> <span class="cn">NULL</span>,</span>
-<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>                          <span class="at">notes =</span> <span class="st">"HoltWinters Model"</span>),</span>
-<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>                <span class="at">tslm =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"tslm"</span>,</span>
-<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>                            <span class="at">method_arg =</span> <span class="fu">list</span>(<span class="at">formula =</span> input <span class="sc">~</span> trend <span class="sc">+</span> season),</span>
-<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>                            <span class="at">notes =</span> <span class="st">"tslm model with trend and seasonal components"</span>))</span>
-<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Training the models with backtesting</span></span>
-<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>md <span class="ot">&lt;-</span> <span class="fu">train_model</span>(<span class="at">input =</span> USgas,</span>
-<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>                  <span class="at">methods =</span> methods,</span>
-<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>                  <span class="at">train_method =</span> <span class="fu">list</span>(<span class="at">partitions =</span> <span class="dv">6</span>, </span>
-<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">sample.out =</span> <span class="dv">12</span>, </span>
-<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">space =</span> <span class="dv">3</span>),</span>
-<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>                  <span class="at">horizon =</span> <span class="dv">12</span>,</span>
-<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>                  <span class="at">error =</span> <span class="st">"MAPE"</span>)</span>
-<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a><span class="co"># A tibble: 6 x 7</span></span>
-<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>  model_id model       notes                                         avg_mape avg_rmse <span class="st">`</span><span class="at">avg_coverage_80%</span><span class="st">`</span> <span class="st">`</span><span class="at">avg_coverage_95%</span><span class="st">`</span></span>
-<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>  <span class="sc">&lt;</span>chr<span class="sc">&gt;</span>    <span class="er">&lt;</span>chr<span class="sc">&gt;</span>       <span class="er">&lt;</span>chr<span class="sc">&gt;</span>                                            <span class="er">&lt;</span>dbl<span class="sc">&gt;</span>    <span class="er">&lt;</span>dbl<span class="sc">&gt;</span>              <span class="er">&lt;</span>dbl<span class="sc">&gt;</span>              <span class="er">&lt;</span>dbl<span class="sc">&gt;</span></span>
-<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> arima2   arima       <span class="fu">SARIMA</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>)(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>)                            <span class="fl">0.0557</span>     <span class="fl">167.</span>              <span class="fl">0.583</span>              <span class="fl">0.806</span></span>
-<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> hw       HoltWinters HoltWinters Model                               <span class="fl">0.0563</span>     <span class="fl">163.</span>              <span class="fl">0.736</span>              <span class="fl">0.889</span></span>
-<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a><span class="dv">3</span> ets1     ets         ETS model with opt.crit <span class="ot">=</span> lik                   <span class="fl">0.0611</span>     <span class="fl">172.</span>              <span class="fl">0.681</span>              <span class="fl">0.903</span></span>
-<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a><span class="dv">4</span> ets2     ets         ETS model with opt.crit <span class="ot">=</span> amse                  <span class="fl">0.0666</span>     <span class="fl">186.</span>              <span class="fl">0.458</span>              <span class="fl">0.833</span></span>
-<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span> tslm     tslm        tslm model with trend and seasonal components   <span class="fl">0.0767</span>     <span class="fl">220.</span>              <span class="fl">0.417</span>              <span class="fl">0.667</span></span>
-<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a><span class="dv">6</span> arima1   arima       <span class="fu">ARIMA</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">0</span>)                                    <span class="fl">0.188</span>      <span class="fl">598.</span>              <span class="fl">0.875</span>              <span class="fl">0.958</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># Run horse race between multiple models</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>methods <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">ets1 =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"ets"</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>                            <span class="at">method_arg =</span> <span class="fu">list</span>(<span class="at">opt.crit =</span> <span class="st">"lik"</span>),</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>                            <span class="at">notes =</span> <span class="st">"ETS model with opt.crit = lik"</span>),</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>                <span class="at">ets2 =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"ets"</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>                            <span class="at">method_arg =</span> <span class="fu">list</span>(<span class="at">opt.crit =</span> <span class="st">"amse"</span>),</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>                            <span class="at">notes =</span> <span class="st">"ETS model with opt.crit = amse"</span>),</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>                <span class="at">arima1 =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"arima"</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>                              <span class="at">method_arg =</span> <span class="fu">list</span>(<span class="at">order =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">0</span>)),</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>                              <span class="at">notes =</span> <span class="st">"ARIMA(2,1,0)"</span>),</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>                <span class="at">arima2 =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"arima"</span>,</span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>                              <span class="at">method_arg =</span> <span class="fu">list</span>(<span class="at">order =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>),</span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>                                                <span class="at">seasonal =</span> <span class="fu">list</span>(<span class="at">order =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>))),</span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>                              <span class="at">notes =</span> <span class="st">"SARIMA(2,1,2)(1,1,1)"</span>),</span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>                <span class="at">hw =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"HoltWinters"</span>,</span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>                          <span class="at">method_arg =</span> <span class="cn">NULL</span>,</span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a>                          <span class="at">notes =</span> <span class="st">"HoltWinters Model"</span>),</span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a>                <span class="at">tslm =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"tslm"</span>,</span>
+<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a>                            <span class="at">method_arg =</span> <span class="fu">list</span>(<span class="at">formula =</span> input <span class="sc">~</span> trend <span class="sc">+</span> season),</span>
+<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a>                            <span class="at">notes =</span> <span class="st">"tslm model with trend and seasonal components"</span>))</span>
+<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a><span class="co"># Training the models with backtesting</span></span>
+<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a>md <span class="ot">&lt;-</span> <span class="fu">train_model</span>(<span class="at">input =</span> USgas,</span>
+<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a>                  <span class="at">methods =</span> methods,</span>
+<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a>                  <span class="at">train_method =</span> <span class="fu">list</span>(<span class="at">partitions =</span> <span class="dv">6</span>, </span>
+<span id="cb11-25"><a href="#cb11-25" tabindex="-1"></a>                                      <span class="at">sample.out =</span> <span class="dv">12</span>, </span>
+<span id="cb11-26"><a href="#cb11-26" tabindex="-1"></a>                                      <span class="at">space =</span> <span class="dv">3</span>),</span>
+<span id="cb11-27"><a href="#cb11-27" tabindex="-1"></a>                  <span class="at">horizon =</span> <span class="dv">12</span>,</span>
+<span id="cb11-28"><a href="#cb11-28" tabindex="-1"></a>                  <span class="at">error =</span> <span class="st">"MAPE"</span>)</span>
+<span id="cb11-29"><a href="#cb11-29" tabindex="-1"></a><span class="co"># A tibble: 6 x 7</span></span>
+<span id="cb11-30"><a href="#cb11-30" tabindex="-1"></a>  model_id model       notes                                         avg_mape avg_rmse <span class="st">`</span><span class="at">avg_coverage_80%</span><span class="st">`</span> <span class="st">`</span><span class="at">avg_coverage_95%</span><span class="st">`</span></span>
+<span id="cb11-31"><a href="#cb11-31" tabindex="-1"></a>  <span class="sc">&lt;</span>chr<span class="sc">&gt;</span>    <span class="er">&lt;</span>chr<span class="sc">&gt;</span>       <span class="er">&lt;</span>chr<span class="sc">&gt;</span>                                            <span class="er">&lt;</span>dbl<span class="sc">&gt;</span>    <span class="er">&lt;</span>dbl<span class="sc">&gt;</span>              <span class="er">&lt;</span>dbl<span class="sc">&gt;</span>              <span class="er">&lt;</span>dbl<span class="sc">&gt;</span></span>
+<span id="cb11-32"><a href="#cb11-32" tabindex="-1"></a><span class="dv">1</span> arima2   arima       <span class="fu">SARIMA</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>)(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>)                            <span class="fl">0.0557</span>     <span class="fl">167.</span>              <span class="fl">0.583</span>              <span class="fl">0.806</span></span>
+<span id="cb11-33"><a href="#cb11-33" tabindex="-1"></a><span class="dv">2</span> hw       HoltWinters HoltWinters Model                               <span class="fl">0.0563</span>     <span class="fl">163.</span>              <span class="fl">0.736</span>              <span class="fl">0.889</span></span>
+<span id="cb11-34"><a href="#cb11-34" tabindex="-1"></a><span class="dv">3</span> ets1     ets         ETS model with opt.crit <span class="ot">=</span> lik                   <span class="fl">0.0611</span>     <span class="fl">172.</span>              <span class="fl">0.681</span>              <span class="fl">0.903</span></span>
+<span id="cb11-35"><a href="#cb11-35" tabindex="-1"></a><span class="dv">4</span> ets2     ets         ETS model with opt.crit <span class="ot">=</span> amse                  <span class="fl">0.0666</span>     <span class="fl">186.</span>              <span class="fl">0.458</span>              <span class="fl">0.833</span></span>
+<span id="cb11-36"><a href="#cb11-36" tabindex="-1"></a><span class="dv">5</span> tslm     tslm        tslm model with trend and seasonal components   <span class="fl">0.0767</span>     <span class="fl">220.</span>              <span class="fl">0.417</span>              <span class="fl">0.667</span></span>
+<span id="cb11-37"><a href="#cb11-37" tabindex="-1"></a><span class="dv">6</span> arima1   arima       <span class="fu">ARIMA</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">0</span>)                                    <span class="fl">0.188</span>      <span class="fl">598.</span>              <span class="fl">0.875</span>              <span class="fl">0.958</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Plot the performance of the different models on the testing partitions</span></span>
-<span><span class="fu"><a href="reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">md</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span class="co"># Plot the performance of the different models on the testing partitions</span>
+<span class="fu"><a href="reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">md</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/plot_model.gif" width="100%"></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Holt-Winters tunning parameters with grid search</span></span>
-<span><span class="va">hw_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ts_grid.html">ts_grid</a></span><span class="op">(</span><span class="va">USgas</span>, </span>
-<span>                   model <span class="op">=</span> <span class="st">"HoltWinters"</span>,</span>
-<span>                   periods <span class="op">=</span> <span class="fl">6</span>,</span>
-<span>                   window_space <span class="op">=</span> <span class="fl">6</span>,</span>
-<span>                   window_test <span class="op">=</span> <span class="fl">12</span>,</span>
-<span>                   hyper_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0.1</span><span class="op">)</span>,</span>
-<span>                                       beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0.1</span><span class="op">)</span>,</span>
-<span>                                       gamma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0.1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span>                                       </span>
-<span><span class="fu"><a href="reference/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">hw_grid</span>, type <span class="op">=</span> <span class="st">"3D"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span class="co"># Holt-Winters tunning parameters with grid search</span>
+<span class="va">hw_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ts_grid.html">ts_grid</a></span><span class="op">(</span><span class="va">USgas</span>, 
+                   model <span class="op">=</span> <span class="st">"HoltWinters"</span>,
+                   periods <span class="op">=</span> <span class="fl">6</span>,
+                   window_space <span class="op">=</span> <span class="fl">6</span>,
+                   window_test <span class="op">=</span> <span class="fl">12</span>,
+                   hyper_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0.1</span><span class="op">)</span>,
+                                       beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0.1</span><span class="op">)</span>,
+                                       gamma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0.1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+                                       
+<span class="fu"><a href="reference/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">hw_grid</span>, type <span class="op">=</span> <span class="st">"3D"</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/hw_grid.png" width="100%"></p>
 </div>
 </div>
@@ -286,7 +296,8 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.1.</p>
 </div>
 
       </footer>

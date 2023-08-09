@@ -72,35 +72,27 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_grid</span><span class="op">(</span><span class="va">grid.obj</span>, top <span class="op">=</span> <span class="cn">NULL</span>, highlight <span class="op">=</span> <span class="fl">0.1</span>, type <span class="op">=</span> <span class="st">"parcoords"</span>,</span>
-<span>  colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>showscale <span class="op">=</span> <span class="cn">TRUE</span>, reversescale <span class="op">=</span> <span class="cn">FALSE</span>, colorscale <span class="op">=</span></span>
-<span>  <span class="st">"Jet"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plot_grid</span><span class="op">(</span><span class="va">grid.obj</span>, top <span class="op">=</span> <span class="cn">NULL</span>, highlight <span class="op">=</span> <span class="fl">0.1</span>, type <span class="op">=</span> <span class="st">"parcoords"</span>,
+  colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>showscale <span class="op">=</span> <span class="cn">TRUE</span>, reversescale <span class="op">=</span> <span class="cn">FALSE</span>, colorscale <span class="op">=</span>
+  <span class="st">"Jet"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>grid.obj</dt>
 <dd><p>A ts_grid output object</p></dd>
-
-
 <dt>top</dt>
 <dd><p>An integer, set the number of hyper-parameters combinations to visualize 
 (ordered by accuracy). If set to NULL (default), will plot the top 100 combinations</p></dd>
-
-
 <dt>highlight</dt>
 <dd><p>A proportion between 0 (excluding) and 1, 
 set the number of hyper-parameters combinations to highlight 
 (by accuracy), if the type argument is set to "parcoords"</p></dd>
-
-
 <dt>type</dt>
 <dd><p>The plot type, either "3D" for 3D plot or 
 "parcoords" for parallel coordinates plot. 
 Note: the 3D plot option is applicable whenever there are three tuning parameters, 
 otherwise will use a 2D plot for two tuning parameters.</p></dd>
-
-
 <dt>colors</dt>
 <dd><p>A list of plotly arguments for the color scale setting:</p>
 <p>showscale -  display the color scale if set to TRUE.</p>
@@ -110,7 +102,6 @@ Greys, YlGnBu,  Greens , YlOrRd,
 Bluered, RdBu, Reds, Blues, Picnic,
 Rainbow, Portland, Jet, Hot, Blackbody,
 Earth, Electric, Viridis, Cividis</p></dd>
-
 </dl></div>
 
   </div>
@@ -125,7 +116,8 @@ Earth, Electric, Viridis, Cividis</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.1.</p>
 </div>
 
       </footer></div>

@@ -72,77 +72,50 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ts_ma</span><span class="op">(</span><span class="va">ts.obj</span>, n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">6</span>, <span class="fl">9</span><span class="op">)</span>, n_left <span class="op">=</span> <span class="cn">NULL</span>, n_right <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  double <span class="op">=</span> <span class="cn">NULL</span>, plot <span class="op">=</span> <span class="cn">TRUE</span>, show_legend <span class="op">=</span> <span class="cn">TRUE</span>, multiple <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  separate <span class="op">=</span> <span class="cn">TRUE</span>, margin <span class="op">=</span> <span class="fl">0.03</span>, title <span class="op">=</span> <span class="cn">NULL</span>, Xtitle <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  Ytitle <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ts_ma</span><span class="op">(</span><span class="va">ts.obj</span>, n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">6</span>, <span class="fl">9</span><span class="op">)</span>, n_left <span class="op">=</span> <span class="cn">NULL</span>, n_right <span class="op">=</span> <span class="cn">NULL</span>,
+  double <span class="op">=</span> <span class="cn">NULL</span>, plot <span class="op">=</span> <span class="cn">TRUE</span>, show_legend <span class="op">=</span> <span class="cn">TRUE</span>, multiple <span class="op">=</span> <span class="cn">FALSE</span>,
+  separate <span class="op">=</span> <span class="cn">TRUE</span>, margin <span class="op">=</span> <span class="fl">0.03</span>, title <span class="op">=</span> <span class="cn">NULL</span>, Xtitle <span class="op">=</span> <span class="cn">NULL</span>,
+  Ytitle <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>ts.obj</dt>
 <dd><p>a univariate time series object of a class "ts", "zoo" or "xts" (support only series with either monthly or quarterly frequency)</p></dd>
-
-
 <dt>n</dt>
 <dd><p>A single or multiple integers (by default using 3, 6, and 9 as inputs), 
 define a two-sides moving averages by setting the number of past and future to use 
 in each moving average window along with current observation.</p></dd>
-
-
 <dt>n_left</dt>
 <dd><p>A single integer (optional argument, default set to NULL), can be used, 
 along with the n_right argument, an unbalanced moving average. 
 The n_left defines the number of lags to includes in the moving average.</p></dd>
-
-
 <dt>n_right</dt>
 <dd><p>A single integer (optional argument, default set to NULL), can be used, 
 along with the n_left argument, to set an unbalanced moving average. 
 The n_right defines the number of negative lags to includes in the moving average.</p></dd>
-
-
 <dt>double</dt>
 <dd><p>A single integer, an optional argument. If not NULL (by default), will apply a second moving average process on the initial moving average output</p></dd>
-
-
 <dt>plot</dt>
 <dd><p>A boolean, if TRUE will plot the results</p></dd>
-
-
 <dt>show_legend</dt>
 <dd><p>A boolean, if TRUE will show the plot legend</p></dd>
-
-
 <dt>multiple</dt>
 <dd><p>A boolean, if TRUE (and n &gt; 1) will create multiple plots, one for each moving average degree. By default is set to FALSE</p></dd>
-
-
 <dt>separate</dt>
 <dd><p>A boolean, if TRUE will separate the orignal series from the moving average output</p></dd>
-
-
 <dt>margin</dt>
 <dd><p>A numeric, set the plot margin when using the multiple or/and separate option, default value is 0.03</p></dd>
-
-
 <dt>title</dt>
 <dd><p>A character, if not NULL (by default), will use the input as the plot title</p></dd>
-
-
 <dt>Xtitle</dt>
 <dd><p>A character, if not NULL (by default), will use the input as the plot x - axis title</p></dd>
-
-
 <dt>Ytitle</dt>
 <dd><p>A character, if not NULL (by default), will use the input as the plot y - axis title</p></dd>
-
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>A list with the original series, the moving averages outputs and the plot</p>
+    <p>A list with the original series, the moving averages outputs and the plot</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -161,31 +134,31 @@ respectively to be used in each rolling window, and k1 != k2
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="co"># A one-side moving average order of 7</span></span></span>
-<span class="r-in"><span><span class="va">USgas_MA7</span> <span class="op">&lt;-</span> <span class="fu">ts_ma</span><span class="op">(</span><span class="va">USgas</span>, n_left <span class="op">=</span> <span class="fl">6</span>, n <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A two-sided moving average order of 13</span></span></span>
-<span class="r-in"><span><span class="va">USgas_two_side_MA</span> <span class="op">&lt;-</span> <span class="fu">ts_ma</span><span class="op">(</span><span class="va">USgas</span>, n <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Unbalanced moving average of order 12</span></span></span>
-<span class="r-in"><span> <span class="va">USVSales_MA12</span> <span class="op">&lt;-</span> <span class="fu">ts_ma</span><span class="op">(</span><span class="va">USVSales</span>, n_left <span class="op">=</span> <span class="fl">6</span>, n_right <span class="op">=</span> <span class="fl">5</span>, n <span class="op">=</span> <span class="cn">NULL</span>, </span></span>
-<span class="r-in"><span> title <span class="op">=</span> <span class="st">"US Monthly Total Vehicle Sales - MA"</span>, </span></span>
-<span class="r-in"><span> Ytitle <span class="op">=</span> <span class="st">"Thousand of Units"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Adding double MA of order 2 to balanced the series:</span></span></span>
-<span class="r-in"><span><span class="va">USVSales_MA12</span> <span class="op">&lt;-</span> <span class="fu">ts_ma</span><span class="op">(</span><span class="va">USVSales</span>, n_left <span class="op">=</span> <span class="fl">6</span>, n_right <span class="op">=</span> <span class="fl">5</span>, n <span class="op">=</span> <span class="cn">NULL</span>, </span></span>
-<span class="r-in"><span> double <span class="op">=</span> <span class="fl">2</span>,</span></span>
-<span class="r-in"><span> title <span class="op">=</span> <span class="st">"US Monthly Total Vehicle Sales - MA"</span>, </span></span>
-<span class="r-in"><span> Ytitle <span class="op">=</span> <span class="st">"Thousand of Units"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Adding several types of two-sided moving averages along with the unblanced</span></span></span>
-<span class="r-in"><span><span class="co"># Plot each on a separate plot</span></span></span>
-<span class="r-in"><span><span class="va">USVSales_MA12</span> <span class="op">&lt;-</span> <span class="fu">ts_ma</span><span class="op">(</span><span class="va">USVSales</span>, n_left <span class="op">=</span> <span class="fl">6</span>, n_right <span class="op">=</span> <span class="fl">5</span>, n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">6</span>, <span class="fl">9</span><span class="op">)</span>, </span></span>
-<span class="r-in"><span>double <span class="op">=</span> <span class="fl">2</span>, multiple <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>title <span class="op">=</span> <span class="st">"US Monthly Total Vehicle Sales - MA"</span>, </span></span>
-<span class="r-in"><span>Ytitle <span class="op">=</span> <span class="st">"Thousand of Units"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="co"># A one-side moving average order of 7</span></span>
+<span class="r-in"><span class="va">USgas_MA7</span> <span class="op">&lt;-</span> <span class="fu">ts_ma</span><span class="op">(</span><span class="va">USgas</span>, n_left <span class="op">=</span> <span class="fl">6</span>, n <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># A two-sided moving average order of 13</span></span>
+<span class="r-in"><span class="va">USgas_two_side_MA</span> <span class="op">&lt;-</span> <span class="fu">ts_ma</span><span class="op">(</span><span class="va">USgas</span>, n <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># Unbalanced moving average of order 12</span></span>
+<span class="r-in"> <span class="va">USVSales_MA12</span> <span class="op">&lt;-</span> <span class="fu">ts_ma</span><span class="op">(</span><span class="va">USVSales</span>, n_left <span class="op">=</span> <span class="fl">6</span>, n_right <span class="op">=</span> <span class="fl">5</span>, n <span class="op">=</span> <span class="cn">NULL</span>, </span>
+<span class="r-in"> title <span class="op">=</span> <span class="st">"US Monthly Total Vehicle Sales - MA"</span>, </span>
+<span class="r-in"> Ytitle <span class="op">=</span> <span class="st">"Thousand of Units"</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># Adding double MA of order 2 to balanced the series:</span></span>
+<span class="r-in"><span class="va">USVSales_MA12</span> <span class="op">&lt;-</span> <span class="fu">ts_ma</span><span class="op">(</span><span class="va">USVSales</span>, n_left <span class="op">=</span> <span class="fl">6</span>, n_right <span class="op">=</span> <span class="fl">5</span>, n <span class="op">=</span> <span class="cn">NULL</span>, </span>
+<span class="r-in"> double <span class="op">=</span> <span class="fl">2</span>,</span>
+<span class="r-in"> title <span class="op">=</span> <span class="st">"US Monthly Total Vehicle Sales - MA"</span>, </span>
+<span class="r-in"> Ytitle <span class="op">=</span> <span class="st">"Thousand of Units"</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># Adding several types of two-sided moving averages along with the unblanced</span></span>
+<span class="r-in"><span class="co"># Plot each on a separate plot</span></span>
+<span class="r-in"><span class="va">USVSales_MA12</span> <span class="op">&lt;-</span> <span class="fu">ts_ma</span><span class="op">(</span><span class="va">USVSales</span>, n_left <span class="op">=</span> <span class="fl">6</span>, n_right <span class="op">=</span> <span class="fl">5</span>, n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">6</span>, <span class="fl">9</span><span class="op">)</span>, </span>
+<span class="r-in">double <span class="op">=</span> <span class="fl">2</span>, multiple <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span class="r-in">title <span class="op">=</span> <span class="st">"US Monthly Total Vehicle Sales - MA"</span>, </span>
+<span class="r-in">Ytitle <span class="op">=</span> <span class="st">"Thousand of Units"</span><span class="op">)</span></span>
+<span class="r-in"><span class="op">}</span></span>
 </code></pre></div>
     </div>
   </div>
@@ -200,7 +173,8 @@ respectively to be used in each rolling window, and k1 != k2
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.1.</p>
 </div>
 
       </footer></div>

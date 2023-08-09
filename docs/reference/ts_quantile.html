@@ -72,78 +72,63 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ts_quantile</span><span class="op">(</span><span class="va">ts.obj</span>, upper <span class="op">=</span> <span class="fl">0.75</span>, lower <span class="op">=</span> <span class="fl">0.25</span>, period <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  n <span class="op">=</span> <span class="fl">1</span>, title <span class="op">=</span> <span class="cn">NULL</span>, Xtitle <span class="op">=</span> <span class="cn">NULL</span>, Ytitle <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ts_quantile</span><span class="op">(</span><span class="va">ts.obj</span>, upper <span class="op">=</span> <span class="fl">0.75</span>, lower <span class="op">=</span> <span class="fl">0.25</span>, period <span class="op">=</span> <span class="cn">NULL</span>,
+  n <span class="op">=</span> <span class="fl">1</span>, title <span class="op">=</span> <span class="cn">NULL</span>, Xtitle <span class="op">=</span> <span class="cn">NULL</span>, Ytitle <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>ts.obj</dt>
 <dd><p>A univariate time series object of a class "zoo", "xts", or data frame family ("data.frame", "data.table", "tbl")</p></dd>
-
-
 <dt>upper</dt>
 <dd><p>A numeric value between 0 and 1 (excluding 0, and greater than the "lower" argument) set the upper bound of the quantile plot 
 (using the "probs" argument of the <code><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></code> function). By default set to 0.75</p></dd>
-
-
 <dt>lower</dt>
 <dd><p>A numeric value between 0 and 1 (excluding 1, and lower than the "upper" argument) set the upper bound of the quantile plot 
 (using the "probs" argument of the <code><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></code> function). By default set to 0.25</p></dd>
-
-
 <dt>period</dt>
 <dd><p>A character, set the period level of the data for the quantile calculation and plot representation. 
 Must be one level above the input frequency (e.g., an hourly data can represent by daily, weekdays, monthly, quarterly and yearly). 
 Possible options c("daily", "weekdays", "monthly", "quarterly", "yearly")</p></dd>
-
-
 <dt>n</dt>
 <dd><p>An integer, set the number of plots rows to display (by setting the nrows argument in the <code><a href="https://rdrr.io/pkg/plotly/man/subplot.html" class="external-link">subplot</a></code> function), must be an integer between 1 and the frequency of the period argument.</p></dd>
-
-
 <dt>title</dt>
 <dd><p>A character, set the plot title, default set to NULL</p></dd>
-
-
 <dt>Xtitle</dt>
 <dd><p>A character, set the X axis title, default set to NULL</p></dd>
-
-
 <dt>Ytitle</dt>
 <dd><p>A character, set the Y axis title, default set to NULL</p></dd>
-
 </dl></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Loading the UKgrid package to pull a multie seasonality data</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RamiKrispin/UKgrid" class="external-link">UKgrid</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">UKgrid_half_hour</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/UKgrid/man/extract_grid.html" class="external-link">extract_grid</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"xts"</span>, aggregate <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Plotting the quantile of the UKgrid dataset</span></span></span>
-<span class="r-in"><span><span class="co"># No period subset</span></span></span>
-<span class="r-in"><span><span class="fu">ts_quantile</span><span class="op">(</span><span class="va">UKgrid_half_hour</span>, </span></span>
-<span class="r-in"><span>period <span class="op">=</span> <span class="cn">NULL</span>, </span></span>
-<span class="r-in"><span>title <span class="op">=</span> <span class="st">"The UK National Grid Net Demand for Electricity - Quantile Plot"</span><span class="op">)</span></span></span>
-<span class="r-in"><span> </span></span>
-<span class="r-in"><span><span class="co"># Plotting the quantile of the UKgrid dataset</span></span></span>
-<span class="r-in"><span><span class="co"># Using a weekday subset</span></span></span>
-<span class="r-in"><span><span class="fu">ts_quantile</span><span class="op">(</span><span class="va">UKgrid_half_hour</span>, </span></span>
-<span class="r-in"><span>period <span class="op">=</span> <span class="st">"weekdays"</span>,</span></span>
-<span class="r-in"><span>title <span class="op">=</span> <span class="st">"The UK National Grid Net Demand for Electricity - by Weekdays"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Spacing the plots by setting the </span></span></span>
-<span class="r-in"><span><span class="co"># number of rows of the plot to 2</span></span></span>
-<span class="r-in"><span><span class="fu">ts_quantile</span><span class="op">(</span><span class="va">UKgrid_half_hour</span>, </span></span>
-<span class="r-in"><span>period <span class="op">=</span> <span class="st">"weekdays"</span>,</span></span>
-<span class="r-in"><span>title <span class="op">=</span> <span class="st">"The UK National Grid Net Demand for Electricity - by Weekdays"</span>,</span></span>
-<span class="r-in"><span>n <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
+<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># Loading the UKgrid package to pull a multie seasonality data</span></span>
+<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RamiKrispin/UKgrid" class="external-link">UKgrid</a></span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">UKgrid_half_hour</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/UKgrid/man/extract_grid.html" class="external-link">extract_grid</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"xts"</span>, aggregate <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># Plotting the quantile of the UKgrid dataset</span></span>
+<span class="r-in"><span class="co"># No period subset</span></span>
+<span class="r-in"><span class="fu">ts_quantile</span><span class="op">(</span><span class="va">UKgrid_half_hour</span>, </span>
+<span class="r-in">period <span class="op">=</span> <span class="cn">NULL</span>, </span>
+<span class="r-in">title <span class="op">=</span> <span class="st">"The UK National Grid Net Demand for Electricity - Quantile Plot"</span><span class="op">)</span></span>
+<span class="r-in"> </span>
+<span class="r-in"><span class="co"># Plotting the quantile of the UKgrid dataset</span></span>
+<span class="r-in"><span class="co"># Using a weekday subset</span></span>
+<span class="r-in"><span class="fu">ts_quantile</span><span class="op">(</span><span class="va">UKgrid_half_hour</span>, </span>
+<span class="r-in">period <span class="op">=</span> <span class="st">"weekdays"</span>,</span>
+<span class="r-in">title <span class="op">=</span> <span class="st">"The UK National Grid Net Demand for Electricity - by Weekdays"</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># Spacing the plots by setting the </span></span>
+<span class="r-in"><span class="co"># number of rows of the plot to 2</span></span>
+<span class="r-in"><span class="fu">ts_quantile</span><span class="op">(</span><span class="va">UKgrid_half_hour</span>, </span>
+<span class="r-in">period <span class="op">=</span> <span class="st">"weekdays"</span>,</span>
+<span class="r-in">title <span class="op">=</span> <span class="st">"The UK National Grid Net Demand for Electricity - by Weekdays"</span>,</span>
+<span class="r-in">n <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span class="r-in"><span class="op">}</span></span>
 </code></pre></div>
     </div>
   </div>
@@ -158,7 +143,8 @@ Possible options c("daily", "weekdays", "monthly", "quarterly", "yearly")</p></d
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.1.</p>
 </div>
 
       </footer></div>

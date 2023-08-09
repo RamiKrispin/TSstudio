@@ -1,4 +1,4 @@
-## Version 0.1.7
+# Version 0.1.7
 
 * Replacing deprecated functions:
   - `ts_split` - replacing the `is.tsibble` function with `is_tsibble` function
@@ -6,7 +6,7 @@
   package implementation 
 
 
-## Version 0.1.6 
+# Version 0.1.6 
 
 * Fixing errors on the `train_model` function:
     - Error with the forecast output
@@ -16,7 +16,7 @@
 * Removing the `ts_acf` and `ts_pacf` functions, the `ts_cor` will replace them
 * Removing the `bsts` package from the package dependency
 
-## Version 0.1.5
+# Version 0.1.5
 
 **Package license**
 
@@ -40,7 +40,7 @@ Changing the package license from GPL-3 to MIT
 * ts_seasonal - aligning the box plot color 
 * ts_plot - setting the dash and marker mode for multiple time series
 
-## Version 0.1.4
+# Version 0.1.4
 
 **New functions**
 
@@ -54,12 +54,13 @@ Changing the package license from GPL-3 to MIT
 * ts_seasonal - define the order of the frequency units of the box plot option
 plot_forecast - fixing a gap between the forecast values and the time (x-axis) values 
 
-## Version 0.1.3 
+# Version 0.1.3 
+
 * ts_to_prophet function for converting ts objects ("ts", "zoo" and "xts" class) to prophet object
 * ccf_plot function for plotting corss correlation lags between two time series
 * Fixed error in the ts_backtesting function - supprting xreg option
 
-## Version 0.1.2 
+# Version 0.1.2 
 
 **New functions**
 
@@ -67,7 +68,7 @@ plot_forecast - fixing a gap between the forecast values and the time (x-axis) v
 * ts_quantile - time series quantile plot for time series data
 * ts_seasonal - supports multiple inputs and new color palattes 
 
-## Version 0.1.1 
+# Version 0.1.1 
 
 **New functions**
 
@@ -93,7 +94,7 @@ plot_forecast - fixing a gap between the forecast values and the time (x-axis) v
 * Data set - University of Michigan Consumer Survey, Index of Consumer Sentiment: 1980 - 2017 (Michigan_CS), 'xts' object 
 * Data set - Monthly crude Oil Prices: Brent - Europe: 1987 - 2017 (EURO_Brent), 'zoo' object
 
-## Version 0.1.0 
+# Version 0.1.0 
 
 * Function for plotting univariate and multivariate time series data
 * Evaluation plot for the testing set (hold-out data)

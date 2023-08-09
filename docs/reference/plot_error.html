@@ -72,28 +72,21 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_error</span><span class="op">(</span><span class="va">model.obj</span>, error <span class="op">=</span> <span class="st">"MAPE"</span>, palette <span class="op">=</span> <span class="st">"Set1"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plot_error</span><span class="op">(</span><span class="va">model.obj</span>, error <span class="op">=</span> <span class="st">"MAPE"</span>, palette <span class="op">=</span> <span class="st">"Set1"</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>model.obj</dt>
 <dd><p>A train_model object</p></dd>
-
-
 <dt>error</dt>
 <dd><p>A character, defines the type of error metrics to plot, possible metric - "MAPE" or "RMSE"</p></dd>
-
-
 <dt>palette</dt>
 <dd><p>A character, defines the color type to used on the plot, use row.names(RColorBrewer::brewer.pal.info) to view possible color palletes</p></dd>
-
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>A plot with a summery of the models error rate by testing partition</p>
+    <p>A plot with a summery of the models error rate by testing partition</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -102,39 +95,39 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> <span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="co"># Defining the models and their arguments</span></span></span>
-<span class="r-in"><span><span class="va">methods</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ets1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"ets"</span>,</span></span>
-<span class="r-in"><span>                            method_arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>opt.crit <span class="op">=</span> <span class="st">"lik"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                            notes <span class="op">=</span> <span class="st">"ETS model with opt.crit = lik"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                ets2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"ets"</span>,</span></span>
-<span class="r-in"><span>                            method_arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>opt.crit <span class="op">=</span> <span class="st">"amse"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                            notes <span class="op">=</span> <span class="st">"ETS model with opt.crit = amse"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                arima1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"arima"</span>,</span></span>
-<span class="r-in"><span>                              method_arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                              notes <span class="op">=</span> <span class="st">"ARIMA(2,1,0)"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                arima2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"arima"</span>,</span></span>
-<span class="r-in"><span>                              method_arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                                                seasonal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                              notes <span class="op">=</span> <span class="st">"SARIMA(2,1,2)(1,1,1)"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                hw <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"HoltWinters"</span>,</span></span>
-<span class="r-in"><span>                          method_arg <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
-<span class="r-in"><span>                          notes <span class="op">=</span> <span class="st">"HoltWinters Model"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                tslm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"tslm"</span>,</span></span>
-<span class="r-in"><span>                            method_arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">input</span> <span class="op">~</span> <span class="va">trend</span> <span class="op">+</span> <span class="va">season</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                            notes <span class="op">=</span> <span class="st">"tslm model with trend and seasonal components"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># Training the models with backtesting</span></span></span>
-<span class="r-in"><span><span class="va">md</span> <span class="op">&lt;-</span> <span class="fu"><a href="train_model.html">train_model</a></span><span class="op">(</span>input <span class="op">=</span> <span class="va">USgas</span>,</span></span>
-<span class="r-in"><span>                  methods <span class="op">=</span> <span class="va">methods</span>,</span></span>
-<span class="r-in"><span>                  train_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>partitions <span class="op">=</span> <span class="fl">6</span>, </span></span>
-<span class="r-in"><span>                                      sample.out <span class="op">=</span> <span class="fl">12</span>, </span></span>
-<span class="r-in"><span>                                      space <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                  horizon <span class="op">=</span> <span class="fl">12</span>,</span></span>
-<span class="r-in"><span>                  error <span class="op">=</span> <span class="st">"MAPE"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>                  </span></span>
-<span class="r-in"><span><span class="co"># Plot the models performance on the testing partitions</span></span></span>
-<span class="r-in"><span><span class="fu">plot_error</span><span class="op">(</span>model.obj <span class="op">=</span> <span class="va">md</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"> <span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="co"># Defining the models and their arguments</span></span>
+<span class="r-in"><span class="va">methods</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ets1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"ets"</span>,</span>
+<span class="r-in">                            method_arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>opt.crit <span class="op">=</span> <span class="st">"lik"</span><span class="op">)</span>,</span>
+<span class="r-in">                            notes <span class="op">=</span> <span class="st">"ETS model with opt.crit = lik"</span><span class="op">)</span>,</span>
+<span class="r-in">                ets2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"ets"</span>,</span>
+<span class="r-in">                            method_arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>opt.crit <span class="op">=</span> <span class="st">"amse"</span><span class="op">)</span>,</span>
+<span class="r-in">                            notes <span class="op">=</span> <span class="st">"ETS model with opt.crit = amse"</span><span class="op">)</span>,</span>
+<span class="r-in">                arima1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"arima"</span>,</span>
+<span class="r-in">                              method_arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span>,</span>
+<span class="r-in">                              notes <span class="op">=</span> <span class="st">"ARIMA(2,1,0)"</span><span class="op">)</span>,</span>
+<span class="r-in">                arima2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"arima"</span>,</span>
+<span class="r-in">                              method_arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span>,</span>
+<span class="r-in">                                                seasonal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span class="r-in">                              notes <span class="op">=</span> <span class="st">"SARIMA(2,1,2)(1,1,1)"</span><span class="op">)</span>,</span>
+<span class="r-in">                hw <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"HoltWinters"</span>,</span>
+<span class="r-in">                          method_arg <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span class="r-in">                          notes <span class="op">=</span> <span class="st">"HoltWinters Model"</span><span class="op">)</span>,</span>
+<span class="r-in">                tslm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"tslm"</span>,</span>
+<span class="r-in">                            method_arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">input</span> <span class="op">~</span> <span class="va">trend</span> <span class="op">+</span> <span class="va">season</span><span class="op">)</span>,</span>
+<span class="r-in">                            notes <span class="op">=</span> <span class="st">"tslm model with trend and seasonal components"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span class="co"># Training the models with backtesting</span></span>
+<span class="r-in"><span class="va">md</span> <span class="op">&lt;-</span> <span class="fu"><a href="train_model.html">train_model</a></span><span class="op">(</span>input <span class="op">=</span> <span class="va">USgas</span>,</span>
+<span class="r-in">                  methods <span class="op">=</span> <span class="va">methods</span>,</span>
+<span class="r-in">                  train_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>partitions <span class="op">=</span> <span class="fl">6</span>, </span>
+<span class="r-in">                                      sample.out <span class="op">=</span> <span class="fl">12</span>, </span>
+<span class="r-in">                                      space <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span>
+<span class="r-in">                  horizon <span class="op">=</span> <span class="fl">12</span>,</span>
+<span class="r-in">                  error <span class="op">=</span> <span class="st">"MAPE"</span><span class="op">)</span></span>
+<span class="r-in">                  </span>
+<span class="r-in"><span class="co"># Plot the models performance on the testing partitions</span></span>
+<span class="r-in"><span class="fu">plot_error</span><span class="op">(</span>model.obj <span class="op">=</span> <span class="va">md</span><span class="op">)</span></span>
+<span class="r-in"><span class="op">}</span></span>
 </code></pre></div>
     </div>
   </div>
@@ -149,7 +142,8 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.1.</p>
 </div>
 
       </footer></div>

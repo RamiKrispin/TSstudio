@@ -74,16 +74,14 @@ or multipe partitions (backtesting)</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">train_model</span><span class="op">(</span><span class="va">input</span>, <span class="va">methods</span>, <span class="va">train_method</span>, <span class="va">horizon</span>, error <span class="op">=</span> <span class="st">"MAPE"</span>,</span>
-<span>  xreg <span class="op">=</span> <span class="cn">NULL</span>, level <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">80</span>, <span class="fl">95</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">train_model</span><span class="op">(</span><span class="va">input</span>, <span class="va">methods</span>, <span class="va">train_method</span>, <span class="va">horizon</span>, error <span class="op">=</span> <span class="st">"MAPE"</span>,
+  xreg <span class="op">=</span> <span class="cn">NULL</span>, level <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">80</span>, <span class="fl">95</span><span class="op">)</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>input</dt>
 <dd><p>A univariate time series object (ts class)</p></dd>
-
-
 <dt>methods</dt>
 <dd><p>A list, defines the models to use for training and forecasting the series. 
 The list must include a sub list with the model type, and the model's arguments (when applicable) and notes about the model. 
@@ -94,8 +92,6 @@ The sub-list name will be used as the model ID. Possible models:</p>
 <p><code><a href="https://rdrr.io/r/stats/HoltWinters.html" class="external-link">HoltWinters</a></code> - model from the stats package</p>
 <p><code><a href="https://pkg.robjhyndman.com/forecast/reference/nnetar.html" class="external-link">nnetar</a></code> - model from the forecast package</p>
 <p><code><a href="https://pkg.robjhyndman.com/forecast/reference/tslm.html" class="external-link">tslm</a></code> - model from the forecast package (note that the 'tslm' model must have the formula argument in the 'method_arg' argument)</p></dd>
-
-
 <dt>train_method</dt>
 <dd><p>A list, defines the backtesting parameters:</p>
 <p>partitions - an integer, set the number of training and testing partitions to be used in the backtesting process, 
@@ -108,61 +104,52 @@ Otherwise, when the sample.in defined, the window structure is sliding</p>
 By default, is set to NULL, which implay that the backtesting is using an expending window. Otherwise, when defining the size of the training partition, th
 defines the train approach, either using a single testing partition (sample out) 
 or use multiple testing partitions (backtesting). The list should include the training method argument, (please see 'details' for the structure of the argument)</p></dd>
-
-
 <dt>horizon</dt>
 <dd><p>An integer, defines the forecast horizon</p></dd>
-
-
 <dt>error</dt>
 <dd><p>A character, defines the error metrics to be used to sort the models leaderboard. Possible metric - "MAPE" or "RMSE"</p></dd>
-
-
 <dt>xreg</dt>
 <dd><p>Optional, a list with two vectors (e.g., data.frame or matrix) of external regressors, 
 one vector corresponding to the input series and second to the forecast itself 
 (e.g., must have the same length as the input and forecast horizon, respectively)</p></dd>
-
-
 <dt>level</dt>
 <dd><p>An integer, set the  confidence level of the prediction intervals</p></dd>
-
 </dl></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> <span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="co"># Defining the models and their arguments</span></span></span>
-<span class="r-in"><span><span class="va">methods</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ets1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"ets"</span>,</span></span>
-<span class="r-in"><span>                            method_arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>opt.crit <span class="op">=</span> <span class="st">"lik"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                            notes <span class="op">=</span> <span class="st">"ETS model with opt.crit = lik"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                ets2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"ets"</span>,</span></span>
-<span class="r-in"><span>                            method_arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>opt.crit <span class="op">=</span> <span class="st">"amse"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                            notes <span class="op">=</span> <span class="st">"ETS model with opt.crit = amse"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                arima1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"arima"</span>,</span></span>
-<span class="r-in"><span>                              method_arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                              notes <span class="op">=</span> <span class="st">"ARIMA(2,1,0)"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                arima2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"arima"</span>,</span></span>
-<span class="r-in"><span>                              method_arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                                                seasonal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                              notes <span class="op">=</span> <span class="st">"SARIMA(2,1,2)(1,1,1)"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                hw <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"HoltWinters"</span>,</span></span>
-<span class="r-in"><span>                          method_arg <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
-<span class="r-in"><span>                          notes <span class="op">=</span> <span class="st">"HoltWinters Model"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                tslm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"tslm"</span>,</span></span>
-<span class="r-in"><span>                            method_arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">input</span> <span class="op">~</span> <span class="va">trend</span> <span class="op">+</span> <span class="va">season</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                            notes <span class="op">=</span> <span class="st">"tslm model with trend and seasonal components"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># Training the models with backtesting</span></span></span>
-<span class="r-in"><span><span class="va">md</span> <span class="op">&lt;-</span> <span class="fu">train_model</span><span class="op">(</span>input <span class="op">=</span> <span class="va">USgas</span>,</span></span>
-<span class="r-in"><span>                  methods <span class="op">=</span> <span class="va">methods</span>,</span></span>
-<span class="r-in"><span>                  train_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>partitions <span class="op">=</span> <span class="fl">4</span>, </span></span>
-<span class="r-in"><span>                                      sample.out <span class="op">=</span> <span class="fl">12</span>, </span></span>
-<span class="r-in"><span>                                      space <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                  horizon <span class="op">=</span> <span class="fl">12</span>,</span></span>
-<span class="r-in"><span>                  error <span class="op">=</span> <span class="st">"MAPE"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># View the model performance on the backtesting partitions</span></span></span>
-<span class="r-in"><span><span class="va">md</span><span class="op">$</span><span class="va">leaderboard</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"> <span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="co"># Defining the models and their arguments</span></span>
+<span class="r-in"><span class="va">methods</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ets1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"ets"</span>,</span>
+<span class="r-in">                            method_arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>opt.crit <span class="op">=</span> <span class="st">"lik"</span><span class="op">)</span>,</span>
+<span class="r-in">                            notes <span class="op">=</span> <span class="st">"ETS model with opt.crit = lik"</span><span class="op">)</span>,</span>
+<span class="r-in">                ets2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"ets"</span>,</span>
+<span class="r-in">                            method_arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>opt.crit <span class="op">=</span> <span class="st">"amse"</span><span class="op">)</span>,</span>
+<span class="r-in">                            notes <span class="op">=</span> <span class="st">"ETS model with opt.crit = amse"</span><span class="op">)</span>,</span>
+<span class="r-in">                arima1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"arima"</span>,</span>
+<span class="r-in">                              method_arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span>,</span>
+<span class="r-in">                              notes <span class="op">=</span> <span class="st">"ARIMA(2,1,0)"</span><span class="op">)</span>,</span>
+<span class="r-in">                arima2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"arima"</span>,</span>
+<span class="r-in">                              method_arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span>,</span>
+<span class="r-in">                                                seasonal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span class="r-in">                              notes <span class="op">=</span> <span class="st">"SARIMA(2,1,2)(1,1,1)"</span><span class="op">)</span>,</span>
+<span class="r-in">                hw <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"HoltWinters"</span>,</span>
+<span class="r-in">                          method_arg <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span class="r-in">                          notes <span class="op">=</span> <span class="st">"HoltWinters Model"</span><span class="op">)</span>,</span>
+<span class="r-in">                tslm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"tslm"</span>,</span>
+<span class="r-in">                            method_arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">input</span> <span class="op">~</span> <span class="va">trend</span> <span class="op">+</span> <span class="va">season</span><span class="op">)</span>,</span>
+<span class="r-in">                            notes <span class="op">=</span> <span class="st">"tslm model with trend and seasonal components"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span class="co"># Training the models with backtesting</span></span>
+<span class="r-in"><span class="va">md</span> <span class="op">&lt;-</span> <span class="fu">train_model</span><span class="op">(</span>input <span class="op">=</span> <span class="va">USgas</span>,</span>
+<span class="r-in">                  methods <span class="op">=</span> <span class="va">methods</span>,</span>
+<span class="r-in">                  train_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>partitions <span class="op">=</span> <span class="fl">4</span>, </span>
+<span class="r-in">                                      sample.out <span class="op">=</span> <span class="fl">12</span>, </span>
+<span class="r-in">                                      space <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span>
+<span class="r-in">                  horizon <span class="op">=</span> <span class="fl">12</span>,</span>
+<span class="r-in">                  error <span class="op">=</span> <span class="st">"MAPE"</span><span class="op">)</span></span>
+<span class="r-in"><span class="co"># View the model performance on the backtesting partitions</span></span>
+<span class="r-in"><span class="va">md</span><span class="op">$</span><span class="va">leaderboard</span></span>
+<span class="r-in"><span class="op">}</span></span>
 </code></pre></div>
     </div>
   </div>
@@ -177,7 +164,8 @@ one vector corresponding to the input series and second to the forecast itself
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.1.</p>
 </div>
 
       </footer></div>
