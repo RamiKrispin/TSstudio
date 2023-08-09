@@ -402,7 +402,7 @@ plot_forecast <- function(forecast_obj,
                      xaxis = list(title = Xtitle),
                      yaxis = list(title = Ytitle))
   return(p)
- } else if(class(forecast_obj) == "bsts.prediction"){
+ } else if(inherits(forecast_obj, "bsts.prediction")){
    p <- NULL
 
    x_index_start <- base::max(zoo::index(forecast_obj$original.series)) + 1

@@ -289,7 +289,7 @@ ts_grid <- function(ts.obj,
   } else if(parallel){
     
     start_time <- Sys.time()
-    grid_output <- parallel::mcmapply(mc.cores = n.cores, 1:periods, function(n){
+    grid_output <- parallel::mclapply(mc.cores = n.cores, 1:periods, function(n){
       ts_sub <- train <- test <- search_df <- NULL
       
       search_df <- grid_df
@@ -391,7 +391,7 @@ plot_grid <- function(grid.obj,
   
   
   # Error handling
-  if(class(grid.obj) != "ts_grid"){
+  if(!inherits(grid.obj, "ts_grid")){
     stop("The input object is not a 'ts_grid' class")
   }
   

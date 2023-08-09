@@ -830,11 +830,11 @@ ts_to_prophet <- function(ts.obj, start = NULL){
       # Setting the start date
       if(lubridate::is.Date(zoo::index(ts.obj))){
         start <- zoo::index(ts.obj)[1]
-      } else if(class(zoo::index(ts.obj)) == "yearmon"){
+      } else if(inherits(zoo::index(ts.obj),"yearmon")){
         start <- paste(base::substr(zoo::index(ts.obj)[1], 5, 8), 
                        substr(zoo::index(ts.obj)[1], 1, 3) %>% match(month.abb), 
                        "01", sep = "-") %>% base::as.Date()
-      } else if(class(zoo::index(ts.obj)) == "yearqtr") {
+      } else if(inherits(zoo::index(ts.obj),"yearqtr")) {
         start <- zoo::index(ts.obj[1]) %>% zoo::as.Date.yearqtr()
       } else {
         stop("The index type is invalid, supporting only Date, yearmon and yearqtr objects")
