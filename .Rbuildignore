@@ -10,3 +10,4 @@
 ^vignettes/seasonality_analysis.Rmd$
 ^vignettes/correlation_analysis.Rmd$
 ^vignettes/forecasting.Rmd$
+^CRAN-SUBMISSION$
